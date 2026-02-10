@@ -9,27 +9,9 @@ import logging as logger
 from pathlib import Path
 
 
-def _resolve_dir(d: Path) -> Path:
-    try:
-        return d.resolve(strict=True)
-    except FileNotFoundError:
-        logger.error(f"Path not found: {d}")
-        raise
-
-
-def _check_dir(d: Path):
-    if not d.exists():
-        logger.error(f"Path does not exist: {d}")
-        raise FileNotFoundError(f"{d} does not exist.")
-    if not d.is_dir():
-        logger.error(f"Path is not a directory: {d}")
-        raise NotADirectoryError(f"{d} is not a directory.")
-
-
 def _process_dir(d: Path) -> Path:
-    resolved = _resolve_dir(d)
-    _check_dir(resolved)
-    return resolved
+    d.mkdir(parents=True, exist_ok=True)
+    return d.resolve()
 
 
 # Root directory
