@@ -107,6 +107,9 @@ ipython_config.py
 # poetry
 # poetry.lock is committed intentionally
 
+# uv
+uv.lock
+
 # pdm
 pdm.lock
 .pdm.toml
