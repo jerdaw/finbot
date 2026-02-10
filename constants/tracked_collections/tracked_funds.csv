@@ -1,0 +1,155 @@
+,symbol,name,asset_region,category,sector,issuer,issuer_region,inception_date,mer,leverage_multiple,leverage_reset_period,underlying_index,url
+0,avuv,avantis u.s. small cap value etf,us,equity,small cap,ishares,ca,2019-09-24,0.25%,1.0,,,https://www.avantisinvestors.com/avantis-investments/avantis-us-small-cap-value-etf/
+1,bil,spdr bloomberg 1-3 month t-bill etf,us,bond,treasury,state street,us,2007-05-25,0.1356%,1.0,,bloomberg  1-3 month u.s. treasury bill index,https://www.ssga.com/us/en/intermediary/etfs/funds/spdr-bloomberg-1-3-month-t-bill-etf-bil
+2,biv,vanguard intermediate-term bond etf,us,bond,mixed,vanguard,us,2007-04-03,0.04%,1.0,,bloomberg u.s. 5–10 year government/credit float adjusted index,https://investor.vanguard.com/investment-products/etfs/profile/biv
+3,bkcl,horizons enhanced equal weight canadian banks covered call etf,ca,equity,finance,horizons,ca,2023-07-05,0.65%,1.25,daily,solactive equal weight canada banks index,https://horizonsetfs.com/etf/bkcl/
+4,blv,vanguard long-term bond etf,us,bond,mixed,vanguard,us,2007-04-03,0.04%,1.0,,bloomberg u.s. long government/credit float adjusted index,https://investor.vanguard.com/investment-products/etfs/profile/blv
+5,bnd,vanguard total us bond market etf,us,bond,mixed,vanguard,us,2007-04-03,0.03%,1.0,,spliced bloomberg u.s. aggregate float adjusted index,https://investor.vanguard.com/investment-products/etfs/profile/bnd
+6,bndw,vanguard total world bond etf,global,bond,mixed,vanguard,us,2018-09-04,0.05%,1.0,,bloomberg global aggregate float adjusted composite index,https://investor.vanguard.com/investment-products/etfs/profile/bndw
+7,bndx,vanguard total international bond market etf,ex-us,bond,mixed,vanguard,us,2013-05-31,0.07%,1.0,,bloomberg global aggregate ex-usd float adjusted ric capped index (usd hedged),https://investor.vanguard.com/investment-products/etfs/profile/bndx
+8,bnkl,horizons enhanced equal weight banks index etf,ca,equity,finance,horizons,ca,2023-07-05,0.35%,1.25,daily,solactive equal weight canada banks index,https://horizonsetfs.com/etf/bnkl/
+9,bsv,vanguard short-term bond etf,us,bond,mixed,vanguard,us,2007-04-03,0.04%,1.0,,bloomberg u.s. 1–5 year government/credit float adjusted index,https://investor.vanguard.com/investment-products/etfs/profile/bsv
+10,btal,agf u.s. market neutral anti-beta fund,us,mixed,mixed,agf,us,2011-09-13,0.45%,1.0,,dow jones u.s. thematic market neutral low beta index,https://www.agf.com/us/products/btal/index.jsp
+11,bulz,microsectors fang & innovation 3x leveraged etn,us,equity,technology,microsectors,us,2021-08-17,0.95%,3.0,daily,solactive fang innovation index.,https://microsectors.com/fang-innovation/
+12,canl,horizons enhanced s&p/tsx 60 index etf,mixed,equity,large cap,horizons,ca,2023-07-05,0.35%,1.25,daily,s&p/tsx 60 index,https://horizonsetfs.com/etf/canl/
+13,cncl,horizons enhanced canadian large cap equity covered call etf,ca,equity,large cap,horizons,ca,2023-07-05,0.65%,1.25,daily,,https://horizonsetfs.com/etf/cncl/
+14,ddm,proshares ultra dow30,us,equity,large cap,proshares,us,2006-06-19,0.95%,2.0,daily,dow jones industrial average index,https://www.proshares.com/our-etfs/leveraged-and-inverse/ddm
+15,dia,spdr dow jones industrial average etf trust,us,equity,large cap,state street,us,1998-01-14,0.16%,1.0,,dow jones industrial average index,https://www.ssga.com/us/en/intermediary/etfs/funds/spdr-dow-jones-industrial-average-etf-trust-dia
+16,dxhyx,direxion monthly high yield bull 1.2x fund,us,equity,all cap,direxion,us,2016-02-17,1.58%,1.2,monthly,solactive high yield beta index,https://www.direxion.com/product/monthly-high-yield-bull-1-2x-fund
+17,dxklx,direxion monthly 7-10 year treasury bull 1.75x fund,us,bond,treasury,direxion,us,2005-03-31,1.46%,1.75,monthly,ice u.s. treasury 7-10 year bond index,https://www.direxion.com/product/monthly-7-10-year-treasury-bull-bear-2x-funds
+18,dxnlx,direxion monthly nasdaq-100 bull 1.25x fund,us,equity,technology,direxion,us,2016-03-31,1.27%,1.25,monthly,nasdaq-100 index,https://www.direxion.com/product/monthly-nasdaq-100-bull-bear-1-25x-funds
+19,dxqlx,direxion monthly nasdaq-100 bull 1.75x fund,us,equity,technology,direxion,us,2006-05-01,1.46%,1.75,monthly,nasdaq-100 index,https://www.direxion.com/product/monthly-nasdaq-100-bull-2x-fund
+20,dxrlx,direxion monthly small cap bull 1.75x fund,us,equity,small cap,direxion,us,1999-02-22,1.48%,1.75,monthly,russell 2000 index,https://www.direxion.com/product/monthly-small-cap-bull-2x-funds
+21,dxslx,direxion monthly s&p 500 bull 1.75x fund,us,equity,large cap,direxion,us,2006-05-01,1.40%,1.75,monthly,s&p 500 index,https://www.direxion.com/product/monthly-sp-500-bull-2x-funds
+22,edc,direxion daily msci emerging markets bull 3x shares,emerging markets,equity,all cap,direxion,us,2008-12-17,1.20%,3.0,daily,msci emerging markets indexsm,https://www.direxion.com/product/daily-msci-emerging-markets-bull-bear-3x-etfs
+23,edv,vanguard extended duration treasury etf,us,bond,treasury,vanguard,us,2007-12-06,0.06%,1.0,,bloomberg u.s. treasury strips 20–30 year equal par bond index,https://investor.vanguard.com/investment-products/etfs/profile/edv
+24,eem,ishares msci emerging markets etf,emerging,equity,all cap,blackrock,us,2003-04-07,0.70%,1.0,,msci emerging markets index,https://www.ishares.com/us/products/239637/ishares-msci-emerging-markets-etf
+25,eet,proshares ultra msci emerging markets,emerging markets,equity,all cap,proshares,us,2009-06-02,0.96%,2.0,daily,msci emerging markets index,https://www.proshares.com/our-etfs/leveraged-and-inverse/eet
+26,efa,ishares msci eafe etf,international,equity,large cap,blackrock,us,2001-08-14,0.33%,1.0,,msci eafe index,https://www.ishares.com/us/products/239623/ishares-msci-eafe-etf
+27,efo,proshares ultra msci eafe,developed markets,equity,all cap,proshares,us,2009-06-02,0.95%,2.0,daily,msci eafe index,https://www.proshares.com/our-etfs/leveraged-and-inverse/efo
+28,eurl,direxion daily ftse europe bull 3x shares,europe,equity,all cap,direxion,us,2014-01-22,1.07%,3.0,daily,ftse developed europe all cap index,https://www.direxion.com/product/daily-ftse-europe-bull-3x-etf
+29,ewc,ishares msci canada etf,ca,equity,all cap,blackrock,us,1996-03-12,0.5%,1.0,,msci canada custom capped index,https://www.ishares.com/us/products/239615/ishares-msci-canada-etf
+30,fngg,direxion daily nyse fang+ bull 2x shares,us,equity,technology,direxion,us,2021-09-30,0.98%,2.0,daily,nyse fang+ index,https://www.direxion.com/product/daily-nyse-fang-bull-2x-shares
+31,fngo,microsectors fang+ index 2x leveraged etn,us,equity,technology,microsectors,us,2018-08-01,0.95%,2.0,daily,nyse fang+ index,https://microsectors.com/fang/
+32,fngu,microsectors fang+ index 3x leveraged etn,us,equity,technology,microsectors,us,2018-01-22,0.95%,3.0,daily,nyse fang+ index,https://microsectors.com/fang/
+33,gld,spdr gold shares,us,commodity,metal,state street,us,2004-11-18,0.40%,1.0,,lbma gold price index,https://www.ssga.com/us/en/intermediary/etfs/funds/spdr-gold-shares-gld
+34,hdif,harvest diversified monthly income etf,mixed,equity,all cap,harvest,ca,2022-02-04,0.69%,1.25,daily,,https://harvestportfolios.com/etf/hdif/
+35,hdiv,hamilton enhanced multi-sector covered call etf,mixed,equity,all cap,hamilton,ca,2021-07-19,0.65%,1.25,daily,,https://hamiltonetfs.com/etf/hdiv/
+36,hibl,direxion daily s&p 500 high beta bull 3x shares,us,equity,large cap,direxion,us,2019-11-07,0.99%,3.0,daily,s&p 500 high beta index,https://www.direxion.com/product/daily-sp-500-high-beta-bull-bear-3x-etfs
+37,hlfe,harvest canadian equity enhanced income leaders etf,ca,equity,all cap,harvest,ca,2022-10-25,0.65%,1.25,daily,,https://harvestportfolios.com/etf/hlfe/
+38,hqu,betapro nasdaq-100 2x daily bull etf,us,equity,technology,horizons,ca,2008-06-17,1.47%,2.0,daily,nasdaq-100 index,https://horizonsetfs.com/etf/hqu/
+39,hreu,betapro equal weight canadian reit 2x daily bull etf,ca,equity,real estate,horizons,ca,2001-07-01,1.15%,2.0,daily,solactive equal weight canada reit index,https://horizonsetfs.com/etf/hreu/
+40,hsu,betapro s&p 500 2x daily bull etf,us,equity,large cap,horizons,ca,2008-06-17,1.54%,2.0,daily,s&p 500 index,https://horizonsetfs.com/etf/hsu/
+41,htae,harvest tech achievers enhanced income etf,us,equity,all cap,harvest,ca,2022-10-25,0.85%,1.25,daily,,https://harvestportfolios.com/etf/htae/
+42,hxu,betapro s&p/tsx 60 2x daily bull etf,mixed,equity,large cap,horizons,ca,2007-01-08,1.64%,2.0,daily,s&p/tsx 60 index,https://horizonsetfs.com/etf/hxu/
+43,hyld,hamilton enhanced u.s. covered call etf,us,equity,all cap,hamilton,ca,2022-02-04,0.65%,1.25,daily,,https://hamiltonetfs.com/etf/hyld/
+44,iau,ishares gold trust,us,commodity,metal,ishares,us,2005-01-21,0.25%,1.0,,lbma gold price index,https://www.ishares.com/us/products/239561/ishares-gold-trust-fund
+45,ief,ishares 7-10 year treasury bond etf,us,bond,treasury,blackrock,us,2002-07-22,0.15%,1.0,,ice u.s. treasury 7-10 year bond index,https://www.ishares.com/us/products/239456/ishares-710-year-treasury-bond-etf
+46,iefa,ishares core msci eafe etf,"ex-us, ex-ca",equity,all cap,ishares,us,2012-10-18,0.07%,1.0,,msci eafe imi index,https://www.ishares.com/us/products/244049/ishares-core-msci-eafe-etf
+47,iei,ishares 3-7 year treasury bond etf,us,bond,treasury,ishares,us,2007-01-05,0.15%,1.0,,ice u.s. treasury 3-7 year bond index,https://www.ishares.com/us/products/239455/ishares-37-year-treasury-bond-etf
+48,iemg,ishares core msci emerging markets etf,emerging,equity,all cap,ishares,us,2012-10-18,0.09%,1.0,,msci emerging markets imi net index,https://www.ishares.com/us/products/244050/ishares-core-msci-emerging-markets-etf
+49,ijh,ishares core s&p mid-cap etf,us,equity,mid cap,ishares,us,2000-05-22,0.05%,1.0,,s&p midcap 400 index,https://www.ishares.com/us/products/239763/ishares-core-sp-midcap-etf
+50,ijr,ishares core s&p small-cap etf,us,equity,small cap,blackrock,us,2000-05-22,0.06%,1.0,,s&p smallcap 600 index,https://www.ishares.com/us/products/239774/ishares-core-sp-smallcap-etf
+51,ijs,ishares s&p small-cap 600 value etf,us,equity,small cap,ishares,us,2000-07-24,0.18%,1.0,,s&p smallcap 600(r) value index,https://www.ishares.com/us/products/239775/ishares-sp-smallcap-600-value-etf
+52,iswn,amplify blackswan growth & treasury core etf,ex-us,mixed,mixed,swan,us,2021-01-26,0.49%,1.5,daily,,https://amplifyetfs.com/iswn/
+53,itot,ishares core s&p total u.s. stock market etf,us,equity,all cap,ishares,us,2004-01-20,0.03%,1.0,,s&p total market index (tmi),https://www.ishares.com/us/products/239724/ishares-core-sp-total-us-stock-market-etf
+54,ivoo,vanguard s&p mid-cap 400 etf,us,equity,mid cap,vanguard,us,2010-09-07,0.10%,1.0,,s&p midcap 400 index,https://investor.vanguard.com/investment-products/etfs/profile/ivoo
+55,ivv,ishares core s&p 500 etf,us,equity,large cap,ishares,us,2000-05-15,0.03%,1.0,,s&p 500 index,https://www.ishares.com/us/products/239726/ishares-core-sp-500-etf
+56,iwb,ishares russell 1000 etf,us,equity,large cap,blackrock,us,2000-05-15,0.15%,1.0,,russell 1000 index,https://www.ishares.com/us/products/239707/ishares-russell-1000-etf
+57,iwm,ishares russell 2000 etf,us,equity,small cap,blackrock,us,2000-05-22,0.19%,1.0,,russell 2000 index,https://www.ishares.com/us/products/239710/ishares-russell-2000-etf
+58,ixn,ishares global tech etf,global,equity,large cap,blackrock,us,2001-11-12,0.41%,1.0,,s&p global 1200 information technology 4.5/22.5/45 capped index,https://www.ishares.com/us/products/239750/ishares-global-tech-etf
+59,ixus,ishares core msci total international stock etf,ex-us,equity,all cap,ishares,us,2012-10-18,0.07%,1.0,,msci acwi ex usa imi index,https://www.ishares.com/us/products/244048/ishares-core-msci-total-international-stock-etf
+60,iyr,ishares u.s. real estate etf,us,equity,real estate,blackrock,us,2000-06-12,0.40%,1.0,,dow jones u.s. real estate capped index,https://www.ishares.com/us/products/239520/ishares-us-real-estate-etf
+61,iyw,ishares u.s. technology etf,us,equity,technology,blackrock,us,2000-05-15,0.40%,1.0,,russell 1000 technology ric 22.5/45 capped index,https://www.ishares.com/us/products/239522/ishares-us-technology-etf
+62,mdy,spdr s&p midcap 400 etf trust,us,equity,mid cap,state street,us,1995-05-04,0.23%,1.0,,s&p midcap 400 index,https://www.ssga.com/us/en/intermediary/etfs/funds/spdr-sp-midcap-400-etf-trust-mdy
+63,mgc,vanguard mega cap etf,us,equity,mega cap,vanguard,us,2007-12-17,0.07%,1.0,,crsp us mega cap index,https://investor.vanguard.com/investment-products/etfs/profile/mgc
+64,midu,direxion daily mid cap bull 3x shares,us,equity,mid cap,direxion,us,2009-01-08,1.03%,3.0,daily,s&p midcap 400 index,https://www.direxion.com/product/daily-mid-cap-bull-3x-etf
+65,mvv,proshares ultra midcap400,us,equity,mid cap,proshares,us,2006-06-19,0.95%,2.0,daily,s&p midcap 400 index,https://www.proshares.com/our-etfs/leveraged-and-inverse/mvv
+66,ntse,wisdomtree u.s. efficient core fund,emerging,mixed,mixed,wisdom tree,us,2021-05-20,0.32%,1.5,daily,,https://www.wisdomtree.com/investments/etfs/capital-efficient/ntse
+67,ntsi,wisdomtree u.s. efficient core fund,ex-us,mixed,mixed,wisdom tree,us,2021-05-20,0.26%,1.5,daily,,https://www.wisdomtree.com/investments/etfs/capital-efficient/ntsi
+68,ntsx,wisdomtree u.s. efficient core fund,us,mixed,mixed,wisdom tree,us,2018-08-02,0.20%,1.5,daily,,https://www.wisdomtree.com/investments/etfs/capital-efficient/ntsx
+69,oef,ishares s&p 100 etf,us,equity,large cap,blackrock,us,2000-10-23,0.20%,1.0,,s&p 100 index,https://www.ishares.com/us/products/239723/ishares-sp-100-etf
+70,pfix,simplify interest rate hedge etf,us,mixed,mixed,simplify,us,2021-05-10,0.50%,1.0,,,https://www.simplify.us/etfs/pfix-simplify-interest-rate-hedge-etf
+71,psldx,stocksplus long duration fund,us,mixed,mixed,pimco,us,2007-08-31,0.59%,2.0,daily,,https://www.pimco.com/en-us/investments/mutual-funds/stocksplus-long-duration-fund/inst
+72,qld,proshares ultra qqq,us,equity,technology,proshares,us,2006-06-19,0.95%,2.0,daily,nasdaq-100 index,https://www.proshares.com/our-etfs/leveraged-and-inverse/qld
+73,qqcl,horizons enhanced nasdaq-100 covered call etf,us,equity,technology,horizons,ca,2023-10-10,0.85%,1.25,daily,nasdaq-100 index,https://horizonsetfs.com/etf/qqcl/
+74,qqew,first trust nasdaq-100 equal weighted index fund (qqew),us,equity,technology,first trust,us,2006-04-19,0.58%,1.0,,nasdaq-100 equal weighted index,https://www.ftportfolios.com/retail/etf/etfsummary.aspx?ticker=qqew
+75,qqq,invesco qqq trust series 1,us,equity,technology,invesco,us,1999-03-10,0.20%,1.0,,nasdaq-100 index,https://www.invesco.com/us/financial-products/etfs/product-detail?audiencetype=investor&ticker=qqq
+76,qqq5,leverage shares 5x long us tech 100,us,equity,technology,leverage shares,uk,2021-12-14,0.75%,5.0,daily,nasdaq-100 index,https://leverageshares.com/en/etps/leverage-shares-5x-long-us-tech-100-etp/
+77,qqqe,direxion nasdaq-100 equal weighted index shares,us,equity,technology,direxion,us,2012-03-21,0.35%,1.0,,nasdaq-100 equal weighted index,https://www.direxion.com/product/nasdaq-100-equal-weighted-index-etf
+78,qqqm,invesco nasdaq 100 etf,us,equity,technology,invesco,us,2020-10-13,0.15%,1.0,,nasdaq-100 index,https://www.invesco.com/us/financial-products/etfs/product-detail?audiencetype=investor&ticker=qqqm
+79,rom,proshares ultra technology,us,equity,technology,proshares,us,2007-01-30,0.95%,2.0,daily,s&p technology select sector index,https://www.proshares.com/our-etfs/leveraged-and-inverse/rom
+80,rpar,upar risk parity etf,us,mixed,mixed,evoke,us,2019-12-12,0.5%,1.2,daily,advanced research risk parity index,https://rparetf.com/rpar
+81,rsp,invesco s&p 500 equal weight etf,us,equity,large cap,invesco,us,2003-04-24,0.20%,1.0,,s&p 500 equal weight index,https://www.invesco.com/us/financial-products/etfs/product-detail?audiencetype=investor&ticker=rsp
+82,rssb,return stacked rssb global stocks & bonds,us,mixed,mixed,toroso,us,2023-12-04,0.41%,2.0,daily,,https://www.returnstackedetfs.com/return-stacked-global-stocks-bonds/
+83,rsst,return stacked rsst u.s. stocks & managed futures,us,mixed,mixed,toroso,us,2023-09-05,1.04%,2.0,daily,,https://www.returnstackedetfs.com/us-stocks-managed-futures/
+84,rud,rbc quant u.s. dividend leaders etf,us,equity,mixed,ishares,ca,2014-01-09,0.43%,1.0,,,https://www.rbcgam.com/en/ca/products/etfs/rud/detail
+85,saa,proshares ultra smallcap600,us,equity,small cap,proshares,us,2007-01-23,0.95%,2.0,daily,s&p smallcap 600 index,https://www.proshares.com/our-etfs/leveraged-and-inverse/saa
+86,shy,ishares 1-3 year treasury bond etf,us,bond,treasury,blackrock,us,2002-07-22,0.15%,1.0,,ice us treasury 1-3 year bond index,https://www.ishares.com/us/products/239452/ishares-13-year-treasury-bond-etf
+87,slyv,spdr s&p 600 small cap value etf,us,equity,small cap,state street,us,2000-09-25,0.15%,1.0,,s&p smallcap 600 value index,https://www.ssga.com/us/en/intermediary/etfs/funds/spdr-sp-600-small-cap-value-etf-slyv
+88,soxl,direxion daily semiconductor bull 3x shares,us,equity,technology,direxion,us,2010-03-11,0.94%,3.0,daily,nyse semiconductor index,https://www.direxion.com/product/daily-semiconductor-bull-bear-3x-etfs
+89,splg,spdr portfolio s&p 500 etf,us,equity,large cap,spdr,us,2005-11-08,0.02%,1.0,,s&p 500 index,https://www.ssga.com/us/en/intermediary/etfs/funds/spdr-portfolio-sp-500-etf-splg
+90,spmd,spdr portfolio s&p 400 mid cap etf,us,equity,mid cap,spdr,us,2005-11-08,0.03%,1.0,,s&p midcap 400 index,https://www.ssga.com/us/en/intermediary/etfs/funds/spdr-portfolio-sp-400-mid-cap-etf-spmd
+91,spuu,direxion daily s&p 500 bull 2x shares,us,equity,large cap,direxion,us,2014-05-28,0.64%,2.0,daily,s&p 500 index,https://www.direxion.com/product/daily-sp-500-bull-2x-etf
+92,spxl,direxion daily s&p 500 bull 3x shares,us,equity,large cap,direxion,us,2008-11-05,1.00%,3.0,daily,s&p 500 index,https://www.direxion.com/product/daily-sp-500-bull-bear-3x-etfs
+93,spy,spdr s&p 500 etf trust,us,equity,large cap,state street,us,1993-01-22,0.0945%,1.0,,s&p 500 index,https://www.ssga.com/us/en/intermediary/etfs/funds/spdr-sp-500-etf-trust-spy
+94,spyg,spdr portfolio s&p 500 growth etf,us,equity,large cap,state street,us,2000-09-25,0.04%,1.0,,s&p 500 growth index,https://www.ssga.com/us/en/intermediary/etfs/funds/spdr-portfolio-sp-500-growth-etf-spyg
+95,sso,proshares ultra s&p500,us,equity,large cap,proshares,us,2006-06-19,0.89%,2.0,daily,s&p 500 index,https://www.proshares.com/our-etfs/leveraged-and-inverse/sso
+96,swan,amplify blackswan growth & treasury core etf,us,mixed,mixed,swan,us,2018-11-06,0.49%,1.5,daily,,https://amplifyetfs.com/swan/
+97,tecl,direxion daily technology bull 3x shares,us,equity,technology,direxion,us,2008-12-17,0.97%,3.0,daily,technology select sector index,https://www.direxion.com/product/daily-technology-bull-bear-3x-etfs
+98,tip,ishares tips bond etf,us,bond,treasury,blackrock,us,2003-12-04,0.19%,1.0,,ice us treasury inflation linked bond index (usd),https://www.ishares.com/us/products/239467/ishares-tips-bond-etf
+99,tlt,ishares 20+ year treasury bond etf,us,bond,treasury,blackrock,us,2002-07-22,0.15%,1.0,,ice u.s. treasury 20+ years bond index,https://www.ishares.com/us/products/239454/ishares-20-year-treasury-bond-etf
+100,tmf,direxion daily 20+ year treasury bull 3x shares,us,bond,treasury,direxion,us,2009-04-16,1.06%,3.0,daily,ice u.s. treasury 20+ year bond index,https://www.direxion.com/product/daily-20-year-treasury-bull-bear-3x-etfs
+101,tna,direxion daily small cap bull 3x shares,us,equity,small cap,direxion,us,2008-11-05,1.09%,3.0,daily,russell 2000 index,https://www.direxion.com/product/daily-small-cap-bull-bear-3x-etfs
+102,tqqq,proshares ultrapro qqq,us,equity,technology,proshares,us,2010-02-09,0.86%,3.0,daily,nasdaq-100 index,https://www.proshares.com/our-etfs/leveraged-and-inverse/tqqq
+103,tyd,direxion daily 7-10 year treasury bull 3x shares,us,bond,treasury,direxion,us,2009-04-16,1.10%,3.0,daily,ice u.s. treasury 7-10 year bond index,https://www.direxion.com/product/daily-7-10-year-treasury-bull-bear-3x-etfs
+104,ubot,"direxion daily robotics, artificial intelligence & automation index bull 2x shares",us,equity,technology,direxion,us,2018-04-19,1.35%,2.0,daily,indxx global robotics and artificial intelligence thematic index,https://www.direxion.com/product/daily-robotics-artificial-intelligence-automation-index-bull-2x-etf
+105,ubt,proshares ultra 20+ year treasury,us,bond,treasury,proshares,us,2010-01-19,0.95%,2.0,daily,ice u.s. treasury 20+ year bond index,https://www.proshares.com/our-etfs/leveraged-and-inverse/ubt
+106,udow,proshares ultrapro dow30,us,equity,large cap,proshares,us,2010-02-09,0.95%,3.0,daily,dow jones industrial average index,https://www.proshares.com/our-etfs/leveraged-and-inverse/udow
+107,umdd,proshares ultrapro midcap400,us,equity,mid cap,proshares,us,2010-02-09,0.95%,3.0,daily,s&p midcap 400 index,https://www.proshares.com/our-etfs/leveraged-and-inverse/umdd
+108,uopix,profunds ultranasdaq-100,us,equity,technology,profunds,us,1997-12-01,1.51%,2.0,daily,nasdaq-100 index,https://www.profunds.com/mutual-funds/ultranasdaq-100
+109,upar,upar ultra risk parity etf,us,mixed,mixed,evoke,us,2022-01-03,0.65%,1.68,daily,advanced research ultra risk parity index,https://rparetf.com/upar
+110,upro,proshares ultrapro s&p500,us,equity,large cap,proshares,us,2009-06-23,0.91%,3.0,daily,s&p 500 index,https://www.proshares.com/our-etfs/leveraged-and-inverse/upro
+111,urty,proshares ultrapro russell2000,us,equity,small cap,proshares,us,2010-02-09,0.95%,3.0,daily,russell 2000 index,https://www.proshares.com/our-etfs/leveraged-and-inverse/urty
+112,uscl,horizons enhanced us large cap equity covered call etf,us,equity,large cap,horizons,ca,2023-07-05,0.65%,1.25,daily,,https://horizonsetfs.com/etf/uscl/
+113,usd,proshares ultra semiconductors,us,equity,mixed,proshares,us,2007-01-30,0.95%,2.0,daily,dow jones u.s. semiconductors index,https://www.proshares.com/our-etfs/leveraged-and-inverse/usd
+114,ust,proshares ultra 7-10 year treasury,us,bond,treasury,proshares,us,2010-01-19,0.95%,2.0,daily,ice u.s. treasury 7-10 year bond index,https://www.proshares.com/our-etfs/leveraged-and-inverse/ust
+115,uvxy,proshares ultra vix short-term futures etf (3x),us,contract,volatility,proshares,us,2011-10-03,0.95%,1.5,daily,,https://www.proshares.com/our-etfs/strategic/uvxy
+116,uwm,proshares ultra russell2000,us,equity,small cap,proshares,us,2007-01-23,0.95%,2.0,daily,russell 2000 index,https://www.proshares.com/our-etfs/leveraged-and-inverse/uwm
+117,vb,vanguard small-cap etf,us,equity,small cap,vanguard,us,2004-01-26,0.05%,1.0,,crsp us small cap index,https://investor.vanguard.com/investment-products/etfs/profile/vb
+118,vcn,vcn vanguard ftse canada all cap index etf,ca,equity,all cap,vanguard,ca,2013-08-02,0.05%,1.0,,ftse canada all cap domestic index,https://www.vanguard.ca/en/advisor/products/products-group/etfs/vcn
+119,vfisx,vanguard short-term treasury fund investor shares,us,bond,treasury,vanguard,us,1991-10-28,0.20%,1.0,,,https://investor.vanguard.com/investment-products/mutual-funds/profile/vfisx
+120,vfitx,vanguard intermediate-term treasury fund investor shares,us,bond,treasury,vanguard,us,1991-10-28,0.20%,1.0,,,https://investor.vanguard.com/investment-products/mutual-funds/profile/vfitx
+121,vgit,vanguard intermediate-term treasury etf,us,bond,treasury,vanguard,us,2009-11-19,0.04%,1.0,,spliced bloomberg u.s. treasury 3-10 year index in usd,https://investor.vanguard.com/investment-products/etfs/profile/vgit
+122,vgt,vanguard information technology etf,us,equity,technology,vanguard,us,2004-01-26,0.10%,1.0,,msci us investable market information technology 25/50 index,https://investor.vanguard.com/investment-products/etfs/profile/vgt
+123,vioo,vanguard s&p small-cap 600 etf,us,equity,small cap,vanguard,us,2010-09-07,0.10%,1.0,,s&p small-cap 600 index,https://investor.vanguard.com/investment-products/etfs/profile/vioo
+124,vo,vanguard mid-cap index fund etf,us,equity,mid cap,vanguard,us,2004-01-26,0.04%,1.0,,crsp us mid cap index,https://investor.vanguard.com/investment-products/etfs/profile/vo
+125,voo,vanguard s&p 500 etf,us,equity,large cap,vanguard,us,2010-09-07,0.03%,1.0,,s&p 500 index,https://investor.vanguard.com/investment-products/etfs/profile/voo
+126,vt,vanguard total world stock index fund etf,global,equity,all cap,vanguard,us,2008-06-24,0.07%,1.0,,ftse global all cap index,https://investor.vanguard.com/investment-products/etfs/profile/vt
+127,vti,vanguard total stock market etf,us,equity,all cap,vanguard,us,2001-05-24,0.03%,1.0,,crsp us total market index,https://investor.vanguard.com/investment-products/etfs/profile/vti
+128,vtwo,vanguard russell 2000 etf,us,equity,small cap,vanguard,us,2010-09-20,0.10%,1.0,,russell 2000 index,https://investor.vanguard.com/investment-products/etfs/profile/vtwo
+129,vug,vanguard growth etf,us,equity,all cap,vanguard,us,2004-01-26,0.04%,1.0,,crsp us large cap growth index,https://investor.vanguard.com/investment-products/etfs/profile/vug
+130,vun,vun vanguard u.s. total market index etf,ca,equity,all cap,vanguard,ca,2013-08-02,0.17%,1.0,,crsp us total market index,https://www.vanguard.ca/en/advisor/products/products-group/etfs/vun
+131,vusb,vanguard ultra-short-term bond etf,us,bond,mixed,vanguard,us,2021-04-05,0.10%,1.0,,,https://investor.vanguard.com/investment-products/etfs/profile/vusb
+132,vustx,vanguard long-term treasury fund investor shares,us,bond,treasury,vanguard,us,1986-05-19,0.20%,1.0,,bloomberg u.s. long treasury bond index,https://investor.vanguard.com/investment-products/mutual-funds/profile/vustx
+133,vv,vanguard large-cap etf,us,equity,large cap,vanguard,us,2004-01-27,0.04%,1.0,,crsp us large cap index,https://investor.vanguard.com/investment-products/etfs/profile/vv
+134,vwo,vanguard ftse emerging markets etf,emerging,equity,all cap,vanguard,us,2005-03-04,0.08%,1.0,,ftse emerging markets all cap china a inclusion index,https://investor.vanguard.com/investment-products/etfs/profile/vwo
+135,vxus,vanguard total international stock etf,ex-us,equity,all cap,vanguard,us,2011-01-26,0.07%,1.0,,ftse global all cap ex us index,https://investor.vanguard.com/investment-products/etfs/profile/vxus
+136,webl,direxion daily dow jones internet bull 3x shares,us,equity,technology,direxion,us,2019-11-07,1.01%,3.0,daily,dow jones internet composite index,https://www.direxion.com/product/daily-dow-jones-internet-bull-bear-3x-etfs
+137,xic,ishares core s&p/tsx capped composite index etf,"us, ca",equity,large cap,ishares,ca,2001-02-16,0.06%,1.0,,s&p/tsx capped composite index,https://www.blackrock.com/ca/investors/en/products/239837/ishares-sptsx-capped-composite-index-etf
+138,xin,ishares msci eafe index etf (cad-hedged),"ex-us, ex-ca",equity,all cap,ishares,ca,2001-09-06,0.52%,1.0,,msci eafe 100% hedged to cad index,https://www.blackrock.com/ca/investors/en/products/239624/ishares-msci-eafe-index-etf-cadhedged-fund
+139,xiu,ishares s&p/tsx 60 index etf,"us, ca",equity,large cap,ishares,ca,1999-09-28,0.18%,1.0,,s&p/tsx 60 index,https://www.blackrock.com/ca/investors/en/products/239832/ishares-sptsx-60-index-etf
+140,xlb,ishares core canadian long term bond index etf,"ex-us, ex-ca",bond,mixed,ishares,ca,2006-11-06,0.20%,1.0,,ftse canada long term bond index,https://www.blackrock.com/ca/investors/en/products/239489/ishares-canadian-long-term-bond-index-etf
+141,xle,the energy select sector spdr fund,us,equity,energy,state street,us,1998-12-16,0.10%,1.0,,energy select sector index,https://www.ssga.com/us/en/intermediary/etfs/funds/the-energy-select-sector-spdr-fund-xle
+142,xlf,the financial select sector spdr fund,us,equity,finance,state street,us,1998-12-16,0.10%,1.0,,financial select sector index,https://www.ssga.com/us/en/intermediary/etfs/funds/the-financial-select-sector-spdr-fund-xlf
+143,xli,the industrial select sector spdr fund,us,equity,industrial,state street,us,1998-12-16,0.10%,1.0,,industrial select sector index,https://www.ssga.com/us/en/intermediary/etfs/funds/the-industrial-select-sector-spdr-fund-xli
+144,xlk,the technology select sector spdr fund,us,equity,technology,state street,us,1998-12-16,0.10%,1.0,,technology select sector index,https://www.ssga.com/us/en/intermediary/etfs/funds/the-technology-select-sector-spdr-fund-xlk
+145,xlp,the consumer staples select sector spdr fund,us,equity,consumer,state street,us,1998-12-16,0.10%,1.0,,consumer staples select sector index,https://www.ssga.com/us/en/intermediary/etfs/funds/the-consumer-staples-select-sector-spdr-fund-xlp
+146,xlu,the utilities select sector spdr fund,us,equity,utilities,state street,us,1998-12-16,0.10%,1.0,,utilities select sector index,https://www.ssga.com/us/en/intermediary/etfs/funds/the-utilities-select-sector-spdr-fund-xlu
+147,xlv,the health care select sector spdr fund,us,equity,health,state street,us,1998-12-16,0.10%,1.0,,health care select sector index,https://www.ssga.com/us/en/intermediary/etfs/funds/the-health-care-select-sector-spdr-fund-xlv
+148,xly,the consumer discretionary select sector spdr fund,us,equity,all cap,state street,us,1998-12-16,0.10%,1.0,,consumer discretionary select sector index,https://www.ssga.com/us/en/intermediary/etfs/funds/the-consumer-discretionary-select-sector-spdr-fund-xly
+149,xpp,proshares ultra ftse china 50,china,equity,large cap,proshares,us,2009-06-02,0.97%,2.0,daily,ftse china 50 index,https://www.proshares.com/our-etfs/leveraged-and-inverse/xpp
+150,xsp,ishares core s&p 500 index etf (cad-hedged),us,equity,large cap,ishares,ca,2001-05-24,0.09%,1.0,,s&p 500 hedged to canadian dollars index,https://www.blackrock.com/ca/investors/en/products/239727/ishares-sp-500-index-etf-cadhedged-fund
+151,xuc,ishares core s&p 500 index etf,us,equity,large cap,ishares,ca,2013-04-10,0.09%,1.0,,s&p 500 index,https://www.blackrock.com/ca/investors/en/products/251422/ishares-sp-500-index-etf
+152,xxxx,max s&p 500 4x leveraged etns,us,equity,large cap,maxetns,us,2023-12-07,0.95%,4.0,daily,s&p 500 total return index,https://www.maxetns.com/product/xxxx.p/
+153,yinn,direxion daily ftse china bull 3x shares,china,equity,large cap,direxion,us,2009-12-03,1.46%,3.0,daily,ftse china 50 index,https://www.direxion.com/product/daily-ftse-china-bull-bear-3x-etfs

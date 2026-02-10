@@ -1,0 +1,239 @@
+from typing import Any
+
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+
+
+class InteractivePlotter:
+    def __init__(self):
+        # Initialization, if needed
+        pass
+
+    def plot_time_series(
+        self,
+        df: pd.DataFrame | pd.Series,
+        time_col: None | str = None,
+        value_cols: None | list[str | None] = None,
+        title: str = "Time Series Plot",
+    ) -> None:
+        """
+        Creates an interactive time series plot.
+
+        :param df: pandas DataFrame or Series containing the data.
+        :param time_col: String, the name of the column with time data. If None, df.index is used.
+        :param value_cols: List of strings, names of columns to plot. If None, all columns are used.
+        :param title: String, the title of the plot.
+        """
+        x_values = df.index if time_col is None else df[time_col]
+        if value_cols is None:
+            value_cols = (
+                [str(df.name) if df.name is not None else None]
+                if isinstance(df, pd.Series)
+                else [str(c) for c in df.columns]
+            )
+
+        fig = px.line(df, x=x_values, y=value_cols)
+        fig.update_layout(title=title, xaxis_title="Time", yaxis_title="Values")
+        fig.show()
+
+    def plot_multiple_series(
+        self,
+        df: pd.DataFrame | pd.Series,
+        time_col: None | str = None,
+        series_cols: None | list[str] = None,
+        title: str = "Multiple Time Series Plot",
+    ) -> None:
+        """
+        Plots multiple time series in one graph.
+
+        :param df: pandas DataFrame or Series.
+        :param time_col: String, the time column. If None, df.index is used.
+        :param series_cols: List of strings, the columns representing different series. If None, all columns are used.
+        :param title: String, the title of the plot.
+        """
+        x_values = df.index if time_col is None else df[time_col]
+        if series_cols is None:
+            series_cols = [str(df.name)] if isinstance(df, pd.Series) else [str(c) for c in df.columns]
+
+        fig = go.Figure()
+        for col in series_cols:
+            fig.add_trace(go.Scatter(x=x_values, y=df[col], mode="lines", name=col))
+        fig.update_layout(title=title, xaxis_title="Time", yaxis_title="Value")
+        fig.show()
+
+    def plot_scatter(
+        self,
+        df: pd.DataFrame | pd.Series,
+        x_col: None | str = None,
+        y_col: None | str = None,
+        title: str = "Scatter Plot",
+    ) -> None:
+        """
+        Creates an interactive scatter plot for time series data.
+
+        :param df: pandas DataFrame or Series.
+        :param x_col: String, the x-axis column (time).
+        :param y_col: String, the y-axis column (value).
+        :param title: String, the title of the plot.
+        """
+        x_values = df.index if x_col is None else df[x_col]
+        y_col_names = (
+            [str(df.name)] if isinstance(df, pd.Series) else [str(c) for c in df.columns] if y_col is None else [y_col]
+        )
+        fig = px.scatter(df, x=x_values, y=y_col_names)
+        fig.update_layout(title=title, xaxis_title=x_col, yaxis_title=y_col)
+        fig.show()
+
+    def plot_histogram(
+        self,
+        df: pd.DataFrame | pd.Series,
+        column: None | str = None,
+        bins: None | int = None,
+        title: str = "Histogram",
+    ) -> None:
+        """
+        Visualizes the distribution of values over time.
+
+        :param df: pandas DataFrame or Series.
+        :param column: String, the column to plot.
+        :param bins: Integer, number of bins (optional).
+        :param title: String, the title of the plot.
+        """
+        if column is None:
+            column = str(df.name) if isinstance(df, pd.Series) else str(df.columns[0])
+
+        fig = px.histogram(df, x=column, nbins=bins)
+        fig.update_layout(title=title, xaxis_title=column, yaxis_title="Frequency")
+        fig.show()
+
+    def plot_heatmap(self, df: pd.DataFrame, title: str = "Correlation Heatmap Plot") -> None:
+        """
+        Shows correlation between different time series.
+
+        :param df: pandas DataFrame.
+        :param title: String, the title of the plot.
+        """
+        if not isinstance(df, pd.DataFrame):
+            raise TypeError("plot_heatmap requires a pandas DataFrame as input.")
+
+        correlation_matrix = df.corr()
+        fig = go.Figure(data=go.Heatmap(z=correlation_matrix, x=df.columns, y=df.columns))
+        fig.update_layout(title=title)
+        fig.show()
+
+    def plot_candlestick(
+        self,
+        df: pd.DataFrame,
+        time_col: None | str = None,
+        open_col: str = "Open",
+        high_col: str = "High",
+        low_col: str = "Low",
+        close_col: str = "Close",
+        title: str = "Candlestick Plot",
+    ) -> None:
+        """
+        Creates a candlestick plot, commonly used for financial data.
+
+        :param df: pandas DataFrame.
+        :param time_col: String, the time column. If None, df.index is used.
+        :param open_col: String, the open value column.
+        :param high_col: String, the high value column.
+        :param low_col: String, the low value column.
+        :param close_col: String, the close value column.
+        :param title: String, the title of the plot.
+        """
+        x_values = df.index if time_col is None else df[time_col]
+
+        fig = go.Figure(
+            data=[
+                go.Candlestick(x=x_values, open=df[open_col], high=df[high_col], low=df[low_col], close=df[close_col]),
+            ],
+        )
+        fig.update_layout(title=title, xaxis_title="Time", yaxis_title="Price")
+        fig.show()
+
+    def plot_bar_chart(self, df: pd.DataFrame, x_col: str, y_col: str, title: str = "Bar Chart") -> None:
+        """
+        Creates an interactive bar chart to visualize numeric score data using a pandas DataFrame.
+
+        :param df: pandas DataFrame containing the data.
+        :param x_col: String, the column name for the x-axis (identifiers).
+        :param y_col: String, the column name for the y-axis (scores).
+        :param title: String, the title of the plot.
+        """
+        # Validating DataFrame
+        if x_col not in df.columns or y_col not in df.columns:
+            raise ValueError("Specified columns do not exist in the DataFrame")
+
+        # Creating a bar chart
+        fig = px.bar(df, x=x_col, y=y_col)
+
+        # Customizing the chart
+        fig.update_layout(title=title, xaxis_title=x_col, yaxis_title=y_col, showlegend=False)
+
+        fig.show()
+
+    @staticmethod
+    def mark_plot(fig: go.Figure, data: pd.DataFrame | pd.Series, marker_specs: dict[Any, dict[str, Any]]) -> None:
+        """
+        Adds markers to a plot based on specified conditions.
+
+        :param fig: Plotly figure object to which markers will be added.
+        :param data: pandas DataFrame or Series with the data.
+        :param marker_specs: A dictionary where keys are conditions (expressed as boolean masks or callable functions)
+                             and values are dictionaries with marker styles.
+        :raises TypeError: If provided data types are incorrect.
+        """
+        if not isinstance(fig, go.Figure):
+            raise TypeError("fig must be a Plotly graph_objects.Figure")
+        if not isinstance(data, pd.DataFrame | pd.Series):
+            raise TypeError("data must be a pandas DataFrame or Series")
+
+        for condition, style in marker_specs.items():
+            # Check if condition is a function and apply it, else use it directly
+            marker_data = data[condition(data)] if callable(condition) else data[condition]
+
+            # Add markers to the figure
+            fig.add_trace(go.Scatter(x=marker_data.index, y=marker_data.values, mode="markers", **style))
+
+    @staticmethod
+    def export_plot(fig: go.Figure, filename: str, format: str = "png") -> None:
+        """
+        Exports the plot to a file.
+
+        :param fig: Plotly figure object.
+        :param filename: String, the name of the file to save.
+        :param format: String, file format (e.g., 'png', 'jpeg', 'svg', 'html').
+        """
+        if format == "html":
+            fig.write_html(f"{filename}.html")
+        else:
+            fig.write_image(f"{filename}.{format}")
+
+
+if __name__ == "__main__":
+    # Example usage
+    from collections import Counter
+
+    from constants.data_constants import DEMO_DATA
+
+    OHLC = DEMO_DATA[["Open", "High", "Low", "Close"]]
+    CLOSE = DEMO_DATA["Close"]
+    _CHANGE = CLOSE.pct_change().dropna()
+    _CHANGE.name = "% Change"
+    CHANGE = pd.DataFrame(_CHANGE)
+    OUTLIERS = pd.DataFrame(dict(Counter(round(c[0], 3) for c in CHANGE.values)), index=["Frequency"]).T
+    OUTLIERS.index.name = "Change"
+    OUTLIERS.reset_index(inplace=True)
+    OUTLIERS = OUTLIERS[OUTLIERS["Frequency"] <= 1].dropna()
+
+    plotter = InteractivePlotter()
+
+    plotter.plot_time_series(CLOSE)
+    plotter.plot_multiple_series(OHLC)
+    plotter.plot_candlestick(OHLC)
+    plotter.plot_scatter(CLOSE)
+    plotter.plot_histogram(CHANGE)
+    plotter.plot_heatmap(OHLC)
+    plotter.plot_bar_chart(OUTLIERS, x_col="Change", y_col="Frequency")

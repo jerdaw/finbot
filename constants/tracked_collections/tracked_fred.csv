@@ -1,0 +1,101 @@
+symbol,name,category,frequency,seasonally_adjusted,start_date,units
+A939RX0Q048SBEA,Real gross domestic product per capita,GDP,quarterly,True,Q1 1947,Chained 2017 Dollars
+AAA,Moody's Seasoned Aaa Corporate Bond Yield,Interest Rates,daily,False,1983-01-03,Percent
+ADPWNUSNERSA,Total Nonfarm Private Payroll Employment,Employment,weekly,True,2010-01-02,Persons
+ANFCI,Chicago Fed Adjusted National Financial Conditions Index,Financial Indicators,weekly,False,1971-01-08,Index
+BAMLH0A0HYM2,ICE BofA US High Yield Index Option-Adjusted Spread,Interest Rates,daily,False,1996-12-31,Percent
+BAMLH0A0HYM2EY,ICE BofA US High Yield Index Effective Yield,Interest Rates,daily,False,1996-12-31,Percent
+BOGMBASE,Monetary Base; Total,Money Supply,monthly,False,Jan 1959,Millions of Dollars
+CIVPART,Labor Force Participation Rate,Employment,monthly,True,Jan 1948,Percent
+CORESTICKM159SFRBATL,Sticky Price Consumer Price Index less Food and Energy,Inflation,monthly,True,Dec 1967,Percent Change from Year Ago
+CPIAUCSL,Consumer Price Index for All Urban Consumers: All Items in U.S. City Average,Inflation,monthly,True,Jan 1947,Index 1982-1984=100
+CSUSHPINSA,S&P/Case-Shiller U.S. National Home Price Index,Real Estate,monthly,False,Jan 1987,Index Jan 2000=100
+DEXCAUS,Canadian Dollars to U.S. Dollar Spot Exchange Rate,Currency,daily,False,1971-01-04,Canadian Dollars to One U.S. Dollar
+DEXCHUS,Chinese Yuan Renminbi to U.S. Dollar Spot Exchange Rate,Currency,daily,False,1981-01-02,Chinese Yuan Renminbi to One U.S. Dollar
+DEXJPUS,Japanese Yen to U.S. Dollar Spot Exchange Rate,Currency,daily,False,1971-01-04,Japanese Yen to One U.S. Dollar
+DEXUSEU,U.S. Dollars to Euro Spot Exchange Rate,Currency,daily,False,1999-01-04,U.S. Dollars to One Euro
+DEXUSUK,U.S. Dollars to U.K. Pound Sterling Spot Exchange Rate,Currency,daily,False,1971-01-04,U.S. Dollars to One U.K. Pound Sterling
+DFEDTARL,Federal Funds Target Range - Lower Limit,Interest Rates,daily,False,2008-12-16,Percent
+DFEDTARU,Federal Funds Target Range - Upper Limit,Interest Rates,daily,False,2008-12-16,Percent
+DFF,Federal Funds Effective Rate,Interest Rates,daily,False,1954-07-01,Percent
+DFII10,"Market Yield on U.S. Treasury Securities at 10-Year Constant Maturity, Quoted on an Investment Basis, Inflation-Indexed",Interest Rates,daily,False,2003-01-02,Percent
+DFII20,"Market Yield on U.S. Treasury Securities at 20-Year Constant Maturity, Quoted on an Investment Basis, Inflation-Indexed",Interest Rates,daily,False,2004-07-27,Percent
+DFII30,"Market Yield on U.S. Treasury Securities at 30-Year Constant Maturity, Quoted on an Investment Basis, Inflation-Indexed",Interest Rates,daily,False,2010-02-22,Percent
+DFII5,"Market Yield on U.S. Treasury Securities at 5-Year Constant Maturity, Quoted on an Investment Basis, Inflation-Indexed",Interest Rates,daily,False,2003-01-02,Percent
+DFII7,"Market Yield on U.S. Treasury Securities at 7-Year Constant Maturity, Quoted on an Investment Basis, Inflation-Indexed",Interest Rates,daily,False,2003-01-02,Percent
+DGS1,"Market Yield on U.S. Treasury Securities at 1-Year Constant Maturity, Quoted on an Investment Basis",Interest Rates,daily,False,1962-01-02,Percent
+DGS10,"Market Yield on U.S. Treasury Securities at 10-Year Constant Maturity, Quoted on an Investment Basis",Interest Rates,daily,False,1962-01-02,Percent
+DGS1MO,"Market Yield on U.S. Treasury Securities at 1-Month Constant Maturity, Quoted on an Investment Basis",Interest Rates,daily,False,2001-07-31,Percent
+DGS2,"Market Yield on U.S. Treasury Securities at 2-Year Constant Maturity, Quoted on an Investment Basis",Interest Rates,daily,False,1976-06-01,Percent
+DGS20,"Market Yield on U.S. Treasury Securities at 20-Year Constant Maturity, Quoted on an Investment Basis",Interest Rates,daily,False,1962-01-02,Percent
+DGS3,"Market Yield on U.S. Treasury Securities at 3-Year Constant Maturity, Quoted on an Investment Basis",Interest Rates,daily,False,1962-01-02,Percent
+DGS30,"Market Yield on U.S. Treasury Securities at 30-Year Constant Maturity, Quoted on an Investment Basis",Interest Rates,daily,False,1977-02-15,Percent
+DGS3MO,"Market Yield on U.S. Treasury Securities at 3-Month Constant Maturity, Quoted on an Investment Basis",Interest Rates,daily,False,1981-09-01,Percent
+DGS5,"Market Yield on U.S. Treasury Securities at 5-Year Constant Maturity, Quoted on an Investment Basis",Interest Rates,daily,False,1962-01-02,Percent
+DGS6MO,"Market Yield on U.S. Treasury Securities at 6-Month Constant Maturity, Quoted on an Investment Basis",Interest Rates,daily,False,1981-09-01,Percent
+DGS7,"Market Yield on U.S. Treasury Securities at 7-Year Constant Maturity, Quoted on an Investment Basis",Interest Rates,daily,False,1969-07-01,Percent
+DJIA,CBOE DJIA Volatility Index,Stocks,daily,False,1997-10-07,Index
+DRALACBS,"Delinquency Rate on All Loans, All Commercial Banks",Debt,quarterly,True,Q1 1985,Percent
+DRCCLACBS,"Delinquency Rate on Credit Card Loans, All Commercial Banks",Debt,quarterly,True,Q1 1991,Percent
+DRCLACBS,"Delinquency Rate on Consumer Loans, All Commercial Banks",Debt,quarterly,True,Q1 1987,Percent
+DRSFRMACBS,"Delinquency Rate on Single-Family Residential Mortgages, Booked in Domestic Offices, All Commercial Banks",Debt,quarterly,True,Q1 1991,Percent
+DTB1YR,"1-Year Treasury Bill Secondary Market Rate, Discount Basis",Interest Rates,daily,False,1959-07-15,Percent
+DTB4WK,"4-Week Treasury Bill Secondary Market Rate, Discount Basis",Interest Rates,daily,False,2001-07-31,Percent
+DTWEXBGS,Nominal Broad U.S. Dollar Index,Currency,daily,False,2006-01-02,Index Jan 2006=100
+EMRATIO,Employment-Population Ratio,Employment,monthly,True,Jan 1948,Percent
+EXPINF10YR,10-Year Expected Inflation,Inflation,monthly,False,Jan 1982,Percent
+EXPINF30YR,30-Year Expected Inflation,Inflation,monthly,False,Jan 1982,Percent
+EXPINF5YR,5-Year Expected Inflation,Inflation,monthly,False,Jan 1982,Percent
+FIXHAI,Housing Affordability Index (Fixed),Real Estate,monthly,False,Oct 2022,Index
+GDP,Gross Domestic Product,GDP,quarterly,True,Q1 1947,Billions of Dollars
+GDPC1,Real Gross Domestic Product,GDP,quarterly,True,Q1 1947,Billions of Chained 2017 Dollars
+GFDEGDQ188S,Federal Debt: Total Public Debt as Percent of Gross Domestic Product,Debt,quarterly,True,Q1 1966,Percent of GDP
+H8B1001NCBCMG,"Bank Credit, All Commercial Banks",Money Supply,monthly,True,Feb 1947,Percent Change at Annual Rate
+H8B1058NCBCMG,"Deposits, All Commercial Banks",Money Supply,monthly,True,Feb 1973,Percent Change at Annual Rate
+H8B1247NCBCMG,"Consumer Loans: Credit Cards and Other Revolving Plans, All Commercial Banks",Money Supply,monthly,True,Aug 2000,Percent Change at Annual Rate
+ICSA,Initial Claims,Employment,weekly,True,1967-01-07,Number
+IHLIDXNEWUS,New Job Postings on Indeed in the United States,Employment,daily,True,2020-02-01,"Index Feb, 1 2020=100"
+IHLIDXUS,Job Postings on Indeed in the United States,Employment,daily,True,2020-02-01,"Index Feb, 1 2020=100"
+INDPRO,Industrial Production: Total Index,Business,monthly,True,Jan 1919,Index 2017=100
+JHDUSRGDPBR,Dates of U.S. recessions as inferred by GDP-based recession indicator,GDP,quarterly,False,Q4 1967,"+1 or 0"
+JHGDPBRINDX,GDP-Based Recession Indicator Index,GDP,quarterly,False,Q4 1967,Index
+JTSJOL,Job Openings: Total Nonfarm,Employment,monthly,True,Dec 2000,Level in Thousands
+LNS14000006,Unemployment Rate - Black or African American,Employment,monthly,True,Jan 1972,Percent
+M1SL,M1,Money Supply,monthly,True,Jan 1959,Billions of Dollars
+M2SL,M2,Money Supply,monthly,True,Jan 1959,Billions of Dollars
+M2V,Velocity of M2 Money Stock,Money Supply,quarterly,True,Q1 1959,Ratio
+MEHOINUSA672N,Real Median Household Income in the United States,Income,annual,False,1984,2022 CPI-U-RS Adjusted Dollars
+MEPAINUSA672N,Real Median Personal Income in the United States,Income,annual,False,1974,2022 CPI-U-RS Adjusted Dollars
+MICH,University of Michigan: Inflation Expectation,Inflation,monthly,False,Jan 1978,Percent
+MORTGAGE30US,30-Year Fixed Rate Mortgage Average in the United States,Interest Rates,weekly,False,1971-04-02,Percent
+NASDAQ100,NASDAQ 100 Index,Stocks,daily,False,1986-01-02,Index
+NASDAQCOM,NASDAQ Composite Index,Stocks,daily,False,1971-02-05,"Index Feb 5, 1971=100"
+NFCI,Chicago Fed National Financial Conditions Index,Financial Indicators,weekly,False,1971-01-08,Index
+PCE,Personal Consumption Expenditures,Spending,monthly,True,Jan 1959,Billions of Dollars
+REAINTRATREARAT10Y,10-Year Real Interest Rate,Interest Rates,monthly,False,Jan 1982,Percent
+REAINTRATREARAT1YE,1-Year Real Interest Rate,Interest Rates,monthly,False,Jan 1982,Percent
+SP500,S&P 500,Stocks,daily,False,2013-12-23,Index
+STLFSI4,St. Louis Fed Financial Stress Index,Financial Indicators,weekly,False,1993-12-31,Index
+T10Y2Y,10-Year Treasury Constant Maturity Minus 2-Year Treasury Constant Maturity,Interest Rates,daily,False,1976-06-01,Percent
+T10Y3M,10-Year Treasury Constant Maturity Minus 3-Month Treasury Constant Maturity,Interest Rates,daily,False,1982-01-04,Percent
+T10YIE,10-Year Breakeven Inflation Rate,Inflation,daily,False,2003-01-02,Percent
+T30YIEM,30-year Breakeven Inflation Rate,Inflation,monthly,False,Feb 2010,Percent
+TB3MS,"3-Month Treasury Bill Secondary Market Rate, Discount Basis",Interest Rates,monthly,False,Jan 1934,Percent
+U6RATE,"Total Unemployed, Plus All Persons Marginally Attached to the Labor Force, Plus Total Employed Part Time for Economic Reasons, as a Percent of the Civilian Labor Force Plus All Persons Marginally Attached to the Labor Force (U-6)",Employment,monthly,True,Jan 1994,Percent
+UMCSENT,University of Michigan: Consumer Sentiment,Financial Indicators,monthly,False,Nov 1952,Index 1966:Q1=100
+UNRATE,Unemployment Rate,Employment,monthly,True,Jan 1948,Percent
+USRECD,NBER based Recession Indicators for the United States from the Period following the Peak through the Trough,GDP,daily,False,1854-12-01,"+1 or 0"
+USREC,NBER based Recession Indicators for the United States from the Period following the Peak through the Trough,GDP,monthly,False,1854-12-01,"+1 or 0"
+USRECDM,NBER based Recession Indicators for the United States from the Peak through the Trough,GDP,daily,False,1854-12-01,"+1 or 0"
+USRECM,NBER based Recession Indicators for the United States from the Peak through the Trough,GDP,monthly,False,1854-12-01,"+1 or 0"
+USRECDP,NBER based Recession Indicators for the United States from the Peak through the Period preceding the Trough,GDP,daily,False,1854-12-01,"+1 or 0"
+USRECP,NBER based Recession Indicators for the United States from the Peak through the Period preceding the Trough,GDP,monthly,False,1854-12-01,"+1 or 0"
+USSLIND,Leading Index for the United States,Financial Indicators,monthly,True,Jan 1982,Percent
+USSTHPI,All-Transactions House Price Index for the United States,Real Estate,quarterly,False,Q1 1975,Index 1980:Q1=100
+VIXCLS,CBOE Volatility Index: VIX,Volatility Indexes,daily,False,1990-01-02,Index
+VXNCLS,CBOE NASDAQ 100 Volatility Index,Volatility Indexes,daily,False,2001-02-02,Index
+VXVCLS,CBOE S&P 500 3-Month Volatility Index,Volatility Indexes,daily,False,2007-12-04,Index
+WFRBST01134,Share of Total Net Worth Held by the Top 1% (99th to 100th Wealth Percentiles),Income,quarterly,False,Q3 1989,Percent of Aggregate
+WILL5000PR,Wilshire 5000 Price Index,Stocks,daily,False,1970-12-31,Index
+WM1NS,M1,Money Supply,weekly,False,1975-01-06,Billions of Dollars
+WM2NS,M2,Money Supply,weekly,False,1980-11-03,Billions of Dollars

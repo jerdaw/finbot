@@ -1,0 +1,155 @@
+symbol,name,asset_region,category,sector,issuer,issuer_region,inception_date,mer,leverage_multiple,leverage_reset_period,underlying_index,url
+AVUV,Avantis U.S. Small Cap Value ETF,US,Equity,Small Cap,iShares,CA,2019-09-24,0.25%,1,N/A,N/A,https://www.avantisinvestors.com/avantis-investments/avantis-us-small-cap-value-etf/
+BIL,SPDR Bloomberg 1-3 Month T-Bill ETF,US,Bond,Treasury,State Street,US,2007-05-25,0.1356%,1,N/A,Bloomberg  1-3 Month U.S. Treasury Bill Index,https://www.ssga.com/us/en/intermediary/etfs/funds/spdr-bloomberg-1-3-month-t-bill-etf-bil
+BIV,Vanguard Intermediate-Term Bond ETF ,US,Bond,Mixed,Vanguard,US,2007-04-03,0.04%,1,N/A,Bloomberg U.S. 5–10 Year Government/Credit Float Adjusted Index,https://investor.vanguard.com/investment-products/etfs/profile/biv
+BKCL,Horizons Enhanced Equal Weight Canadian Banks Covered Call ETF,CA,Equity,Finance,Horizons,CA,2023-07-05,0.65%,1.25,Daily,Solactive Equal Weight Canada Banks Index,https://horizonsetfs.com/ETF/bkcl/
+BLV,Vanguard Long-Term Bond ETF,US,Bond,Mixed,Vanguard,US,2007-04-03,0.04%,1,N/A,Bloomberg U.S. Long Government/Credit Float Adjusted Index,https://investor.vanguard.com/investment-products/etfs/profile/blv
+BND,Vanguard Total US Bond Market ETF,US,Bond,Mixed,Vanguard,US,2007-04-03,0.03%,1,N/A,Spliced Bloomberg U.S. Aggregate Float Adjusted Index,https://investor.vanguard.com/investment-products/etfs/profile/bnd
+BNDW,Vanguard Total World Bond ETF,Global,Bond,Mixed,Vanguard,US,2018-09-04,0.05%,1,N/A,Bloomberg Global Aggregate Float Adjusted Composite Index,https://investor.vanguard.com/investment-products/etfs/profile/bndw
+BNDX,Vanguard Total International Bond Market ETF,Ex-US,Bond,Mixed,Vanguard,US,2013-05-31,0.07%,1,N/A,Bloomberg Global Aggregate ex-USD Float Adjusted RIC Capped Index (USD Hedged),https://investor.vanguard.com/investment-products/etfs/profile/bndx
+BNKL,Horizons Enhanced Equal Weight Banks Index ETF,CA,Equity,Finance,Horizons,CA,2023-07-05,0.35%,1.25,Daily,Solactive Equal Weight Canada Banks Index,https://horizonsetfs.com/ETF/BNKL/
+BSV,Vanguard Short-Term Bond ETF ,US,Bond,Mixed,Vanguard,US,2007-04-03,0.04%,1,N/A,Bloomberg U.S. 1–5 Year Government/Credit Float Adjusted Index,https://investor.vanguard.com/investment-products/etfs/profile/bsv
+BTAL,AGF U.S. Market Neutral Anti-Beta Fund,US,Mixed,Mixed,AGF,US,2011-09-13,0.45%,1,N/A,Dow Jones U.S. Thematic Market Neutral Low Beta Index,https://www.agf.com/us/products/btal/index.jsp
+BULZ,MicroSectors FANG & Innovation 3X Leveraged ETN,US,Equity,Technology,MicroSectors,US,2021-08-17,0.95%,3,Daily,Solactive FANG Innovation Index.,https://microsectors.com/fang-innovation/
+CANL,Horizons Enhanced S&P/TSX 60 Index ETF,Mixed,Equity,Large Cap,Horizons,CA,2023-07-05,0.35%,1.25,Daily,S&P/TSX 60 Index,https://horizonsetfs.com/ETF/canl/
+CNCL,Horizons Enhanced Canadian Large Cap Equity Covered Call ETF,CA,Equity,Large Cap,Horizons,CA,2023-07-05,0.65%,1.25,Daily,N/A,https://horizonsetfs.com/ETF/CNCL/
+DDM,ProShares Ultra Dow30,US,Equity,Large Cap,ProShares,US,2006-06-19,0.95%,2,Daily,Dow Jones Industrial Average Index,https://www.proshares.com/our-etfs/leveraged-and-inverse/ddm
+DIA,SPDR Dow Jones Industrial Average ETF Trust,US,Equity,Large Cap,State Street,US,1998-01-14,0.16%,1,N/A,Dow Jones Industrial Average Index,https://www.ssga.com/us/en/intermediary/etfs/funds/spdr-dow-jones-industrial-average-etf-trust-dia
+DXHYX,Direxion Monthly High Yield Bull 1.2X Fund,US,Equity,All Cap,Direxion,US,2016-02-17,1.58%,1.2,Monthly,Solactive High Yield Beta Index,https://www.direxion.com/product/monthly-high-yield-bull-1-2x-fund
+DXKLX,Direxion Monthly 7-10 Year Treasury Bull 1.75X Fund,US,Bond,Treasury,Direxion,US,2005-03-31,1.46%,1.75,Monthly,ICE U.S. Treasury 7-10 Year Bond Index,https://www.direxion.com/product/monthly-7-10-year-treasury-bull-bear-2x-funds
+DXNLX,Direxion Monthly NASDAQ-100 Bull 1.25X Fund,US,Equity,Technology,Direxion,US,2016-03-31,1.27%,1.25,Monthly,Nasdaq-100 Index,https://www.direxion.com/product/monthly-nasdaq-100-bull-bear-1-25x-funds
+DXQLX,Direxion Monthly NASDAQ-100 Bull 1.75X Fund,US,Equity,Technology,Direxion,US,2006-05-01,1.46%,1.75,Monthly,Nasdaq-100 Index,https://www.direxion.com/product/monthly-nasdaq-100-bull-2x-fund
+DXRLX,Direxion Monthly Small Cap Bull 1.75X Fund,US,Equity,Small Cap,Direxion,US,1999-02-22,1.48%,1.75,Monthly,Russell 2000 Index,https://www.direxion.com/product/monthly-small-cap-bull-2x-funds
+DXSLX,Direxion Monthly S&P 500 Bull 1.75X Fund,US,Equity,Large Cap,Direxion,US,2006-05-01,1.40%,1.75,Monthly,S&P 500 Index,https://www.direxion.com/product/monthly-sp-500-bull-2x-funds
+EDC,Direxion Daily MSCI Emerging Markets Bull 3X Shares,Emerging Markets,Equity,All Cap,Direxion,US,2008-12-17,1.20%,3,Daily,MSCI Emerging Markets IndexSM,https://www.direxion.com/product/daily-msci-emerging-markets-bull-bear-3x-etfs
+EDV,Vanguard Extended Duration Treasury ETF,US,Bond,Treasury,Vanguard,US,2007-12-06,0.06%,1,N/A,Bloomberg U.S. Treasury STRIPS 20–30 Year Equal Par Bond Index,https://investor.vanguard.com/investment-products/etfs/profile/edv
+EEM,iShares MSCI Emerging Markets ETF,Emerging,Equity,All Cap,BlackRock,US,2003-04-07,0.70%,1,N/A,MSCI Emerging Markets Index,https://www.ishares.com/us/products/239637/ishares-msci-emerging-markets-etf
+EET,ProShares Ultra MSCI Emerging Markets,Emerging Markets,Equity,All Cap,ProShares,US,2009-06-02,0.96%,2,Daily,MSCI Emerging Markets Index,https://www.proshares.com/our-etfs/leveraged-and-inverse/eet
+EFA,iShares MSCI EAFE ETF,International,Equity,Large Cap,BlackRock,US,2001-08-14,0.33%,1,N/A,MSCI EAFE Index,https://www.ishares.com/us/products/239623/ishares-msci-eafe-etf
+EFO,ProShares Ultra MSCI EAFE,Developed Markets,Equity,All Cap,ProShares,US,2009-06-02,0.95%,2,Daily,MSCI EAFE Index,https://www.proshares.com/our-etfs/leveraged-and-inverse/efo
+EURL,Direxion Daily FTSE Europe Bull 3X Shares,Europe,Equity,All Cap,Direxion,US,2014-01-22,1.07%,3,Daily,FTSE Developed Europe All Cap Index,https://www.direxion.com/product/daily-ftse-europe-bull-3x-etf
+EWC,iShares MSCI Canada ETF,CA,Equity,All Cap,BlackRock,US,1996-03-12,0.5%,1,N/A,MSCI Canada Custom Capped Index,https://www.ishares.com/us/products/239615/ishares-msci-canada-etf
+FNGG,Direxion Daily NYSE FANG+ Bull 2X Shares,US,Equity,Technology,Direxion,US,2021-09-30,0.98%,2,Daily,NYSE FANG+ Index,https://www.direxion.com/product/daily-nyse-fang-bull-2x-shares
+FNGO,MicroSectors FANG+ Index 2X Leveraged ETN,US,Equity,Technology,MicroSectors,US,2018-08-01,0.95%,2,Daily,NYSE FANG+ Index,https://microsectors.com/fang/
+FNGU,MicroSectors FANG+ Index 3X Leveraged ETN,US,Equity,Technology,MicroSectors,US,2018-01-22,0.95%,3,Daily,NYSE FANG+ Index,https://microsectors.com/fang/
+GLD,SPDR Gold Shares,US,Commodity,Metal,State Street,US,2004-11-18,0.40%,1,N/A,LBMA Gold Price Index,https://www.ssga.com/us/en/intermediary/etfs/funds/spdr-gold-shares-gld
+HDIF,Harvest Diversified Monthly Income ETF,Mixed,Equity,All Cap,Harvest,CA,2022-02-04,0.69%,1.25,Daily,N/A,https://harvestportfolios.com/etf/hdif/
+HDIV,Hamilton Enhanced Multi-Sector Covered Call ETF,Mixed,Equity,All Cap,Hamilton,CA,2021-07-19,0.65%,1.25,Daily,N/A,https://hamiltonetfs.com/etf/hdiv/
+HIBL,Direxion Daily S&P 500 High Beta Bull 3X Shares,US,Equity,Large Cap,Direxion,US,2019-11-07,0.99%,3,Daily,S&P 500 High Beta Index,https://www.direxion.com/product/daily-sp-500-high-beta-bull-bear-3x-etfs
+HLFE,Harvest Canadian Equity Enhanced Income Leaders ETF,CA,Equity,All Cap,Harvest,CA,2022-10-25,0.65%,1.25,Daily,N/A,https://harvestportfolios.com/etf/hlfe/
+HQU,BetaPro NASDAQ-100 2x Daily Bull ETF,US,Equity,Technology,Horizons,CA,2008-06-17,1.47%,2,Daily,Nasdaq-100 Index,https://horizonsetfs.com/ETF/hqu/
+HREU,BetaPro Equal Weight Canadian REIT 2x Daily Bull ETF,CA,Equity,Real Estate,Horizons,CA,2001-07-01,1.15%,2,Daily,Solactive Equal Weight Canada REIT Index,https://horizonsetfs.com/ETF/hreu/
+HSU,BetaPro S&P 500 2x Daily Bull ETF,US,Equity,Large Cap,Horizons,CA,2008-06-17,1.54%,2,Daily,S&P 500 Index,https://horizonsetfs.com/ETF/hsu/
+HTAE,Harvest Tech Achievers Enhanced Income ETF,US,Equity,All Cap,Harvest,CA,2022-10-25,0.85%,1.25,Daily,N/A,https://harvestportfolios.com/etf/htae/
+HXU,BetaPro S&P/TSX 60 2x Daily Bull ETF,Mixed,Equity,Large Cap,Horizons,CA,2007-01-08,1.64%,2,Daily,S&P/TSX 60 Index,https://horizonsetfs.com/ETF/hxu/
+HYLD,Hamilton Enhanced U.S. Covered Call ETF,US,Equity,All Cap,Hamilton,CA,2022-02-04,0.65%,1.25,Daily,N/A,https://hamiltonetfs.com/etf/hyld/
+IAU,iShares Gold Trust,US,Commodity,Metal,iShares,US,2005-01-21,0.25%,1,N/A,LBMA Gold Price Index,https://www.ishares.com/us/products/239561/ishares-gold-trust-fund
+IEF,iShares 7-10 Year Treasury Bond ETF,US,Bond,Treasury,BlackRock,US,2002-07-22,0.15%,1,N/A,ICE U.S. Treasury 7-10 Year Bond Index,https://www.ishares.com/us/products/239456/ishares-710-year-treasury-bond-etf
+IEFA,iShares Core MSCI EAFE ETF,"Ex-US, Ex-CA",Equity,All Cap,iShares,US,2012-10-18,0.07%,1,N/A,MSCI EAFE IMI Index,https://www.ishares.com/us/products/244049/ishares-core-msci-eafe-etf
+IEI,iShares 3-7 Year Treasury Bond ETF,US,Bond,Treasury,iShares,US,2007-01-05,0.15%,1,N/A,ICE U.S. Treasury 3-7 Year Bond Index,https://www.ishares.com/us/products/239455/ishares-37-year-treasury-bond-etf
+IEMG,iShares Core MSCI Emerging Markets ETF,Emerging,Equity,All Cap,iShares,US,2012-10-18,0.09%,1,N/A,MSCI Emerging Markets IMI Net Index,https://www.ishares.com/us/products/244050/ishares-core-msci-emerging-markets-etf
+IJH,iShares Core S&P Mid-Cap ETF,US,Equity,Mid Cap,iShares,US,2000-05-22,0.05%,1,N/A,S&P MidCap 400 Index,https://www.ishares.com/us/products/239763/ishares-core-sp-midcap-etf
+IJR,iShares Core S&P Small-Cap ETF,US,Equity,Small Cap,BlackRock,US,2000-05-22,0.06%,1,N/A,S&P SmallCap 600 Index,https://www.ishares.com/us/products/239774/ishares-core-sp-smallcap-etf
+IJS,iShares S&P Small-Cap 600 Value ETF,US,Equity,Small Cap,iShares,US,2000-07-24,0.18%,1,N/A,S&P SmallCap 600(R) Value Index,https://www.ishares.com/us/products/239775/ishares-sp-smallcap-600-value-etf
+ISWN,Amplify BlackSwan Growth & Treasury Core ETF,Ex-US,Mixed,Mixed,Swan,US,2021-01-26,0.49%,1.5,Daily,N/A,https://amplifyetfs.com/iswn/
+ITOT,iShares Core S&P Total U.S. Stock Market ETF,US,Equity,All Cap,iShares,US,2004-01-20,0.03%,1,N/A,S&P Total Market Index (TMI),https://www.ishares.com/us/products/239724/ishares-core-sp-total-us-stock-market-etf
+IVOO,Vanguard S&P Mid-Cap 400 ETF ,US,Equity,Mid Cap,Vanguard,US,2010-09-07,0.10%,1,N/A,S&P MidCap 400 Index,https://investor.vanguard.com/investment-products/etfs/profile/ivoo
+IVV,iShares Core S&P 500 ETF,US,Equity,Large Cap,iShares,US,2000-05-15,0.03%,1,N/A,S&P 500 Index,https://www.ishares.com/us/products/239726/ishares-core-sp-500-etf
+IWB,iShares Russell 1000 ETF,US,Equity,Large Cap,BlackRock,US,2000-05-15,0.15%,1,N/A,Russell 1000 Index,https://www.ishares.com/us/products/239707/ishares-russell-1000-etf
+IWM,iShares Russell 2000 ETF,US,Equity,Small Cap,BlackRock,US,2000-05-22,0.19%,1,N/A,Russell 2000 Index,https://www.ishares.com/us/products/239710/ishares-russell-2000-etf
+IXN,iShares Global Tech ETF,Global,Equity,Large Cap,BlackRock,US,2001-11-12,0.41%,1,N/A,S&P Global 1200 Information Technology 4.5/22.5/45 Capped Index,https://www.ishares.com/us/products/239750/ishares-global-tech-etf
+IXUS,iShares Core MSCI Total International Stock ETF,Ex-US,Equity,All Cap,iShares,US,2012-10-18,0.07%,1,N/A,MSCI ACWI ex USA IMI Index,https://www.ishares.com/us/products/244048/ishares-core-msci-total-international-stock-etf
+IYR,iShares U.S. Real Estate ETF,US,Equity,Real Estate,BlackRock,US,2000-06-12,0.40%,1,N/A,Dow Jones U.S. Real Estate Capped Index,https://www.ishares.com/us/products/239520/ishares-us-real-estate-etf
+IYW,iShares U.S. Technology ETF,US,Equity,Technology,BlackRock,US,2000-05-15,0.40%,1,N/A,Russell 1000 Technology RIC 22.5/45 Capped Index,https://www.ishares.com/us/products/239522/ishares-us-technology-etf
+MDY,SPDR S&P MIDCAP 400 ETF Trust,US,Equity,Mid Cap,State Street,US,1995-05-04,0.23%,1,N/A,S&P MidCap 400 Index,https://www.ssga.com/us/en/intermediary/etfs/funds/spdr-sp-midcap-400-etf-trust-mdy
+MGC,Vanguard Mega Cap ETF ,US,Equity,Mega Cap,Vanguard,US,2007-12-17,0.07%,1,N/A,CRSP US Mega Cap Index,https://investor.vanguard.com/investment-products/etfs/profile/mgc
+MIDU,Direxion Daily Mid Cap Bull 3X Shares,US,Equity,Mid Cap,Direxion,US,2009-01-08,1.03%,3,Daily,S&P MidCap 400 Index,https://www.direxion.com/product/daily-mid-cap-bull-3x-etf
+MVV,ProShares Ultra MidCap400,US,Equity,Mid Cap,ProShares,US,2006-06-19,0.95%,2,Daily,S&P MidCap 400 Index,https://www.proshares.com/our-etfs/leveraged-and-inverse/mvv
+NTSE,WisdomTree U.S. Efficient Core Fund,Emerging,Mixed,Mixed,Wisdom Tree,US,2021-05-20,0.32%,1.5,Daily,N/A,https://www.wisdomtree.com/investments/etfs/capital-efficient/ntse
+NTSI,WisdomTree U.S. Efficient Core Fund,Ex-US,Mixed,Mixed,Wisdom Tree,US,2021-05-20,0.26%,1.5,Daily,N/A,https://www.wisdomtree.com/investments/etfs/capital-efficient/ntsi
+NTSX,WisdomTree U.S. Efficient Core Fund,US,Mixed,Mixed,Wisdom Tree,US,2018-08-02,0.20%,1.5,Daily,N/A,https://www.wisdomtree.com/investments/etfs/capital-efficient/ntsx
+OEF,iShares S&P 100 ETF,US,Equity,Large Cap,BlackRock,US,2000-10-23,0.20%,1,N/A,S&P 100 Index,https://www.ishares.com/us/products/239723/ishares-sp-100-etf
+PFIX,Simplify Interest Rate Hedge ETF,US,Mixed,Mixed,Simplify,US,2021-05-10,0.50%,1,N/A,N/A,https://www.simplify.us/etfs/pfix-simplify-interest-rate-hedge-etf
+PSLDX,StocksPLUS Long Duration Fund,US,Mixed,Mixed,Pimco,US,2007-08-31,0.59%,2,Daily,N/A,https://www.pimco.com/en-us/investments/mutual-funds/stocksplus-long-duration-fund/inst
+QLD,ProShares Ultra QQQ,US,Equity,Technology,ProShares,US,2006-06-19,0.95%,2,Daily,Nasdaq-100 Index,https://www.proshares.com/our-etfs/leveraged-and-inverse/qld
+QQCL,Horizons Enhanced NASDAQ-100 Covered Call ETF,US,Equity,Technology,Horizons,CA,2023-10-10,0.85%,1.25,Daily,Nasdaq-100 Index,https://horizonsetfs.com/ETF/qqcl/
+QQEW, First Trust NASDAQ-100 Equal Weighted Index Fund (QQEW) ,US,Equity,Technology,First Trust,US,2006-04-19,0.58%,1,N/A,Nasdaq-100 Equal Weighted Index,https://www.ftportfolios.com/retail/etf/etfsummary.aspx?Ticker=QQEW
+QQQ,Invesco QQQ Trust Series 1,US,Equity,Technology,Invesco,US,1999-03-10,0.20%,1,N/A,Nasdaq-100 Index,https://www.invesco.com/us/financial-products/etfs/product-detail?audienceType=Investor&ticker=QQQ
+QQQ5,Leverage Shares 5x Long US Tech 100,US,Equity,Technology,Leverage Shares,UK,2021-12-14,0.75%,5,Daily,Nasdaq-100 Index,https://leverageshares.com/en/etps/leverage-shares-5x-long-us-tech-100-etp/
+QQQE,Direxion NASDAQ-100 Equal Weighted Index Shares,US,Equity,Technology,Direxion,US,2012-03-21,0.35%,1,N/A,Nasdaq-100 Equal Weighted Index,https://www.direxion.com/product/nasdaq-100-equal-weighted-index-etf
+QQQM,Invesco NASDAQ 100 ETF,US,Equity,Technology,Invesco,US,2020-10-13,0.15%,1,N/A,Nasdaq-100 Index,https://www.invesco.com/us/financial-products/etfs/product-detail?audienceType=Investor&ticker=QQQM
+ROM,ProShares Ultra Technology,US,Equity,Technology,ProShares,US,2007-01-30,0.95%,2,Daily,S&P Technology Select Sector Index,https://www.proshares.com/our-etfs/leveraged-and-inverse/rom
+RPAR,UPAR Risk Parity ETF,US,Mixed,Mixed,Evoke,US,2019-12-12,0.5%,1.2,Daily,Advanced Research Risk Parity Index,https://rparetf.com/rpar
+RSP,Invesco S&P 500 Equal Weight ETF,US,Equity,Large Cap,Invesco,US,2003-04-24,0.20%,1,N/A,S&P 500 Equal Weight Index,https://www.invesco.com/us/financial-products/etfs/product-detail?audienceType=Investor&ticker=RSP
+RSSB,RETURN STACKED RSSB Global Stocks & Bonds,US,Mixed,Mixed,Toroso,US,2023-12-04,0.41%,2,Daily,N/A,https://www.returnstackedetfs.com/return-stacked-global-stocks-bonds/
+RSST,RETURN STACKED RSST U.S. Stocks & Managed Futures,US,Mixed,Mixed,Toroso,US,2023-09-05,1.04%,2,Daily,N/A,https://www.returnstackedetfs.com/us-stocks-managed-futures/
+RUD,RBC Quant U.S. Dividend Leaders ETF,US,Equity,Mixed,iShares,CA,2014-01-09,0.43%,1,N/A,N/A,https://www.rbcgam.com/en/ca/products/etfs/RUD/detail
+SAA,ProShares Ultra SmallCap600,US,Equity,Small Cap,ProShares,US,2007-01-23,0.95%,2,Daily,S&P SmallCap 600 Index,https://www.proshares.com/our-etfs/leveraged-and-inverse/saa
+SHY,iShares 1-3 Year Treasury Bond ETF,US,Bond,Treasury,BlackRock,US,2002-07-22,0.15%,1,N/A,ICE US Treasury 1-3 Year Bond Index,https://www.ishares.com/us/products/239452/ishares-13-year-treasury-bond-etf
+SLYV,SPDR S&P 600 Small Cap Value ETF,US,Equity,Small Cap,State Street,US,2000-09-25,0.15%,1,N/A,S&P SmallCap 600 Value Index,https://www.ssga.com/us/en/intermediary/etfs/funds/spdr-sp-600-small-cap-value-etf-slyv
+SOXL,Direxion Daily Semiconductor Bull 3X Shares,US,Equity,Technology,Direxion,US,2010-03-11,0.94%,3,Daily,NYSE Semiconductor Index,https://www.direxion.com/product/daily-semiconductor-bull-bear-3x-etfs
+SPLG,SPDR Portfolio S&P 500 ETF,US,Equity,Large Cap,SPDR,US,2005-11-08,0.02%,1,N/A,S&P 500 Index,https://www.ssga.com/us/en/intermediary/etfs/funds/spdr-portfolio-sp-500-etf-splg
+SPMD,SPDR Portfolio S&P 400 Mid Cap ETF,US,Equity,Mid Cap,SPDR,US,2005-11-08,0.03%,1,N/A,S&P MidCap 400 Index,https://www.ssga.com/us/en/intermediary/etfs/funds/spdr-portfolio-sp-400-mid-cap-etf-spmd
+SPUU,Direxion Daily S&P 500 Bull 2X Shares,US,Equity,Large Cap,Direxion,US,2014-05-28,0.64%,2,Daily,S&P 500 Index,https://www.direxion.com/product/daily-sp-500-bull-2x-etf
+SPXL,Direxion Daily S&P 500 Bull 3X Shares,US,Equity,Large Cap,Direxion,US,2008-11-05,1.00%,3,Daily,S&P 500 Index,https://www.direxion.com/product/daily-sp-500-bull-bear-3x-etfs
+SPY,SPDR S&P 500 ETF Trust,US,Equity,Large Cap,State Street,US,1993-01-22,0.0945%,1,N/A,S&P 500 Index,https://www.ssga.com/us/en/intermediary/etfs/funds/spdr-sp-500-etf-trust-spy
+SPYG,SPDR Portfolio S&P 500 Growth ETF,US,Equity,Large Cap,State Street,US,2000-09-25,0.04%,1,N/A,S&P 500 Growth Index,https://www.ssga.com/us/en/intermediary/etfs/funds/spdr-portfolio-sp-500-growth-etf-spyg
+SSO,ProShares Ultra S&P500,US,Equity,Large Cap,ProShares,US,2006-06-19,0.89%,2,Daily,S&P 500 Index,https://www.proshares.com/our-etfs/leveraged-and-inverse/sso
+SWAN,Amplify BlackSwan Growth & Treasury Core ETF,US,Mixed,Mixed,Swan,US,2018-11-06,0.49%,1.5,Daily,N/A,https://amplifyetfs.com/swan/
+TECL,Direxion Daily Technology Bull 3X Shares,US,Equity,Technology,Direxion,US,2008-12-17,0.97%,3,Daily,Technology Select Sector Index,https://www.direxion.com/product/daily-technology-bull-bear-3x-etfs
+TIP,iShares TIPS Bond ETF,US,Bond,Treasury,BlackRock,US,2003-12-04,0.19%,1,N/A,ICE US Treasury Inflation Linked Bond Index (USD),https://www.ishares.com/us/products/239467/ishares-tips-bond-etf
+TLT,iShares 20+ Year Treasury Bond ETF,US,Bond,Treasury,BlackRock,US,2002-07-22,0.15%,1,N/A,ICE U.S. Treasury 20+ Years Bond Index,https://www.ishares.com/us/products/239454/ishares-20-year-treasury-bond-etf
+TMF,Direxion Daily 20+ Year Treasury Bull 3X Shares,US,Bond,Treasury,Direxion,US,2009-04-16,1.06%,3,Daily,ICE U.S. Treasury 20+ Year Bond Index,https://www.direxion.com/product/daily-20-year-treasury-bull-bear-3x-etfs
+TNA,Direxion Daily Small Cap Bull 3X Shares,US,Equity,Small Cap,Direxion,US,2008-11-05,1.09%,3,Daily,Russell 2000 Index,https://www.direxion.com/product/daily-small-cap-bull-bear-3x-etfs
+TQQQ,ProShares UltraPro QQQ,US,Equity,Technology,ProShares,US,2010-02-09,0.86%,3,Daily,Nasdaq-100 Index,https://www.proshares.com/our-etfs/leveraged-and-inverse/tqqq
+TYD,Direxion Daily 7-10 Year Treasury Bull 3X Shares,US,Bond,Treasury,Direxion,US,2009-04-16,1.10%,3,Daily,ICE U.S. Treasury 7-10 Year Bond Index,https://www.direxion.com/product/daily-7-10-year-treasury-bull-bear-3x-etfs
+UBOT,"Direxion Daily Robotics, Artificial Intelligence & Automation Index Bull 2X Shares",US,Equity,Technology,Direxion,US,2018-04-19,1.35%,2,Daily,Indxx Global Robotics and Artificial Intelligence Thematic Index,https://www.direxion.com/product/daily-robotics-artificial-intelligence-automation-index-bull-2x-etf
+UBT,ProShares Ultra 20+ Year Treasury,US,Bond,Treasury,ProShares,US,2010-01-19,0.95%,2,Daily,ICE U.S. Treasury 20+ Year Bond Index,https://www.proshares.com/our-etfs/leveraged-and-inverse/ubt
+UDOW,ProShares UltraPro Dow30,US,Equity,Large Cap,ProShares,US,2010-02-09,0.95%,3,Daily,Dow Jones Industrial Average Index,https://www.proshares.com/our-etfs/leveraged-and-inverse/udow
+UMDD,ProShares UltraPro MidCap400,US,Equity,Mid Cap,ProShares,US,2010-02-09,0.95%,3,Daily,S&P MidCap 400 Index,https://www.proshares.com/our-etfs/leveraged-and-inverse/umdd
+UOPIX,ProFunds UltraNasdaq-100,US,Equity,Technology,ProFunds,US,1997-12-01,1.51%,2,Daily,Nasdaq-100 Index,https://www.profunds.com/mutual-funds/ultranasdaq-100
+UPAR,UPAR Ultra Risk Parity ETF,US,Mixed,Mixed,Evoke,US,2022-01-03,0.65%,1.68,Daily,Advanced Research Ultra Risk Parity Index,https://rparetf.com/upar
+UPRO,ProShares UltraPro S&P500,US,Equity,Large Cap,ProShares,US,2009-06-23,0.91%,3,Daily,S&P 500 Index,https://www.proshares.com/our-etfs/leveraged-and-inverse/upro
+URTY,ProShares UltraPro Russell2000,US,Equity,Small Cap,ProShares,US,2010-02-09,0.95%,3,Daily,Russell 2000 Index,https://www.proshares.com/our-etfs/leveraged-and-inverse/urty
+USCL,Horizons Enhanced US Large Cap Equity Covered Call ETF,US,Equity,Large Cap,Horizons,CA,2023-07-05,0.65%,1.25,Daily,N/A,https://horizonsetfs.com/ETF/uscl/
+USD,ProShares Ultra Semiconductors,US,Equity,Mixed,ProShares,US,2007-01-30,0.95%,2,Daily,Dow Jones U.S. Semiconductors Index,https://www.proshares.com/our-etfs/leveraged-and-inverse/usd
+UST,ProShares Ultra 7-10 Year Treasury,US,Bond,Treasury,ProShares,US,2010-01-19,0.95%,2,Daily,ICE U.S. Treasury 7-10 Year Bond Index,https://www.proshares.com/our-etfs/leveraged-and-inverse/ust
+UVXY,ProShares Ultra VIX Short-Term Futures ETF (3x),US,Contract,Volatility,ProShares,US,2011-10-03,0.95%,1.5,Daily,N/A,https://www.proshares.com/our-etfs/strategic/uvxy
+UWM,ProShares Ultra Russell2000,US,Equity,Small Cap,ProShares,US,2007-01-23,0.95%,2,Daily,Russell 2000 Index,https://www.proshares.com/our-etfs/leveraged-and-inverse/uwm
+VB,Vanguard Small-Cap ETF ,US,Equity,Small Cap,Vanguard,US,2004-01-26,0.05%,1,N/A,CRSP US Small Cap Index,https://investor.vanguard.com/investment-products/etfs/profile/vb
+VCN,VCN Vanguard FTSE Canada All Cap Index ETF,CA,Equity,All Cap,Vanguard,CA,2013-08-02,0.05%,1,N/A,FTSE Canada All Cap Domestic Index,https://www.vanguard.ca/en/advisor/products/products-group/etfs/VCN
+VFISX,Vanguard Short-Term Treasury Fund Investor Shares,US,Bond,Treasury,Vanguard,US,1991-10-28,0.20%,1,N/A,N/A,https://investor.vanguard.com/investment-products/mutual-funds/profile/vfisx
+VFITX,Vanguard Intermediate-Term Treasury Fund Investor Shares,US,Bond,Treasury,Vanguard,US,1991-10-28,0.20%,1,N/A,N/A,https://investor.vanguard.com/investment-products/mutual-funds/profile/vfitx
+VGIT,Vanguard Intermediate-Term Treasury ETF ,US,Bond,Treasury,Vanguard,US,2009-11-19,0.04%,1,N/A,Spliced Bloomberg U.S. Treasury 3-10 Year Index in USD,https://investor.vanguard.com/investment-products/etfs/profile/vgit
+VGT,Vanguard Information Technology ETF,US,Equity,Technology,Vanguard,US,2004-01-26,0.10%,1,N/A,MSCI US Investable Market Information Technology 25/50 Index,https://investor.vanguard.com/investment-products/etfs/profile/vgt
+VIOO,Vanguard S&P Small-Cap 600 ETF ,US,Equity,Small Cap,Vanguard,US,2010-09-07,0.10%,1,N/A,S&P Small-Cap 600 Index,https://investor.vanguard.com/investment-products/etfs/profile/vioo
+VO,Vanguard Mid-Cap Index Fund ETF,US,Equity,Mid Cap,Vanguard,US,2004-01-26,0.04%,1,N/A,CRSP US Mid Cap Index,https://investor.vanguard.com/investment-products/etfs/profile/vo
+VOO,Vanguard S&P 500 ETF,US,Equity,Large Cap,Vanguard,US,2010-09-07,0.03%,1,N/A,S&P 500 Index,https://investor.vanguard.com/investment-products/etfs/profile/voo
+VT,Vanguard Total World Stock Index Fund ETF,Global,Equity,All Cap,Vanguard,US,2008-06-24,0.07%,1,N/A,FTSE Global All Cap Index,https://investor.vanguard.com/investment-products/etfs/profile/vt
+VTI,Vanguard Total Stock Market ETF,US,Equity,All Cap,Vanguard,US,2001-05-24,0.03%,1,N/A,CRSP US Total Market Index,https://investor.vanguard.com/investment-products/etfs/profile/vti
+VTWO,Vanguard Russell 2000 ETF,US,Equity,Small Cap,Vanguard,US,2010-09-20,0.10%,1,N/A,Russell 2000 Index,https://investor.vanguard.com/investment-products/etfs/profile/vtwo
+VUG,Vanguard Growth ETF,US,Equity,All Cap,Vanguard,US,2004-01-26,0.04%,1,N/A,CRSP US Large Cap Growth Index,https://investor.vanguard.com/investment-products/etfs/profile/vug
+VUN,VUN Vanguard U.S. Total Market Index ETF,CA,Equity,All Cap,Vanguard,CA,2013-08-02,0.17%,1,N/A,CRSP US Total Market Index,https://www.vanguard.ca/en/advisor/products/products-group/etfs/VUN
+VUSB,Vanguard Ultra-Short-Term Bond ETF ,US,Bond,Mixed,Vanguard,US,2021-04-05,0.10%,1,N/A,N/A,https://investor.vanguard.com/investment-products/etfs/profile/vusb
+VUSTX,Vanguard Long-Term Treasury Fund Investor Shares,US,Bond,Treasury,Vanguard,US,1986-05-19,0.20%,1,N/A,Bloomberg U.S. Long Treasury Bond Index,https://investor.vanguard.com/investment-products/mutual-funds/profile/vustx
+VV,Vanguard Large-Cap ETF,US,Equity,Large Cap,Vanguard,US,2004-01-27,0.04%,1,N/A,CRSP US Large Cap Index,https://investor.vanguard.com/investment-products/etfs/profile/vv
+VWO,Vanguard FTSE Emerging Markets ETF,Emerging,Equity,All Cap,Vanguard,US,2005-03-04,0.08%,1,N/A,FTSE Emerging Markets All Cap China A Inclusion Index,https://investor.vanguard.com/investment-products/etfs/profile/vwo
+VXUS,Vanguard Total International Stock ETF,Ex-US,Equity,All Cap,Vanguard,US,2011-01-26,0.07%,1,N/A,FTSE Global All Cap ex US Index,https://investor.vanguard.com/investment-products/etfs/profile/vxus
+WEBL,Direxion Daily Dow Jones Internet Bull 3X Shares,US,Equity,Technology,Direxion,US,2019-11-07,1.01%,3,Daily,Dow Jones Internet Composite Index,https://www.direxion.com/product/daily-dow-jones-internet-bull-bear-3x-etfs
+XIC,iShares Core S&P/TSX Capped Composite Index ETF,"US, CA",Equity,Large Cap,iShares,CA,2001-02-16,0.06%,1,N/A,S&P/TSX Capped Composite Index,https://www.blackrock.com/ca/investors/en/products/239837/ishares-sptsx-capped-composite-index-etf
+XIN,iShares MSCI EAFE Index ETF (CAD-Hedged),"Ex-US, Ex-CA",Equity,All Cap,iShares,CA,2001-09-06,0.52%,1,N/A,MSCI EAFE 100% Hedged to CAD Index,https://www.blackrock.com/ca/investors/en/products/239624/ishares-msci-eafe-index-etf-cadhedged-fund
+XIU,iShares S&P/TSX 60 Index ETF,"US, CA",Equity,Large Cap,iShares,CA,1999-09-28,0.18%,1,N/A,S&P/TSX 60 Index,https://www.blackrock.com/ca/investors/en/products/239832/ishares-sptsx-60-index-etf
+XLB,iShares Core Canadian Long Term Bond Index ETF,"Ex-US, Ex-CA",Bond,Mixed,iShares,CA,2006-11-06,0.20%,1,N/A,FTSE Canada Long Term Bond Index,https://www.blackrock.com/ca/investors/en/products/239489/ishares-canadian-long-term-bond-index-etf
+XLE,The Energy Select Sector SPDR Fund,US,Equity,Energy,State Street,US,1998-12-16,0.10%,1,N/A,Energy Select Sector Index,https://www.ssga.com/us/en/intermediary/etfs/funds/the-energy-select-sector-spdr-fund-xle
+XLF,The Financial Select Sector SPDR Fund,US,Equity,Finance,State Street,US,1998-12-16,0.10%,1,N/A,Financial Select Sector Index,https://www.ssga.com/us/en/intermediary/etfs/funds/the-financial-select-sector-spdr-fund-xlf
+XLI,The Industrial Select Sector SPDR Fund,US,Equity,Industrial,State Street,US,1998-12-16,0.10%,1,N/A,Industrial Select Sector Index,https://www.ssga.com/us/en/intermediary/etfs/funds/the-industrial-select-sector-spdr-fund-xli
+XLK,The Technology Select Sector SPDR Fund,US,Equity,Technology,State Street,US,1998-12-16,0.10%,1,N/A,Technology Select Sector Index,https://www.ssga.com/us/en/intermediary/etfs/funds/the-technology-select-sector-spdr-fund-xlk
+XLP,The Consumer Staples Select Sector SPDR Fund,US,Equity,Consumer,State Street,US,1998-12-16,0.10%,1,N/A,Consumer Staples Select Sector Index,https://www.ssga.com/us/en/intermediary/etfs/funds/the-consumer-staples-select-sector-spdr-fund-xlp
+XLU,The Utilities Select Sector SPDR Fund,US,Equity,Utilities,State Street,US,1998-12-16,0.10%,1,N/A,Utilities Select Sector Index,https://www.ssga.com/us/en/intermediary/etfs/funds/the-utilities-select-sector-spdr-fund-xlu
+XLV,The Health Care Select Sector SPDR Fund,US,Equity,Health,State Street,US,1998-12-16,0.10%,1,N/A,Health Care Select Sector Index,https://www.ssga.com/us/en/intermediary/etfs/funds/the-health-care-select-sector-spdr-fund-xlv
+XLY,The Consumer Discretionary Select Sector SPDR Fund,US,Equity,All Cap,State Street,US,1998-12-16,0.10%,1,N/A,Consumer Discretionary Select Sector Index,https://www.ssga.com/us/en/intermediary/etfs/funds/the-consumer-discretionary-select-sector-spdr-fund-xly
+XPP,ProShares Ultra FTSE China 50,China,Equity,Large Cap,ProShares,US,2009-06-02,0.97%,2,Daily,FTSE China 50 Index,https://www.proshares.com/our-etfs/leveraged-and-inverse/xpp
+XSP,iShares Core S&P 500 Index ETF (CAD-Hedged),US,Equity,Large Cap,iShares,CA,2001-05-24,0.09%,1,N/A,S&P 500 Hedged to Canadian Dollars Index,https://www.blackrock.com/ca/investors/en/products/239727/ishares-sp-500-index-etf-cadhedged-fund
+XUC,iShares Core S&P 500 Index ETF,US,Equity,Large Cap,iShares,CA,2013-04-10,0.09%,1,N/A,S&P 500 Index,https://www.blackrock.com/ca/investors/en/products/251422/ishares-sp-500-index-etf
+XXXX,MAX S&P 500 4X Leveraged ETNs,US,Equity,Large Cap,MAXETNs,US,2023-12-07,0.95%,4,Daily,S&P 500 Total Return Index,https://www.maxetns.com/product/XXXX.P/
+YINN,Direxion Daily FTSE China Bull 3X Shares,China,Equity,Large Cap,Direxion,US,2009-12-03,1.46%,3,Daily,FTSE China 50 Index,https://www.direxion.com/product/daily-ftse-china-bull-bear-3x-etfs

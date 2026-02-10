@@ -1,0 +1,12 @@
+For the FRED DBs and macro economic trends. I need to temper my expectations, but here are some ideas on ways to find
+significant things:
+
+- Try breaking the search into 2-3 subsections, one for each of downtrend, uptrend, and stagnation in the market. Something may correlate to one of these without correlating to all of them.
+
+- Look at both (1d, 2d, 3d, 7d, etc) % change and also % drawdown from ATH (and other drawdown periods)
+
+- Check for changes in STDEV values, especially when transitioning between growth and contraction phases.
+
+- So, we have things like STDEV, % change, CAGR, drawdown, sharpe/sortino/etc ratios, etc that we can look at. And different periods we can use for each.
+
+- Look at the technical indicators like moving average, rsi, bollinger bands, etc

@@ -1,0 +1,23 @@
+# Thus far I haven't been very impressed with static config files and dynaconf.
+# The need to adjust config settings in a logger_config.py anyway arises almost immediately from
+# the need to set dynamic values or types that can't be set in a static file.
+# So, currently things are split between this static file and a logger_config.py that is loaded.
+# WARNING: This means that logger_config.py may set settings that are NOT in this file.
+
+default:
+  app_name: "finbot"
+  version: "0.0.1"
+  name: "default"
+  debug_mode: false
+
+  host:
+    # `host.identifier` set to dynamic hostname in logger_config.py
+    # `host.max_threads` set to dynamic value in logger_config.py
+
+  logging:
+    level: "INFO"  # Changed to "DEBUG" in logger_config.py if environment.debug_mode is true
+    # `colored_file_path` set equal to pathlib.Path for "<project root>/log/default.log"
+    # `jsonl_file_path` set equal to pathlib.Path for "<project root>/log/default.log.jsonl"
+
+  libraries:
+    pandas_settings: "default" # Adjusted in logger_config.py based on this setting

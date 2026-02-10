@@ -1,0 +1,11 @@
+development:
+  name: "development"
+  debug_mode: false
+
+  logging:
+    level: "INFO"  # Changed to "DEBUG" in logger_config.py if environment.debug_mode is true
+    # output_file_path: "logs/development.log"  # Overwritten with a pathlib.Path in logger_config.py
+    # jsonl_file_path: "logs/development.log.jsonl"  # Overwritten with a pathlib.Path in logger_config.py
+
+  libraries:
+    pandas_settings: "expanded"
