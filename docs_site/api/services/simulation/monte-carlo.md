@@ -23,7 +23,7 @@ import pandas as pd
 spy_returns = pd.read_parquet('spy_prices.parquet')['Close'].pct_change()
 
 # Run Monte Carlo simulation
-results = monte_carlo_simulatorulator(
+results = monte_carlo_simulator(
     returns_series=spy_returns,
     num_trials=10000,
     num_periods=252 * 30,  # 30 years of daily returns
