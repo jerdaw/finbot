@@ -12,6 +12,7 @@ Sensitive information should be loaded from environment variables or secure secr
 management tools.
 
 """
+
 from __future__ import annotations
 
 from config.base_config import BaseConfig

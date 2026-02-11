@@ -2,7 +2,6 @@
 My apologies in advance for the messiness of this code. I wrote it in a hurry and it's not pretty.
 """
 
-
 import datetime
 import os
 import re
@@ -12,12 +11,17 @@ from pathlib import Path
 import pandas as pd
 from dateutil.relativedelta import relativedelta
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    StaleElementReferenceException,
+    TimeoutException,
+    WebDriverException,
+)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.firefox.service import Service
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as EC  # noqa: N812 - Standard Selenium convention
 from selenium.webdriver.support.ui import Select, WebDriverWait
 from webdriver_manager.firefox import GeckoDriverManager
 
@@ -32,7 +36,7 @@ from finbot.utils.pandas_utils.save_dataframe import save_dataframe
 MAX_THREADS = Config.MAX_THREADS
 
 
-class element_has_style_value:
+class element_has_style_value:  # noqa: N801 - Selenium expected_condition naming convention
     """An expectation for checking that an element has a particular style value.
 
     locator - used to find the element
@@ -96,9 +100,9 @@ def _set_term(wait, locale_type, long_wait_time, data_term_options, driver, dl_d
                 break
             except NoSuchElementException:
                 pass
-    except Exception:
+    except (TimeoutException, NoSuchElementException, StaleElementReferenceException, WebDriverException) as e:
         _take_screencap(driver, dl_dir_path, file_name=f"{index_name}_pre-term-set_screenshot.png")
-        logger.info(f"Failed to set term. Retrying in {long_wait_time} seconds.")
+        logger.warning(f"Failed to set term ({type(e).__name__}: {e}). Retrying in {long_wait_time} seconds.")
         _check_loaded(wait=wait, do_sleep=long_wait_time, locale_type=locale_type)
         # retry
         term_select_element = wait.until(EC.element_to_be_clickable((By.XPATH, term_select_xpath)))
@@ -139,9 +143,9 @@ def _set_frequency(driver, data_frequency, wait, long_wait_time, locale_type, dl
         frequency_select_element = driver.find_element(By.XPATH, frequency_select_xpath)
         frequency_select = Select(frequency_select_element)
         frequency_select.select_by_visible_text(data_frequency)
-    except Exception:
+    except (TimeoutException, NoSuchElementException, StaleElementReferenceException, WebDriverException) as e:
         _take_screencap(driver, dl_dir_path, file_name=f"{index_name}_pre-term-set_screenshot.png")
-        logger.info(f"Failed to set frequency. Retrying in {long_wait_time} seconds.")
+        logger.warning(f"Failed to set frequency ({type(e).__name__}: {e}). Retrying in {long_wait_time} seconds.")
         _check_loaded(wait=wait, do_sleep=long_wait_time, locale_type=locale_type)
         WebDriverWait(driver, long_wait_time).until(EC.presence_of_element_located((By.XPATH, frequency_select_xpath)))
         frequency_select_element = driver.find_element(By.XPATH, frequency_select_xpath)
@@ -201,7 +205,7 @@ def _get_driver(dl_dir_path, long_wait_time, idx_id):
 
     # Set Firefox Profile to handle downloads
     firefox_options.set_preference("browser.download.folderList", 2)
-    firefox_options.set_preference("browser.download.dir", f"{str(dl_dir_path)}/{idx_id}")
+    firefox_options.set_preference("browser.download.dir", f"{dl_dir_path!s}/{idx_id}")
     firefox_options.set_preference("browser.download.useDownloadDir", True)
     firefox_options.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/vnd.ms-excel")
 
@@ -223,9 +227,9 @@ def _set_date(date, date_type, driver, long_wait_time, wait, locale_type, dl_dir
         date_input.clear()  # Clear any pre-filled values
         date_input.send_keys(date_str)
         date_input.send_keys(Keys.ENTER)
-    except Exception:
+    except (TimeoutException, NoSuchElementException, StaleElementReferenceException, WebDriverException) as e:
         _take_screencap(driver, dl_dir_path, file_name=f"{index_name}_pre-term-set_screenshot.png")
-        logger.info(f"Failed to set date. Retrying in {long_wait_time} seconds.")
+        logger.warning(f"Failed to set date ({type(e).__name__}: {e}). Retrying in {long_wait_time} seconds.")
         _check_loaded(wait=wait, do_sleep=long_wait_time, locale_type=locale_type)
         date_input = driver.find_element(By.ID, f"{date_type}DateFilterShow")
         date_input.clear()  # Clear any pre-filled values
@@ -252,8 +256,8 @@ def _click_download_btn(wait, locale_type, screencap, driver, dl_dir_path, index
             _take_screencap(driver, dl_dir_path, file_name=f"{index_name}_pre-download_screenshot.png")
         dl_start_time = time.time()
         download_data_link.click()
-    except Exception:
-        logger.info(f"Failed to click download. Retrying in {long_wait_time} seconds.")
+    except (TimeoutException, NoSuchElementException, StaleElementReferenceException, WebDriverException) as e:
+        logger.warning(f"Failed to click download ({type(e).__name__}: {e}). Retrying in {long_wait_time} seconds.")
         time.sleep(long_wait_time)
         _check_loaded(wait, do_sleep=long_wait_time, locale_type=locale_type)
         # retry
@@ -343,8 +347,10 @@ def _process_download(wait, locale_type, dl_dir_path, dl_start_time, long_wait_t
             start_time=dl_start_time,
             new_files_only=True,
         )
-    except Exception:
-        logger.info(f"Failed to find downloaded file. Retrying in {long_wait_time} seconds.")
+    except (FileNotFoundError, TimeoutError, OSError) as e:
+        logger.warning(
+            f"Failed to find downloaded file ({type(e).__name__}: {e}). Retrying in {long_wait_time} seconds."
+        )
         _check_loaded(wait=wait, do_sleep=long_wait_time, locale_type=locale_type)
         file_path = _wait_for_download_complete(
             directory=dl_dir_path,
@@ -475,7 +481,7 @@ def _prep_params(idx_name: str, idx_id: str, data_frequency: str, dir_path: Path
     return url, wait_time, dir_path, data_term_options, driver
 
 
-def _scrape_msci_data(
+def _scrape_msci_data(  # noqa: C901 - Complex web scraping logic with multiple steps
     driver,
     url,
     dir_path,
@@ -493,20 +499,20 @@ def _scrape_msci_data(
 
         start_date = datetime.date(1999, 1, 1) if data_frequency == "Daily" else datetime.date(1800, 1, 1)
 
-        params = dict(
-            driver=driver,
-            wait=wait,
-            locale_type=locale_type,
-            url=url,
-            dl_dir_path=dir_path,
-            index_name=index_name,
-            idx_id=idx_id,
-            long_wait_time=wait_time,
-            data_term_options=data_term_options,
-            data_frequency=data_frequency,
-            start_date=start_date,
-            end_date=datetime.datetime.now(),
-        )
+        params = {
+            "driver": driver,
+            "wait": wait,
+            "locale_type": locale_type,
+            "url": url,
+            "dl_dir_path": dir_path,
+            "index_name": index_name,
+            "idx_id": idx_id,
+            "long_wait_time": wait_time,
+            "data_term_options": data_term_options,
+            "data_frequency": data_frequency,
+            "start_date": start_date,
+            "end_date": datetime.datetime.now(),
+        }
 
         data_dfs_list = []
 
@@ -536,14 +542,20 @@ def _scrape_msci_data(
             try:
                 data_df = _download_msci_single(**params)
                 data_dfs_list.append(data_df)
-            except Exception:
+            except (TimeoutException, NoSuchElementException, WebDriverException, FileNotFoundError, OSError) as e:
                 fail_str = f"Failed to get {params['start_date']}-{params['end_date']} {data_frequency} {index_name} msci data from {url}."
                 # retry
-                logger.warning(f"\n\n {fail_str}. Retrying now.")
+                logger.warning(f"\n\n {fail_str} ({type(e).__name__}: {e}). Retrying now.")
                 try:
                     data_df = _download_msci_single(**params)
                     data_dfs_list.append(data_df)
-                except Exception as err:
+                except (
+                    TimeoutException,
+                    NoSuchElementException,
+                    WebDriverException,
+                    FileNotFoundError,
+                    OSError,
+                ) as err:
                     with open(dir_path / "failed.txt", "a") as f:
                         f.write(fail_str + f" Err: {err}\n")
 

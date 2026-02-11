@@ -9,4 +9,5 @@ Attributes:
     APP_NAME (str): Official name of the application.
     DEFAULT_LOCALE (str): Default locale code used in the application.
 """
+
 from __future__ import annotations

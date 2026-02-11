@@ -13,7 +13,7 @@ from finbot.utils.pandas_utils.get_timeseries_frequency import get_timeseries_fr
 from finbot.utils.pandas_utils.load_dataframe import load_dataframe
 
 
-def is_file_outdated(
+def is_file_outdated(  # noqa: C901 - Multiple threshold type checks and optional parameters
     file_path: Path | str,
     threshold: datetime | date | None = None,
     time_period: str | relativedelta | timedelta | None = None,

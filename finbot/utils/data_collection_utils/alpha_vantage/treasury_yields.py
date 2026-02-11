@@ -83,9 +83,9 @@ def get_treasury_yields(
     available_intervals = ["daily", "weekly", "monthly"]
     validate_literals(interval, "interval", available_intervals)
     available_maturities = ["3month", "2year", "5year", "7year", "10year", "30year"]
-    validate_literals(maturity, "maturity", available_maturities + ["all"])
+    validate_literals(maturity, "maturity", [*available_maturities, "all"])
     maturities_data: dict[str, None | pd.DataFrame] = (
-        {m: None for m in available_maturities} if maturity == "all" else {maturity: None}
+        dict.fromkeys(available_maturities) if maturity == "all" else {maturity: None}
     )
 
     for mat in maturities_data:

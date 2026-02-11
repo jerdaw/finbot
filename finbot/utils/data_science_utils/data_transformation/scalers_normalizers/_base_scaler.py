@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+# ruff: noqa: N803 - Using sklearn naming convention (X for data parameter)
 import pandas as pd
 from sklearn.base import BaseEstimator, TransformerMixin
 

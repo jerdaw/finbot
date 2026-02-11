@@ -26,7 +26,7 @@ def rolling_method(series: pd.Series, step: str) -> pd.DataFrame:
         cur_start_idx += 1
     steps_df = pd.DataFrame(series.loc[period_starts]).rename(columns={"Close": "Start Price"})
     steps_df["Period End"] = period_ends
-    steps_df["End Price"] = series.loc[period_ends[:-1]].to_list() + [None]
+    steps_df["End Price"] = [*series.loc[period_ends[:-1]].to_list(), None]
     return steps_df
 
 
@@ -63,7 +63,7 @@ def calendarize_method(series: pd.Series, step: str, start_date, end_date) -> pd
 
     steps_df = pd.DataFrame(series.loc[steps]).rename(columns={"Close": "Start Price"})
     steps_df["Period End"] = [steps_df.index[i + 1] for i in range(len(steps_df) - 1)] + [None]
-    steps_df["End Price"] = steps_df["Start Price"].loc[steps_df["Period End"].dropna()].to_list() + [None]
+    steps_df["End Price"] = [*steps_df["Start Price"].loc[steps_df["Period End"].dropna()].to_list(), None]
     return steps_df
 
 

@@ -9,4 +9,5 @@ Attributes:
     PRIMARY_COLOR_HEX (str): Hexadecimal color code for the primary UI color.
     FONT_FAMILY_MAIN (str): Default font family used in the UI.
 """
+
 from __future__ import annotations

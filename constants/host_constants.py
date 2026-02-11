@@ -18,7 +18,7 @@ def _generate_impersistent_host_id():
         platform.release(),
     ]
     # Optionally include the MAC address of the primary network interface for added uniqueness
-    mac_address = ":".join([f"{(uuid.getnode() >> elements) & 0xff:02x}" for elements in range(2, 2 + 6 * 2, 2)][::-1])
+    mac_address = ":".join([f"{(uuid.getnode() >> elements) & 0xFF:02x}" for elements in range(2, 2 + 6 * 2, 2)][::-1])
     system_info_string = "_".join(system_info) + mac_address
     # Use SHA-256 hash to generate a unique ID from system information
     host_id = hashlib.sha256(system_info_string.encode()).hexdigest()
@@ -81,6 +81,7 @@ class HostSystem:
             for addr in addrs:
                 if addr.family == socket.AF_INET and not addr.address.startswith("127."):
                     active_interfaces.append(interface)
+                    break  # Only add each interface once
         return ", ".join(active_interfaces) if active_interfaces else "None"
 
     def __str__(self):

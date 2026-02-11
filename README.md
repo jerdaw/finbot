@@ -2,21 +2,37 @@
 
 Financial data collection, simulation, and backtesting platform.
 
+[![CI](https://github.com/jer/finbot/actions/workflows/ci.yml/badge.svg)](https://github.com/jer/finbot/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/jer/finbot/branch/main/graph/badge.svg)](https://codecov.io/gh/jer/finbot)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Poetry](https://img.shields.io/badge/poetry-1.7+-blue.svg)](https://python-poetry.org/)
+
 ## Quick Start
 
 ```bash
-# Install
-poetry install
+# Install dependencies
+make install
 
 # Set environment
 export DYNACONF_ENV=development
 
-# Run daily data pipeline
-poetry run python scripts/update_daily.py
+# Run all code quality checks
+make check
 
 # Run tests
-poetry run pytest
+make test
+
+# Run daily data pipeline
+make run-update
 ```
+
+**Makefile Commands:**
+- `make help` - Show all available commands
+- `make install` - Install dependencies with Poetry
+- `make test` - Run all tests with verbose output
+- `make check` - Run all code quality checks (lint, format, type, security)
+- `make clean` - Remove cache files and build artifacts
+- `make all` - Run full CI pipeline (check + test)
 
 ## Prerequisites
 
@@ -82,12 +98,29 @@ trials_df = monte_carlo_simulator(equity_data=spy_df, sim_periods=252, n_sims=10
 
 ## Development
 
+### Using Makefile (Recommended)
+
+```bash
+make lint       # Run ruff linter with auto-fix
+make format     # Format code with ruff
+make type       # Run mypy type checker
+make security   # Run bandit security scanner
+make test       # Run all tests
+make test-cov   # Run tests with coverage report
+make check      # Run all checks (lint + format + type + security)
+make all        # Run full CI pipeline (check + test)
+```
+
+### Direct Poetry Commands
+
 ```bash
 poetry run ruff check . --fix   # Lint
 poetry run ruff format .        # Format
 poetry run mypy                 # Type check
 poetry run pytest               # Test
 ```
+
+Run `make help` to see all available commands.
 
 ## Architecture
 

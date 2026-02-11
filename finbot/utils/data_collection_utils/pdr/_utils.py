@@ -107,8 +107,8 @@ def _request_pdr_data(pdr_reader_class, symbols: Sequence[str]) -> pd.DataFrame:
     """
     logger.info(f"Fetching data for {len(symbols)} symbols: {symbols}")
     system_params = _get_pdr_req_params(symbols=symbols)
-    PdrReader = pdr_reader_class(**system_params)
-    return PdrReader.read()
+    pdr_reader = pdr_reader_class(**system_params)
+    return pdr_reader.read()
 
 
 def _save_updated_data(updated_data: pd.DataFrame, file_paths: dict[str, Path], to_update: Sequence[str]) -> None:
@@ -165,11 +165,9 @@ def _load_pdr_data(symbols_to_load: Sequence[str], file_paths: dict[str, Path]) 
 
         # check to make sure the order of the loaded_dfs matches the order of the immutable_ids
         if any(
-            [
-                (symbol_data[i].name if isinstance(symbol_data[i], pd.Series) else symbol_data[i].columns[0])
-                != symbol_names[i]
-                for i in range(len(symbol_names))
-            ],
+            (symbol_data[i].name if isinstance(symbol_data[i], pd.Series) else symbol_data[i].columns[0])
+            != symbol_names[i]
+            for i in range(len(symbol_names))
         ):
             raise ValueError("Loaded DataFrames do not match the order of the requested IDs.")
 

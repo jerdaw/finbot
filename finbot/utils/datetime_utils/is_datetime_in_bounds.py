@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import date, datetime, time
 
 
-def is_datetime_in_bounds(
+def is_datetime_in_bounds(  # noqa: C901 - Multiple optional parameter checks required
     dt: datetime,
     start_date: date | None = None,
     end_date: date | None = None,

@@ -9,4 +9,5 @@ Attributes:
     TOKEN_EXPIRY_TIME (int): Time in seconds until an authentication token expires.
     PASSWORD_MIN_LENGTH (int): Minimum required length for user passwords.
 """
+
 from __future__ import annotations

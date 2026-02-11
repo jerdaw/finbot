@@ -8,6 +8,7 @@ and ensure that tests do not interfere with production or development environmen
 It typically includes configurations for a separate test database, different logging levels,
 and any other testing-specific parameters.
 """
+
 from __future__ import annotations
 
 from config.base_config import BaseConfig

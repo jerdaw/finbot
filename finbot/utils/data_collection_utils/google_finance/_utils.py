@@ -14,8 +14,8 @@ from finbot.utils.pandas_utils.save_dataframe import save_dataframe
 
 
 def _get_google_sheets_credentials():
-    SERVICE_ACCOUNT_FILE = Config.google_finance_service_account_credentials_path
-    SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
+    SERVICE_ACCOUNT_FILE = Config.google_finance_service_account_credentials_path  # noqa: N806 - Constant scoped to function
+    SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]  # noqa: N806 - Constant scoped to function
     credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
     return credentials
 

@@ -16,4 +16,5 @@ testing and validation.
 The configurations here typically include settings for a staging database,
 appropriate logging levels, and any other environment-specific parameters.
 """
+
 from __future__ import annotations

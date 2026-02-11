@@ -10,6 +10,7 @@ config/.secrets.yaml
 # Ignore any scrap or temp directories
 scrap/*
 temp/*
+.claude/
 
 # Ignore everything in the finbot/data directory but not the directory itself
 finbot/data/**

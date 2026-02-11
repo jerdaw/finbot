@@ -19,7 +19,7 @@ def setup_queue_logging(log_config: dict[str, Any], logger_name: str):
     configured_logger = logging.getLogger(logger_name)
 
     # Extract handlers for the QueueListener
-    handlers = [handler for handler in configured_logger.handlers]
+    handlers = list(configured_logger.handlers)
 
     # Remove these handlers from the logger to prevent direct logging
     for handler in handlers:

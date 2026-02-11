@@ -2,11 +2,21 @@
 
 Placeholder for portfolio rebalance optimization. The backtest-based
 rebalance optimizer lives in finbot.services.backtesting.rebalance_optimizer.
+
+For working rebalance optimization, use:
+    from finbot.services.backtesting.rebalance_optimizer import rebalance_optimizer
 """
 
 from collections.abc import Sequence
 
 import pandas as pd
+
+# Convenience import - redirect to working implementation
+from finbot.services.backtesting.rebalance_optimizer import (
+    rebalance_optimizer as optimize_rebalance,
+)
+
+__all__ = ["RebalanceOptimizer", "optimize_rebalance"]
 
 
 class RebalanceOptimizer:

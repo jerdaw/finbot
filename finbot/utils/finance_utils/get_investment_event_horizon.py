@@ -86,7 +86,7 @@ def plot_horizon_grid(df: pd.DataFrame | None = None):
     import matplotlib.pyplot as plt
     import seaborn as sns
 
-    fig, ax = plt.subplots(figsize=(10, 10))
+    _fig, ax = plt.subplots(figsize=(10, 10))
     ax = sns.heatmap(df, annot=True, fmt="d", cmap="viridis", linewidths=0.5, ax=ax)
     ax.set_title("Investment Event Horizon")
     ax.set_xlabel("Yearly Compound Annual Growth Rate")

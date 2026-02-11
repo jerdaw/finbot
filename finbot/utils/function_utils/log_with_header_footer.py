@@ -16,7 +16,7 @@ def _get_len(obj: Any) -> int:
     return len(obj) if _is_iterable_not_str(obj) else 1
 
 
-def log_with_header_footer(header: str | None = None, footer: str | None = None, timeit: bool = True) -> Callable:
+def log_with_header_footer(header: str | None = None, footer: str | None = None, timeit: bool = True) -> Callable:  # noqa: C901 - Decorator with multiple optional parameters
     """Decorator to log header, footer, and runtime for a function."""
 
     def decorator(func):

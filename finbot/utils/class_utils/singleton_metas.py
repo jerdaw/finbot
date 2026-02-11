@@ -1,6 +1,8 @@
 from threading import Lock
 from typing import Any
 
+# ruff: noqa: RUF012 - Metaclass class attributes intentionally mutable for singleton pattern
+
 
 class Reinitializable:
     """

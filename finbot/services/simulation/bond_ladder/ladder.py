@@ -1,4 +1,5 @@
 """BondLadder class — replaces numba @jitclass with plain Python."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -23,7 +24,7 @@ def make_annual_ladder(
 
 
 class BondLadder:
-    __slots__ = ("min_maturity", "max_maturity", "periods_per_year", "cash", "bonds")
+    __slots__ = ("bonds", "cash", "max_maturity", "min_maturity", "periods_per_year")
 
     def __init__(
         self,

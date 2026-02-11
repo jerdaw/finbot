@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+# ruff: noqa: N803, N806, RUF012 - Using sklearn naming convention (X, X_scaled); RUF012 for TARGET_FUNCS dict
 from collections.abc import Callable
 from typing import Any
 

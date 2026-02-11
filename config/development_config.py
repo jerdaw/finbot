@@ -11,6 +11,7 @@ Configurations should not include sensitive data directly and should instead loa
 them from environment variables or other secure sources.
 
 """
+
 from __future__ import annotations
 
 import pandas as pd

@@ -27,13 +27,38 @@ jobs:
       - name: Install dependencies
         run: poetry install --no-interaction
 
-      - name: Lint
-        run: poetry run ruff check .
+      - name: Check Poetry metadata
+        run: poetry check
 
-      - name: Format check
-        run: poetry run ruff format --check .
+      - name: Lint with ruff
+        run: poetry run ruff check . --exclude notebooks/
 
-      - name: Tests
+      - name: Format check with ruff
+        run: poetry run ruff format --check . --exclude notebooks/
+
+      - name: Type check with mypy
+        continue-on-error: true  # Non-fatal due to pre-existing issues
+        run: poetry run mypy finbot/ libs/ config/ constants/ scripts/ || echo "⚠ Type checking found issues (non-fatal)"
+
+      - name: Security scan with bandit
+        continue-on-error: true  # Non-fatal for low-severity issues
+        run: poetry run bandit -r finbot libs || echo "⚠ Security scan found issues (non-fatal)"
+
+      - name: Audit dependencies with pip-audit
+        continue-on-error: true  # Non-fatal to avoid blocking on CVEs in transitive deps
+        run: |
+          pip install pip-audit
+          pip-audit --disable-pip || echo "⚠ Dependency audit found issues (non-fatal)"
+
+      - name: Run tests with coverage
         env:
           DYNACONF_ENV: development
-        run: poetry run pytest tests/ -v
+        run: poetry run pytest tests/ -v --cov=finbot --cov=libs --cov=config --cov=constants --cov-report=term-missing --cov-report=xml
+
+      - name: Upload coverage to Codecov
+        if: matrix.python-version == '3.13'  # Only upload once
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}

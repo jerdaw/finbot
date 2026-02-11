@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 
-def Standardize_types(data: pd.DataFrame, column_types: dict[str, type]) -> pd.DataFrame:
+def standardize_types(data: pd.DataFrame, column_types: dict[str, type]) -> pd.DataFrame:
     """
     Ensures type consistency for specified columns in a DataFrame.
 

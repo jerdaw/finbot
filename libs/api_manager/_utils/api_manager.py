@@ -34,7 +34,7 @@ class APIManager:
             raise
 
     def get_all_apis(self):
-        return {identifier: instance for identifier, instance in sorted(self.apis.__dict__.items())}
+        return dict(sorted(self.apis.__dict__.items()))
 
     def add_api_resource_group(self, identifier: str, api_resource_group_instance) -> None:
         setattr(self.api_resource_groups, identifier, api_resource_group_instance)
@@ -51,7 +51,7 @@ class APIManager:
             raise
 
     def get_all_api_resource_groups(self):
-        return {identifier: instance for identifier, instance in sorted(self.api_resource_groups.__dict__.items())}
+        return dict(sorted(self.api_resource_groups.__dict__.items()))
 
     @property
     def apis(self):
@@ -83,6 +83,7 @@ class APIManager:
 if __name__ == "__main__":
     from finbot.utils.request_utils.rate_limiter import DEFAULT_RATE_LIMIT
     from finbot.utils.request_utils.retry_strategy import DEFAULT_HTTPX_RETRY_KWARGS
+
     from libs.api_manager import api_manager
     from libs.api_manager._utils.api import API
     from libs.api_manager._utils.api_resource_group import APIResourceGroup

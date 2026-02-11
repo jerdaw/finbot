@@ -48,6 +48,6 @@ def rebalance_optimizer(**kwargs):
             results = avg_stepped_results(results)
         results.sort_values("CAGR", ascending=False, inplace=True)
         best = results.iloc[0]["rebal_proportions (p)"]
-        best_idx = [i for i in range(n_stocks) if str(cur_test_props[i]) == best][0]
+        best_idx = next(i for i in range(n_stocks) if str(cur_test_props[i]) == best)
         best_ratios[best_idx] += round(sum(best_ratios) * cur_step)
     return results

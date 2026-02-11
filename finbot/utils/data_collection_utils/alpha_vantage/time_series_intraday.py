@@ -119,7 +119,7 @@ def _merge_and_save_intraday(
         logger.info(f"Finished merging fetched {symbol} intraday data.")
 
         save_dataframe(df=combined_df, file_path=file_path)
-        logger.info(f"{symbol} intraday data saved to {str(file_path)}.")
+        logger.info(f"{symbol} intraday data saved to {file_path!s}.")
     except pd.errors.ParserError as e:
         logger.error(f"Pandas error in merging data for {symbol}: {e}")
         raise

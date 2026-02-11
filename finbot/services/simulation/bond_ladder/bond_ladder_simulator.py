@@ -1,4 +1,5 @@
 """Bond ladder simulator — replaces numba typed.Dict/List with plain Python."""
+
 from __future__ import annotations
 
 import pandas as pd

@@ -198,18 +198,18 @@ class InteractivePlotter:
             fig.add_trace(go.Scatter(x=marker_data.index, y=marker_data.values, mode="markers", **style))
 
     @staticmethod
-    def export_plot(fig: go.Figure, filename: str, format: str = "png") -> None:
+    def export_plot(fig: go.Figure, filename: str, file_format: str = "png") -> None:
         """
         Exports the plot to a file.
 
         :param fig: Plotly figure object.
         :param filename: String, the name of the file to save.
-        :param format: String, file format (e.g., 'png', 'jpeg', 'svg', 'html').
+        :param file_format: String, file format (e.g., 'png', 'jpeg', 'svg', 'html').
         """
-        if format == "html":
+        if file_format == "html":
             fig.write_html(f"{filename}.html")
         else:
-            fig.write_image(f"{filename}.{format}")
+            fig.write_image(f"{filename}.{file_format}")
 
 
 if __name__ == "__main__":

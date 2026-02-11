@@ -98,7 +98,7 @@ def _make_alpha_vantage_request(
     if provider == "rapid":
         return req_handler.make_json_request(
             url=ALPHA_VANTAGE_RAPIDAPI_URL,
-            payload_kwargs=dict(params=req_params),
+            payload_kwargs={"params": req_params},
             headers=ALPHA_VANTAGE_RAPIDAPI_HEADERS,
             save_dir=save_dir,
         )
@@ -106,7 +106,7 @@ def _make_alpha_vantage_request(
         req_params["apikey"] = str(Config.alpha_vantage_api_key)
         return req_handler.make_json_request(
             url=ALPHA_VANTAGE_API_URL,
-            payload_kwargs=dict(params=req_params),
+            payload_kwargs={"params": req_params},
             save_dir=save_dir,
         )
     logger.error(f"Invalid function name provided: {req_params['function']}")
@@ -150,9 +150,9 @@ def _prep_params(req_params: dict[str, str], save_dir: Path | None = None) -> tu
         symbol = req_params.get("symbol", "").upper()
         interval = req_params.get("interval", "")
         maturity = req_params.get("maturity", "")
-        req_params[
-            "file_name"
-        ] = f"{symbol + '_' if symbol else ''}{maturity + '_' if maturity else ''}{func_name}{f'_{interval}' if interval else ''}.parquet".lower()
+        req_params["file_name"] = (
+            f"{symbol + '_' if symbol else ''}{maturity + '_' if maturity else ''}{func_name}{f'_{interval}' if interval else ''}.parquet".lower()
+        )
     elif not req_params["file_name"].endswith(".parquet"):
         raise ValueError("file_name must end with '.parquet'")
     if save_dir is None:

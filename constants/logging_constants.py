@@ -9,4 +9,5 @@ Attributes:
     LOG_FORMAT (str): Format string for log messages.
     LOG_FILE_PATH (str): File system path to the log file.
 """
+
 from __future__ import annotations

@@ -7,4 +7,5 @@ A collection of tools for identifying and managing outliers in datasets. Capabil
 - Options for removing or adjusting outliers to mitigate their impact on data analysis.
 - Techniques to transform outliers for more robust statistical analysis.
 """
+
 from __future__ import annotations

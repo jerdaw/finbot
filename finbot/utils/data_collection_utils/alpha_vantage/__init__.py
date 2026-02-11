@@ -23,6 +23,7 @@ Note: A valid Alpha Vantage API key is required to authenticate requests. For de
 information on available endpoints and data formats, refer to the Alpha Vantage
 documentation at: https://www.alphavantage.co/documentation/
 """
+
 from __future__ import annotations
 
 from finbot.utils.data_collection_utils.alpha_vantage.cpi import get_cpi
@@ -48,14 +49,14 @@ __all__ = [
     "get_federal_funds_rate",
     "get_global_quote",
     "get_inflation",
-    "get_time_series_intraday",
     "get_nonfarm_payroll",
-    "get_real_gdp_per_capita",
     "get_real_gdp",
+    "get_real_gdp_per_capita",
     "get_retail_sales",
     "get_sentiment",
-    "get_time_series_intraday",
     "get_time_series_daily_adjusted",
+    "get_time_series_intraday",
+    "get_time_series_intraday",
     "get_treasury_yields",
     "get_unemployment",
 ]

@@ -10,6 +10,7 @@ Attributes:
     NOT_FOUND_ERROR_CODE (int): Error code for "not found" errors.
     NOT_FOUND_ERROR_MSG (str): Standard error message for "not found" errors.
 """
+
 from __future__ import annotations
 
 GENERIC_ERROR_CODE = 1000

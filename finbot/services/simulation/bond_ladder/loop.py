@@ -1,4 +1,5 @@
 """Bond ladder simulation loop — replaces numba @njit with plain Python."""
+
 from __future__ import annotations
 
 import numpy as np

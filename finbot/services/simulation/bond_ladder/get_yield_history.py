@@ -1,4 +1,5 @@
 """Get yield history from FRED and Shiller data sources."""
+
 from __future__ import annotations
 
 import pandas as pd
@@ -9,7 +10,7 @@ from finbot.utils.data_collection_utils.yfinance.get_history import get_history
 
 
 def get_yield_history() -> pd.DataFrame:
-    FRED_SERIES = [
+    FRED_SERIES = [  # noqa: N806 - Constant scoped to function
         "M1329AUSM193NNBR",
         "M1329BUSM193NNBR",
         "M13009USM156NNBR",

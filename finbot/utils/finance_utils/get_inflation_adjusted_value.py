@@ -23,7 +23,7 @@ def get_inflation_adjusted_value(
     Returns:
         float: The inflation-adjusted value.
     """
-    FRED_DATA_START_DATE = datetime.date(1947, 1, 1)
+    FRED_DATA_START_DATE = datetime.date(1947, 1, 1)  # noqa: N806 - Constant scoped to function
 
     if start_date is None:
         start_date = FRED_DATA_START_DATE

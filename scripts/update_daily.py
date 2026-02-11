@@ -18,6 +18,7 @@ from finbot.services.simulation.sim_specific_funds import (
     sim_2x_stt,
     sim_3x_stt,
     sim_ief,
+    sim_ntsx,
     sim_qld,
     sim_qqq,
     sim_shy,
@@ -81,64 +82,62 @@ def update_daily() -> None:
 def update_yf_price_histories() -> None:
     """Update tickers available on Yahoo Finance."""
     yahoo_tickers = sorted(
-        list(
-            {
-                # S&P 500s
-                "^GSPC",
-                "SPY",
-                "VOO",
-                "IVV",
-                "SSO",
-                "UPRO",
-                # Nasdaq 100s
-                "^NDX",
-                "QQQ",
-                "QLD",
-                "TQQQ",
-                # VIX
-                "UVXY",
-                "VXX",
-                "VIXY",
-                # Bonds/Bills
-                "TLT",
-                "UBT",
-                "TMF",
-                "AGG",
-                "BND",
-                "IEF",
-                "UST",
-                "TYD",
-                "SHY",
-                # Other ETFs
-                "VT",
-                "VTI",
-                "VWO",
-                "VEA",
-                "IEFA",
-                "EFA",
-                "VTV",
-                "VUG",
-                "IEMG",
-                "IJR",
-                "IWF",
-                "IJH",
-                "VIG",
-                "GLD",
-                "IWM",
-                "IWD",
-                "NTSX",
-                # Specific Stocks
-                "AAPL",
-                "MSFT",
-                "GOOG",
-                "AMZN",
-                "TSLA",
-                "NVDA",
-                "META",
-                "GME",
-                "AMD",
-            }
-        )
+        {
+            # S&P 500s
+            "^GSPC",
+            "SPY",
+            "VOO",
+            "IVV",
+            "SSO",
+            "UPRO",
+            # Nasdaq 100s
+            "^NDX",
+            "QQQ",
+            "QLD",
+            "TQQQ",
+            # VIX
+            "UVXY",
+            "VXX",
+            "VIXY",
+            # Bonds/Bills
+            "TLT",
+            "UBT",
+            "TMF",
+            "AGG",
+            "BND",
+            "IEF",
+            "UST",
+            "TYD",
+            "SHY",
+            # Other ETFs
+            "VT",
+            "VTI",
+            "VWO",
+            "VEA",
+            "IEFA",
+            "EFA",
+            "VTV",
+            "VUG",
+            "IEMG",
+            "IJR",
+            "IWF",
+            "IJH",
+            "VIG",
+            "GLD",
+            "IWM",
+            "IWD",
+            "NTSX",
+            # Specific Stocks
+            "AAPL",
+            "MSFT",
+            "GOOG",
+            "AMZN",
+            "TSLA",
+            "NVDA",
+            "META",
+            "GME",
+            "AMD",
+        }
     )
     get_history(yahoo_tickers, force_update=True)
 
@@ -154,72 +153,66 @@ def update_gf_price_histories() -> None:
 def update_fred_data() -> None:
     """Update FRED economic data series."""
     daily = sorted(
-        list(
-            {
-                "SOFR",
-                "DFF",
-                "DTB4WK",
-                "DTB3",
-                "DTB6",
-                "DTB1YR",
-                "DGS1MO",
-                "DGS3MO",
-                "DGS6MO",
-                "DGS1",
-                "DGS2",
-                "DGS3",
-                "DGS5",
-                "DGS7",
-                "DGS10",
-                "DGS20",
-                "DGS30",
-            }
-        )
+        {
+            "SOFR",
+            "DFF",
+            "DTB4WK",
+            "DTB3",
+            "DTB6",
+            "DTB1YR",
+            "DGS1MO",
+            "DGS3MO",
+            "DGS6MO",
+            "DGS1",
+            "DGS2",
+            "DGS3",
+            "DGS5",
+            "DGS7",
+            "DGS10",
+            "DGS20",
+            "DGS30",
+        }
     )
     weekly = sorted(
-        list(
-            {
-                "WTB4WK",
-                "WTB3MS",
-                "WTB6MS",
-                "WTB1YR",
-                "WGS1MO",
-                "WGS3MO",
-                "WGS6MO",
-                "WGS1YR",
-                "WGS2YR",
-                "WGS3YR",
-                "WGS5YR",
-                "WGS7YR",
-                "WGS10YR",
-                "WGS20YR",
-                "WGS30YR",
-            }
-        )
+        {
+            "WTB4WK",
+            "WTB3MS",
+            "WTB6MS",
+            "WTB1YR",
+            "WGS1MO",
+            "WGS3MO",
+            "WGS6MO",
+            "WGS1YR",
+            "WGS2YR",
+            "WGS3YR",
+            "WGS5YR",
+            "WGS7YR",
+            "WGS10YR",
+            "WGS20YR",
+            "WGS30YR",
+        }
     )
     monthly = sorted(
-        list(
-            {
-                "M1329AUSM193NNBR",
-                "TB4WK",
-                "TB3MS",
-                "TB6MS",
-                "TB1YR",
-                "GS1M",
-                "GS3M",
-                "GS6M",
-                "GS1",
-                "GS2",
-                "GS3",
-                "GS5",
-                "GS7",
-                "GS10",
-                "GS20",
-                "GS30",
-                "CPIAUCNS",
-                "CPIAUCSL",
-            }
-        )
+        {
+            "M1329AUSM193NNBR",
+            "TB4WK",
+            "TB3MS",
+            "TB6MS",
+            "TB1YR",
+            "GS1M",
+            "GS3M",
+            "GS6M",
+            "GS1",
+            "GS2",
+            "GS3",
+            "GS5",
+            "GS7",
+            "GS10",
+            "GS20",
+            "GS30",
+            "CPIAUCNS",
+            "CPIAUCSL",
+        }
     )
 
     for symbol_list in (daily, weekly, monthly):
@@ -260,6 +253,7 @@ def update_simulations() -> None:
         sim_shy,
         sim_2x_stt,
         sim_3x_stt,
+        sim_ntsx,
     )
     for sim in fund_sims:
         sim(force_update=True)

@@ -82,7 +82,7 @@ def _request_bls_data(series_ids):
 
         res_data = RequestHandler().make_json_request(
             url="https://api.bls.gov/publicAPI/v2/timeseries/data/",
-            payload_kwargs=dict(json=params),
+            payload_kwargs={"json": params},
             headers=headers,
             request_type="POST",
             timeout=(10, 45),
@@ -127,7 +127,7 @@ def _load_bls_data(symbols_to_load: list[str], symbol_paths_dict: dict[str, Path
 
         # Check to make sure the order of the loaded_dfs matches the order of the immutable_ids
         # This isn't actually needed since we merge all the dataframes into one, but it's a good check.
-        if any([loaded_dfs[i].columns[0] != immutable_symbols[i] for i in range(len(immutable_symbols))]):
+        if any(loaded_dfs[i].columns[0] != immutable_symbols[i] for i in range(len(immutable_symbols))):
             raise ValueError("Loaded DataFrames do not match the order of the requested IDs.")
 
         merged_df = (

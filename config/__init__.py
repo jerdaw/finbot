@@ -12,4 +12,4 @@ if settings.current_env not in permitted_envs:
 # Singleton Config instance for backward compatibility (Config.MAX_THREADS, Config.alpha_vantage_api_key, etc.)
 Config = BaseConfig()
 
-__all__ = ["Config", "settings", "logger"]
+__all__ = ["Config", "logger", "settings"]

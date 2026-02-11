@@ -13,9 +13,11 @@ import pandas as pd
 from matplotlib import pyplot as plt
 from tqdm.contrib.concurrent import process_map
 
+from config import logger
 from constants.path_constants import BACKTESTS_DATA_DIR
 from finbot.utils.finance_utils.get_cgr import get_cgr
 from finbot.utils.finance_utils.get_pct_change import get_pct_change
+from finbot.utils.finance_utils.get_risk_free_rate import get_risk_free_rate
 
 
 def dca_optimizer(
@@ -133,7 +135,15 @@ def _dca_single(
     roll_max = as_series.rolling(252, min_periods=1).max()
     daily_drawdown = as_series / roll_max - 1.0
     max_drawdown = daily_drawdown.min() * 100 * -1
-    risk_free_rate = 2.0
+
+    # Fetch current risk-free rate (3-month T-bill), fallback to 2.0% if unavailable
+    try:
+        risk_free_rate_data = get_risk_free_rate(full_series=False)
+        risk_free_rate = float(risk_free_rate_data["Data"]) if isinstance(risk_free_rate_data, pd.Series) else 2.0
+    except Exception as e:
+        logger.warning(f"Could not fetch risk-free rate: {e}. Using default 2.0%")
+        risk_free_rate = 2.0
+
     sharpe = (cagr - risk_free_rate) / std
 
     return final_value, pct_change, cagr, max_drawdown, std, sharpe

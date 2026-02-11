@@ -9,7 +9,7 @@ def print_and_save_backtest(file_name: str, results: pd.DataFrame, print_res: bo
     res["File Name"] = [file_name for _ in range(len(res))]
     strat_col_idx = res.columns.to_list().index("Strategy")
     res = res[
-        res.columns[: strat_col_idx + 1].to_list() + ["File Name"] + res.columns[strat_col_idx + 1 : -1].to_list()
+        [*res.columns[: strat_col_idx + 1].to_list(), "File Name", *res.columns[strat_col_idx + 1 : -1].to_list()]
     ]
 
     file_head = f"{pd.Timestamp.now()} - {file_name}"

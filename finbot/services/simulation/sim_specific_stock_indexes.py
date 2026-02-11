@@ -19,7 +19,7 @@ def sim_sp500tr(
     close_col = "Adj Close" if "Adj Close" in price_hist.columns else "Close"
     underlying_closes = price_hist[close_col]
     underlying_yields = _get_yield_from_shiller(price_hist)["Yield"][price_hist.index] / 245.65
-    index_closes = get_history("^SP500TR", adjust_price=True)["Close"] if overwrite_sim_with_index else None
+    index_closes = get_history("^SP500TR")["Close"] if overwrite_sim_with_index else None
     sim_df = stock_index_simulator(
         fund_name=fund_name,
         underlying_closes=underlying_closes,

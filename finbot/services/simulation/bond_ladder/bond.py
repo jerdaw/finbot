@@ -1,4 +1,5 @@
 """Bond class — replaces numba @jitclass with plain Python class."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -6,7 +7,7 @@ import numpy_financial as npf
 
 
 class Bond:
-    __slots__ = ("face_value", "yield_pct", "maturity", "periods_per_year")
+    __slots__ = ("face_value", "maturity", "periods_per_year", "yield_pct")
 
     def __init__(self, face_value: float, yield_pct: float, maturity: int, periods_per_year: int):
         self.face_value = face_value

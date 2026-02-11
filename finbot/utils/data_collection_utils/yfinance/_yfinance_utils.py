@@ -183,7 +183,7 @@ def _request_yfinance_info(symbols: Sequence[str]) -> pd.DataFrame:
             tqdm(executor.map(fetch_info, symbols), total=len(symbols)),
         )
 
-    res_dict = {t: result for t, result in zip(symbols, results, strict=False)}
+    res_dict = dict(zip(symbols, results, strict=False))
     df = pd.DataFrame.from_dict(res_dict, orient="index").transpose()
 
     # Convert mixed-type columns to string
@@ -284,24 +284,21 @@ def _load_yfinance_data(symbols_to_load: Sequence[str], file_paths: dict[str, Pa
 
         # check to make sure the order of the loaded_dfs matches the order of the immutable_ids
         if any(
-            [
-                isinstance(symbol_data[i], pd.Series) and symbol_data[i].name != symbol_names[i]
-                for i in range(len(symbol_names))
-            ],
+            isinstance(symbol_data[i], pd.Series) and symbol_data[i].name != symbol_names[i]
+            for i in range(len(symbol_names))
         ):
             raise ValueError("Loaded DataFrames do not match the order of the requested IDs.")
 
         # This avoids the info double header problems.
         merged_dict = symbol_data
         if request_type != "info":
-            merged_dict = {
-                name: data
-                for name, data in zip(
+            merged_dict = dict(
+                zip(
                     symbol_names,
                     symbol_data,
                     strict=False,
                 )
-            }
+            )
 
         merged_df = (
             pd.concat(
@@ -313,7 +310,7 @@ def _load_yfinance_data(symbols_to_load: Sequence[str], file_paths: dict[str, Pa
         )
         if request_type != "info" and not isinstance(merged_df.columns, pd.MultiIndex):
             merged_df.columns = pd.MultiIndex.from_product(
-                [merged_df.columns, [s for s in symbol_names]],
+                [merged_df.columns, list(symbol_names)],
             )
 
         return merged_df

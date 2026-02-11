@@ -22,7 +22,7 @@ class CollectionTrackerBase:
 
         try:
             # Apply the converter to all columns
-            converters = {col: convert_none for col in pd.read_csv(self.csv_path, nrows=0).columns}
+            converters = dict.fromkeys(pd.read_csv(self.csv_path, nrows=0).columns, convert_none)
             df = pd.read_csv(self.csv_path, converters=converters)
             df = df.sort_values(by="symbol")
             df = df.reset_index(drop=True)
@@ -52,7 +52,7 @@ class CollectionTrackerBase:
                     new_val = new_data_dict[key]
                     old_val = existing_data_dict[key]
                     # If one value is nan and the other is None, they are considered equal
-                    if pd.isna(new_val) and old_val is None or pd.isna(old_val) and new_val is None:
+                    if (pd.isna(new_val) and old_val is None) or (pd.isna(old_val) and new_val is None):
                         continue
 
                     # Compare the values
@@ -101,7 +101,7 @@ class CollectionTrackerBase:
         return sorted(self.df["symbol"].tolist())
 
     def to_dict(self) -> dict:
-        return {index: row for index, row in self.df.iterrows()}
+        return dict(self.df.iterrows())
 
     def to_df(self) -> pd.DataFrame:
         return self.df.copy()

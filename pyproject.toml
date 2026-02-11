@@ -51,11 +51,15 @@ ruptures = "^1.1.9"
 filterpy = "^1.4.5"
 beautifulsoup4 = "^4.12.2"
 python-dotenv = "^1.0.0"
+click = "^8.1.7"
+
+[tool.poetry.scripts]
+finbot = "finbot.cli.main:cli"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.6.0"
 mypy = "^1.7.1"
-ruff = "^0.1.8"
+ruff = "^0.11.0"
 pytest = "^7.4.3"
 bandit = "^1.7.6"
 ssort = "^0.11.6"
@@ -67,6 +71,7 @@ types-tqdm = "^4.66.0.5"
 types-beautifulsoup4 = "^4.12.0.20240106"
 google-api-python-client-stubs = "^1.23.0"
 types-seaborn = "^0.13.1.20240115"
+pytest-cov = "^7.0.0"
 
 [tool.ruff]
 respect-gitignore = true
@@ -83,9 +88,22 @@ target-version = "py311"
 extend-include = ["*.ipynb"]
 
 [tool.ruff.lint]
-select = ["E", "F", "UP", "B", "SIM", "I"]
+# Rule categories:
+# E/F: pycodestyle errors and pyflakes
+# UP: pyupgrade (modern Python idioms)
+# B: flake8-bugbear (likely bugs and design problems)
+# SIM: flake8-simplify (simplification suggestions)
+# I: isort (import sorting)
+# C901: mccabe complexity
+# N: pep8-naming (naming conventions)
+# A: flake8-builtins (shadowing builtins)
+# C4: flake8-comprehensions (better comprehensions)
+# RUF: ruff-specific rules
+# LOG: flake8-logging (logging best practices)
+# PERF: perflint (performance anti-patterns)
+select = ["E", "F", "UP", "B", "SIM", "I", "C901", "N", "A", "C4", "RUF", "LOG", "PERF"]
 ignore = []
-extend-ignore = ["E501"]
+extend-ignore = ["E501"]  # Line length handled by line-length setting
 fixable = ["ALL"]
 unfixable = []
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"

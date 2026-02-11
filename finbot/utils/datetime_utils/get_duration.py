@@ -35,7 +35,7 @@ def get_duration(
 
     if granularity not in units_in_seconds:
         raise ValueError(
-            f"Invalid granularity '{granularity}'. Valid granularity values are {['years', 'months', 'days'] + list(units_in_seconds.keys())}",
+            f"Invalid granularity '{granularity}'. Valid granularity values are {['years', 'months', 'days', *list(units_in_seconds.keys())]}",
         )
 
     return total_seconds / units_in_seconds.get(granularity, 1)

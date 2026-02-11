@@ -3,6 +3,7 @@ Path Constants
 
 Centralizes filesystem path constants for the application.
 """
+
 from __future__ import annotations
 
 import logging as logger
@@ -74,5 +75,5 @@ if __name__ == "__main__":
             if not name.startswith("_"):
                 print(f"{name}: {value}")
     except Exception as e:
-        logger.error(f"Failed to initialize directories: {e}")
+        logger.error(f"Failed to initialize directories: {e}")  # noqa: LOG015 - Using module logger from config
         raise

@@ -63,10 +63,8 @@ def compute_stats(
     stats["Worst Day"] = value_history.worst()
     stats["Win Days %"] = value_history.win_rate()
 
-    # Cash stats
-    cash_utilizations = pd.Series(
-        [1 - (cash_history.iloc[i] / value_history.iloc[i]) for i in range(len(cash_history))]
-    )
+    # Cash stats (vectorized)
+    cash_utilizations = 1 - (cash_history / value_history)
     stats["Mean Cash Available"] = cash_history[1:].mean()
     stats["Mean Cash Utilization"] = cash_utilizations[1:].mean()
 

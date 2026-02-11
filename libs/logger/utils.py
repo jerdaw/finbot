@@ -9,7 +9,7 @@ class ColorFormatter(logging.Formatter):
     Custom formatter for colorized output.
     """
 
-    COLORS = {
+    COLORS = {  # noqa: RUF012 - Class attribute intentionally not ClassVar for formatter pattern
         "DEBUG": "\033[0;36m",  # Cyan
         "INFO": "\033[0;32m",  # Green
         "WARNING": "\033[0;33m",  # Yellow

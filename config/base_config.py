@@ -9,6 +9,7 @@ by extending this base class.
 Sensitive data and environment-specific configurations should not be stored here. Instead, use
 environment variables or separate configuration files for different environments.
 """
+
 from __future__ import annotations
 
 import logging

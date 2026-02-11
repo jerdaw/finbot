@@ -174,7 +174,7 @@ class DataSmoother:
         """
         validate_num_in_range(value=lamb, parameter_name="lamb", min_value=0)
 
-        cycle, trend = hpfilter(self._data, lamb=lamb)
+        _cycle, trend = hpfilter(self._data, lamb=lamb)
         return trend
 
     def kalman_smoothing(
@@ -315,13 +315,13 @@ if __name__ == "__main__":
     smoothing_methods = [
         (smoother.moving_average(window_size=5), "Moving Average (5 days)"),
         (smoother.moving_average(window_size=30), "Moving Average (30 days)"),
-        (smoother.exponential_smoothing(alpha=0.35), "Exponential Smoothing (α=0.35)"),
-        (smoother.exponential_smoothing(alpha=0.10), "Exponential Smoothing (α=0.10)"),
-        (smoother.double_exponential_smoothing(alpha=0.25, beta=0.1), "Double Exponential (α=0.25, β=0.1)"),
-        (smoother.double_exponential_smoothing(alpha=0.05, beta=0.125), "Double Exponential (α=0.05, β=0.125)"),
+        (smoother.exponential_smoothing(alpha=0.35), "Exponential Smoothing (α=0.35)"),  # noqa: RUF001
+        (smoother.exponential_smoothing(alpha=0.10), "Exponential Smoothing (α=0.10)"),  # noqa: RUF001
+        (smoother.double_exponential_smoothing(alpha=0.25, beta=0.1), "Double Exponential (α=0.25, β=0.1)"),  # noqa: RUF001
+        (smoother.double_exponential_smoothing(alpha=0.05, beta=0.125), "Double Exponential (α=0.05, β=0.125)"),  # noqa: RUF001
         (
             smoother.triple_exponential_smoothing(alpha=0.25, beta=0.1, gamma=0.3, period=252),
-            "Holt-Winters (α=0.25, β=0.1, γ=0.3, period=252)",
+            "Holt-Winters (α=0.25, β=0.1, γ=0.3, period=252)",  # noqa: RUF001
         ),
         (smoother.savitzky_golay_smoothing(window_size=21, polynomial_order=3), "Savitzky-Golay (20 days, 3rd order)"),
         (smoother.savitzky_golay_smoothing(window_size=41, polynomial_order=3), "Savitzky-Golay (41 days, 3rd order)"),

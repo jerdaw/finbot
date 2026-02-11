@@ -9,4 +9,5 @@ Attributes:
     WELCOME_MSG (str): Welcome message for new users.
     EMAIL_CONFIRMATION_MSG (str): Email confirmation message sent to users.
 """
+
 from __future__ import annotations

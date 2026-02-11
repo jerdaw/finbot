@@ -7,21 +7,40 @@ names for endpoints.
 
 Attributes:
     ALPHA_VANTAGE_RAPI_BASE_URL (str): Base URL for the AlphaVantage RapidAPI endpoint.
-    ALPHA_VANTAGE_RAPI_HEADERS (dict): Headers to use for AlphaVantage RapidAPI requests.
     ALPHA_VANTAGE_RAPI_FUNCTIONS (set): Function names for the AlphaVantage RapidAPI endpoint.
     ALPHA_VANTAGE_API_BASE_URL (str): Base URL for the AlphaVantage API.
     ALPHA_VANTAGE_API_FUNCTIONS (set): Function names for the AlphaVantage API.
+
+Functions:
+    get_alpha_vantage_rapi_headers() -> dict: Returns headers for AlphaVantage RapidAPI requests.
 """
+
 from __future__ import annotations
 
-from config import Config
+
+def get_alpha_vantage_rapi_headers() -> dict[str, str]:
+    """
+    Get headers for AlphaVantage RapidAPI requests.
+
+    This is a lazy accessor that loads the API key only when needed,
+    preventing import-time failures if the environment variable is not set.
+
+    Returns:
+        dict[str, str]: Headers dictionary with API key and host.
+
+    Raises:
+        OSError: If ALPHA_VANTAGE_API_KEY environment variable is not set.
+    """
+    from config import Config
+
+    return {
+        "X-RapidAPI-Key": Config.alpha_vantage_api_key,
+        "X-RapidAPI-Host": "alpha-vantage.p.rapidapi.com",
+    }
+
 
 # AlphaVantage RapidAPI constants
 ALPHA_VANTAGE_RAPI_BASE_URL = "https://alpha-vantage.p.rapidapi.com/query"
-ALPHA_VANTAGE_RAPI_HEADERS = {
-    "X-RapidAPI-Key": Config.alpha_vantage_api_key,
-    "X-RapidAPI-Host": "alpha-vantage.p.rapidapi.com",
-}
 ALPHA_VANTAGE_RAPI_FUNCTIONS = {
     "TIME_SERIES_INTRADAY",
     "TIME_SERIES_DAILY_ADJUSTED",

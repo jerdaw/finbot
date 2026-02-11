@@ -9,4 +9,5 @@ Attributes:
     DEBUG_MODE (bool): Flag to turn on/off debug mode for the application.
     FEATURE_X_ENABLED (bool): Flag to toggle Feature X in the application.
 """
+
 from __future__ import annotations

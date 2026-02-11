@@ -28,5 +28,5 @@ def calculate_open_close_percent_change(data: pd.DataFrame, open_col="Open", clo
 if __name__ == "__main__":
     gspc = DEMO_DATA
     print(gspc)
-    pct_changes_DF = calculate_open_close_percent_change(gspc)
-    print(pct_changes_DF)
+    pct_changes_df = calculate_open_close_percent_change(gspc)
+    print(pct_changes_df)

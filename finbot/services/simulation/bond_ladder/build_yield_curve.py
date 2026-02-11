@@ -1,4 +1,5 @@
 """Build yield curve — replaces numba @njit with plain numpy."""
+
 from __future__ import annotations
 
 import numpy as np

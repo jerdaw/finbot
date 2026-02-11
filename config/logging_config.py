@@ -8,8 +8,8 @@ from pathlib import Path
 from queue import Queue
 from typing import Any
 
-from config._logging_utils import ColorFormatter, ErrorFilter, InfoFilter, LoggingJsonFormatter
 from constants.path_constants import LOGS_DIR
+from libs.logger.utils import ColorFormatter, ErrorFilter, LoggingJsonFormatter, NonErrorFilter
 
 
 def prepare_logging_config(logger_name: str, log_level: str, log_file_path: Path) -> dict[str, Any]:
@@ -36,7 +36,7 @@ def prepare_logging_config(logger_name: str, log_level: str, log_file_path: Path
         },
         "filters": {
             "info_filter": {
-                "()": InfoFilter,
+                "()": NonErrorFilter,
             },
             "error_filter": {
                 "()": ErrorFilter,
@@ -97,7 +97,7 @@ def _setup_queue_logging(log_config: dict[str, Any], logger_name: str):
     configured_logger = logging.getLogger(logger_name)
 
     # Extract handlers for the QueueListener
-    handlers = [handler for handler in configured_logger.handlers]
+    handlers = list(configured_logger.handlers)
 
     # Remove these handlers from the logger to prevent direct logging
     for handler in handlers:

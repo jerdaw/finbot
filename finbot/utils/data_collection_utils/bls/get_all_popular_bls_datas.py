@@ -10,7 +10,7 @@ def _get_popular_bls_series_ids():
     payload = json.dumps({"registrationkey": Config.us_bureau_of_labor_statistics_api_key})
     json_data = RequestHandler().make_json_request(
         url="https://api.bls.gov/publicAPI/v2/timeseries/popular",
-        payload_kwargs=dict(data=payload),
+        payload_kwargs={"data": payload},
         headers=headers,
         request_type="POST",
     )

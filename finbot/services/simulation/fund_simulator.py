@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+from config import logger
 from finbot.services.simulation.approximate_overnight_libor import approximate_overnight_libor
 
 
@@ -63,7 +64,7 @@ def fund_simulator(
         libor_yield_df = pd.concat([libor_yield_df, price_df], axis=1, join="outer")
         libor_yield_df = pd.DataFrame(libor_yield_df["Yield"]).interpolate().bfill()
 
-    print("Building fund simulation...")
+    logger.info("Building fund simulation...")
     # Get the close column to use ("Adj Close" has priority)
     close_col = "Adj Close" if "Adj Close" in price_df.columns else "Close"
     underlying_changes = price_df[close_col].pct_change().to_numpy()
