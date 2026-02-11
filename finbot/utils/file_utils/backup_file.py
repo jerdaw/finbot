@@ -1,3 +1,97 @@
+"""Create timestamped backups with intelligent directory structure preservation.
+
+Provides safe file backup functionality with smart default backup locations
+that mirror the original file's directory structure. Prevents accidental
+recursive backups and includes comprehensive error handling.
+
+Typical usage:
+    ```python
+    from pathlib import Path
+    from finbot.utils.file_utils.backup_file import backup_file
+
+    # Smart backup (preserves directory structure)
+    backup_path = backup_file("finbot/data/prices.parquet")
+    # Creates: backups/finbot/data/prices_backup_20260211_143022.parquet
+
+    # Custom backup location
+    backup_path = backup_file("data.csv", backup_dir="/backups/manual")
+    # Creates: /backups/manual/data_backup_20260211_143022.csv
+
+    # Before dangerous operation
+    original = "important_config.yaml"
+    backup_path = backup_file(original)
+    # Now safe to modify original, can restore from backup_path
+    ```
+
+Smart backup location (when backup_dir=None):
+    - Mirrors original file's path relative to ROOT_DIR
+    - Original: `ROOT_DIR/finbot/data/file.csv`
+    - Backup: `BACKUPS_DIR/finbot/data/file_backup_<timestamp>.csv`
+    - Preserves directory structure for easy identification
+
+Custom backup location (when backup_dir specified):
+    - Places backup in specified directory
+    - Filename still includes timestamp: `<stem>_backup_<timestamp><suffix>`
+    - Useful for manual backups or custom backup strategies
+
+Backup filename format:
+    - Pattern: `{original_stem}_backup_{timestamp}{original_suffix}`
+    - Timestamp: `YYYYMMDD_HHMMSS` (e.g., `20260211_143022`)
+    - Example: `data_backup_20260211_143022.csv`
+
+Features:
+    - Timestamped backups (never overwrites existing backups)
+    - Preserves file metadata (timestamps, permissions) via shutil.copy2
+    - Automatic directory creation (parents=True, exist_ok=True)
+    - Prevents recursive backups (won't backup files already in BACKUPS_DIR)
+    - Returns Path to created backup for further use
+    - Comprehensive logging (info on success, error on failure)
+
+Safety features:
+    - Checks file existence before backup
+    - Validates read permissions
+    - Raises ValueError if file already in backups directory
+    - Clear error messages for all failure modes
+
+Error handling:
+    - FileNotFoundError: Original file doesn't exist
+    - PermissionError: Insufficient read permissions or write permissions
+    - ValueError: Attempted recursive backup (file already in BACKUPS_DIR)
+    - OSError/IOError: IO errors during copy operation
+
+Use cases:
+    - Pre-modification backups (config files, data files)
+    - Periodic snapshots of important files
+    - Rollback mechanism for batch operations
+    - Data pipeline checkpoints
+    - User-initiated manual backups
+
+Best practices:
+    ```python
+    # Always backup before modifying
+    backup_path = backup_file("config.yaml")
+    try:
+        modify_config("config.yaml")
+    except Exception:
+        shutil.copy2(backup_path, "config.yaml")  # Restore
+        raise
+
+    # Backup before batch operation
+    files = ["data1.csv", "data2.csv", "data3.csv"]
+    backups = [backup_file(f) for f in files]
+    # Now safe to modify all files
+    ```
+
+Limitations:
+    - No automatic cleanup of old backups (implement separately)
+    - No compression (use external compression if needed)
+    - Requires sufficient disk space for full copy
+    - Not suitable for very large files (consider versioning systems)
+
+Related modules: is_file_outdated (check if backup needed), save_text/load_text
+(text file operations), pandas save/load (DataFrame backup).
+"""
+
 from __future__ import annotations
 
 import os

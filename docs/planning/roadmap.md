@@ -509,13 +509,36 @@ These items improve professionalism and maintainability.
   - Data Analysis (2 files): get_correlation, telltale_data_processor
   - Docstrings explain algorithms, typical usage, parameters, use cases, dependencies, trade-offs, and relationships to other modules
 
+- [x] Add module-level docstrings to file_utils (10 files)
+  - All 10 file_utils implementation files now have comprehensive module docstrings in Google style
+  - Files documented: is_binary_file, get_matching_files, backup_file, load_text, save_text, get_file_datetime, is_valid_extension, get_latest_matching_file, is_file_outdated, are_files_outdated
+  - Categories covered:
+    - Binary detection (1 file): is_binary_file
+    - File matching/discovery (2 files): get_matching_files, get_latest_matching_file
+    - Backup operations (1 file): backup_file
+    - Text I/O with compression (2 files): load_text, save_text
+    - File metadata (1 file): get_file_datetime
+    - Extension validation (1 file): is_valid_extension
+    - Staleness checking (2 files): is_file_outdated, are_files_outdated
+  - Each docstring includes purpose, typical usage, features, use cases, performance notes, limitations, and related modules
+  - Excluded test file (test_get_matching_files.py) from documentation
+
 **Remaining Items:**
 - [ ] Add API documentation using mkdocs or Sphinx (comprehensive documentation system)
   - Document public API of fund_simulator, BacktestRunner, dca_optimizer, monte_carlo_simulator
   - Would benefit from dedicated implementation session
-- [ ] Add module-level docstrings to remaining utility categories (40 files remaining)
-  - Completed: finance_utils (19 files), datetime_utils (23 files), pandas_utils (17 files), data_collection_utils (40 files), data_science_utils (37 files)
-  - Remaining categories: plotting_utils, file_utils, json_utils, request_utils, multithreading_utils, validation_utils, vectorization_utils, and smaller utility modules
+- [ ] Add module-level docstrings to remaining utility categories (14 files remaining)
+  - Completed: finance_utils (19 files), datetime_utils (23 files), pandas_utils (17 files), data_collection_utils (40 files), data_science_utils (37 files), file_utils (10 files)
+  - Remaining categories:
+    - plotting_utils: 1 file (interactive_plotter.py)
+    - json_utils: 4 files (serialize_json, deserialize_json, save_json, load_json)
+    - request_utils: 2 files (retry_config, request_handler)
+    - multithreading_utils: 1 file (get_max_threads)
+    - validation_utils: 1 file (validation_helpers)
+    - vectorization_utils: 1 file (profile_vectorization)
+    - class_utils: 1 file (singleton_metas)
+    - dict_utils: 1 file (hash_dictionary)
+    - function_utils: 1 file (log_with_header_footer)
   - Gradual improvement recommended: complete category by category as work continues
 
 **Result:** Significantly improved documentation accessibility. README now provides clear motivation and architecture overview. Utility library well-documented with searchable reference. CLI decision formally documented.

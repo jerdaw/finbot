@@ -1,3 +1,86 @@
+"""Find files matching flexible search criteria with time-based sorting.
+
+Provides powerful file discovery by combining multiple search patterns
+(starts_with, ends_with, contains, regex) with time-based sorting. Ideal
+for finding the most recent log files, backups, or data files.
+
+Typical usage:
+    ```python
+    from pathlib import Path
+
+    # Find all CSV files modified today
+    csvs = get_matching_files("/data", ends_with=".csv", time_sort="mtime")
+
+    # Find log files starting with "error"
+    error_logs = get_matching_files("/logs", starts_with="error", time_sort="ctime")
+
+    # Find files containing "backup" in name
+    backups = get_matching_files("/backups", contains="backup")
+
+    # Complex pattern with regex
+    data_files = get_matching_files("/data", regex_pattern=r"^data_\\d{8}\\.csv$")
+
+    # Get most recent file matching criteria
+    latest = get_latest_matching_file("/data", starts_with="report")
+    ```
+
+Search criteria (combine multiple):
+    - **starts_with**: Filename must begin with string
+    - **ends_with**: Filename must end with string (useful for extensions)
+    - **contains**: String must appear anywhere in filename
+    - **regex_pattern**: Full regex pattern for complex matching
+
+Time sort options:
+    - **mtime** (default): Modification time (most common)
+    - **ctime**: Creation/change time (filesystem dependent)
+    - **atime**: Access time (read time)
+
+Returns files sorted oldest to newest by the specified time.
+
+Features:
+    - Flexible pattern matching (4 methods)
+    - Time-based sorting with 3 options
+    - Returns list of Path objects (sorted)
+    - Comprehensive error handling with logging
+    - Input validation for all parameters
+
+Error handling:
+    - FileNotFoundError: Directory doesn't exist
+    - ValueError: No search criteria provided or invalid time_sort
+    - re.error: Invalid regex pattern
+    - All errors logged before raising
+
+Use cases:
+    - Finding most recent log/data files
+    - Batch processing files matching pattern
+    - Backup file discovery
+    - Data pipeline file management
+    - Cleanup operations (find old files)
+
+Example patterns:
+    ```python
+    # Find all Python files
+    get_matching_files(dir, ends_with=".py")
+
+    # Find dated CSV files
+    get_matching_files(dir, regex_pattern=r"data_\\d{8}\\.csv")
+
+    # Find backup files from today
+    get_matching_files(dir, contains="backup", time_sort="mtime")
+
+    # Find files with specific prefix and suffix
+    get_matching_files(dir, starts_with="report", ends_with=".pdf")
+    ```
+
+Performance:
+    - Single directory scan with compiled regex
+    - Efficient sorting with lambda key function
+    - No recursive search (use glob pattern for subdirectories)
+
+Related modules: get_latest_matching_file (convenience wrapper for most recent),
+are_files_outdated (check if files need updating), backup_file (file backup).
+"""
+
 from __future__ import annotations
 
 import fnmatch

@@ -1,3 +1,145 @@
+"""Check if files need updating based on sophisticated staleness criteria.
+
+Determines whether a file is outdated using multiple strategies: fixed
+thresholds, time periods, or pandas DataFrame index analysis. Includes
+US business day awareness for financial data freshness checking.
+
+Typical usage:
+    ```python
+    from finbot.utils.file_utils.is_file_outdated import is_file_outdated
+    from datetime import datetime, timedelta
+
+    # Check if file older than specific date
+    if is_file_outdated("data.csv", threshold=datetime(2025, 1, 1)):
+        print("Need to update data.csv")
+
+    # Check if file older than 7 days
+    if is_file_outdated("cache.parquet", time_period=timedelta(days=7)):
+        refresh_cache()
+
+    # Check if DataFrame's data is outdated (pandas mode)
+    if is_file_outdated("prices.parquet", analyze_pandas=True):
+        update_prices()
+
+    # Check with custom file time type
+    if is_file_outdated("log.txt", time_period="daily", file_time_type="atime"):
+        archive_log()
+    ```
+
+Three staleness detection modes (mutually exclusive):
+
+1. **Threshold mode** (threshold parameter):
+   - File outdated if modification time < threshold date
+   - Use for: "data must be after Jan 1, 2025"
+   - Example: `is_file_outdated(file, threshold=datetime(2025, 1, 1))`
+
+2. **Time period mode** (time_period parameter):
+   - File outdated if modification time outside period from now
+   - Accepts: timedelta, relativedelta, or period string
+   - Period strings: "minutely", "hourly", "daily", "weekly", "monthly",
+     "quarterly", "yearly"
+   - Use for: "data must be from last week"
+   - Example: `is_file_outdated(file, time_period=timedelta(days=7))`
+
+3. **Pandas analysis mode** (analyze_pandas=True):
+   - Opens DataFrame and checks index dates
+   - Auto-detects DataFrame frequency (daily, monthly, etc.)
+   - Checks if latest date in DataFrame is current
+   - Use for: "does this DataFrame have today's data?"
+   - Example: `is_file_outdated("prices.parquet", analyze_pandas=True)`
+
+US business day awareness:
+    - Always considers US market hours (9:30 AM ET cutoff)
+    - Files updated after latest US business day are never outdated
+    - Accounts for weekends and holidays automatically
+    - Critical for financial data that only updates on trading days
+
+Parameters:
+    - file_path: Path to file to check
+    - threshold: Fixed datetime threshold (mode 1)
+    - time_period: Period from now (mode 2)
+    - analyze_pandas: Enable pandas analysis (mode 3)
+    - file_time_type: "mtime" (default), "ctime", or "atime"
+    - align_to_period_start: Align datetime to period start for comparison
+    - file_not_found_error: Raise error if file missing (else return True)
+
+Features:
+    - Three complementary staleness detection strategies
+    - US business day awareness for financial data
+    - Pandas DataFrame index analysis
+    - Flexible time period specifications
+    - Automatic period alignment options
+    - Configurable error handling for missing files
+
+Use cases:
+    - Cache invalidation (check if cache needs refresh)
+    - Data pipeline triggers (update if source outdated)
+    - Daily data updates (check if today's data present)
+    - Financial data freshness (respect trading days)
+    - Automated backup decisions (backup if old enough)
+
+Example workflows:
+    ```python
+    # Daily data update check
+    if is_file_outdated("prices.parquet", analyze_pandas=True):
+        fetch_latest_prices()
+        # Only fetches if DataFrame missing today's data
+
+    # Weekly report generation
+    if is_file_outdated("report.pdf", time_period="weekly"):
+        generate_weekly_report()
+
+    # Cache expiration (7-day TTL)
+    if is_file_outdated("cache.json", time_period=timedelta(days=7)):
+        refresh_cache()
+
+    # Specific deadline check
+    deadline = datetime(2026, 3, 1)
+    if is_file_outdated("submission.pdf", threshold=deadline):
+        print("File too old for submission")
+    ```
+
+Pandas mode details:
+    - Opens DataFrame and reads index
+    - Auto-detects frequency (daily, monthly, etc.)
+    - Compares max date in DataFrame to current period
+    - Accounts for DataFrame's natural frequency
+    - Returns True if DataFrame empty
+    - Automatically converts to DatetimeIndex if needed
+
+Period alignment:
+    - align_to_period_start=True: Aligns comparison to period boundaries
+    - Example: For weekly period, aligns to Monday start
+    - Useful for consistent period-based checks
+    - Prevents false positives from mid-period checks
+
+Missing file handling:
+    - file_not_found_error=True (default): Raises FileNotFoundError
+    - file_not_found_error=False: Returns True (consider missing = outdated)
+    - Choose based on application needs
+
+Error handling:
+    - FileNotFoundError: File missing (when file_not_found_error=True)
+    - ValueError: Invalid parameter combination (must specify exactly one mode)
+
+Performance considerations:
+    - Threshold/period modes: Fast (just file stat)
+    - Pandas mode: Slower (loads DataFrame header)
+    - Use threshold/period for simple checks
+    - Use pandas mode for financial time series
+
+Limitations:
+    - Pandas mode loads entire DataFrame (could optimize)
+    - US business day logic US-specific (not international markets)
+    - Timezone-naive (uses local time)
+
+Dependencies: pandas, dateutil, file_utils, datetime_utils, pandas_utils
+
+Related modules: are_files_outdated (batch checking), get_file_datetime
+(file times), get_latest_us_business_date (trading days), get_timeseries_frequency
+(DataFrame frequency detection).
+"""
+
 from __future__ import annotations
 
 from datetime import date, datetime, time, timedelta
