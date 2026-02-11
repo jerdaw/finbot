@@ -1,3 +1,23 @@
+"""Classify price trends into Growth, Decline, or Stagnation.
+
+Uses wavelet smoothing (or HP filter) to denoise price data, then classifies
+each period as Growth, Decline, or Stagnation based on smoothed percentage changes
+relative to a threshold (default: mean of smoothed changes).
+
+Provides a higher-level trend classification than simple moving averages,
+with configurable smoothing parameters for different time scales.
+
+Smoothing methods available:
+    - Wavelet smoothing (default: Daubechies 7, level 4)
+    - Hodrick-Prescott filter (alternative: lambda=625 for daily data)
+
+Typical usage:
+    - Identify market regimes for backtesting
+    - Visualize long-term trends vs short-term noise
+    - Filter trading signals based on trend direction
+    - Economic cycle overlay for price data
+"""
+
 import numpy as np
 import pandas as pd
 

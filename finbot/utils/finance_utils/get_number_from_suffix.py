@@ -1,3 +1,20 @@
+"""Convert string numbers with suffixes to numeric values.
+
+Parses strings like "2.5M", "7 million", "100%" into their numeric equivalents.
+Built on top of get_mult_from_suffix.py to handle the full parsing logic.
+
+Examples:
+    - "2.5k" → 2500
+    - "7 Million" → 7000000
+    - "100%" → 1.0
+    - "4.2 Trillion" → 4200000000000
+
+Typical usage:
+    - Parse user input from CLI or forms
+    - Process financial data from reports and documents
+    - Normalize data from web scraping
+"""
+
 from finbot.utils.finance_utils.get_mult_from_suffix import get_mult_from_suffix
 
 

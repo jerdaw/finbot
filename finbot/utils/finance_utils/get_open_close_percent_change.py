@@ -1,3 +1,15 @@
+"""Intraday percentage change calculation (open to close).
+
+Calculates the percentage change from opening price to closing price for each
+trading day. This captures intraday price movement, distinct from day-to-day
+changes which compare consecutive closing prices.
+
+Useful for:
+    - Analyzing intraday volatility patterns
+    - Identifying gap vs intraday movement
+    - Day-trading strategy development
+"""
+
 import pandas as pd
 
 from constants.data_constants import DEMO_DATA

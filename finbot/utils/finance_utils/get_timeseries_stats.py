@@ -1,3 +1,17 @@
+"""Time series statistical functions for quantiles and moving averages.
+
+Provides utilities for computing quantiles, moving averages (MA), cumulative moving
+averages (CMA), and exponential moving averages (EMA) across multiple window sizes.
+
+Useful for technical analysis, trend identification, and statistical summaries.
+
+Functions:
+    - get_series_quantiles: Compute percentiles across the full series
+    - get_series_ma: Simple moving averages for multiple windows
+    - get_series_cma: Cumulative (expanding) moving averages
+    - get_series_ema: Exponential weighted moving averages
+"""
+
 import pandas as pd
 
 DEFAULT_WINDOWS = (2, 3, 5, 10, 30, 50, 100, 200, 300)

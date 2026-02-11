@@ -1,3 +1,16 @@
+"""Drawdown calculation for time series data.
+
+Calculates the percentage decline from peak to trough over a given time period.
+Drawdown is a key risk metric measuring the largest peak-to-valley loss experienced.
+
+Supports both cumulative maximum (window=1) and rolling window drawdowns.
+
+Typical usage:
+    - Measure portfolio risk and maximum loss potential
+    - Compare risk-adjusted returns across strategies
+    - Identify periods of sustained underperformance
+"""
+
 import pandas as pd
 
 

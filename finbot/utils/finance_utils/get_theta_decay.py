@@ -1,3 +1,17 @@
+"""Theta decay calculation for leveraged positions.
+
+Theta decay (also called volatility drag or leverage decay) refers to the erosion
+of value in leveraged positions due to daily rebalancing and compounding effects.
+This is particularly relevant for leveraged ETFs.
+
+Note: This function is not yet fully verified and raises NotImplementedError.
+
+Typical usage (when implemented):
+    - Quantify cost of holding leveraged ETFs
+    - Compare leveraged vs unleveraged strategies
+    - Model expected decay under different volatility regimes
+"""
+
 import pandas as pd
 
 

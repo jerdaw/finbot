@@ -1,3 +1,19 @@
+"""Inflation adjustment for time series data using CPI.
+
+Adjusts entire price time series for inflation using Consumer Price Index (CPI)
+data from FRED. Handles common data alignment challenges like missing values,
+different frequencies, and overlapping date ranges.
+
+More sophisticated than get_inflation_adjusted_value.py which handles single
+point adjustments. This module processes full time series with interpolation
+and date range alignment.
+
+Typical usage:
+    - Convert nominal price series to real (constant-dollar) terms
+    - Compare asset performance across different inflation regimes
+    - Calculate real returns for backtesting
+"""
+
 import pandas as pd
 
 from finbot.utils.data_collection_utils.fred.get_fred_data import get_fred_data

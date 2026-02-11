@@ -1,3 +1,24 @@
+"""Investment event horizon calculation.
+
+Determines when portfolio growth dominates new contributions. The "event horizon"
+is the point where adding yearly contributions becomes insignificant compared to
+compound growth on existing portfolio value.
+
+This helps answer the question: "When does my money start working harder than I do?"
+
+Typical usage:
+    - Retirement planning and savings goal setting
+    - Understanding the power of compound growth over time
+    - Determining optimal contribution periods
+    - Comparing different savings strategies
+
+The calculation accounts for:
+    - Initial portfolio value
+    - Yearly contributions
+    - Expected compound annual growth rate (CAGR)
+    - Threshold for "significance" (default: inflation rate)
+"""
+
 import numpy as np
 import pandas as pd
 

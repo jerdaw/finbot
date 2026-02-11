@@ -1,3 +1,15 @@
+"""Percentage change calculation between two values.
+
+Computes the simple percentage change (not compound) between a start and end value.
+Provides options for handling edge cases like division by zero and negative values.
+
+Typical usage:
+    - Calculate price changes
+    - Measure portfolio performance over periods
+    - Compute returns for comparative analysis
+"""
+
+
 def get_pct_change(
     start_val: float,
     end_val: float,

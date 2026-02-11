@@ -1,3 +1,24 @@
+"""US recession indicators from NBER via FRED.
+
+Retrieves National Bureau of Economic Research (NBER) recession indicators from
+the Federal Reserve Economic Data (FRED) database. Returns boolean time series
+indicating whether the US economy was in recession for each period.
+
+Multiple FRED symbols available with different definitions:
+    - USRECD/USREC: Period following peak through trough (standard definition)
+    - USRECDM/USRECM: Peak through trough (includes peak)
+    - USRECDP/USRECP: Peak through period preceding trough
+    - JHDUSRGDPBR: GDP-based recession indicator (quarterly)
+
+Default (USRECD) uses daily/7-day data with standard NBER recession definition.
+
+Typical usage:
+    - Identify recession periods for backtesting strategies
+    - Analyze asset performance during economic downturns
+    - Regime-based analysis (bull market vs recession)
+    - Economic cycle research
+"""
+
 import matplotlib.pyplot as plt
 import pandas as pd
 

@@ -1,3 +1,23 @@
+"""Parse numeric suffixes (k, million, billion, etc.) to multipliers.
+
+Converts human-readable number suffixes to their numeric equivalents. Supports
+common abbreviations and full names, both singular and plural forms.
+
+Supported suffixes:
+    - k, thousand(s): 1,000
+    - m, million(s): 1,000,000
+    - b, billion(s): 1,000,000,000
+    - t, trillion(s): 1,000,000,000,000
+    - %, percent: 0.01
+    - h, hundred(s): 100
+
+Typical usage:
+    - Parse user input with abbreviated numbers (e.g., "2.5M")
+    - Normalize financial data from various sources
+    - Handle human-friendly number formatting
+"""
+
+
 def _generate_suffix_map():
     base_values = {
         "hundred": 100,

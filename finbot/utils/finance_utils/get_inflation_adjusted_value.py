@@ -1,3 +1,17 @@
+"""Inflation adjustment using CPI data from FRED.
+
+Converts nominal dollar amounts to real (inflation-adjusted) values using the
+Consumer Price Index for All Urban Consumers (CPIAUCSL) from FRED.
+
+Essential for comparing dollar amounts across different time periods and
+calculating real returns on investments.
+
+Typical usage:
+    - Adjust historical prices to current dollars
+    - Calculate real returns (nominal returns - inflation)
+    - Compare purchasing power across decades
+"""
+
 import datetime
 
 import pandas as pd

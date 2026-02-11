@@ -1,3 +1,17 @@
+"""Risk-free rate retrieval from FRED (3-month T-bill rates).
+
+Fetches the current or historical risk-free rate (DTB3 series) from the Federal Reserve
+Economic Data (FRED) database. The 3-month Treasury bill rate is the standard proxy for
+the risk-free rate in financial modeling.
+
+Cached using LRU cache to minimize API calls.
+
+Typical usage:
+    - Calculate Sharpe ratios and risk-adjusted returns
+    - Discount future cash flows
+    - Benchmark portfolio performance
+"""
+
 from functools import lru_cache
 
 import pandas as pd

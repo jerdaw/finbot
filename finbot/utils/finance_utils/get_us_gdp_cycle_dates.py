@@ -1,3 +1,23 @@
+"""Parse NBER recession data into dated periods.
+
+Converts boolean recession indicators from NBER/FRED into structured date ranges
+for both recession and non-recession (expansion) periods. Returns a dictionary
+with separate lists for each cycle type.
+
+This is the core parser used by get_us_gdp_recession_dates.py and
+get_us_gdp_non_recession_dates.py convenience wrappers.
+
+Returns:
+    dict with keys:
+        - "recessions": list of (start, end) tuples for recession periods
+        - "non_recessions": list of (start, end) tuples for expansion periods
+
+Typical usage:
+    - Regime-based backtesting (compare strategies in different economic climates)
+    - Economic cycle analysis
+    - Filter time series by economic conditions
+"""
+
 import pandas as pd
 
 from finbot.utils.finance_utils.get_us_gdp_recessions_bools import get_us_gdp_recessions_bools

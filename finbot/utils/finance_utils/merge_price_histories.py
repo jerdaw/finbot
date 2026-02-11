@@ -1,3 +1,18 @@
+"""Merge and splice two price history time series.
+
+Combines two overlapping time series by splicing in the new series and adjusting
+levels to match at a specified fix point (start or end). Useful for extending
+historical data backwards using a correlated proxy or switching data sources.
+
+Common use cases:
+    - Extend ETF history using underlying index data
+    - Replace early data with higher-quality source
+    - Create continuous price series across ticker changes
+
+Implementation uses percentage changes to preserve relative movements while
+adjusting absolute levels to match at the fix point.
+"""
+
 import pandas as pd
 
 # Constants for readability and to avoid magic strings

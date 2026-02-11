@@ -1,3 +1,16 @@
+"""Detect the frequency of time series data (periods per year).
+
+Automatically determines whether data is daily (252), weekly (52), monthly (12),
+quarterly (4), or another frequency by analyzing the DatetimeIndex spacing.
+
+Essential for annualizing returns and risk metrics correctly.
+
+Typical usage:
+    - Annualize returns from arbitrary frequency data
+    - Validate data frequency matches expectations
+    - Convert between different time frequencies
+"""
+
 from typing import Literal
 
 import pandas as pd
