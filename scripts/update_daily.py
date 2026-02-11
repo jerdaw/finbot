@@ -42,6 +42,8 @@ from finbot.utils.data_collection_utils.scrapers.shiller.get_shiller_ch26 import
 from finbot.utils.data_collection_utils.scrapers.shiller.get_shiller_ie_data import get_shiller_ie_data
 from finbot.utils.data_collection_utils.yfinance.get_history import get_history
 
+_step_results: list[tuple[str, float, bool]] = []
+
 
 def _run_with_retry(func, name: str, max_retries: int = 2) -> None:
     """Run a function with retry logic. Logs errors instead of printing."""
@@ -50,13 +52,16 @@ def _run_with_retry(func, name: str, max_retries: int = 2) -> None:
             t1 = perf_counter()
             func()
             t2 = perf_counter()
-            logger.info(f"Completed {name} in {t2 - t1:.1f}s")
+            elapsed = t2 - t1
+            logger.info(f"Completed {name} in {elapsed:.1f}s")
+            _step_results.append((name, elapsed, True))
             return
         except Exception as e:
             if attempt < max_retries:
                 logger.warning(f"{name} failed (attempt {attempt}/{max_retries}): {e}")
             else:
                 logger.error(f"{name} failed after {max_retries} attempts: {e}")
+                _step_results.append((name, 0.0, False))
 
 
 def update_daily() -> None:
@@ -76,7 +81,16 @@ def update_daily() -> None:
         _run_with_retry(func, name)
 
     t_end = perf_counter()
-    logger.info(f"Daily update complete in {t_end - t_start:.1f}s")
+    total_elapsed = t_end - t_start
+
+    # Pipeline summary
+    succeeded = sum(1 for _, _, ok in _step_results if ok)
+    failed = sum(1 for _, _, ok in _step_results if not ok)
+    logger.info(f"Daily update complete in {total_elapsed:.1f}s ({succeeded} succeeded, {failed} failed)")
+    for name, elapsed, ok in _step_results:
+        status = "OK" if ok else "FAILED"
+        logger.info(f"  [{status}] {name}: {elapsed:.1f}s")
+    _step_results.clear()
 
 
 def update_yf_price_histories() -> None:

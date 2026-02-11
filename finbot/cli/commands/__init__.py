@@ -3,6 +3,7 @@
 from finbot.cli.commands.backtest import backtest
 from finbot.cli.commands.optimize import optimize
 from finbot.cli.commands.simulate import simulate
+from finbot.cli.commands.status import status
 from finbot.cli.commands.update import update
 
-__all__ = ["backtest", "optimize", "simulate", "update"]
+__all__ = ["backtest", "optimize", "simulate", "status", "update"]

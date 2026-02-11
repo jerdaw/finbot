@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import click
 
-from finbot.cli.commands import backtest, optimize, simulate, update
+from finbot.cli.commands import backtest, optimize, simulate, status, update
 from finbot.config import logger
 
 
@@ -26,6 +26,7 @@ def cli(ctx: click.Context, verbose: bool) -> None:
       backtest   Execute strategy backtests
       optimize   Run portfolio optimization (DCA, rebalance)
       update     Run daily data update pipeline
+      status     Show data freshness and pipeline health
 
     \b
     Examples:
@@ -47,6 +48,7 @@ cli.add_command(simulate)
 cli.add_command(backtest)
 cli.add_command(optimize)
 cli.add_command(update)
+cli.add_command(status)
 
 
 if __name__ == "__main__":

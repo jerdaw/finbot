@@ -133,6 +133,11 @@ Entry point: `BacktestRunner` in `backtest_runner.py`
   - Calculates CAGR, Sharpe, max drawdown, std dev for each combination
 - **`rebalance_optimizer.py`**: Placeholder (see `backtesting/rebalance_optimizer.py` for working version)
 
+##### `finbot/services/data_quality/` — Data Quality and Observability
+- **`data_source_registry.py`**: Registry of 7 data sources with staleness thresholds
+- **`check_data_freshness.py`**: Scan directories and report freshness status
+- **`validate_dataframe.py`**: Lightweight DataFrame validation (empty, schema, duplicates, nulls)
+
 ##### `finbot/utils/` — Utility Library (~176 files)
 
 **Data collection** (`data_collection_utils/`):
@@ -213,6 +218,8 @@ Create `.env` file in `finbot/config/` (excluded by `.gitignore`).
 | `finbot/services/simulation/monte_carlo/monte_carlo_simulator.py` | Monte Carlo simulations |
 | `finbot/services/optimization/dca_optimizer.py` | DCA grid search optimizer |
 | `scripts/update_daily.py` | Daily data update + simulation pipeline |
+| `finbot/cli/main.py` | CLI entry point (`finbot simulate/backtest/optimize/update/status`) |
+| `finbot/services/data_quality/check_data_freshness.py` | Data freshness monitoring |
 
 ## Code Style
 
@@ -240,7 +247,7 @@ poetry run pytest --cov=finbot tests/
 ```
 
 **Test structure**:
-- `tests/unit/`: Unit tests (80 tests currently)
+- `tests/unit/`: Unit tests (94 tests currently)
   - `test_imports.py`: Smoke tests for all key module imports
   - `test_simulation_math.py`: Unit tests for simulation math correctness
   - `test_finance_utils.py`: Finance calculation tests

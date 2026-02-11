@@ -868,12 +868,26 @@ These items are nice-to-haves that further enhance the project.
 - [ ] Update CLAUDE.md and README with new commands
 - [ ] Note: Can be combined with 3.6 (pyproject.toml modernization)
 
-### 4.6 Data Quality and Observability
+### 4.6 Data Quality and Observability ✓
 
-- [ ] Add data freshness checks: alert if any cached data is older than N days
-- [ ] Add data validation: verify DataFrame shapes, date ranges, and column schemas after each collection step
-- [ ] Add pipeline observability: log runtime, row counts, and error rates for each step in `update_daily.py`
-- [ ] Add a `finbot status` CLI command showing last update times for each data source
+**Status:** COMPLETED (2026-02-11)
+
+**What Was Done:**
+- [x] Add data freshness checks: data source registry with configurable staleness thresholds per source
+- [x] Add data validation: `validate_dataframe()` checks for empty frames, min rows, expected columns, duplicate indices, nulls
+- [x] Add pipeline observability: `update_daily.py` now tracks per-step success/failure and timing, logs summary report at end
+- [x] Add a `finbot status` CLI command showing last update times, file counts, sizes, and staleness for each data source
+- [x] Added 14 unit tests (94 total, all passing)
+
+**New Files:**
+- `finbot/services/data_quality/__init__.py` — Package init
+- `finbot/services/data_quality/data_source_registry.py` — Registry of 7 data sources with staleness thresholds
+- `finbot/services/data_quality/check_data_freshness.py` — Scan directories and report freshness status
+- `finbot/services/data_quality/validate_dataframe.py` — Lightweight DataFrame validation
+- `finbot/cli/commands/status.py` — `finbot status` CLI command with prettytable output
+- `tests/unit/test_data_quality.py` — 14 tests for all new components
+
+**Result:** `finbot status` shows a clean table of all data sources with last update time, file count, size, age, and OK/STALE status. Pipeline summary logging tracks per-step timing and success rates.
 
 ---
 
@@ -905,5 +919,6 @@ _Move items here as they are finished._
 | Replace pickle with parquet | 2026-02-09 | Part of consolidation |
 | Add CI workflow | 2026-02-09 | GitHub Actions, Python 3.11-3.13 matrix |
 | Fix path_constants directory creation | 2026-02-09 | `mkdir(exist_ok=True)` |
+| Data quality and observability | 2026-02-11 | Added `finbot status` CLI command, data source registry with freshness thresholds, DataFrame validation, pipeline observability logging. 14 new tests (94 total). |
 | Consolidate package layout | 2026-02-11 | Moved config/, constants/, libs/ under finbot/ as subpackages. Updated ~120 imports across ~100 files. Single namespace, no import collisions. See ADR-004. |
 | Add initial unit tests | 2026-02-09 | 18 tests across 2 files |
