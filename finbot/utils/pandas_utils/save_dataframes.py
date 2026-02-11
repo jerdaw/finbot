@@ -6,10 +6,10 @@ from pathlib import Path
 import pandas as pd
 from tqdm.contrib.concurrent import thread_map
 
-from config import Config
+from config import settings_accessors
 from finbot.utils.pandas_utils.save_dataframe import save_dataframe
 
-MAX_THREADS = Config.MAX_THREADS
+MAX_THREADS = settings_accessors.MAX_THREADS
 
 
 def save_dataframes(

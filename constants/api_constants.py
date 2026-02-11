@@ -31,10 +31,10 @@ def get_alpha_vantage_rapi_headers() -> dict[str, str]:
     Raises:
         OSError: If ALPHA_VANTAGE_API_KEY environment variable is not set.
     """
-    from config import Config
+    from config import settings_accessors
 
     return {
-        "X-RapidAPI-Key": Config.alpha_vantage_api_key,
+        "X-RapidAPI-Key": settings_accessors.get_alpha_vantage_api_key(),
         "X-RapidAPI-Host": "alpha-vantage.p.rapidapi.com",
     }
 

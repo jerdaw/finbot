@@ -44,21 +44,32 @@ These items fix active bugs, silent failure modes, or architectural hazards that
 - [x] Grep the codebase for other bare `except Exception` blocks — found 6 more in `msci/_utils.py` (web scraping), fixed all with specific Selenium exceptions
 - [x] Add handling for empty `price_histories` in `backtest_batch.py` — added validation at start of function to raise descriptive `ValueError` if empty
 
-### 0.4 Consolidate Dual Config System
+### 0.4 Consolidate Dual Config System ✓
 
-**Current state:** Two independent config systems run simultaneously: `Config` (BaseConfig singleton with API keys/thread counts) and `settings` (Dynaconf YAML-based config). Code inconsistently uses one or the other. The `BaseConfig` → `DevelopmentConfig` → `ProductionConfig` inheritance chain adds no value since subclasses don't override anything.
+**Status:** COMPLETED (2026-02-10)
 
-**Complexity:** HIGH - Affects 14 files across the codebase
-**Implementation Guide:** See `docs/planning/IMPLEMENTATION_GUIDE_0.4.md` for detailed step-by-step instructions
+**Previous state:** Two independent config systems ran simultaneously: `Config` (BaseConfig singleton with API keys/thread counts) and `settings` (Dynaconf YAML-based config). Code inconsistently used one or the other. The `BaseConfig` → `DevelopmentConfig` → `ProductionConfig` inheritance chain added no value since subclasses didn't override anything.
 
-- [ ] Create `config/settings_accessors.py` with functions for MAX_THREADS and API keys
-- [ ] Add threading configuration to Dynaconf YAML files (settings.yaml, development.yaml, production.yaml)
-- [ ] Update 8 files using `Config.MAX_THREADS` to use `settings_accessors.MAX_THREADS`
-- [ ] Update 6 files using API key properties to use `settings_accessors.get_*_api_key()` functions
-- [ ] Update `config/__init__.py` to export `settings`, `logger`, `settings_accessors` (remove Config)
-- [ ] Delete obsolete config files: `base_config.py`, `development_config.py`, `production_config.py`, `staging_config.py`, `testing_config.py`
-- [ ] Test all data collection utilities work with new config system
-- [ ] Test threading utilities work with new MAX_THREADS accessor
+**What Was Done:**
+- [x] Created `config/settings_accessors.py` with functions for MAX_THREADS and API keys
+- [x] Added threading configuration to Dynaconf YAML files (settings.yaml, development.yaml, production.yaml)
+- [x] Updated 8 files using `Config.MAX_THREADS` to use `settings_accessors.MAX_THREADS`
+- [x] Updated 6 files using API key properties to use `settings_accessors.get_*_api_key()` functions
+- [x] Updated `config/__init__.py` to export `settings`, `logger`, `settings_accessors` (removed Config)
+- [x] Deleted obsolete config files: `base_config.py`, `development_config.py`, `production_config.py`, `staging_config.py`, `testing_config.py`
+- [x] Updated test files to test `settings_accessors` instead of `Config`
+- [x] All 80 tests passing
+
+**Files Modified:**
+- **Created:** `config/settings_accessors.py` (new accessor module)
+- **Config files:** `config/settings.yaml`, `config/development.yaml`, `config/production.yaml` (added threading section)
+- **Config module:** `config/__init__.py` (removed Config, added settings_accessors)
+- **MAX_THREADS (8 files):** `finbot/utils/pandas_utils/{save_dataframes.py, load_dataframes.py, save_dataframe.py}`, `finbot/utils/data_collection_utils/{pdr/_utils.py, yfinance/_yfinance_utils.py, scrapers/msci/{_utils.py, get_msci_data.py}}`, `finbot/utils/file_utils/are_files_outdated.py`
+- **API keys (6 files):** `finbot/utils/data_collection_utils/{alpha_vantage/{_alpha_vantage_utils.py, sentiment.py}, bls/{_bls_utils.py, get_all_popular_bls_datas.py}, google_finance/_utils.py}`, `constants/api_constants.py`
+- **Tests:** `tests/unit/{test_config.py, test_imports.py}` (updated to test settings_accessors)
+- **Deleted:** 5 obsolete config files
+
+**Result:** Consolidated to single Dynaconf-based config system. Eliminated circular dependency between config/ and libs/. Single source of truth for configuration. All 80 tests passing.
 
 ### 0.5 Update Ruff and Fix Version Mismatch ✓
 
@@ -551,6 +562,7 @@ _Move items here as they are finished._
 
 | Item | Completed | Notes |
 |------|-----------|-------|
+| Consolidate dual config system - COMPLETE | 2026-02-10 | Eliminated dual config system by consolidating BaseConfig singleton into Dynaconf. Created settings_accessors.py with lazy API key loading and MAX_THREADS accessor. Updated 14 files (8 for MAX_THREADS, 6 for API keys). Deleted 5 obsolete config files. Removed circular dependency between config/ and libs/. Single source of truth for configuration. All 80 tests passing. |
 | Improve CI/CD pipeline - COMPLETE | 2026-02-10 | Enhanced CI workflow with 8 checks: Poetry metadata validation, ruff lint/format, mypy type checking (non-fatal, 109 issues), bandit security scan (non-fatal, 6 low-severity), pip-audit dependency CVE scanning (non-fatal), pytest with coverage reporting (17.53% baseline). Added pytest-cov dependency. Created .coveragerc config. Integrated Codecov for coverage tracking. Added CI status, coverage, Python, and Poetry badges to README. All 80 tests passing. |
 | Complete incomplete components - COMPLETE | 2026-02-10 | Added NTSX to daily update pipeline (sim_ntsx now runs with other fund simulations). Removed empty placeholder directories (finbot/services/investing/, finbot/models/). Clarified rebalance_optimizer.py with convenience import pointing to working backtesting implementation. Verified all util directories are populated with working code. All 80 tests passing. |
 | Add Makefile or task runner - COMPLETE | 2026-02-10 | Created comprehensive Makefile with 14 targets (help, install, update, lint, format, type, security, check, test, test-cov, test-quick, run-update, clean, pre-commit, all). Excludes notebooks from linting/formatting. Type/security checks non-fatal. Updated README with usage examples. Full CI pipeline (`make all`) passes with all 80 tests. Simplifies all development workflows. |

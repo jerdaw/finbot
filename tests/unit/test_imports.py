@@ -8,12 +8,12 @@ def test_import_config():
     assert logger is not None
 
 
-def test_import_config_singleton():
-    from config import Config
+def test_import_settings_accessors():
+    from config import settings_accessors
 
-    assert Config is not None
-    assert hasattr(Config, "MAX_THREADS")
-    assert isinstance(Config.MAX_THREADS, int)
+    assert settings_accessors is not None
+    assert hasattr(settings_accessors, "MAX_THREADS")
+    assert isinstance(settings_accessors.MAX_THREADS, int)
 
 
 def test_import_backtest_runner():

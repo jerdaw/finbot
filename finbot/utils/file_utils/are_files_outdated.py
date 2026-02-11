@@ -7,10 +7,10 @@ from pathlib import Path
 from dateutil.relativedelta import relativedelta
 from tqdm.contrib.concurrent import thread_map
 
-from config import Config
+from config import settings_accessors
 from finbot.utils.file_utils.is_file_outdated import is_file_outdated
 
-MAX_THREADS = Config.MAX_THREADS
+MAX_THREADS = settings_accessors.MAX_THREADS
 
 
 def are_files_outdated(

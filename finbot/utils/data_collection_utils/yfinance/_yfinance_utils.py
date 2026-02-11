@@ -11,7 +11,7 @@ import yfinance as yf
 from dateutil.relativedelta import relativedelta
 from tqdm import tqdm
 
-from config import Config, logger
+from config import logger, settings_accessors
 from constants.path_constants import YFINANCE_DATA_DIR
 from finbot.utils.file_utils.are_files_outdated import are_files_outdated
 from finbot.utils.pandas_utils.filter_by_date import filter_by_date
@@ -19,7 +19,7 @@ from finbot.utils.pandas_utils.load_dataframes import load_dataframes
 from finbot.utils.pandas_utils.save_dataframes import save_dataframes
 from finbot.utils.pandas_utils.sort_dataframe_columns import sort_dataframe_multiindex
 
-MAX_THREADS = Config.MAX_THREADS
+MAX_THREADS = settings_accessors.MAX_THREADS
 
 
 def _get_yf_req_params(**kwargs) -> dict[str, str | bool | None]:

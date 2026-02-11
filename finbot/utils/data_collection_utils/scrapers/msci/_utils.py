@@ -25,7 +25,7 @@ from selenium.webdriver.support import expected_conditions as EC  # noqa: N812 -
 from selenium.webdriver.support.ui import Select, WebDriverWait
 from webdriver_manager.firefox import GeckoDriverManager
 
-from config import Config, logger
+from config import logger, settings_accessors
 from constants.path_constants import MSCI_DATA_DIR
 from finbot.utils.datetime_utils.get_missing_us_business_dates import get_missing_us_business_dates
 from finbot.utils.datetime_utils.get_us_business_dates import get_us_business_dates
@@ -33,7 +33,7 @@ from finbot.utils.file_utils.is_file_outdated import is_file_outdated
 from finbot.utils.pandas_utils.load_dataframe import load_dataframe
 from finbot.utils.pandas_utils.save_dataframe import save_dataframe
 
-MAX_THREADS = Config.MAX_THREADS
+MAX_THREADS = settings_accessors.MAX_THREADS
 
 
 class element_has_style_value:  # noqa: N801 - Selenium expected_condition naming convention

@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from config import Config
+from config import settings_accessors
 from finbot.utils.file_utils.are_files_outdated import are_files_outdated
 from finbot.utils.pandas_utils.load_dataframes import load_dataframes
 from finbot.utils.pandas_utils.save_dataframes import save_dataframes
@@ -77,7 +77,7 @@ def _request_bls_data(series_ids):
             "seriesid": series_ids,
             "startyear": str(end_year),
             "endyear": str(start_year),
-            "registrationkey": Config.us_bureau_of_labor_statistics_api_key,
+            "registrationkey": settings_accessors.get_us_bureau_of_labor_statistics_api_key(),
         }
 
         res_data = RequestHandler().make_json_request(

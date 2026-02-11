@@ -4,7 +4,7 @@ import pandas as pd
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
-from config import Config
+from config import settings_accessors
 from constants.path_constants import GOOGLE_FINANCE_DATA_DIR
 from finbot.utils.datetime_utils.validate_start_end_dates import validate_start_end_dates
 from finbot.utils.file_utils.is_file_outdated import is_file_outdated
@@ -14,7 +14,7 @@ from finbot.utils.pandas_utils.save_dataframe import save_dataframe
 
 
 def _get_google_sheets_credentials():
-    SERVICE_ACCOUNT_FILE = Config.google_finance_service_account_credentials_path  # noqa: N806 - Constant scoped to function
+    SERVICE_ACCOUNT_FILE = settings_accessors.get_google_finance_service_account_credentials_path()  # noqa: N806 - Constant scoped to function
     SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]  # noqa: N806 - Constant scoped to function
     credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
     return credentials

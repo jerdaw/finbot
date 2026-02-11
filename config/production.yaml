@@ -2,6 +2,9 @@ production:
   name: "production"
   debug_mode: false
 
+  threading:
+    reserved_threads: 2  # More conservative in production
+
   logging:
     level: "WARNING"  # Changed to "DEBUG" in logger_config.py if environment.debug_mode is true
     # output_file_path: "logs/production.log"  # Overwritten with a pathlib.Path in logger_config.py

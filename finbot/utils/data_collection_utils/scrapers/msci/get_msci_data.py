@@ -1,9 +1,9 @@
 from tqdm.contrib.concurrent import thread_map
 
-from config import Config
+from config import settings_accessors
 from finbot.utils.data_collection_utils.scrapers.msci._utils import get_msci_single
 
-MAX_THREADS = Config.MAX_THREADS
+MAX_THREADS = settings_accessors.MAX_THREADS
 
 
 def get_msci_data(

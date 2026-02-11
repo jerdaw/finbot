@@ -1,13 +1,13 @@
 import json
 
-from config import Config
+from config import settings_accessors
 from finbot.utils.data_collection_utils.bls.get_bls_data import get_bls_data
 from finbot.utils.request_utils.request_handler import RequestHandler
 
 
 def _get_popular_bls_series_ids():
     headers = {"Content-type": "application/json"}
-    payload = json.dumps({"registrationkey": Config.us_bureau_of_labor_statistics_api_key})
+    payload = json.dumps({"registrationkey": settings_accessors.get_us_bureau_of_labor_statistics_api_key()})
     json_data = RequestHandler().make_json_request(
         url="https://api.bls.gov/publicAPI/v2/timeseries/popular",
         payload_kwargs={"data": payload},

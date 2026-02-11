@@ -5,10 +5,10 @@ from pathlib import Path
 
 from tqdm.contrib.concurrent import thread_map
 
-from config import Config
+from config import settings_accessors
 from finbot.utils.pandas_utils.load_dataframe import load_dataframe
 
-MAX_THREADS = Config.MAX_THREADS
+MAX_THREADS = settings_accessors.MAX_THREADS
 
 
 def load_dataframes(file_paths: Sequence[Path | str]):

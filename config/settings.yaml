@@ -14,6 +14,10 @@ default:
     # `host.identifier` set to dynamic hostname in logger_config.py
     # `host.max_threads` set to dynamic value in logger_config.py
 
+  threading:
+    max_threads: null  # Will be calculated at runtime
+    reserved_threads: 1
+
   logging:
     level: "INFO"  # Changed to "DEBUG" in logger_config.py if environment.debug_mode is true
     # `colored_file_path` set equal to pathlib.Path for "<project root>/log/default.log"

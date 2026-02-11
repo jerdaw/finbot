@@ -51,8 +51,8 @@ poetry run pytest -k test_import              # tests matching pattern
 ### Global Access Pattern
 
 ```python
-from config import settings, logger, Config  # Dynaconf settings + logger + Config singleton
-from libs.api_manager import api_manager     # Singleton API registry
+from config import settings, logger, settings_accessors  # Dynaconf settings + logger + settings accessors
+from libs.api_manager import api_manager                  # Singleton API registry
 ```
 
 ### Package Structure
@@ -267,7 +267,7 @@ See `docs/adr/` for architectural decision records:
 
 | Pattern | Implementation | Rationale |
 | --- | --- | --- |
-| **Singleton Config** | `Config = BaseConfig()` in `config/__init__.py` | Global access to settings, thread count, API keys |
+| **Settings Accessors** | `settings_accessors` module in `config/` | Lazy accessors for MAX_THREADS and API keys (alpha_vantage, nasdaq_data_link, bls, google_finance) |
 | **Lazy API keys** | `APIKeyManager.get_key()` only loads on first access | Prevents import failures when keys not needed |
 | **Queue-based logging** | `libs/logger/setup_queue_logging.py` | Non-blocking async logging for performance |
 | **Vectorized simulation** | Numpy broadcasting in `fund_simulator.py` | Faster than numba loop, no JIT compilation required |
@@ -282,7 +282,7 @@ See `docs/adr/` for architectural decision records:
 
 ## Common Gotchas
 
-1. **Missing API keys**: Functions using `Config.alpha_vantage_api_key` will raise `OSError` on access if env var not set. Set up `.env` file or export env vars before running data collection.
+1. **Missing API keys**: Functions using `settings_accessors.get_alpha_vantage_api_key()` will raise `OSError` on access if env var not set. Set up `.env` file or export env vars before running data collection.
 
 2. **DYNACONF_ENV not set**: Defaults to "development" but logs a warning. Always set explicitly.
 

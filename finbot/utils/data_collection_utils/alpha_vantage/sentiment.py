@@ -7,7 +7,7 @@ from time import sleep
 import pandas as pd
 from tqdm.auto import tqdm
 
-from config import Config, logger
+from config import logger, settings_accessors
 from constants.path_constants import ALPHA_VANTAGE_DATA_DIR
 from finbot.utils.data_collection_utils.alpha_vantage._alpha_vantage_utils import _make_alpha_vantage_request
 from finbot.utils.datetime_utils.get_latest_us_business_date import get_latest_us_business_date
@@ -126,7 +126,7 @@ def get_sentiment(
         "time_to": "",
         "sort": "EARLIEST",
         "limit": "1000",
-        "apikey": Config.alpha_vantage_api_key,  # type: ignore[dict-item]
+        "apikey": settings_accessors.get_alpha_vantage_api_key(),  # type: ignore[dict-item]
     }
     requested_bdates = set(get_us_business_dates(start_date, end_date))
     n_requests = 0

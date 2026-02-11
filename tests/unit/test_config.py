@@ -5,32 +5,30 @@ from __future__ import annotations
 import pytest
 
 
-class TestBaseConfig:
-    """Tests for BaseConfig singleton."""
+class TestSettingsAccessors:
+    """Tests for settings_accessors module."""
 
-    def test_config_singleton(self):
-        """Test that Config is a singleton."""
-        from config import Config
+    def test_settings_accessors_exists(self):
+        """Test that settings_accessors can be imported."""
+        from config import settings_accessors
 
-        config1 = Config
-        config2 = Config
+        assert settings_accessors is not None
 
-        assert config1 is config2
+    def test_settings_accessors_has_max_threads(self):
+        """Test that settings_accessors has MAX_THREADS."""
+        from config import settings_accessors
 
-    def test_config_has_max_threads(self):
-        """Test that Config has MAX_THREADS attribute."""
-        from config import Config
+        assert hasattr(settings_accessors, "MAX_THREADS")
+        assert isinstance(settings_accessors.MAX_THREADS, int)
+        assert settings_accessors.MAX_THREADS > 0
 
-        assert hasattr(Config, "MAX_THREADS")
-        assert isinstance(Config.MAX_THREADS, int)
-        assert Config.MAX_THREADS > 0
+    def test_get_max_threads_function(self):
+        """Test that get_max_threads function works."""
+        from config import settings_accessors
 
-    def test_config_has_attributes(self):
-        """Test that Config has expected attributes."""
-        from config import Config
-
-        # Config should be an object with attributes
-        assert Config is not None
+        max_threads = settings_accessors.get_max_threads()
+        assert isinstance(max_threads, int)
+        assert max_threads > 0
 
 
 class TestDynaconfSettings:

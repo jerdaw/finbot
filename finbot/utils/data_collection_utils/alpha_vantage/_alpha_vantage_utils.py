@@ -5,7 +5,7 @@ from typing import Any
 
 import pandas as pd
 
-from config import Config, logger
+from config import logger, settings_accessors
 from constants.api_constants import ALPHA_VANTAGE_API_FUNCTIONS, ALPHA_VANTAGE_RAPI_FUNCTIONS
 from constants.path_constants import ALPHA_VANTAGE_DATA_DIR, RESPONSES_DATA_DIR
 from finbot.utils.file_utils.is_file_outdated import is_file_outdated
@@ -16,10 +16,14 @@ from finbot.utils.request_utils.request_handler import RequestHandler
 
 ALPHA_VANTAGE_API_URL = "https://www.alphavantage.co/query"
 ALPHA_VANTAGE_RAPIDAPI_URL = "https://alpha-vantage.p.rapidapi.com/query"
-ALPHA_VANTAGE_RAPIDAPI_HEADERS = {
-    "X-RapidAPI-Key": Config.alpha_vantage_api_key,
-    "X-RapidAPI-Host": "alpha-vantage.p.rapidapi.com",
-}
+
+
+def _get_alpha_vantage_rapidapi_headers() -> dict[str, str]:
+    """Get RapidAPI headers with API key (lazy loaded)."""
+    return {
+        "X-RapidAPI-Key": settings_accessors.get_alpha_vantage_api_key(),
+        "X-RapidAPI-Host": "alpha-vantage.p.rapidapi.com",
+    }
 
 
 def _determine_alpha_vantage_api_provider(func_name: str) -> str:
@@ -99,11 +103,11 @@ def _make_alpha_vantage_request(
         return req_handler.make_json_request(
             url=ALPHA_VANTAGE_RAPIDAPI_URL,
             payload_kwargs={"params": req_params},
-            headers=ALPHA_VANTAGE_RAPIDAPI_HEADERS,
+            headers=_get_alpha_vantage_rapidapi_headers(),
             save_dir=save_dir,
         )
     if provider == "av":
-        req_params["apikey"] = str(Config.alpha_vantage_api_key)
+        req_params["apikey"] = str(settings_accessors.get_alpha_vantage_api_key())
         return req_handler.make_json_request(
             url=ALPHA_VANTAGE_API_URL,
             payload_kwargs={"params": req_params},
