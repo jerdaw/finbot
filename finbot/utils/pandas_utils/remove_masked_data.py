@@ -1,3 +1,15 @@
+"""Remove data points based on boolean mask.
+
+Applies boolean masks to remove unwanted data points from pandas Series.
+Complements get_data_mask.py which creates the masks.
+
+Typical usage:
+    - Remove outliers identified by mask
+    - Filter out invalid data points
+    - Clean time series by removing gaps
+    - Apply complex filtering criteria
+"""
+
 from __future__ import annotations
 
 import pandas as pd

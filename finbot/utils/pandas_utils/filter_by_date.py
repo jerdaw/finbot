@@ -1,3 +1,21 @@
+"""Filter DataFrame by date range with bounds validation.
+
+Filters pandas DataFrame or Series to a specified date range, automatically
+handling DatetimeIndex requirements. Clamps requested dates to available data
+range to avoid empty results.
+
+Validates input types and ensures index is DatetimeIndex (converts from
+'Date' column if needed).
+
+Complements filter_by_time.py for time-of-day filtering.
+
+Typical usage:
+    - Extract subset of price data for backtesting
+    - Filter data to specific analysis period
+    - Remove data outside relevant time range
+    - Prepare data for time-bounded operations
+"""
+
 import datetime as dt
 
 import pandas as pd

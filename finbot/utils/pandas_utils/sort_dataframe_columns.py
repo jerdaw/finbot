@@ -1,3 +1,18 @@
+"""Sort DataFrame columns with MultiIndex support.
+
+Provides column sorting for both regular and MultiIndex DataFrames. For
+MultiIndex columns, sorts only the specified level while preserving order
+of other levels within groups.
+
+Essential for organizing complex DataFrames with hierarchical columns.
+
+Typical usage:
+    - Organize multi-asset DataFrames (assets by metrics)
+    - Sort portfolio holdings by sector then ticker
+    - Arrange time series by category then date
+    - Prepare DataFrames for display or export
+"""
+
 from __future__ import annotations
 
 import pandas as pd

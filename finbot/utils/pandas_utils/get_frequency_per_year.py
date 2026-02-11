@@ -1,3 +1,21 @@
+"""Calculate data frequency within a given interval.
+
+Determines how many data points occur within a specified time interval (e.g.,
+how many observations per year). Supports mean, mode, and last methods for
+handling varying frequencies.
+
+Used for annualization calculations and frequency validation.
+
+Related to get_timeseries_frequency.py which detects the base frequency,
+while this calculates occurrences per interval.
+
+Typical usage:
+    - Calculate observations per year for annualization
+    - Verify expected data density
+    - Support frequency-dependent calculations
+    - Validate data collection cadence
+"""
+
 import pandas as pd
 
 from constants.data_constants import DEMO_DATA

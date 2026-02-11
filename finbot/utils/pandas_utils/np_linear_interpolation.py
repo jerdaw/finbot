@@ -1,3 +1,18 @@
+"""Linear interpolation for NumPy arrays with NaN values.
+
+Provides utilities for interpolating missing (NaN) values in NumPy arrays
+using linear interpolation. Helper function identifies NaN locations and
+creates indexing callable for efficient interpolation.
+
+Lower-level than pandas interpolate() but useful for NumPy-based workflows.
+
+Typical usage:
+    - Fill gaps in time series data
+    - Interpolate missing sensor readings
+    - Smooth data with occasional missing values
+    - Bridge gaps in numerical arrays
+"""
+
 from collections.abc import Callable
 
 import numpy as np

@@ -1,3 +1,25 @@
+"""Generate hash of DataFrame content for versioning and caching.
+
+Creates cryptographic hash of DataFrame data for:
+    - Content-based file naming (see save_dataframe.py)
+    - Change detection (has data changed?)
+    - Cache key generation
+    - Data integrity verification
+
+Row-by-row hashing approach ensures:
+    - Consistency independent of chunk size
+    - Handles various data types via stringify_df_value.py
+    - Configurable hash algorithm (md5, sha256, etc.)
+
+Used by save_dataframe.py to generate automatic file names based on content.
+
+Typical usage:
+    - Generate cache keys for expensive computations
+    - Detect data changes without full comparison
+    - Create content-addressed storage
+    - Verify data integrity after transfer
+"""
+
 from __future__ import annotations
 
 import hashlib

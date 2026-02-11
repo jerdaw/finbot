@@ -1,3 +1,29 @@
+"""Detect time series frequency automatically with outlier removal.
+
+Analyzes time series DatetimeIndex to determine update frequency (daily,
+weekly, monthly, etc.). Uses sophisticated approach with outlier removal
+and fallback calculations for irregular data.
+
+Returns frequency in multiple formats:
+    - 'str': Pandas frequency string (e.g., 'D', 'W', 'M')
+    - 'timedelta': pandas.Timedelta for fixed frequencies
+    - 'relativedelta': dateutil.relativedelta for calendar frequencies
+
+Handles edge cases:
+    - Removes outlier time differences before analysis
+    - Supports direct matching against common frequencies
+    - Falls back to average-based calculation
+    - Caches pandas offset conversions for performance
+
+Used by get_periods_per_year.py and various data processing functions.
+
+Typical usage:
+    - Validate data collection frequency
+    - Auto-detect resampling frequency
+    - Verify expected data cadence
+    - Support frequency-aware operations
+"""
+
 from __future__ import annotations
 
 from collections import Counter

@@ -1,3 +1,17 @@
+"""Filter DataFrame by time-of-day range.
+
+Filters pandas DataFrame or Series to specific times of day (e.g., market hours).
+Requires DatetimeIndex with time information, not just dates.
+
+Complements filter_by_date.py which filters by date range.
+
+Typical usage:
+    - Filter to market hours (9:30 AM - 4:00 PM)
+    - Extract intraday trading data
+    - Remove after-hours data
+    - Analyze specific time windows
+"""
+
 import datetime as dt
 
 import pandas as pd

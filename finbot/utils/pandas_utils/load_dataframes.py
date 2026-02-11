@@ -1,3 +1,18 @@
+"""Load multiple DataFrames in parallel using multithreading.
+
+Batch loading of pandas DataFrames with parallel execution for performance.
+Uses thread_map for concurrent I/O operations with progress bar.
+
+Wraps load_dataframe.py to load multiple files simultaneously. Particularly
+beneficial when loading many files from network storage or slow disks.
+
+Typical usage:
+    - Load batch backtest results for analysis
+    - Import multiple time series files
+    - Read simulation outputs in parallel
+    - Bulk data import operations
+"""
+
 from __future__ import annotations
 
 from collections.abc import Sequence

@@ -1,3 +1,18 @@
+"""Save multiple DataFrames in parallel using multithreading.
+
+Batch saving of pandas DataFrames with parallel execution for performance.
+Uses thread_map for concurrent I/O operations with progress bar.
+
+Wraps save_dataframe.py to save multiple files simultaneously. Particularly
+beneficial when saving many files to network storage or slow disks.
+
+Typical usage:
+    - Save results from batch backtesting
+    - Export multiple time series to files
+    - Persist simulation outputs
+    - Bulk data export operations
+"""
+
 from __future__ import annotations
 
 from collections.abc import Sequence

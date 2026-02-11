@@ -1,3 +1,24 @@
+"""Parse DataFrame from API response dictionaries.
+
+Extracts and transforms data from API response dictionaries into pandas
+DataFrames. Handles common API response patterns like nested data keys,
+transposed data, and date indexing.
+
+Particularly useful for parsing JSON responses from financial data APIs.
+
+Features:
+    - Extract data from nested response structures
+    - Optional transposition for row-major data
+    - Automatic date index setting and sorting
+    - Logging for debugging response parsing
+
+Typical usage:
+    - Parse FRED API responses
+    - Process Alpha Vantage data
+    - Transform API JSON to DataFrame
+    - Handle various API response formats
+"""
+
 from __future__ import annotations
 
 from typing import Any

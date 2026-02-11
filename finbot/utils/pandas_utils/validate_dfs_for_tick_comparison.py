@@ -1,3 +1,22 @@
+"""Validate DataFrames for tick-by-tick comparison.
+
+Ensures multiple DataFrames are aligned for tick-by-tick comparison by
+checking length consistency and index alignment. Essential for comparing
+time series data point-by-point.
+
+Configurable strictness:
+    - all_lens_match: Require same number of rows
+    - identical_indexes: Require exact index matching
+
+Raises ValueErrors or warnings depending on configuration.
+
+Typical usage:
+    - Validate data before correlation analysis
+    - Ensure price series alignment before comparison
+    - Check data consistency before merging
+    - Verify synchronized time series data
+"""
+
 import warnings
 
 

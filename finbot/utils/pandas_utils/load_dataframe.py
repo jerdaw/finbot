@@ -1,3 +1,24 @@
+"""Load pandas DataFrame or Series from parquet files.
+
+Simple loader for parquet files with optional error handling. Validates file
+extension and provides informative logging. Returns empty DataFrame instead
+of raising when raise_exception=False.
+
+Parquet format benefits:
+    - Fast loading compared to CSV
+    - Type preservation (no need to specify dtypes)
+    - Compressed storage
+    - Safer than pickle
+
+Complements save_dataframe.py for data persistence.
+
+Typical usage:
+    - Load cached computation results
+    - Restore backtest data
+    - Read downloaded price histories
+    - Load simulation outputs
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

@@ -1,3 +1,25 @@
+"""Convert any DataFrame value to consistent string representation.
+
+Converts various data types to string representations for hashing and
+comparison. Handles special cases like NaN values, complex types, and
+nested structures.
+
+Used by hash_dataframe.py to create consistent string representations
+of DataFrame content for cryptographic hashing.
+
+Features:
+    - Handles NaN values (pandas and otherwise)
+    - Consistent string formatting for numbers
+    - Supports lists, dictionaries, and complex types
+    - Deterministic output for hashing
+
+Typical usage:
+    - Prepare DataFrame values for hashing
+    - Create string keys from mixed-type data
+    - Normalize values for comparison
+    - Generate consistent representations
+"""
+
 from __future__ import annotations
 
 from typing import Any

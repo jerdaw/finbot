@@ -479,15 +479,24 @@ These items improve professionalism and maintainability.
   - Conversions subdirectory (7 files): convert_frequency, str_to_timedelta, timedelta_to_str, str_to_relativedelta, relativedelta_to_str, timedelta_to_relativedelta, relativedelta_to_timedelta
   - Docstrings explain purpose, typical usage, relationships between modules
   - Established consistent template across all datetime utilities
+- [x] Add module-level docstrings to pandas_utils (17 files)
+  - All 17 pandas_utils files now have comprehensive module docstrings in Google style
+  - Save/Load (4 files): save_dataframe, save_dataframes, load_dataframe, load_dataframes
+  - Filtering/Masking (4 files): filter_by_date, filter_by_time, get_data_mask, remove_masked_data
+  - Frequency Detection (2 files): get_timeseries_frequency, get_frequency_per_year
+  - Data Operations (5 files): hash_dataframe, sort_dataframe_columns, merge_data_on_closest_date, np_linear_interpolation, parse_df_from_res
+  - Utilities (2 files): stringify_df_value, validate_dfs_for_tick_comparison
+  - Docstrings explain parquet benefits, typical usage, relationships to other modules
+  - Highlighted parallel processing features in save/load_dataframes
 
 **Remaining Items:**
 - [ ] Add API documentation using mkdocs or Sphinx (comprehensive documentation system)
   - Document public API of fund_simulator, BacktestRunner, dca_optimizer, monte_carlo_simulator
   - Would benefit from dedicated implementation session
-- [ ] Add module-level docstrings to remaining utility categories (134 files remaining)
-  - Priorities: pandas_utils (17 files), data_collection_utils (40 files)
-  - Completed: finance_utils (19 files), datetime_utils (23 files)
-  - Remaining categories: pandas_utils, data_collection_utils, data_science_utils, plotting_utils, file_utils, json_utils, request_utils, and smaller utility modules
+- [ ] Add module-level docstrings to remaining utility categories (117 files remaining)
+  - Priority: data_collection_utils (40 files) - External API integrations
+  - Completed: finance_utils (19 files), datetime_utils (23 files), pandas_utils (17 files)
+  - Remaining categories: data_collection_utils, data_science_utils (36 files), plotting_utils, file_utils, json_utils, request_utils, and smaller utility modules
   - Gradual improvement recommended: complete category by category as work continues
 
 **Result:** Significantly improved documentation accessibility. README now provides clear motivation and architecture overview. Utility library well-documented with searchable reference. CLI decision formally documented.

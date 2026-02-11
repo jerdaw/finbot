@@ -1,3 +1,27 @@
+"""Save pandas DataFrame or Series to parquet with safety checks.
+
+Saves pandas data structures to parquet format with intelligent features:
+    - Automatic file naming using data hash and timestamp
+    - Consistency checks against existing files (row count, columns, dtypes)
+    - Smart backup of existing files when safety checks fail
+    - Configurable compression (default: zstd)
+    - Automatic directory creation
+
+Parquet format provides:
+    - Fast I/O compared to CSV
+    - Smaller file sizes with compression
+    - Type preservation (no parsing needed on load)
+    - Better than pickle (safer, more interoperable)
+
+Complements load_dataframe.py for data persistence.
+
+Typical usage:
+    - Cache intermediate computation results
+    - Persist backtest results
+    - Save downloaded data
+    - Archive time series snapshots
+"""
+
 from __future__ import annotations
 
 from datetime import datetime

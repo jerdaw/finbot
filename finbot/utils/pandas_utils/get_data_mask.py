@@ -1,3 +1,21 @@
+"""Create boolean masks from flexible criteria functions.
+
+Generates boolean masks for pandas data structures using custom criteria
+functions. Supports both single criteria (for Series) and column-specific
+criteria (for DataFrames).
+
+More flexible than simple comparison operators by allowing arbitrary
+boolean functions. Optional vectorization for performance.
+
+Related to remove_masked_data.py which applies masks to remove data.
+
+Typical usage:
+    - Identify outliers using custom logic
+    - Flag data quality issues
+    - Mark special conditions (gaps, anomalies)
+    - Create complex filters not expressible as simple comparisons
+"""
+
 from __future__ import annotations
 
 from collections.abc import Callable

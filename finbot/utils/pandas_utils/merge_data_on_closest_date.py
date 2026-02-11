@@ -1,3 +1,19 @@
+"""Merge DataFrames by matching to nearest dates (asof join).
+
+Merges two DataFrames with different frequencies by matching each date in
+index_df to the closest preceding date in value_df. Useful for combining
+monthly and daily data, or any misaligned time series.
+
+Implements backward-looking asof join: for each date in index_df, finds the
+most recent available data from value_df.
+
+Typical usage:
+    - Add daily market data to monthly portfolio statements
+    - Merge economic indicators at different frequencies
+    - Combine earnings data (quarterly) with prices (daily)
+    - Join datasets with misaligned timestamps
+"""
+
 import pandas as pd
 
 
