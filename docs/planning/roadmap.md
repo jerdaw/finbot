@@ -489,14 +489,24 @@ These items improve professionalism and maintainability.
   - Docstrings explain parquet benefits, typical usage, relationships to other modules
   - Highlighted parallel processing features in save/load_dataframes
 
+- [x] Add module-level docstrings to data_collection_utils (40 files)
+  - All 40 data_collection_utils files now have comprehensive module docstrings in Google style
+  - Alpha Vantage (16 files): _alpha_vantage_utils, cpi, daily_sentiment, durables, federal_funds_rate, global_quote, inflation, nonfarm_payroll, real_gdp, real_gdp_per_capita, retail_sales, sentiment, time_series_daily_adjusted, time_series_intraday, treasury_yields, unemployment
+  - BLS (4 files): _bls_utils, get_all_popular_bls_datas, get_bls_data, get_bls_usa_cpi
+  - FRED (4 files): correlate_fred_to_price, get_fred_data, get_popular_fred_symbol_dfs, get_popular_fred_symbols
+  - Google Finance (5 files): _utils, get_xndx, get_idcot1tr, get_idcot7tr, get_idcot20tr
+  - YFinance (4 files): _yfinance_utils, get_history, get_current_price, get_info
+  - PDR (1 file): _utils
+  - Scrapers (6 files): msci/_utils, msci/get_msci_data, multpl, shiller/get_shiller_ch26, shiller/get_shiller_ie_data, shiller/get_shiller_data
+  - Docstrings explain API sources, update frequencies, typical usage, and caching behavior
+
 **Remaining Items:**
 - [ ] Add API documentation using mkdocs or Sphinx (comprehensive documentation system)
   - Document public API of fund_simulator, BacktestRunner, dca_optimizer, monte_carlo_simulator
   - Would benefit from dedicated implementation session
-- [ ] Add module-level docstrings to remaining utility categories (117 files remaining)
-  - Priority: data_collection_utils (40 files) - External API integrations
-  - Completed: finance_utils (19 files), datetime_utils (23 files), pandas_utils (17 files)
-  - Remaining categories: data_collection_utils, data_science_utils (36 files), plotting_utils, file_utils, json_utils, request_utils, and smaller utility modules
+- [ ] Add module-level docstrings to remaining utility categories (77 files remaining)
+  - Completed: finance_utils (19 files), datetime_utils (23 files), pandas_utils (17 files), data_collection_utils (40 files)
+  - Remaining categories: data_science_utils (36 files), plotting_utils, file_utils, json_utils, request_utils, and smaller utility modules
   - Gradual improvement recommended: complete category by category as work continues
 
 **Result:** Significantly improved documentation accessibility. README now provides clear motivation and architecture overview. Utility library well-documented with searchable reference. CLI decision formally documented.

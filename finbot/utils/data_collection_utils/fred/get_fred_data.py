@@ -1,3 +1,22 @@
+"""Fetch economic data from FRED (Federal Reserve Economic Data).
+
+Retrieves time series data from the Federal Reserve Bank of St. Louis FRED
+database using pandas_datareader. Supports batch fetching, caching, and
+automatic updates.
+
+FRED provides over 800,000 economic time series including:
+    - GDP and productivity data
+    - Interest rates and yields
+    - Employment and unemployment
+    - Inflation measures (CPI, PCE)
+    - Money supply and credit
+
+Find series IDs at: https://fred.stlouisfed.org/
+
+Data source: Federal Reserve Bank of St. Louis FRED
+Update frequency: Varies by series (daily, weekly, monthly, quarterly, annual)
+"""
+
 from __future__ import annotations
 
 import datetime

@@ -1,3 +1,25 @@
+"""Fetch Robert Shiller's Chapter 26 dataset.
+
+Downloads historical market data from Robert Shiller's book "Irrational
+Exuberance" Chapter 26 Excel file. Contains stock prices, dividends,
+earnings, interest rates, and CPI data dating back to the 1800s.
+
+Includes:
+    - S&P Composite stock price index
+    - Dividends and earnings
+    - Interest rates (1-year and 10-year)
+    - Consumer Price Index (CPI)
+    - Real values and present value calculations
+    - P/E ratios (1-year and 10-year CAPE)
+
+Note: Chapter 26 data only goes to 2016. For more recent data,
+use get_shiller_ie_data instead.
+
+Data source: Yale University - Robert Shiller's website
+Update frequency: Static (historical dataset to 2016)
+File format: Excel (.xlsx)
+"""
+
 import pandas as pd
 
 from constants.path_constants import SHILLER_DATA_DIR

@@ -1,3 +1,21 @@
+"""Scrape popular FRED series IDs from FRED website.
+
+Scrapes the Federal Reserve Economic Data (FRED) website to identify
+currently popular economic data series based on page view statistics.
+Results are cached to JSON for 30 days to avoid excessive scraping.
+
+Scraping details:
+    - Uses BeautifulSoup to parse FRED series tables
+    - Multithreaded scraping for performance
+    - Filters for USA nation-tagged series sorted by popularity
+    - Default: scrapes top 10 pages (varies by page size)
+
+Typical usage:
+    - Discovery of trending economic indicators
+    - Building comprehensive economic dashboards
+    - Identifying newly relevant data series
+"""
+
 from concurrent.futures import ThreadPoolExecutor
 from threading import Lock
 

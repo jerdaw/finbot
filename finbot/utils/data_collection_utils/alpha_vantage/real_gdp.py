@@ -1,3 +1,13 @@
+"""Fetch Real Gross Domestic Product (GDP) data from Alpha Vantage.
+
+Retrieves quarterly real GDP figures adjusted for inflation. GDP is the
+total value of goods and services produced in the U.S. economy.
+
+Data source: U.S. Bureau of Economic Analysis via Alpha Vantage
+Update frequency: Quarterly
+API function: REAL_GDP
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

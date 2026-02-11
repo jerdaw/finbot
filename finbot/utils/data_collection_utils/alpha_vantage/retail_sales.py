@@ -1,3 +1,13 @@
+"""Fetch retail sales data from Alpha Vantage.
+
+Retrieves monthly retail sales figures measuring consumer spending at retail
+stores. Leading indicator of consumer confidence and economic health.
+
+Data source: U.S. Census Bureau via Alpha Vantage
+Update frequency: Monthly
+API function: RETAIL_SALES
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

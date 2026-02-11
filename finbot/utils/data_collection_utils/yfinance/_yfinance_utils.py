@@ -1,3 +1,26 @@
+"""Core utilities for Yahoo Finance (yfinance) data integration.
+
+Provides base functionality for all yfinance API calls including:
+    - Batch fetching of price histories and ticker info
+    - Multithreaded data retrieval for performance
+    - Automatic caching to parquet files
+    - Update detection based on data freshness
+    - Date and time filtering (including pre/post market)
+    - MultiIndex DataFrame handling for multi-symbol data
+
+Yahoo Finance provides:
+    - Historical price data (OHLCV) at multiple intervals
+    - Real-time quotes and current prices
+    - Company fundamental data (info)
+    - Dividend and stock split histories
+    - Pre-market and after-hours trading data
+
+All specific yfinance functions (get_history.py, get_info.py, get_current_price.py)
+use this module as their base implementation.
+
+API Source: Yahoo Finance via yfinance library
+"""
+
 from __future__ import annotations
 
 import concurrent.futures

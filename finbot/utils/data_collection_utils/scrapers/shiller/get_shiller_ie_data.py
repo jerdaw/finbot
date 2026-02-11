@@ -1,3 +1,27 @@
+"""Fetch Robert Shiller's IE (Irrational Exuberance) dataset.
+
+Downloads the actively maintained Irrational Exuberance dataset from
+Robert Shiller's Yale website. Contains comprehensive S&P 500 historical
+data including the famous Shiller CAPE ratio (Cyclically Adjusted P/E).
+
+Includes:
+    - S&P Composite prices, dividends, earnings
+    - CAPE ratio (P/E10) and TR CAPE
+    - Real prices and total return prices
+    - Consumer Price Index (CPI)
+    - Long-term interest rates (GS10)
+    - 10-year annualized returns (stocks and bonds)
+    - Excess CAPE yield
+
+This is the primary source for CAPE ratio calculations used in market
+valuation analysis.
+
+Data source: Yale University - Robert Shiller's website
+Update frequency: Monthly
+File format: Excel (.xls)
+URL: http://www.econ.yale.edu/~shiller/data/ie_data.xls
+"""
+
 import datetime as dt
 
 import pandas as pd

@@ -1,3 +1,13 @@
+"""Fetch inflation rate data from Alpha Vantage.
+
+Retrieves annual inflation rate data (typically measured by CPI year-over-year
+percentage change). Essential for real return calculations.
+
+Data source: Federal Reserve via Alpha Vantage
+Update frequency: Monthly/Annual
+API function: INFLATION
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

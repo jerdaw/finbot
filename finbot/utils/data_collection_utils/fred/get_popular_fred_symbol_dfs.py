@@ -1,3 +1,18 @@
+"""Fetch DataFrames for popular FRED economic series.
+
+Convenience wrapper that scrapes the FRED website for currently popular
+series IDs, then fetches their complete historical data in one batch.
+
+Popular series typically include:
+    - S&P 500 stock index
+    - Unemployment rate
+    - GDP and industrial production
+    - Interest rates and yields
+    - Consumer sentiment indexes
+
+Useful for getting a broad snapshot of current economic conditions.
+"""
+
 import pandas as pd
 
 from finbot.utils.data_collection_utils.fred.get_fred_data import get_fred_data

@@ -1,3 +1,13 @@
+"""Fetch Real GDP per capita from Alpha Vantage.
+
+Retrieves quarterly real GDP per capita, measuring economic output per person.
+Better metric than total GDP for comparing economic well-being across time.
+
+Data source: U.S. Bureau of Economic Analysis via Alpha Vantage
+Update frequency: Quarterly
+API function: REAL_GDP_PER_CAPITA
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

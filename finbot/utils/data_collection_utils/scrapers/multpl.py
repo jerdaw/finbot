@@ -1,3 +1,26 @@
+"""Scrape financial data from multpl.com.
+
+Scrapes S&P 500 fundamental data, treasury rates, and economic indicators
+from multpl.com using BeautifulSoup. Provides historical valuation metrics
+and macro data in convenient pandas DataFrames.
+
+Available data includes:
+    - S&P 500 earnings, P/E ratios, dividends, book value
+    - Shiller PE (CAPE ratio)
+    - Treasury yields (1M-30Y) and real rates
+    - GDP, CPI, population statistics
+    - Median income and home prices
+
+Typical usage:
+    - Market valuation analysis
+    - Building economic indicators dashboard
+    - Historical backtesting with fundamentals
+
+Data source: multpl.com (aggregates from various government sources)
+Update frequency: Monthly to quarterly (depends on metric)
+Scraping method: BeautifulSoup
+"""
+
 import datetime as dt
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path

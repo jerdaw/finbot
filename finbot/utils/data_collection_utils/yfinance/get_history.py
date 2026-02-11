@@ -1,3 +1,21 @@
+"""Fetch historical price data from Yahoo Finance.
+
+Retrieves historical OHLCV (Open, High, Low, Close, Volume) data for stocks,
+ETFs, and other securities via the yfinance library. Supports multiple
+symbols, date ranges, and various time intervals.
+
+Features:
+    - Batch symbol fetching (efficient for multiple tickers)
+    - Automatic caching to parquet files
+    - Adjusted close prices (dividend/split adjusted)
+    - Multiple intervals (1m, 5m, 1h, 1d, 1wk, etc.)
+    - Pre/post market data support
+    - Incremental updates (only fetches new data)
+
+Data source: Yahoo Finance
+Update frequency: Real-time to daily (depends on interval)
+"""
+
 from __future__ import annotations
 
 from collections.abc import Sequence

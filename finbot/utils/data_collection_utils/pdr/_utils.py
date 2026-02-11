@@ -1,3 +1,26 @@
+"""Core utilities for pandas_datareader (PDR) integration.
+
+Provides base functionality for fetching economic and financial data via
+pandas_datareader library. Serves as the foundation for FRED data retrieval
+and other pandas_datareader data sources.
+
+Features:
+    - Automatic caching to parquet files
+    - Update detection based on data freshness
+    - Batch symbol fetching
+    - Date filtering and validation
+    - Retry logic with configurable timeout
+
+Supports pandas_datareader sources:
+    - FRED (Federal Reserve Economic Data)
+    - World Bank
+    - OECD
+    - Eurostat
+    - And other pandas_datareader backends
+
+pandas_datareader documentation: https://pandas-datareader.readthedocs.io/
+"""
+
 from __future__ import annotations
 
 import datetime

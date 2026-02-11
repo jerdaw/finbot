@@ -1,3 +1,13 @@
+"""Batch scrape multiple MSCI indexes in parallel.
+
+Wrapper around MSCI scraper that fetches multiple indexes concurrently
+using thread pools. Useful for updating a portfolio of international
+indexes efficiently.
+
+Data source: MSCI website
+Update frequency: Daily
+"""
+
 from tqdm.contrib.concurrent import thread_map
 
 from config import settings_accessors

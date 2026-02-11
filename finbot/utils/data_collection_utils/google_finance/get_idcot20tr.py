@@ -1,3 +1,15 @@
+"""Fetch ICE U.S. Treasury 20+ Year Bond Index from Google Sheets.
+
+Retrieves historical price data for the ICE U.S. Treasury 20+ Year Bond
+Total Return Index. Tracks the performance of U.S. Treasury bonds with
+20+ year maturities including coupon payments.
+
+Index: ^IDCOT20TR (ICE 20+ Year Treasury Total Return)
+Data start: 2016-01-04
+Update frequency: Daily
+Data source: Google Sheets
+"""
+
 import datetime as dt
 
 import pandas as pd

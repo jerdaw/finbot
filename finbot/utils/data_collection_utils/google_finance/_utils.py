@@ -1,3 +1,23 @@
+"""Core utilities for Google Sheets-based financial data retrieval.
+
+Provides base functionality for fetching index data from Google Sheets using
+the Google Sheets API (v4). Used primarily for ICE U.S. Treasury indexes and
+Nasdaq 100 Total Return data that are maintained in shared spreadsheets.
+
+Features:
+    - OAuth2 service account authentication
+    - Automatic caching to parquet files
+    - Update checking based on data freshness
+    - Date filtering and validation
+
+Requires:
+    - Google Sheets API enabled
+    - Service account credentials JSON file
+    - GOOGLE_FINANCE_SERVICE_ACCOUNT_CREDENTIALS_PATH environment variable
+
+Google Sheets API documentation: https://developers.google.com/sheets/api
+"""
+
 import datetime as dt
 
 import pandas as pd

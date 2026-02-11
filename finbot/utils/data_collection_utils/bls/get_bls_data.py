@@ -1,3 +1,21 @@
+"""Fetch BLS economic data by series ID.
+
+Main entry point for retrieving Bureau of Labor Statistics time series data
+by series ID. Supports batch fetching (up to 50 series at once), automatic
+caching, and incremental updates.
+
+Series IDs can be found at: https://www.bls.gov/help/hlpforma.htm
+
+Common series IDs:
+    - CUUR0000SA0: CPI for All Urban Consumers (CPI-U)
+    - LNS14000000: Unemployment Rate
+    - PRS85006092: Business Sector Labor Productivity
+
+Data source: U.S. Bureau of Labor Statistics API
+Update frequency: Varies by series (monthly, quarterly, annual)
+API endpoint: /timeseries/data/
+"""
+
 import datetime
 
 import pandas as pd

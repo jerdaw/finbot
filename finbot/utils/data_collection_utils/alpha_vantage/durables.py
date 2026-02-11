@@ -1,3 +1,14 @@
+"""Fetch durable goods orders data from Alpha Vantage.
+
+Retrieves monthly durable goods orders, an economic indicator measuring
+new orders for long-lasting manufactured goods (cars, appliances, etc.).
+Leading indicator of manufacturing sector health.
+
+Data source: U.S. Census Bureau via Alpha Vantage
+Update frequency: Monthly
+API function: DURABLES
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

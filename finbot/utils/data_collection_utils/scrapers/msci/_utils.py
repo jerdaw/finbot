@@ -1,5 +1,28 @@
-"""
-My apologies in advance for the messiness of this code. I wrote it in a hurry and it's not pretty.
+"""Scrape MSCI index data using Selenium automation.
+
+Automates web scraping of MSCI index data (World, EAFE, Emerging Markets,
+etc.) from the MSCI website using Selenium with headless Firefox. Handles
+complex web interactions including date pickers, dropdowns, and dynamic
+content loading.
+
+Features:
+    - Automated browser control via Selenium WebDriver
+    - Handles daily, monthly, and yearly data
+    - Incremental updates (only fetches missing dates)
+    - Automatic retry logic for web errors
+    - Screenshot capture for debugging
+    - Excel file parsing from downloads
+
+Typical usage:
+    - Historical performance analysis of international indexes
+    - Building global equity factor models
+    - Backtesting international allocation strategies
+
+Data source: MSCI (Morgan Stanley Capital International)
+Update frequency: Daily
+Scraping method: Selenium + BeautifulSoup
+
+Note: This code was written quickly and may benefit from refactoring.
 """
 
 import datetime

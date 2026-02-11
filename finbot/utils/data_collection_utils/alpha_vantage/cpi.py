@@ -1,3 +1,14 @@
+"""Fetch Consumer Price Index (CPI) data from Alpha Vantage.
+
+Retrieves monthly CPI data from the Alpha Vantage economic indicators API.
+CPI measures inflation by tracking price changes in a basket of consumer
+goods and services.
+
+Data source: U.S. Bureau of Labor Statistics via Alpha Vantage
+Update frequency: Monthly
+API function: CPI
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

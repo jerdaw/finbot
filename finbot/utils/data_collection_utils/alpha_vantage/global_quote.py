@@ -1,3 +1,13 @@
+"""Fetch real-time stock quote data from Alpha Vantage.
+
+Retrieves current price, volume, and other quote data for a specific ticker.
+Includes open, high, low, close, volume, and previous close.
+
+Data source: Alpha Vantage Global Quote API
+Update frequency: Real-time
+API function: GLOBAL_QUOTE
+"""
+
 from __future__ import annotations
 
 import pandas as pd

@@ -1,3 +1,13 @@
+"""Fetch daily adjusted stock prices from Alpha Vantage.
+
+Retrieves daily OHLCV (Open, High, Low, Close, Volume) data with adjustments
+for splits and dividends. Essential for accurate historical analysis.
+
+Data source: Alpha Vantage Time Series API
+Update frequency: Daily (end of day)
+API function: TIME_SERIES_DAILY_ADJUSTED
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

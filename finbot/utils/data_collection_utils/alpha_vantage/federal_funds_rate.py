@@ -1,3 +1,14 @@
+"""Fetch Federal Funds Rate from Alpha Vantage.
+
+Retrieves the effective federal funds rate, the interest rate at which
+banks lend reserves to each other overnight. Key monetary policy indicator
+set by the Federal Reserve.
+
+Data source: Federal Reserve via Alpha Vantage
+Update frequency: Daily
+API function: FEDERAL_FUNDS_RATE
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

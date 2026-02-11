@@ -1,3 +1,21 @@
+"""Correlate FRED economic indicators to stock prices.
+
+Analyzes correlations between FRED economic data series and the S&P 500 index
+across different time periods (full history, recessions, non-recessions) using
+multiple correlation methods (Pearson, Spearman, Kendall).
+
+Identifies which economic indicators are most predictive of stock market
+movements, helping to build economic-based trading signals.
+
+Typical usage:
+    - Screen FRED indicators for market correlation
+    - Build macroeconomic market timing models
+    - Identify leading/lagging economic indicators
+    - Develop recession-aware trading strategies
+
+Note: This module is work-in-progress and needs refactoring.
+"""
+
 # type: ignore
 # TODO: This module is still very much a WIP. It needs to be refactored and cleaned up.
 

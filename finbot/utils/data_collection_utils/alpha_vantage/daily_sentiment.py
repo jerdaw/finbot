@@ -1,3 +1,13 @@
+"""Fetch daily news sentiment analysis from Alpha Vantage.
+
+Retrieves AI-powered sentiment analysis of financial news for specific tickers.
+Includes overall sentiment scores, relevance scores, and topic classifications.
+
+Data source: Alpha Vantage News Sentiment API
+Update frequency: Real-time
+API function: NEWS_SENTIMENT
+"""
+
 from __future__ import annotations
 
 from collections.abc import Sequence

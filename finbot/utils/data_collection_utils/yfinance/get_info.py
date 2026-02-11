@@ -1,3 +1,19 @@
+"""Fetch company/security information from Yahoo Finance.
+
+Retrieves fundamental and descriptive information about securities including:
+    - Company name, sector, industry
+    - Market cap, shares outstanding
+    - Financial ratios (P/E, dividend yield, beta)
+    - Analyst recommendations
+    - Business description
+    - Officers and key personnel
+
+Supports caching to avoid excessive API calls.
+
+Data source: Yahoo Finance
+Update frequency: Daily to weekly (depends on metric)
+"""
+
 from __future__ import annotations
 
 from collections.abc import Sequence

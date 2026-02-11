@@ -1,3 +1,16 @@
+"""Fetch U.S. Consumer Price Index (CPI) from BLS.
+
+Convenience wrapper for fetching the most commonly used CPI series:
+CUUR0000SA0 - CPI for All Urban Consumers (CPI-U), U.S. City Average,
+All Items, Not Seasonally Adjusted.
+
+This is the headline CPI number used to measure inflation.
+
+Data source: U.S. Bureau of Labor Statistics
+Update frequency: Monthly
+Series ID: CUUR0000SA0
+"""
+
 from finbot.utils.data_collection_utils.bls.get_bls_data import get_bls_data
 
 

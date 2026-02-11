@@ -1,3 +1,21 @@
+"""Core utilities for Bureau of Labor Statistics (BLS) API integration.
+
+Provides base functionality for BLS API calls including:
+    - Request parameter preparation and validation
+    - Data conversion from BLS JSON format to pandas Series
+    - File update detection to avoid unnecessary API calls
+    - Incremental data fetching for long time ranges (20-year chunks)
+    - Caching and parquet persistence
+
+BLS API provides:
+    - Consumer Price Index (CPI) data
+    - Employment and unemployment statistics
+    - Producer Price Index (PPI) data
+    - Other economic indicators
+
+API Documentation: https://www.bls.gov/developers/
+"""
+
 import datetime
 from pathlib import Path
 

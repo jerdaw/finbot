@@ -1,3 +1,15 @@
+"""Fetch Nasdaq 100 Total Return Index from Google Sheets.
+
+Retrieves historical price data for the Nasdaq 100 Total Return Index (XNDX)
+from a Google Sheets data source. Total return includes price appreciation
+plus reinvested dividends.
+
+Index: ^XNDX (Nasdaq 100 Total Return)
+Data start: 2006-11-08
+Update frequency: Daily
+Data source: Google Sheets
+"""
+
 import datetime as dt
 
 import pandas as pd

@@ -1,3 +1,13 @@
+"""Fetch intraday stock prices from Alpha Vantage.
+
+Retrieves intraday OHLCV data at various intervals (1min, 5min, 15min, 30min,
+60min). Useful for day trading analysis and high-frequency strategies.
+
+Data source: Alpha Vantage Intraday API
+Update frequency: Real-time during market hours
+API function: TIME_SERIES_INTRADAY
+"""
+
 from __future__ import annotations
 
 from datetime import date, datetime, time

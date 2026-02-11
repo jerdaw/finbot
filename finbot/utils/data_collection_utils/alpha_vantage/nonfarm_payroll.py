@@ -1,3 +1,14 @@
+"""Fetch nonfarm payrolls data from Alpha Vantage.
+
+Retrieves monthly nonfarm payroll employment figures, a key labor market
+indicator measuring job creation across all sectors except farms, private
+households, and non-profit organizations.
+
+Data source: U.S. Bureau of Labor Statistics via Alpha Vantage
+Update frequency: Monthly
+API function: NONFARM_PAYROLL
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

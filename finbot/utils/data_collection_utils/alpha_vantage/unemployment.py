@@ -1,3 +1,13 @@
+"""Fetch unemployment rate data from Alpha Vantage.
+
+Retrieves monthly unemployment rate, the percentage of the labor force
+that is jobless and actively seeking employment. Key economic indicator.
+
+Data source: U.S. Bureau of Labor Statistics via Alpha Vantage
+Update frequency: Monthly
+API function: UNEMPLOYMENT
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

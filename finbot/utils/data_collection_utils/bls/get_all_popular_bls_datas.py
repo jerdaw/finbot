@@ -1,3 +1,20 @@
+"""Fetch all popular BLS economic data series.
+
+Retrieves all series IDs marked as "popular" by the BLS API and fetches
+their complete historical data. This provides a comprehensive snapshot of
+key labor market and economic indicators tracked by BLS.
+
+Popular series typically include:
+    - Consumer Price Index (CPI)
+    - Unemployment rates by region
+    - Employment cost index
+    - Producer price indexes
+
+Data source: U.S. Bureau of Labor Statistics API
+Update frequency: Varies by series (monthly, quarterly)
+API endpoint: /timeseries/popular
+"""
+
 import json
 
 from config import settings_accessors

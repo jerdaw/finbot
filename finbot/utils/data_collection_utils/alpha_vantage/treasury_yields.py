@@ -1,3 +1,14 @@
+"""Fetch U.S. Treasury yield data from Alpha Vantage.
+
+Retrieves daily treasury yields for various maturities (3-month, 2-year,
+5-year, 10-year, 30-year). Key indicators for risk-free rates and yield
+curve analysis.
+
+Data source: Federal Reserve via Alpha Vantage
+Update frequency: Daily
+API function: TREASURY_YIELD
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

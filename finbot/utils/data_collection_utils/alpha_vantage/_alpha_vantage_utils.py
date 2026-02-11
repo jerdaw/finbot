@@ -1,3 +1,24 @@
+"""Core utilities for Alpha Vantage API integration.
+
+Provides base functionality for all Alpha Vantage API calls including:
+    - API provider detection (free tier vs RapidAPI)
+    - Request handling with caching and rate limiting
+    - Response parsing and DataFrame conversion
+    - Automatic data persistence to parquet files
+    - Update checking to avoid unnecessary API calls
+
+Alpha Vantage API provides:
+    - Stock price data (daily, intraday)
+    - Economic indicators (GDP, CPI, unemployment)
+    - Treasury yields and federal funds rate
+    - News sentiment analysis
+
+All specific Alpha Vantage functions (cpi.py, inflation.py, etc.) use this
+module as their base implementation.
+
+API Documentation: https://www.alphavantage.co/documentation/
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

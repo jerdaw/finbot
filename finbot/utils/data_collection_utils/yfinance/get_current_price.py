@@ -1,3 +1,19 @@
+"""Fetch current (latest) prices from Yahoo Finance.
+
+Retrieves the most recent trading price for one or more securities by
+fetching the last 5 days of 1-minute interval data and returning the
+most recent close price with timestamp.
+
+Useful for:
+    - Real-time price monitoring
+    - Portfolio valuation
+    - Quick price checks
+    - Pre/post market price tracking
+
+Data source: Yahoo Finance
+Update frequency: Real-time (1-minute delay)
+"""
+
 from __future__ import annotations
 
 import datetime as dt
