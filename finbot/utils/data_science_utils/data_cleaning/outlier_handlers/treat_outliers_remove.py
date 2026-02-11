@@ -84,16 +84,14 @@ from finbot.utils.data_science_utils.data_cleaning.outlier_handlers._outliers_ut
 
 
 def _remove_outliers_logic(data: pd.Series, **kwargs) -> pd.Series:
+    """Remove outliers from the Series."""
     raise NotImplementedError("This function hasn't yet been confirmed to work as intended.")
-    """
-    Remove outliers from the Series.
-    """
-    return data[~kwargs.get("mask")]
+    return data[~kwargs.get("mask")]  # type: ignore[unreachable]
 
 
 def remove_outliers(data: pd.DataFrame, mask: pd.Series) -> pd.DataFrame:
     raise NotImplementedError("This function hasn't yet been confirmed to work as intended.")
-    return _apply_treatment_to_pandas(
+    return _apply_treatment_to_pandas(  # type: ignore[unreachable]
         data=data,
         method=_remove_outliers_logic,
         mask=mask,

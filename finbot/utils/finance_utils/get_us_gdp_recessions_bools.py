@@ -56,7 +56,9 @@ def get_us_gdp_recessions_bools(fred_symbol: str = "USRECD") -> pd.DataFrame:
 
     fred_recession_dfs = get_fred_data(symbols=[fred_symbol])
 
-    return fred_recession_dfs.dropna(how="all").sort_index()
+    result = fred_recession_dfs.dropna(how="all").sort_index()
+    assert isinstance(result, pd.DataFrame)
+    return result
 
 
 if __name__ == "__main__":

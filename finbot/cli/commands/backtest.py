@@ -39,12 +39,6 @@ from finbot.config import logger
     help="Initial cash amount (default: 100000)",
 )
 @click.option(
-    "--commission",
-    type=float,
-    default=0.001,
-    help="Commission rate (default: 0.001 = 0.1%)",
-)
-@click.option(
     "--output",
     type=click.Path(),
     help="Output file path for results (CSV, parquet, or JSON)",
@@ -52,7 +46,7 @@ from finbot.config import logger
 @click.option(
     "--plot",
     is_flag=True,
-    help="Display interactive plot of backtest results",
+    help="Display backtrader plot of backtest results",
 )
 @click.pass_context
 def backtest(  # noqa: C901 - CLI command handlers are inherently complex
@@ -62,7 +56,6 @@ def backtest(  # noqa: C901 - CLI command handlers are inherently complex
     start: str | None,
     end: str | None,
     cash: float,
-    commission: float,
     output: str | None,
     plot: bool,
 ) -> None:
@@ -98,20 +91,29 @@ def backtest(  # noqa: C901 - CLI command handlers are inherently complex
 
     # Import strategy
     try:
-        from finbot.services.backtesting import strategies
+        from finbot.services.backtesting.strategies.dip_buy_sma import DipBuySMA
+        from finbot.services.backtesting.strategies.dip_buy_stdev import DipBuyStdev
+        from finbot.services.backtesting.strategies.macd_dual import MACDDual
+        from finbot.services.backtesting.strategies.macd_single import MACDSingle
+        from finbot.services.backtesting.strategies.no_rebalance import NoRebalance
+        from finbot.services.backtesting.strategies.rebalance import Rebalance
+        from finbot.services.backtesting.strategies.sma_crossover import SMACrossover
+        from finbot.services.backtesting.strategies.sma_crossover_double import SMACrossoverDouble
+        from finbot.services.backtesting.strategies.sma_crossover_triple import SMACrossoverTriple
+        from finbot.services.backtesting.strategies.sma_rebal_mix import SmaRebalMix
 
         # Map strategy names to classes
-        strategy_map = {
-            "rebalance": strategies.rebalance.Rebalance,
-            "norebalance": strategies.no_rebalance.NoRebalance,
-            "smacrossover": strategies.sma_crossover.SMACrossover,
-            "smacrossoverdouble": strategies.sma_crossover_double.SMACrossoverDouble,
-            "smacrossovertriple": strategies.sma_crossover_triple.SMACrossoverTriple,
-            "macdsingle": strategies.macd_single.MACDSingle,
-            "macddual": strategies.macd_dual.MACDDual,
-            "dipbuysma": strategies.dip_buy_sma.DipBuySMA,
-            "dipbuystdev": strategies.dip_buy_stdev.DipBuyStdev,
-            "smarebalmix": strategies.sma_rebal_mix.SMARebalMix,
+        strategy_map: dict[str, type] = {
+            "rebalance": Rebalance,
+            "norebalance": NoRebalance,
+            "smacrossover": SMACrossover,
+            "smacrossoverdouble": SMACrossoverDouble,
+            "smacrossovertriple": SMACrossoverTriple,
+            "macdsingle": MACDSingle,
+            "macddual": MACDDual,
+            "dipbuysma": DipBuySMA,
+            "dipbuystdev": DipBuyStdev,
+            "smarebalmix": SmaRebalMix,
         }
 
         strategy_key = strategy.lower().replace("_", "").replace("-", "")
@@ -135,14 +137,8 @@ def backtest(  # noqa: C901 - CLI command handlers are inherently complex
         click.echo(f"Loading {asset} price data...")
         price_data = get_history(asset, adjust_price=True)
 
-        # Filter by date range if specified
-        if start:
-            price_data = price_data[price_data.index >= pd.Timestamp(start)]
-        if end:
-            price_data = price_data[price_data.index <= pd.Timestamp(end)]
-
         if len(price_data) == 0:
-            click.echo("Error: No data available for specified date range", err=True)
+            click.echo("Error: No data available for specified asset", err=True)
             raise click.Abort
 
         if verbose:
@@ -155,92 +151,67 @@ def backtest(  # noqa: C901 - CLI command handlers are inherently complex
 
     # Run backtest
     try:
+        import backtrader as bt
+
         from finbot.services.backtesting.backtest_runner import BacktestRunner
+        from finbot.services.backtesting.brokers.fixed_commission_scheme import FixedCommissionScheme
 
         click.echo(f"Running backtest: {strategy} on {asset}...")
 
-        runner = BacktestRunner(strategy=strategy_class, data=price_data, cash=cash, commission=commission)
+        # Single-asset strategies need proportions=(1.0,) for rebalance-based strategies
+        strat_kwargs: dict[str, object] = {}
+        if strategy_key in ("rebalance", "smarebalmix"):
+            strat_kwargs["proportions"] = (1.0,)
 
-        results = runner.run()
+        runner = BacktestRunner(
+            price_histories={asset: price_data},
+            start=pd.Timestamp(start) if start else None,
+            end=pd.Timestamp(end) if end else None,
+            duration=None,
+            start_step=None,
+            init_cash=cash,
+            strat=strategy_class,
+            strat_kwargs=strat_kwargs,
+            broker=bt.brokers.BackBroker,
+            broker_kwargs={},
+            broker_commission=FixedCommissionScheme,
+            sizer=bt.sizers.AllInSizer,
+            sizer_kwargs={},
+            plot=plot,
+        )
+
+        results = runner.run_backtest()
 
         if verbose:
             logger.info("Backtest complete")
 
-        # Display summary
-        final_value = results.get("final_value", 0)
-        total_return = results.get("total_return", 0)
+        # results is a DataFrame (one row) from compute_stats
+        starting_value = results["Starting Value"].iloc[0]
+        ending_value = results["Ending Value"].iloc[0]
+        roi = results["ROI"].iloc[0]
 
         click.echo("\nBacktest Results:")
         click.echo(f"  Strategy: {strategy}")
         click.echo(f"  Asset: {asset}")
-        click.echo(f"  Initial capital: ${cash:,.2f}")
-        click.echo(f"  Final value: ${final_value:,.2f}")
-        click.echo(f"  Total return: {total_return:+.2f}%")
+        click.echo(f"  Initial capital: ${starting_value:,.2f}")
+        click.echo(f"  Final value: ${ending_value:,.2f}")
+        click.echo(f"  Total return: {roi:+.2%}")
 
-        # Compute detailed statistics if available
-        try:
-            from finbot.services.backtesting.compute_stats import compute_stats
-
-            if "portfolio_value" in results and "returns" in results:
-                stats = compute_stats(
-                    portfolio_values=results["portfolio_value"],
-                    returns=results["returns"],
-                )
-
-                click.echo("\nPerformance Metrics:")
-                if "cagr" in stats:
-                    click.echo(f"  CAGR: {stats['cagr']:.2f}%")
-                if "sharpe" in stats:
-                    click.echo(f"  Sharpe Ratio: {stats['sharpe']:.2f}")
-                if "sortino" in stats:
-                    click.echo(f"  Sortino Ratio: {stats['sortino']:.2f}")
-                if "max_drawdown" in stats:
-                    click.echo(f"  Max Drawdown: {stats['max_drawdown']:.2f}%")
-                if "win_rate" in stats:
-                    click.echo(f"  Win Rate: {stats['win_rate']:.2f}%")
-
-        except Exception as e:
-            if verbose:
-                logger.warning(f"Could not compute detailed statistics: {e}")
+        click.echo("\nPerformance Metrics:")
+        for col, label in (
+            ("CAGR", "CAGR"),
+            ("Sharpe", "Sharpe Ratio"),
+            ("Calmar", "Calmar Ratio"),
+            ("Max Drawdown", "Max Drawdown"),
+            ("Annualized Volatility", "Annualized Volatility"),
+            ("Win Days %", "Win Days %"),
+        ):
+            if col in results.columns:
+                click.echo(f"  {label}: {results[col].iloc[0]:.4f}")
 
         # Save output if requested
-        if output and "portfolio_value" in results:
-            results_df = pd.DataFrame(
-                {
-                    "portfolio_value": results["portfolio_value"],
-                    "returns": results.get("returns", []),
-                }
-            )
-            save_output(results_df, output, verbose=verbose)
-
-        # Plot if requested
-        if plot and "portfolio_value" in results:
-            try:
-                import plotly.graph_objects as go
-
-                portfolio_values = results["portfolio_value"]
-
-                fig = go.Figure()
-                fig.add_trace(
-                    go.Scatter(
-                        x=list(range(len(portfolio_values))),
-                        y=portfolio_values,
-                        mode="lines",
-                        name="Portfolio Value",
-                        line={"color": "green", "width": 2},
-                    )
-                )
-                fig.update_layout(
-                    title=f"Backtest Results: {strategy} on {asset}",
-                    xaxis_title="Trading Days",
-                    yaxis_title="Portfolio Value ($)",
-                    hovermode="x unified",
-                    height=600,
-                )
-                fig.show()
-
-            except ImportError:
-                click.echo("Warning: plotly not available for plotting", err=True)
+        if output:
+            save_output(results, output, verbose=verbose)
 
     except Exception as e:
         logger.error(f"Backtest failed: {e}")

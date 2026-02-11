@@ -91,7 +91,7 @@ def handle_invalid_data(df: pd.DataFrame, invalid_data_strategy: str) -> pd.Data
     raise NotImplementedError(
         "This method has not been implemented yet.",
     )
-    if invalid_data_strategy == "remove":
+    if invalid_data_strategy == "remove":  # type: ignore[unreachable]
         return df.dropna()
     elif invalid_data_strategy == "impute":
         # Example: Impute with mean for numeric columns

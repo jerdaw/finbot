@@ -269,7 +269,7 @@ def update_simulations() -> None:
         sim_3x_stt,
         sim_ntsx,
     )
-    for sim in fund_sims:
+    for sim in fund_sims:  # type: ignore[assignment]
         sim(force_update=True)
 
 

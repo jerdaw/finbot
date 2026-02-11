@@ -51,7 +51,7 @@ def sim_nd100tr(
     underlying_yields.index = underlying_closes.index
     if overwrite_sim_with_index:
         nd100tr_index = get_xndx()
-        nd100tr_index.index = nd100tr_index.index.normalize()
+        nd100tr_index.index = nd100tr_index.index.normalize()  # type: ignore[attr-defined]
         index_closes = nd100tr_index["Close"]
     else:
         index_closes = None

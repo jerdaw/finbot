@@ -41,7 +41,7 @@ def bond_ladder_simulator(
     max_periods = max_maturity_years * periods_per_year
 
     # Convert first row to dict for build_yield_curve
-    first_rates_dict = first_yh_row.to_dict()
+    first_rates_dict: dict[str, float] = {str(k): float(v) for k, v in first_yh_row.to_dict().items()}
     initial_yields = build_yield_curve(first_rates_dict, max_periods, periods_per_year)
     ladder = make_annual_ladder(max_periods, min_periods, initial_yields, periods_per_year)
 

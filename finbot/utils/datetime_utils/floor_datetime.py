@@ -82,4 +82,4 @@ if __name__ == "__main__":
     t = datetime.datetime(2021, 2, 15, 12, 34, 56, 789012)
     print(f"Unfloored:\t\t{t}")
     for i in ("year", "month", "day", "hour", "minute", "second", "microsecond")[::-1]:
-        print(f"Floor {i}:\t{floor_datetime(t, i)}")  # type: ignore
+        print(f"Floor {i}:\t{floor_datetime(t, i)}")

@@ -47,7 +47,7 @@ def get_us_business_dates(
         list[date]: A list of datetime.date objects representing each business date, excluding holidays, between the given dates.
     """
     if not isinstance(start_date, date) or (end_date is not None and not isinstance(end_date, date)):
-        logger.error("Invalid date type provided")
+        logger.error("Invalid date type provided")  # type: ignore[unreachable]
         raise TypeError(
             "start_date and end_date must be instances of datetime.date",
         )
@@ -77,7 +77,7 @@ def get_us_business_dates(
             start=start_date,
             end=end_date,
             freq="B",
-            tz=time_zone,  # type: ignore
+            tz=time_zone,
         )
         business_dates_excluding_holidays = all_business_dates.drop(
             us_holidays,

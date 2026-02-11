@@ -26,7 +26,6 @@ def get_periods_per_year(
 
     if sort_index:
         df = df.sort_index()
-    method = method.lower()
 
     offset = pd.DateOffset(months=12)
     timedelta = pd.Timestamp(2020, 1, 1) - pd.Timestamp(2019, 1, 1)
@@ -35,6 +34,7 @@ def get_periods_per_year(
     end = df.index.max()
     assert end - start >= timedelta
 
+    res: float
     if method == "last":
         res = len(df.loc[end - offset :])
     elif method == "mean":

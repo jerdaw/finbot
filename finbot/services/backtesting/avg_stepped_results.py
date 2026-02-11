@@ -17,8 +17,8 @@ def avg_stepped_results(results: pd.DataFrame) -> pd.DataFrame:
             {
                 "Start Date": merged["Start Date"].min(),
                 "End Date": merged["End Date"].max(),
-                "Duration": merged["Duration"].mean().round(freq="s"),
-                "# Stepped Tests": len(merged),
+                "Duration": merged["Duration"].mean().round(freq="s"),  # type: ignore[attr-defined]
+                "# Stepped Tests": len(merged),  # type: ignore[dict-item]
             }
         )
         checked_cols = merged[cols_to_check].iloc[0]

@@ -84,7 +84,7 @@ from finbot.utils.pandas_utils.remove_masked_data import remove_masked_data
 
 def _z_score_detection_logic(data: pd.Series, **kwargs) -> pd.Series:
     raise NotImplementedError("This function hasn't yet been confirmed to work as intended.")
-    threshold = kwargs.get("threshold", 3)
+    threshold = kwargs.get("threshold", 3)  # type: ignore[unreachable]
     z_scores = np.abs(stats.zscore(data, nan_policy="omit"))
     mask = z_scores > threshold
 
@@ -100,7 +100,7 @@ def get_outliers_z_score(
     inplace: bool = False,
 ) -> pd.Series | pd.DataFrame:
     raise NotImplementedError("This function hasn't yet been confirmed to work as intended.")
-    return _apply_detection_to_pandas(
+    return _apply_detection_to_pandas(  # type: ignore[unreachable]
         data=data,
         method=_z_score_detection_logic,
         threshold=threshold,

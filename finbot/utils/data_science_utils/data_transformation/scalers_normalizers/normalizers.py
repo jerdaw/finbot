@@ -168,7 +168,7 @@ class Normalizers(BaseScaler):
 
         self.method = method
         self.kwargs = kwargs
-        self.scaler = None
+        self.scaler: StandardScaler | None = None
         self.lambda_: None | float = None
         self.mean_: None | float = None
         self.range_: None | float = None
@@ -215,7 +215,7 @@ class Normalizers(BaseScaler):
         if self.method == "standardization":
             if self.scaler is None:
                 raise RuntimeError("The scaler must be fitted before calling transform.")
-            return pd.Series(self.scaler.transform(X.values.reshape(-1, 1)).squeeze(), index=X.index)
+            return pd.Series(self.scaler.transform(X.to_numpy().reshape(-1, 1)).squeeze(), index=X.index)
         elif self.method == "boxcox":
             if self.lambda_ is None:
                 raise RuntimeError("Box-Cox lambda value is not set.")
@@ -244,7 +244,7 @@ class Normalizers(BaseScaler):
         if self.method == "standardization":
             if self.scaler is None:
                 raise RuntimeError("The scaler must be fitted before calling inverse_transform.")
-            return pd.Series(self.scaler.inverse_transform(X.values.reshape(-1, 1)).squeeze(), index=X.index)
+            return pd.Series(self.scaler.inverse_transform(X.to_numpy().reshape(-1, 1)).squeeze(), index=X.index)
         elif self.method == "boxcox":
             if self.lambda_ is None:
                 raise RuntimeError("Box-Cox lambda value is not set.")

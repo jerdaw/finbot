@@ -15,7 +15,7 @@ def sim_idcot20tr(
     fund_name = "IDCOT20TR_sim"
     if overwrite_sim_with_index:
         idcot20tr_index = get_idcot20tr()
-        idcot20tr_index.index = idcot20tr_index.index.normalize()
+        idcot20tr_index.index = idcot20tr_index.index.normalize()  # type: ignore[attr-defined]
         index_closes = idcot20tr_index["Close"]
     else:
         index_closes = None
@@ -41,7 +41,7 @@ def sim_idcot7tr(
     fund_name = "IDCOT7TR_sim"
     if overwrite_sim_with_index:
         idcot7tr_index = get_idcot7tr()
-        idcot7tr_index.index = idcot7tr_index.index.normalize()
+        idcot7tr_index.index = idcot7tr_index.index.normalize()  # type: ignore[attr-defined]
         index_closes = idcot7tr_index["Close"]
     else:
         index_closes = None
@@ -67,7 +67,7 @@ def sim_idcot1tr(
     fund_name = "IDCOT1TR_sim"
     if overwrite_sim_with_index:
         idcot1tr_index = get_idcot1tr()
-        idcot1tr_index.index = idcot1tr_index.index.normalize()
+        idcot1tr_index.index = idcot1tr_index.index.normalize()  # type: ignore[attr-defined]
         index_closes = idcot1tr_index["Close"]
     else:
         index_closes = None

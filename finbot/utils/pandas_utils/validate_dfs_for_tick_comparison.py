@@ -42,7 +42,7 @@ def validate_dfs_for_tick_comparison(*dfs, all_lens_match=True, identical_indexe
     raise NotImplementedError("This function is not yet verified.")
 
     # Check that the DFs have the same end timestamp
-    if not all(df.index[-1] == dfs[0].index[-1] for df in dfs):
+    if not all(df.index[-1] == dfs[0].index[-1] for df in dfs):  # type: ignore[unreachable]
         raise ValueError("DataFrames do not have a matching end date")
 
     # Check that the latest starting date in the DFs is present in all DFs

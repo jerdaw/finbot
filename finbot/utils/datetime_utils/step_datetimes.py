@@ -40,7 +40,7 @@ def rolling_method(series: pd.Series, step: str) -> pd.DataFrame:
         cur_start_idx += 1
     steps_df = pd.DataFrame(series.loc[period_starts]).rename(columns={"Close": "Start Price"})
     steps_df["Period End"] = period_ends
-    steps_df["End Price"] = [*series.loc[period_ends[:-1]].to_list(), None]
+    steps_df["End Price"] = [*series.loc[period_ends[:-1]].to_list(), None]  # type: ignore[index]
     return steps_df
 
 

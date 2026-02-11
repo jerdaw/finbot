@@ -31,9 +31,9 @@ def classify_trends(relative_change: pd.Series, threshold: float | None = None):
 
     trend = pd.Series(index=relative_change.index, data=np.nan, dtype="object")
 
-    trend[relative_change > threshold] = "Growth"
-    trend[relative_change < -threshold] = "Decline"
-    trend[abs(relative_change) <= threshold] = "Stagnation"
+    trend[relative_change > threshold] = "Growth"  # type: ignore[call-overload]
+    trend[relative_change < -threshold] = "Decline"  # type: ignore[call-overload]
+    trend[abs(relative_change) <= threshold] = "Stagnation"  # type: ignore[call-overload]
 
     return trend
 

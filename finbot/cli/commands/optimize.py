@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import click
-import numpy as np
+import pandas as pd
 
 from finbot.cli.utils.output import save_output
 from finbot.config import logger
@@ -17,27 +17,16 @@ from finbot.config import logger
     help="Optimization method (currently: dca)",
 )
 @click.option(
-    "--assets",
+    "--asset",
     type=str,
     required=True,
-    help="Comma-separated asset tickers (e.g., SPY,TLT)",
+    help="Asset ticker to optimize (e.g., SPY, QQQ)",
 )
 @click.option(
-    "--duration",
-    type=int,
-    default=10,
-    help="Investment duration in years (default: 10)",
-)
-@click.option(
-    "--interval",
-    type=click.Choice(["monthly", "quarterly"], case_sensitive=False),
-    default="monthly",
-    help="Purchase interval (default: monthly)",
-)
-@click.option(
-    "--ratios",
-    type=str,
-    help="Allocation ratios to test (e.g., 0.5,0.6,0.7,0.8,0.9)",
+    "--cash",
+    type=float,
+    default=1000.0,
+    help="Starting cash amount (default: 1000)",
 )
 @click.option(
     "--output",
@@ -47,81 +36,61 @@ from finbot.config import logger
 @click.option(
     "--plot",
     is_flag=True,
-    help="Display interactive plot of optimization results",
+    help="Display matplotlib plots of optimization results",
 )
 @click.pass_context
 def optimize(  # noqa: C901 - CLI command handlers are inherently complex
     ctx: click.Context,
     method: str,
-    assets: str,
-    duration: int,
-    interval: str,
-    ratios: str | None,
+    asset: str,
+    cash: float,
     output: str | None,
     plot: bool,
 ) -> None:
     """Run portfolio optimization.
 
     \b
-    Finds optimal asset allocation ratios using various optimization methods.
-    Currently supports DCA (Dollar Cost Averaging) optimization.
+    Finds optimal DCA (Dollar Cost Averaging) schedules for an asset.
+    Tests different front-loading ratios, DCA durations, purchase intervals,
+    and trial durations to find the schedule that maximizes risk-adjusted returns.
 
     \b
-    DCA Optimization:
-      Tests different allocation ratios across two assets to find
-      the combination that maximizes risk-adjusted returns (Sharpe ratio).
+    DCA Optimization Parameters (automatic):
+      - Ratio range: 1x to 10x front-loading of purchases
+      - DCA durations: 1 day to 3 years
+      - Purchase intervals: daily to quarterly
+      - Trial durations: 3 and 5 years
 
     \b
     Examples:
-      finbot optimize --method dca --assets SPY,TLT
-      finbot optimize --method dca --assets UPRO,TMF --duration 15
-      finbot optimize --method dca --assets SPY,TQQQ --ratios 0.6,0.7,0.8 --plot
+      finbot optimize --method dca --asset SPY
+      finbot optimize --method dca --asset QQQ --cash 5000 --plot
+      finbot optimize --method dca --asset UPRO --output results.csv
     """
     verbose = ctx.obj.get("verbose", False)
 
-    # Parse assets
-    asset_list = [a.strip().upper() for a in assets.split(",")]
-    if len(asset_list) != 2:
-        click.echo("Error: Exactly 2 assets required for optimization", err=True)
-        click.echo("Example: --assets SPY,TLT", err=True)
-        raise click.Abort from None
-
-    asset1, asset2 = asset_list
-
     if verbose:
-        logger.info(f"Starting {method.upper()} optimization: {asset1}/{asset2}")
+        logger.info(f"Starting {method.upper()} optimization for {asset}")
 
     if method.lower() == "dca":
-        # Parse ratios
-        if ratios:
-            try:
-                ratio_values = [float(r.strip()) for r in ratios.split(",")]
-                ratio_array = np.array(ratio_values)
-            except ValueError:
-                click.echo("Error: Invalid ratio format", err=True)
-                click.echo("Example: --ratios 0.5,0.6,0.7,0.8,0.9", err=True)
-                raise click.Abort from None
-        else:
-            # Default: test ratios from 50% to 95% in 5% increments
-            ratio_array = np.arange(0.5, 1.0, 0.05)
-
         # Load price data
         try:
             from finbot.utils.data_collection_utils.yfinance.get_history import (
                 get_history,
             )
 
-            click.echo(f"Loading price data for {asset1} and {asset2}...")
-            asset1_data = get_history(asset1, adjust_price=True)
-            asset2_data = get_history(asset2, adjust_price=True)
+            click.echo(f"Loading price data for {asset}...")
+            price_df = get_history(asset, adjust_price=True)
 
-            if len(asset1_data) == 0 or len(asset2_data) == 0:
+            if len(price_df) == 0:
                 click.echo("Error: Could not load price data", err=True)
                 raise click.Abort from None
 
+            # Extract Close prices as a Series for the optimizer
+            price_series = price_df["Close"]
+
             if verbose:
-                logger.info(f"Loaded {len(asset1_data)} data points for {asset1}")
-                logger.info(f"Loaded {len(asset2_data)} data points for {asset2}")
+                logger.info(f"Loaded {len(price_series)} data points for {asset}")
 
         except Exception as e:
             logger.error(f"Failed to load price data: {e}")
@@ -130,126 +99,55 @@ def optimize(  # noqa: C901 - CLI command handlers are inherently complex
 
         # Run DCA optimization
         try:
-            from finbot.services.optimization.dca_optimizer import DCAOptimizer
-
-            click.echo("Running DCA optimization...")
-            click.echo(f"  Duration: {duration} years")
-            click.echo(f"  Interval: {interval}")
-            click.echo(f"  Testing {len(ratio_array)} allocation ratios")
-
-            optimizer = DCAOptimizer(
-                asset1_data=asset1_data,
-                asset2_data=asset2_data,
-                asset1_name=asset1,
-                asset2_name=asset2,
+            from finbot.services.optimization.dca_optimizer import (
+                analyze_results_helper,
+                dca_optimizer,
             )
 
-            results = optimizer.optimize(ratios=ratio_array, duration_years=duration, interval=interval)
+            click.echo("Running DCA optimization...")
+            click.echo(f"  Asset: {asset}")
+            click.echo(f"  Starting cash: ${cash:,.2f}")
+            click.echo("  This may take a while for large datasets...")
+
+            # Get raw results (don't auto-analyze so we control plotting)
+            raw_result = dca_optimizer(
+                price_history=price_series,
+                ticker=asset,
+                starting_cash=cash,
+                save_df=False,
+                analyze_results=False,
+            )
+            assert isinstance(raw_result, pd.DataFrame)
+            raw_df = raw_result
 
             if verbose:
-                logger.info(f"Optimization complete: {len(results)} results")
+                logger.info(f"Optimization complete: {len(raw_df)} trial results")
 
-            # Find optimal by Sharpe ratio
-            best_idx = results["sharpe"].idxmax()
-            optimal = results.loc[best_idx]
+            # Analyze results
+            ratio_df, duration_df = analyze_results_helper(raw_df, plot=plot)
 
-            click.echo("\nOptimization Results:")
-            click.echo(f"  Method: {method.upper()}")
-            click.echo(f"  Assets: {asset1} / {asset2}")
-            click.echo("\nOptimal Allocation (by Sharpe Ratio):")
-            click.echo(f"  {asset1}: {optimal['ratio']:.1%}")
-            click.echo(f"  {asset2}: {1 - optimal['ratio']:.1%}")
-            click.echo("\nPerformance Metrics:")
-            click.echo(f"  CAGR: {optimal['cagr']:.2f}%")
-            click.echo(f"  Sharpe Ratio: {optimal['sharpe']:.2f}")
-            click.echo(f"  Max Drawdown: {optimal['max_drawdown']:.2f}%")
-            click.echo(f"  Std Deviation: {optimal['std_dev']:.2f}%")
+            # Display ratio analysis
+            click.echo("\nOptimization Results by DCA Ratio (front-loading):")
+            for ratio_val in ratio_df.index:
+                row = ratio_df.loc[ratio_val]
+                click.echo(
+                    f"  Ratio {ratio_val:.1f}x: "
+                    f"Sharpe={row.iloc[0]:.4f}, "
+                    f"CAGR={row.iloc[1]:.2f}%, "
+                    f"Max DD={row.iloc[3]:.2f}%"
+                )
+
+            # Display duration analysis
+            click.echo("\nOptimization Results by DCA Duration (trading days):")
+            for dur_val in duration_df.index:
+                row = duration_df.loc[dur_val]
+                click.echo(
+                    f"  {dur_val:>5} days: Sharpe={row.iloc[0]:.4f}, CAGR={row.iloc[1]:.2f}%, Max DD={row.iloc[3]:.2f}%"
+                )
 
             # Save output if requested
             if output:
-                save_output(results, output, verbose=verbose)
-
-            # Plot if requested
-            if plot:
-                try:
-                    import plotly.graph_objects as go
-                    from plotly.subplots import make_subplots
-
-                    fig = make_subplots(
-                        rows=2,
-                        cols=2,
-                        subplot_titles=[
-                            "CAGR vs Allocation",
-                            "Sharpe Ratio vs Allocation",
-                            "Max Drawdown vs Allocation",
-                            "Std Dev vs Allocation",
-                        ],
-                    )
-
-                    # CAGR
-                    fig.add_trace(
-                        go.Scatter(
-                            x=results["ratio"] * 100,
-                            y=results["cagr"],
-                            mode="lines+markers",
-                            name="CAGR",
-                        ),
-                        row=1,
-                        col=1,
-                    )
-
-                    # Sharpe Ratio
-                    fig.add_trace(
-                        go.Scatter(
-                            x=results["ratio"] * 100,
-                            y=results["sharpe"],
-                            mode="lines+markers",
-                            name="Sharpe",
-                        ),
-                        row=1,
-                        col=2,
-                    )
-
-                    # Max Drawdown (absolute value)
-                    fig.add_trace(
-                        go.Scatter(
-                            x=results["ratio"] * 100,
-                            y=results["max_drawdown"].abs(),
-                            mode="lines+markers",
-                            name="Max DD",
-                        ),
-                        row=2,
-                        col=1,
-                    )
-
-                    # Std Dev
-                    fig.add_trace(
-                        go.Scatter(
-                            x=results["ratio"] * 100,
-                            y=results["std_dev"],
-                            mode="lines+markers",
-                            name="Std Dev",
-                        ),
-                        row=2,
-                        col=2,
-                    )
-
-                    fig.update_xaxes(title_text=f"{asset1} Allocation (%)")
-                    fig.update_yaxes(title_text="CAGR (%)", row=1, col=1)
-                    fig.update_yaxes(title_text="Sharpe Ratio", row=1, col=2)
-                    fig.update_yaxes(title_text="Max DD (%)", row=2, col=1)
-                    fig.update_yaxes(title_text="Std Dev (%)", row=2, col=2)
-
-                    fig.update_layout(
-                        title_text=f"DCA Optimization: {asset1}/{asset2}",
-                        height=800,
-                        showlegend=False,
-                    )
-
-                    fig.show()
-
-                except ImportError:
-                    click.echo("Warning: plotly not available for plotting", err=True)
+                save_output(raw_df, output, verbose=verbose)
 
         except Exception as e:
             logger.error(f"Optimization failed: {e}")

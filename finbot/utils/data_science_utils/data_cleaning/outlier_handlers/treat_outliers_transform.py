@@ -114,12 +114,12 @@ def _transform_outliers_logic(
     **kwargs,
 ) -> pd.Series:
     raise NotImplementedError("This function hasn't yet been confirmed to work as intended.")
-    return data.where(~mask, transform_func(data[mask]))
+    return data.where(~mask, transform_func(data[mask]))  # type: ignore[unreachable]
 
 
 def transform_outliers(data: pd.DataFrame, transform_func: Callable[[pd.Series], pd.Series], **kwargs) -> pd.DataFrame:
     raise NotImplementedError("This function hasn't yet been confirmed to work as intended.")
-    return _apply_treatment_to_pandas(
+    return _apply_treatment_to_pandas(  # type: ignore[unreachable]
         data=data,
         method=_transform_outliers_logic,
         transform_func=transform_func,
