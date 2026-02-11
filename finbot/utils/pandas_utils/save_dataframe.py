@@ -29,7 +29,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from config import logger, settings_accessors
+from finbot.config import logger, settings_accessors
 from finbot.utils.file_utils.backup_file import backup_file
 from finbot.utils.pandas_utils.hash_dataframe import hash_dataframe
 

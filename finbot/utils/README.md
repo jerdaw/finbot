@@ -356,7 +356,7 @@ Example template:
 
 from __future__ import annotations
 
-from config import logger
+from finbot.config import logger
 
 
 def your_function(arg1: type, arg2: type) -> return_type:

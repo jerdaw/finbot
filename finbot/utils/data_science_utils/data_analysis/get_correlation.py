@@ -115,7 +115,7 @@ from typing import Literal
 
 import pandas as pd
 
-from config import logger
+from finbot.config import logger
 
 
 def _validate_params(datas: list[pd.DataFrame | pd.Series], method: Literal["pearson", "kendall", "spearman"]) -> None:
@@ -174,7 +174,7 @@ if __name__ == "__main__":
     # Example usage:
     import numpy as np
 
-    from constants.data_constants import DEMO_DATA
+    from finbot.constants.data_constants import DEMO_DATA
 
     CLOSE_DATA = DEMO_DATA["Close"].rename("Original")
     INV_DATA = (CLOSE_DATA * -1).rename("Inverse")

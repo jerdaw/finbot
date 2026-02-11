@@ -1,8 +1,8 @@
 from types import SimpleNamespace
 
-from config import logger
-from libs.api_manager._apis.get_all_apis import get_all_apis
-from libs.api_manager._resource_groups.get_all_resource_groups import get_all_resource_groups
+from finbot.config import logger
+from finbot.libs.api_manager._apis.get_all_apis import get_all_apis
+from finbot.libs.api_manager._resource_groups.get_all_resource_groups import get_all_resource_groups
 
 
 # class APIManager:
@@ -81,11 +81,11 @@ class APIManager:
 
 
 if __name__ == "__main__":
+    from finbot.libs.api_manager import api_manager
+    from finbot.libs.api_manager._utils.api import API
+    from finbot.libs.api_manager._utils.api_resource_group import APIResourceGroup
     from finbot.utils.request_utils.rate_limiter import DEFAULT_RATE_LIMIT
     from finbot.utils.request_utils.retry_strategy import DEFAULT_HTTPX_RETRY_KWARGS
-    from libs.api_manager import api_manager
-    from libs.api_manager._utils.api import API
-    from libs.api_manager._utils.api_resource_group import APIResourceGroup
 
     # Example usage
     api_resource_group = APIResourceGroup(

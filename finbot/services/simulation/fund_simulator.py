@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from config import logger
+from finbot.config import logger
 from finbot.services.simulation.approximate_overnight_libor import approximate_overnight_libor
 
 

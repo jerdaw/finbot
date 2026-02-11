@@ -1,7 +1,7 @@
 import logging
 
-from config.project_config import settings
-from libs.logger.initialize_logger import initialize_logger
+from finbot.config.project_config import settings
+from finbot.libs.logger.initialize_logger import initialize_logger
 
 # Initialize logger
 logger: logging.Logger = initialize_logger(

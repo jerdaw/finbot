@@ -363,7 +363,7 @@ if __name__ == "__main__":
     # Example usage
     from collections import Counter
 
-    from constants.data_constants import DEMO_DATA
+    from finbot.constants.data_constants import DEMO_DATA
 
     OHLC = DEMO_DATA[["Open", "High", "Low", "Close"]]
     CLOSE = DEMO_DATA["Close"]

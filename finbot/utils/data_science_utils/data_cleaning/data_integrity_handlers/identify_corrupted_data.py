@@ -88,7 +88,7 @@ from typing import Any
 
 import pandas as pd
 
-from config import logger
+from finbot.config import logger
 from finbot.utils.pandas_utils.get_data_mask import get_data_mask
 
 

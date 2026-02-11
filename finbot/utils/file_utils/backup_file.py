@@ -99,8 +99,8 @@ import shutil
 from datetime import datetime
 from pathlib import Path
 
-from config import logger
-from constants.path_constants import BACKUPS_DIR, ROOT_DIR
+from finbot.config import logger
+from finbot.constants.path_constants import BACKUPS_DIR, ROOT_DIR
 
 
 def backup_file(file_path: Path | str, backup_dir: Path | None = None) -> Path:

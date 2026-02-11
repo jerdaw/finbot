@@ -1,9 +1,9 @@
 import logging
 from pathlib import Path
 
-from config.logger_config import get_logger_config
-from constants.path_constants import LOGS_DIR
-from libs.logger.setup_queue_logging import setup_queue_logging
+from finbot.config.logger_config import get_logger_config
+from finbot.constants.path_constants import LOGS_DIR
+from finbot.libs.logger.setup_queue_logging import setup_queue_logging
 
 
 def initialize_logger(logger_name: str, log_level: str, log_dir: Path = LOGS_DIR) -> logging.Logger:
@@ -30,7 +30,7 @@ def initialize_logger(logger_name: str, log_level: str, log_dir: Path = LOGS_DIR
 
 # Note: Do not actually initialize the logging configuration here. Use the environment configs instead.
 if __name__ == "__main__":
-    from config import logger
+    from finbot.config import logger
 
     logger.debug("Test debug message.")  # May not show if DEBUG is not enabled in the environment config
     logger.info("Test log message.", extra={"extra_key": "extra_val"})  # extra will show up in the jsonl file

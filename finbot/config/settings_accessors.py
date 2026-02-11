@@ -7,8 +7,8 @@ computed defaults where appropriate.
 
 from __future__ import annotations
 
-from config.api_key_manager import APIKeyManager
-from config.project_config import settings
+from finbot.config.api_key_manager import APIKeyManager
+from finbot.config.project_config import settings
 from finbot.utils.multithreading_utils.get_max_threads import get_max_threads as compute_max_threads
 
 # Singleton APIKeyManager instance

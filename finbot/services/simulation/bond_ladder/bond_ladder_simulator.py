@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from constants.path_constants import SIMULATIONS_DATA_DIR
+from finbot.constants.path_constants import SIMULATIONS_DATA_DIR
 from finbot.services.simulation.bond_ladder.build_yield_curve import build_yield_curve
 from finbot.services.simulation.bond_ladder.get_yield_history import get_yield_history
 from finbot.services.simulation.bond_ladder.ladder import make_annual_ladder

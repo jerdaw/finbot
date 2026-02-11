@@ -111,7 +111,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from config import logger
+from finbot.config import logger
 from finbot.exceptions import InvalidExtensionError, SaveError
 from finbot.utils.dict_utils.hash_dictionary import hash_dictionary
 from finbot.utils.json_utils.serialize_json import serialize_json

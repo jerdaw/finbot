@@ -183,8 +183,8 @@ from typing import Any
 
 import requests
 
-from config import logger
-from constants.path_constants import RESPONSES_DATA_DIR
+from finbot.config import logger
+from finbot.constants.path_constants import RESPONSES_DATA_DIR
 from finbot.utils.file_utils.save_text import save_text
 from finbot.utils.json_utils.save_json import save_json
 from finbot.utils.request_utils.retry_config import RetryConfig

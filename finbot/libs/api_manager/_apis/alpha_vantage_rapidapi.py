@@ -1,6 +1,6 @@
-from config import settings
-from libs.api_manager._resource_groups.api_resource_groups import alpha_vantage_rapidapi_resouce_group
-from libs.api_manager._utils.api import API
+from finbot.config import settings
+from finbot.libs.api_manager._resource_groups.api_resource_groups import alpha_vantage_rapidapi_resouce_group
+from finbot.libs.api_manager._utils.api import API
 
 # AlphaVantage RapidAPI constants
 _ALPHA_VANTAGE_RAPIDAPI_BASE_URL = "https://alpha-vantage.p.rapidapi.com/query"

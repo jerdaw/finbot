@@ -1,4 +1,4 @@
-from libs.api_manager._resource_groups.api_resource_groups import (
+from finbot.libs.api_manager._resource_groups.api_resource_groups import (
     alpha_vantage_api_resouce_group,
     alpha_vantage_rapidapi_resouce_group,
     bureau_of_labour_statistics_api_2_resource_group,

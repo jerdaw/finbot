@@ -20,7 +20,7 @@ from pathlib import Path
 
 from tqdm.contrib.concurrent import thread_map
 
-from config import settings_accessors
+from finbot.config import settings_accessors
 from finbot.utils.pandas_utils.load_dataframe import load_dataframe
 
 MAX_THREADS = settings_accessors.MAX_THREADS

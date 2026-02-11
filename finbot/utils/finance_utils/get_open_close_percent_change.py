@@ -12,7 +12,7 @@ Useful for:
 
 import pandas as pd
 
-from constants.data_constants import DEMO_DATA
+from finbot.constants.data_constants import DEMO_DATA
 
 
 def calculate_open_close_percent_change(data: pd.DataFrame, open_col="Open", close_col="Close"):

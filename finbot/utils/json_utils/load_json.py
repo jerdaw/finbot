@@ -137,7 +137,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from config import logger
+from finbot.config import logger
 from finbot.exceptions import InvalidExtensionError
 from finbot.utils.file_utils.is_valid_extension import is_valid_extension
 from finbot.utils.json_utils.deserialize_json import deserialize_json

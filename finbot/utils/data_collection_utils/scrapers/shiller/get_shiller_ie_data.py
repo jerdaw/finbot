@@ -26,7 +26,7 @@ import datetime as dt
 
 import pandas as pd
 
-from constants.path_constants import SHILLER_DATA_DIR
+from finbot.constants.path_constants import SHILLER_DATA_DIR
 from finbot.utils.data_collection_utils.google_finance._utils import is_file_outdated, load_dataframe
 from finbot.utils.pandas_utils.filter_by_date import filter_by_date
 from finbot.utils.pandas_utils.save_dataframe import save_dataframe

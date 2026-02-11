@@ -17,8 +17,8 @@ from time import sleep
 import pandas as pd
 from tqdm.auto import tqdm
 
-from config import logger, settings_accessors
-from constants.path_constants import ALPHA_VANTAGE_DATA_DIR
+from finbot.config import logger, settings_accessors
+from finbot.constants.path_constants import ALPHA_VANTAGE_DATA_DIR
 from finbot.utils.data_collection_utils.alpha_vantage._alpha_vantage_utils import _make_alpha_vantage_request
 from finbot.utils.datetime_utils.get_latest_us_business_date import get_latest_us_business_date
 from finbot.utils.datetime_utils.get_us_business_dates import get_us_business_dates

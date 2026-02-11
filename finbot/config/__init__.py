@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from config import settings_accessors
-from config.project_config import settings
-from libs.logger import logger
+from finbot.config import settings_accessors
+from finbot.config.project_config import settings
+from finbot.libs.logger import logger
 
 # Determine the running environment
 permitted_envs = ["production", "development"]

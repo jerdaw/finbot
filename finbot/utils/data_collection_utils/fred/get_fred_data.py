@@ -25,7 +25,7 @@ import pandas as pd
 import pandas_datareader as pdr
 from dateutil.relativedelta import relativedelta
 
-from constants.path_constants import FRED_DATA_DIR
+from finbot.constants.path_constants import FRED_DATA_DIR
 from finbot.utils.data_collection_utils.pdr._utils import get_pdr_base
 
 

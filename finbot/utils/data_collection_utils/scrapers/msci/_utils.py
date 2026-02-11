@@ -48,8 +48,8 @@ from selenium.webdriver.support import expected_conditions as EC  # noqa: N812 -
 from selenium.webdriver.support.ui import Select, WebDriverWait
 from webdriver_manager.firefox import GeckoDriverManager
 
-from config import logger, settings_accessors
-from constants.path_constants import MSCI_DATA_DIR
+from finbot.config import logger, settings_accessors
+from finbot.constants.path_constants import MSCI_DATA_DIR
 from finbot.utils.datetime_utils.get_missing_us_business_dates import get_missing_us_business_dates
 from finbot.utils.datetime_utils.get_us_business_dates import get_us_business_dates
 from finbot.utils.file_utils.is_file_outdated import is_file_outdated
@@ -737,7 +737,7 @@ def get_msci_single(
 
 
 if __name__ == "__main__":
-    from constants.tracked_collections.tracked_msci import TRACKED_MSCI
+    from finbot.constants.tracked_collections.tracked_msci import TRACKED_MSCI
 
     for msci_idx in TRACKED_MSCI[33:]:
         data_df = get_msci_single(

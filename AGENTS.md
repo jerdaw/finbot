@@ -33,7 +33,7 @@ poetry run python scripts/update_daily.py
 poetry run ruff check . --fix    # lint + autofix
 poetry run ruff format .         # format
 poetry run mypy                  # type check (configured in pyproject.toml)
-poetry run bandit -r finbot libs # security scan
+poetry run bandit -r finbot      # security scan
 
 # Pre-commit hooks (lightweight set)
 poetry run pre-commit run --all-files
@@ -51,31 +51,31 @@ poetry run pytest -k test_import              # tests matching pattern
 ### Global Access Pattern
 
 ```python
-from config import settings, logger, settings_accessors  # Dynaconf settings + logger + settings accessors
-from libs.api_manager import api_manager                  # Singleton API registry
+from finbot.config import settings, logger, settings_accessors  # Dynaconf settings + logger + settings accessors
+from finbot.libs.api_manager import api_manager                  # Singleton API registry
 ```
 
 ### Package Structure
 
-#### `config/` — Configuration Layer
+All packages live under the single `finbot/` namespace:
+
+#### `finbot/config/` — Configuration Layer
 - **Dynaconf-based** environment-aware YAML files (`development.yaml`, `production.yaml`)
 - **APIKeyManager**: Lazy-loaded API keys from env vars (no import failures when keys missing)
 - Set `DYNACONF_ENV=development|production` to switch environments
 
-#### `constants/` — Application Constants
+#### `finbot/constants/` — Application Constants
 - `path_constants.py`: All data directory paths (auto-creates missing dirs)
 - `api_constants.py`: API URLs and endpoints
 - `datetime_constants.py`, `networking_constants.py`, etc.
 - `tracked_collections/`: CSV manifests of tracked funds, FRED symbols, MSCI indexes
 
-#### `libs/` — Core Infrastructure
+#### `finbot/libs/` — Core Infrastructure
 - **`api_manager/`**: Central API registry with `APIResourceGroup` for rate limits/retry
   - Supports FRED, Alpha Vantage, NASDAQ Data Link, Google Finance, BLS APIs
 - **`logger/`**: Queue-based async logging
   - Dual output: colored console (stdout for INFO+, stderr for ERROR+) + JSON file
   - Rotating file handlers (5MB, 3 backups)
-
-#### `finbot/` — Main Package
 
 ##### `finbot/services/backtesting/` — Backtrader-Based Backtesting Engine
 Entry point: `BacktestRunner` in `backtest_runner.py`
@@ -174,7 +174,7 @@ Entry point: `BacktestRunner` in `backtest_runner.py`
 
 All data stored as **parquet** files (replaced pickle throughout for safety, speed, interoperability).
 
-Directories under `finbot/data/` (configured in `constants/path_constants.py`):
+Directories under `finbot/data/` (configured in `finbot/constants/path_constants.py`):
 - `simulations/`: Fund and index simulation results
 - `backtests/`: Backtest results
 - `price_histories/`: Cached price data (YF, GF)
@@ -199,7 +199,7 @@ export US_BUREAU_OF_LABOR_STATISTICS_API_KEY=your_key
 export GOOGLE_FINANCE_SERVICE_ACCOUNT_CREDENTIALS_PATH=/path/to/credentials.json
 ```
 
-Create `.env` file in `config/` (excluded by `.gitignore`).
+Create `.env` file in `finbot/config/` (excluded by `.gitignore`).
 
 ## Key Entry Points
 
@@ -296,7 +296,7 @@ GitHub Actions workflow (`.github/workflows/ci.yml`) runs on push/PR to main:
 - Lint: `ruff check .`
 - Format check: `ruff format --check .`
 - Tests: `pytest tests/ -v`
-- Matrix: Python 3.11, 3.12, 3.13
+- Python 3.13 (single version to conserve CI minutes on free tier)
 
 ## Architecture Decisions
 
@@ -307,14 +307,15 @@ See `docs/adr/` for architectural decision records:
   - Keep quantstats
   - Replace pickle → parquet
   - Lazy API key loading
+- **ADR-004**: Consolidate package layout — move config/, constants/, libs/ under finbot/ as subpackages
 
 ## Key Design Patterns
 
 | Pattern | Implementation | Rationale |
 | --- | --- | --- |
-| **Settings Accessors** | `settings_accessors` module in `config/` | Lazy accessors for MAX_THREADS and API keys (alpha_vantage, nasdaq_data_link, bls, google_finance) |
+| **Settings Accessors** | `settings_accessors` module in `finbot/config/` | Lazy accessors for MAX_THREADS and API keys (alpha_vantage, nasdaq_data_link, bls, google_finance) |
 | **Lazy API keys** | `APIKeyManager.get_key()` only loads on first access | Prevents import failures when keys not needed |
-| **Queue-based logging** | `libs/logger/setup_queue_logging.py` | Non-blocking async logging for performance |
+| **Queue-based logging** | `finbot/libs/logger/setup_queue_logging.py` | Non-blocking async logging for performance |
 | **Vectorized simulation** | Numpy broadcasting in `fund_simulator.py` | Faster than numba loop, no JIT compilation required |
 | **Parquet everywhere** | All serialization uses `to_parquet()`/`read_parquet()` | Safer, faster, smaller than pickle |
 | **Auto-create dirs** | `path_constants._process_dir()` uses `mkdir(exist_ok=True)` | Works in CI, fresh clones, no manual setup |
@@ -346,7 +347,7 @@ See `docs/adr/` for architectural decision records:
 5. Run formatter: `poetry run ruff format .`
 6. Commit with descriptive message following commit authorship policy (see below)
 7. Push and create PR
-8. CI must pass (all 3 Python versions)
+8. CI must pass
 
 ### Commit Authorship Policy
 

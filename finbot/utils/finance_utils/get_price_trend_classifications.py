@@ -110,7 +110,7 @@ def plot_trends(trend_data: pd.DataFrame, original_data: pd.Series | None = None
 if __name__ == "__main__":
     import plotly.graph_objects as go
 
-    from constants.data_constants import DEMO_DATA
+    from finbot.constants.data_constants import DEMO_DATA
 
     close_serie = DEMO_DATA["Close"]
     for i in ("db7", "db36"):

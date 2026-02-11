@@ -33,7 +33,7 @@ import pandas as pd
 from dateutil.relativedelta import relativedelta
 from pandas.tseries.frequencies import to_offset
 
-from config import logger
+from finbot.config import logger
 from finbot.utils.data_science_utils.data_cleaning.outlier_handlers.get_outliers_quantile import get_outliers_quantile
 from finbot.utils.datetime_utils.conversions.convert_frequency import convert_frequency
 from finbot.utils.datetime_utils.conversions.str_to_timedelta import str_to_timedelta
@@ -187,7 +187,7 @@ def get_timeseries_frequency(
 if __name__ == "__main__":
     from time import perf_counter
 
-    from constants.path_constants import DATA_DIR
+    from finbot.constants.path_constants import DATA_DIR
     from finbot.utils.pandas_utils.load_dataframe import load_dataframe
 
     MAX_DFS = 10000

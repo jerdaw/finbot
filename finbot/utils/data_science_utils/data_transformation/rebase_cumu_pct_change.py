@@ -97,6 +97,6 @@ def rebase_cumu_pct_change(df: pd.DataFrame | pd.Series, start_val: float | int 
 
 
 if __name__ == "__main__":
-    from constants.data_constants import DEMO_DATA
+    from finbot.constants.data_constants import DEMO_DATA
 
     print(rebase_cumu_pct_change(DEMO_DATA["Close"]))

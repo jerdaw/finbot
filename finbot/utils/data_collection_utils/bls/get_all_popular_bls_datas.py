@@ -17,7 +17,7 @@ API endpoint: /timeseries/popular
 
 import json
 
-from config import settings_accessors
+from finbot.config import settings_accessors
 from finbot.utils.data_collection_utils.bls.get_bls_data import get_bls_data
 from finbot.utils.request_utils.request_handler import RequestHandler
 

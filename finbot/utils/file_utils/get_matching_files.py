@@ -88,7 +88,7 @@ import re
 from collections.abc import Sequence
 from pathlib import Path
 
-from config import logger
+from finbot.config import logger
 
 
 def _sort_files_for_match(file_list: Sequence[Path], time_sort: str) -> list[Path]:

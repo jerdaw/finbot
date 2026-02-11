@@ -7,7 +7,7 @@ from pathlib import Path
 import click
 import pandas as pd
 
-from config import logger
+from finbot.config import logger
 
 
 def save_output(data: pd.DataFrame, output_path: str, verbose: bool = False) -> None:

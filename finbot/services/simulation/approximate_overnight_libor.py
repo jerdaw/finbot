@@ -1,6 +1,6 @@
 import pandas as pd
 
-from constants.path_constants import FRED_DATA_DIR, LONGTERMTRENDS_DATA_DIR, SIMULATIONS_DATA_DIR
+from finbot.constants.path_constants import FRED_DATA_DIR, LONGTERMTRENDS_DATA_DIR, SIMULATIONS_DATA_DIR
 from finbot.utils.data_collection_utils.fred.get_fred_data import get_fred_data
 from finbot.utils.data_collection_utils.yfinance.get_history import get_history
 

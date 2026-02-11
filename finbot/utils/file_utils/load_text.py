@@ -79,7 +79,7 @@ from pathlib import Path
 
 import zstandard as zstd
 
-from config import logger
+from finbot.config import logger
 from finbot.exceptions import InvalidExtensionError, LoadError
 
 

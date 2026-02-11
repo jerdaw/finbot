@@ -5,8 +5,8 @@ from __future__ import annotations
 import click
 import numpy as np
 
-from config import logger
 from finbot.cli.utils.output import save_output
+from finbot.config import logger
 
 
 @click.command()

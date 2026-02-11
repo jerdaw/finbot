@@ -8,8 +8,8 @@ from pathlib import Path
 from queue import Queue
 from typing import Any
 
-from constants.path_constants import LOGS_DIR
-from libs.logger.utils import ColorFormatter, ErrorFilter, LoggingJsonFormatter, NonErrorFilter
+from finbot.constants.path_constants import LOGS_DIR
+from finbot.libs.logger.utils import ColorFormatter, ErrorFilter, LoggingJsonFormatter, NonErrorFilter
 
 
 def prepare_logging_config(logger_name: str, log_level: str, log_file_path: Path) -> dict[str, Any]:
@@ -137,7 +137,7 @@ def initialize_logger(logger_name: str, log_level: str, log_dir: Path = LOGS_DIR
 
 # Note: Do not actually initialize the logging configuration here. Use the environment configs instead.
 if __name__ == "__main__":
-    from config import logger
+    from finbot.config import logger
 
     logger.info("This is a test log message.")
     logger.info("This is a test log message.", extra={"test": "test"})  # The extra will show up in the jsonl fils

@@ -18,7 +18,7 @@ Typical usage:
 
 import pandas as pd
 
-from constants.data_constants import DEMO_DATA
+from finbot.constants.data_constants import DEMO_DATA
 
 
 def get_frequency_per_interval(

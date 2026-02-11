@@ -5,8 +5,8 @@ from pathlib import Path
 
 import pandas as pd
 
-from constants.path_constants import TRACKED_COLLECTIONS_DIR
-from constants.tracked_collections._utils import CollectionTrackerBase
+from finbot.constants.path_constants import TRACKED_COLLECTIONS_DIR
+from finbot.constants.tracked_collections._utils import CollectionTrackerBase
 
 
 # Helper function for regular expression validation

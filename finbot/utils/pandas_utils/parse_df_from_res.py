@@ -25,7 +25,7 @@ from typing import Any
 
 import pandas as pd
 
-from config import logger
+from finbot.config import logger
 
 
 def parse_df_from_res(

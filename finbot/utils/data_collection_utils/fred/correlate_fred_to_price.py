@@ -26,7 +26,7 @@ import pandas as pd
 from dateutil.relativedelta import relativedelta
 from pandas import DataFrame, Series
 
-from config import logger
+from finbot.config import logger
 from finbot.utils.data_collection_utils.fred.get_fred_data import get_fred_data
 from finbot.utils.data_collection_utils.fred.get_popular_fred_symbols import get_popular_fred_symbols
 from finbot.utils.data_collection_utils.yfinance.get_history import get_history

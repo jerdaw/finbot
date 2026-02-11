@@ -1,7 +1,7 @@
 # Finbot Roadmap
 
 **Created:** 2026-02-10
-**Last Updated:** 2026-02-10
+**Last Updated:** 2026-02-11
 **Status:** Active
 
 Improvements, fixes, and enhancements identified from a comprehensive project evaluation. Organized by priority tier, with items within each tier roughly ordered by impact.
@@ -803,14 +803,24 @@ poetry check
 All set!
 ```
 
-### 3.7 Consolidate Package Layout
+### 3.7 Consolidate Package Layout ✓
 
-**Current state:** 4 top-level packages (`finbot/`, `config/`, `constants/`, `libs/`) requiring explicit `packages = [...]` in pyproject.toml. This is unusual for Python projects and contributes to the circular import risk between `config/` and `libs/`.
+**Status:** COMPLETED (2026-02-11)
 
-- [ ] Evaluate moving `config/`, `constants/`, `libs/` under `finbot/` as subpackages (e.g., `finbot/config/`, `finbot/constants/`, `finbot/libs/`)
-- [ ] This would simplify packaging, eliminate the multi-package declaration, and resolve the circular import risk
-- [ ] Update all imports across the codebase
-- [ ] Structure test directories to mirror the new source layout
+**Previous state:** 4 top-level packages (`finbot/`, `config/`, `constants/`, `libs/`) requiring explicit `packages = [...]` in pyproject.toml. This was unusual for Python projects and contributed to import ambiguity (e.g., `from config import ...` could collide with stdlib or third-party modules).
+
+**What Was Done:**
+- [x] Moved `config/`, `constants/`, `libs/` under `finbot/` as subpackages
+- [x] Updated ~120 import statements across ~100 files (`from config` → `from finbot.config`, etc.)
+- [x] Simplified `pyproject.toml` packages from 4 entries to 1: `[{ include = "finbot" }]`
+- [x] Fixed `path_constants.py` ROOT_DIR resolution (added one `.parent` level)
+- [x] Reorganized `path_constants.py` variable ordering (FINBOT_DIR before CONFIG_DIR/CONSTANTS_DIR)
+- [x] Fixed all import sorting issues (ruff auto-fix)
+- [x] Updated AGENTS.md to reflect new package structure
+- [x] Created ADR-004 documenting the consolidation decision
+- [x] All 80 tests passing
+
+**Result:** Single `finbot` namespace. No import collisions. Cleaner packaging. See [ADR-004](../adr/ADR-004-consolidate-package-layout.md).
 
 ---
 
@@ -895,4 +905,5 @@ _Move items here as they are finished._
 | Replace pickle with parquet | 2026-02-09 | Part of consolidation |
 | Add CI workflow | 2026-02-09 | GitHub Actions, Python 3.11-3.13 matrix |
 | Fix path_constants directory creation | 2026-02-09 | `mkdir(exist_ok=True)` |
+| Consolidate package layout | 2026-02-11 | Moved config/, constants/, libs/ under finbot/ as subpackages. Updated ~120 imports across ~100 files. Single namespace, no import collisions. See ADR-004. |
 | Add initial unit tests | 2026-02-09 | 18 tests across 2 files |

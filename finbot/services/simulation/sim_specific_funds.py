@@ -3,8 +3,8 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from config import logger
-from constants.path_constants import SIMULATIONS_DATA_DIR
+from finbot.config import logger
+from finbot.constants.path_constants import SIMULATIONS_DATA_DIR
 from finbot.services.simulation.fund_simulator import fund_simulator
 from finbot.services.simulation.is_sufficiently_updated import is_sufficiently_updated
 from finbot.services.simulation.sim_specific_bond_indexes import sim_idcot1tr, sim_idcot7tr, sim_idcot20tr

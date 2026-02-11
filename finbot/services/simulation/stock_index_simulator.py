@@ -1,6 +1,6 @@
 import pandas as pd
 
-from constants.path_constants import SIMULATIONS_DATA_DIR
+from finbot.constants.path_constants import SIMULATIONS_DATA_DIR
 from finbot.services.simulation.is_sufficiently_updated import is_sufficiently_updated
 from finbot.utils.finance_utils.merge_price_histories import merge_price_histories
 

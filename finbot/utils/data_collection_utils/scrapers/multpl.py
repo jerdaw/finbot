@@ -30,7 +30,7 @@ import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 
-from constants.path_constants import MULTPL_DATA_DIR
+from finbot.constants.path_constants import MULTPL_DATA_DIR
 from finbot.utils.file_utils.is_file_outdated import is_file_outdated
 from finbot.utils.finance_utils.get_number_from_suffix import get_number_from_suffix
 from finbot.utils.pandas_utils.filter_by_date import filter_by_date

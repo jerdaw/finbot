@@ -35,9 +35,6 @@ finbot = "finbot.cli.main:cli"
 [tool.poetry]
 packages = [
     { include = "finbot" },
-    { include = "config" },
-    { include = "constants" },
-    { include = "libs" },
 ]
 
 [tool.poetry.dependencies]

@@ -120,7 +120,7 @@ def get_series_adjusted_for_inflation(
 
 if __name__ == "__main__":
     # Example usage
-    from constants.data_constants import DEMO_DATA
+    from finbot.constants.data_constants import DEMO_DATA
 
     adjusted_index = get_series_adjusted_for_inflation(DEMO_DATA["Close"])
     print(f"Inflation-adjusted price index:\n{adjusted_index}")

@@ -1,6 +1,6 @@
 import pandas as pd
 
-from constants.path_constants import BACKTESTS_DATA_DIR
+from finbot.constants.path_constants import BACKTESTS_DATA_DIR
 from finbot.services.backtesting.avg_stepped_results import avg_stepped_results
 
 

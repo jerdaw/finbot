@@ -31,8 +31,8 @@ from typing import Any
 import pandas as pd
 import pandas_datareader as pdr
 
-from config import logger, settings_accessors
-from constants.path_constants import DATA_DIR
+from finbot.config import logger, settings_accessors
+from finbot.constants.path_constants import DATA_DIR
 from finbot.utils.file_utils.are_files_outdated import are_files_outdated
 from finbot.utils.pandas_utils.filter_by_date import filter_by_date
 from finbot.utils.pandas_utils.load_dataframes import load_dataframes

@@ -1,8 +1,8 @@
 from limits import RateLimitItemPerDay, RateLimitItemPerMinute, RateLimitItemPerSecond
 
+from finbot.libs.api_manager._utils.api_resource_group import APIResourceGroup
 from finbot.utils.request_utils.rate_limiter import RateLimiter
 from finbot.utils.request_utils.retry_strategy import DEFAULT_HTTPX_RETRY_KWARGS
-from libs.api_manager._utils.api_resource_group import APIResourceGroup
 
 alpha_vantage_rapidapi_resouce_group = APIResourceGroup(
     identifier="alpha_vantage_rapidapi_resouce_group",

@@ -1,7 +1,7 @@
 import pandas as pd
 from pandas._libs.tslibs.offsets import BDay
 
-from constants.path_constants import SIMULATIONS_DATA_DIR
+from finbot.constants.path_constants import SIMULATIONS_DATA_DIR
 
 
 def is_sufficiently_updated(fund_name: str, max_bday_latency: int = 1) -> bool:

@@ -58,7 +58,7 @@ def filter_by_date(
 
 
 if __name__ == "__main__":
-    from constants.data_constants import DEMO_DATA
+    from finbot.constants.data_constants import DEMO_DATA
 
     start_dt = dt.date(2021, 1, 1)
     end_dt = dt.date(2021, 1, 10)

@@ -16,21 +16,23 @@ def _process_dir(d: Path) -> Path:
 
 
 # Root directory
-ROOT_DIR = _process_dir(Path(__file__).parent.parent.resolve(strict=True))
+ROOT_DIR = _process_dir(Path(__file__).parent.parent.parent.resolve(strict=True))
+
+# Main package directory
+FINBOT_DIR = _process_dir(ROOT_DIR / "finbot")
 
 # Subdirectories under ROOT_DIR
 ASSETS_DIR = _process_dir(ROOT_DIR / "assets")
 BACKUPS_DIR = _process_dir(ROOT_DIR / "backups")
-CONFIG_DIR = _process_dir(ROOT_DIR / "config")
-CONSTANTS_DIR = _process_dir(ROOT_DIR / "constants")
 DOCS_DIR = _process_dir(ROOT_DIR / "docs")
 LOGS_DIR = _process_dir(ROOT_DIR / "logs")
 NOTEBOOKS_DIR = _process_dir(ROOT_DIR / "notebooks")
 SCRIPTS_DIR = _process_dir(ROOT_DIR / "scripts")
 TESTS_DIR = _process_dir(ROOT_DIR / "tests")
 
-# Main package directory
-FINBOT_DIR = _process_dir(ROOT_DIR / "finbot")
+# Subdirectories under FINBOT_DIR (formerly top-level packages)
+CONFIG_DIR = _process_dir(FINBOT_DIR / "config")
+CONSTANTS_DIR = _process_dir(FINBOT_DIR / "constants")
 
 # Subdirectories under FINBOT_DIR
 DATA_DIR = _process_dir(FINBOT_DIR / "data")
@@ -75,5 +77,5 @@ if __name__ == "__main__":
             if not name.startswith("_"):
                 print(f"{name}: {value}")
     except Exception as e:
-        logger.error(f"Failed to initialize directories: {e}")  # noqa: LOG015 - Using module logger from config
+        logger.error(f"Failed to initialize directories: {e}")  # noqa: LOG015 - Using module logger from finbot.config
         raise

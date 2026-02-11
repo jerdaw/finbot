@@ -25,7 +25,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from config import logger
+from finbot.config import logger
 
 
 def load_dataframe(file_path: Path | str, raise_exception: bool = True) -> pd.DataFrame:

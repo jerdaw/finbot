@@ -18,8 +18,8 @@ from typing import Any
 import pandas as pd
 from tqdm.auto import tqdm
 
-from config import logger
-from constants.path_constants import ALPHA_VANTAGE_DATA_DIR
+from finbot.config import logger
+from finbot.constants.path_constants import ALPHA_VANTAGE_DATA_DIR
 from finbot.exceptions import ParseError
 from finbot.utils.data_collection_utils.alpha_vantage._alpha_vantage_utils import _make_alpha_vantage_request
 from finbot.utils.datetime_utils.daily_time_range import DailyTimeRange

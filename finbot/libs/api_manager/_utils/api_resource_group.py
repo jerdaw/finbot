@@ -3,7 +3,7 @@ from __future__ import annotations
 from types import SimpleNamespace
 from typing import TYPE_CHECKING, Any
 
-from constants.networking_constants import DEFAULT_TIMEOUT
+from finbot.constants.networking_constants import DEFAULT_TIMEOUT
 
 # Avoid circular import
 if TYPE_CHECKING:

@@ -16,8 +16,8 @@ import pandas as pd
 from matplotlib import pyplot as plt
 from tqdm.contrib.concurrent import process_map
 
-from config import logger
-from constants.path_constants import BACKTESTS_DATA_DIR
+from finbot.config import logger
+from finbot.constants.path_constants import BACKTESTS_DATA_DIR
 from finbot.utils.finance_utils.get_cgr import get_cgr
 from finbot.utils.finance_utils.get_pct_change import get_pct_change
 from finbot.utils.finance_utils.get_risk_free_rate import get_risk_free_rate

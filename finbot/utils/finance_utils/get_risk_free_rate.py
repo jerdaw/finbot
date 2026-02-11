@@ -16,7 +16,7 @@ from functools import lru_cache
 
 import pandas as pd
 
-from config import logger
+from finbot.config import logger
 from finbot.utils.data_collection_utils.fred.get_fred_data import get_fred_data
 
 

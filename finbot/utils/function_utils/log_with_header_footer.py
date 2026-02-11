@@ -186,7 +186,7 @@ Why type logging (not value logging):
     - Security: Avoid logging secrets, credentials
     - Clarity: Types often more useful than values for debugging
 
-Dependencies: logger (from config), time.perf_counter, functools.wraps
+Dependencies: logger (from finbot.config), time.perf_counter, functools.wraps
 
 Related modules: Used throughout finbot for debugging and profiling,
 especially in services modules.
@@ -197,7 +197,7 @@ from functools import wraps
 from time import perf_counter
 from typing import Any
 
-from config import logger
+from finbot.config import logger
 
 
 def _is_iterable_not_str(obj: Any) -> bool:

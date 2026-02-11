@@ -7,7 +7,7 @@ then re-runs all simulation pipelines.
 import time
 from time import perf_counter
 
-from config import logger
+from finbot.config import logger
 from finbot.services.simulation.approximate_overnight_libor import approximate_overnight_libor
 from finbot.services.simulation.sim_specific_bond_indexes import (
     sim_idcot1tr,

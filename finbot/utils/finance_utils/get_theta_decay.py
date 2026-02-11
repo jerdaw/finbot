@@ -46,6 +46,6 @@ def calculate_theta_decay(unlevered_series: pd.Series) -> pd.Series:
 
 
 if __name__ == "__main__":
-    from constants.data_constants import DEMO_DATA
+    from finbot.constants.data_constants import DEMO_DATA
 
     print(calculate_theta_decay(DEMO_DATA["Close"]))

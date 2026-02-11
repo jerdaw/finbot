@@ -22,7 +22,7 @@ File format: Excel (.xlsx)
 
 import pandas as pd
 
-from constants.path_constants import SHILLER_DATA_DIR
+from finbot.constants.path_constants import SHILLER_DATA_DIR
 from finbot.utils.pandas_utils.load_dataframe import load_dataframe
 from finbot.utils.pandas_utils.save_dataframe import save_dataframe
 

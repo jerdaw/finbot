@@ -199,7 +199,7 @@ class GrowthRateScaler(BaseScaler):
 
 
 if __name__ == "__main__":
-    from constants.data_constants import DEMO_DATA
+    from finbot.constants.data_constants import DEMO_DATA
     from finbot.utils.plotting_utils.interactive.interactive_plotter import InteractivePlotter
 
     close_series = DEMO_DATA["Close"]

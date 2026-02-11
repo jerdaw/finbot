@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from libs.logger.utils import ColorFormatter, ErrorFilter, LoggingJsonFormatter, NonErrorFilter
+from finbot.libs.logger.utils import ColorFormatter, ErrorFilter, LoggingJsonFormatter, NonErrorFilter
 
 
 def get_logger_config(logger_name: str, log_level: str, log_dir: Path) -> dict[str, Any]:

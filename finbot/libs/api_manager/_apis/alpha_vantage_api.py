@@ -1,5 +1,5 @@
-from libs.api_manager._resource_groups.api_resource_groups import alpha_vantage_api_resouce_group
-from libs.api_manager._utils.api import API
+from finbot.libs.api_manager._resource_groups.api_resource_groups import alpha_vantage_api_resouce_group
+from finbot.libs.api_manager._utils.api import API
 
 # AlphaVantage API constants
 _ALPHA_VANTAGE_API_BASE_URL = "https://www.alphavantage.co/query"

@@ -19,7 +19,7 @@ from datetime import date
 
 from dateutil.relativedelta import relativedelta
 
-from config import logger
+from finbot.config import logger
 
 
 def get_months_between_dates(

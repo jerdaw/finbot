@@ -16,7 +16,7 @@ from datetime import date
 import pandas as pd
 from matplotlib import pyplot as plt
 
-from config import logger
+from finbot.config import logger
 from finbot.utils.data_collection_utils.alpha_vantage.sentiment import get_sentiment
 
 

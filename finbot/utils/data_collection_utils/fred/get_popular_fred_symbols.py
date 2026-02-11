@@ -22,7 +22,7 @@ from threading import Lock
 import pandas as pd
 from bs4 import BeautifulSoup
 
-from constants.path_constants import FRED_DATA_DIR
+from finbot.constants.path_constants import FRED_DATA_DIR
 from finbot.utils.json_utils.load_json import load_json
 from finbot.utils.json_utils.save_json import save_json
 from finbot.utils.request_utils.request_handler import RequestHandler

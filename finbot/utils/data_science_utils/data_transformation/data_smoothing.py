@@ -121,7 +121,7 @@ from statsmodels.nonparametric.smoothers_lowess import lowess
 from statsmodels.tsa.filters.hp_filter import hpfilter
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
 
-from config import logger
+from finbot.config import logger
 from finbot.utils.validation_utils.validation_helpers import validate_num_in_range, validate_types
 
 
@@ -416,7 +416,7 @@ class DataSmoother:
 
 if __name__ == "__main__":
     # Example usage:
-    from constants.data_constants import DEMO_DATA
+    from finbot.constants.data_constants import DEMO_DATA
     from finbot.utils.plotting_utils.interactive.interactive_plotter import InteractivePlotter
 
     data = pd.Series(DEMO_DATA["Close"], name="SP500 Closing Price")

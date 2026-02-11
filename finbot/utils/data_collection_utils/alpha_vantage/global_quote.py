@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from config import logger
+from finbot.config import logger
 from finbot.utils.data_collection_utils.alpha_vantage._alpha_vantage_utils import _make_alpha_vantage_request
 
 

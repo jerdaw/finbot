@@ -24,8 +24,8 @@ import pandas as pd
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
-from config import settings_accessors
-from constants.path_constants import GOOGLE_FINANCE_DATA_DIR
+from finbot.config import settings_accessors
+from finbot.constants.path_constants import GOOGLE_FINANCE_DATA_DIR
 from finbot.utils.datetime_utils.validate_start_end_dates import validate_start_end_dates
 from finbot.utils.file_utils.is_file_outdated import is_file_outdated
 from finbot.utils.pandas_utils.filter_by_date import filter_by_date

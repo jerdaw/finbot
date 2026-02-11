@@ -107,7 +107,7 @@ def step_datetimes(
 
     Example:
     ```python
-    from constants.data_constants import DEMO_DATA
+    from finbot.constants.data_constants import DEMO_DATA
 
     # Segmenting data on a monthly basis, aligned to the calendar
     monthly_data = step_datetimes(DEMO_DATA["Close"], "Monthly", True, True)
@@ -135,7 +135,7 @@ def step_datetimes(
 
 
 if __name__ == "__main__":
-    from constants.data_constants import DEMO_DATA
+    from finbot.constants.data_constants import DEMO_DATA
 
     for align in [True, False]:
         for step_option in STEP_OPTIONS:

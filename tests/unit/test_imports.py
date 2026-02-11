@@ -2,14 +2,14 @@
 
 
 def test_import_config():
-    from config import logger, settings
+    from finbot.config import logger, settings
 
     assert settings is not None
     assert logger is not None
 
 
 def test_import_settings_accessors():
-    from config import settings_accessors
+    from finbot.config import settings_accessors
 
     assert settings_accessors is not None
     assert hasattr(settings_accessors, "MAX_THREADS")

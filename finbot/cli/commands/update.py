@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import click
 
-from config import logger
+from finbot.config import logger
 
 
 @click.command()

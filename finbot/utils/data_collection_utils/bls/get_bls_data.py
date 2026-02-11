@@ -20,7 +20,7 @@ import datetime
 
 import pandas as pd
 
-from constants.path_constants import BLS_DATA_DIR
+from finbot.constants.path_constants import BLS_DATA_DIR
 from finbot.utils.data_collection_utils.bls._bls_utils import (
     _get_ids_to_update,
     _load_bls_data,

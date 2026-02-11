@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import click
 
-from config import logger
 from finbot.cli.commands import backtest, optimize, simulate, update
+from finbot.config import logger
 
 
 @click.group()

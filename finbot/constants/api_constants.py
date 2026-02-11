@@ -31,7 +31,7 @@ def get_alpha_vantage_rapi_headers() -> dict[str, str]:
     Raises:
         OSError: If ALPHA_VANTAGE_API_KEY environment variable is not set.
     """
-    from config import settings_accessors
+    from finbot.config import settings_accessors
 
     return {
         "X-RapidAPI-Key": settings_accessors.get_alpha_vantage_api_key(),

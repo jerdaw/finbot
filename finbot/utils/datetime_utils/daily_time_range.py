@@ -21,7 +21,7 @@ from __future__ import annotations
 from collections.abc import Iterator
 from datetime import date, datetime, time, timedelta
 
-from config import logger
+from finbot.config import logger
 
 
 class DailyTimeRange:

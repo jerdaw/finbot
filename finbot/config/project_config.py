@@ -6,8 +6,8 @@ because it would conflict with the `config` package.
 import pandas as pd
 from dynaconf import Dynaconf, Validator
 
-from constants.host_constants import CURRENT_HOST_INFO
-from constants.path_constants import CONFIG_DIR
+from finbot.constants.host_constants import CURRENT_HOST_INFO
+from finbot.constants.path_constants import CONFIG_DIR
 from finbot.utils.multithreading_utils.get_max_threads import get_max_threads
 
 
