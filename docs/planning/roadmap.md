@@ -383,13 +383,26 @@ finbot --help     # Access CLI (requires DYNACONF_ENV=development)
 
 **Result:** Core implementation reduced from ~288 lines to ~80 lines. Data-driven configuration makes it trivial to add new funds (1 line in registry). All tests passing. See `docs/planning/IMPLEMENTATION_PLAN_2.3.md` for details.
 
-### 2.4 Improve Git History
+### 2.4 Improve Git History ✓
 
-**Current state:** 4 commits on a single day (2026-02-09). The repo was consolidated from three pre-existing repos (finbot 2021-2022, bb 2023-2024, backbetter 2022) so the squashed history is a side effect of the merge, not a lack of prior work. Reconstructing the old histories is not worth the effort since the code was restructured during consolidation.
+**Status:** PARTIALLY COMPLETE (2026-02-11)
 
+**Previous state:** 4 commits on a single day (2026-02-09). The repo was consolidated from three pre-existing repos (finbot 2021-2022, bb 2023-2024, backbetter 2022) so the squashed history is a side effect of the merge, not a lack of prior work.
+
+**What Was Done:**
+- [x] Created comprehensive `CHANGELOG.md` following Keep a Changelog format
+- [x] Documented project lineage: original repos, active periods, contributions
+- [x] Documented consolidation timeline and key milestones
+- [x] Listed all changes in v1.0.0 (CLI, CI/CD, tests, docs, config consolidation)
+- [x] Listed all changes in v0.1.0 (initial consolidation)
+- [x] Included version history summary table
+- [x] Linked to ADR-001 for detailed consolidation rationale
+
+**Remaining Items:**
 - [ ] Going forward, use granular, descriptive commits per feature/fix (not bulk commits) — the history will build naturally
-- [x] Add a `CHANGELOG.md` documenting the project lineage: original repos, their date ranges, what each contributed, and key milestones (e.g., "2021: first backtesting engine, 2023: modern infrastructure rewrite, 2026-02-09: consolidated into single repo — see ADR-001")
 - [ ] Use conventional commit format or similar standard for future commits
+
+**Result:** Comprehensive changelog provides historical context, version tracking, and change documentation. Future work focuses on commit message conventions.
 
 ### 2.5 Complete Incomplete Components ✓
 
@@ -562,6 +575,7 @@ _Move items here as they are finished._
 
 | Item | Completed | Notes |
 |------|-----------|-------|
+| Improve git history (create CHANGELOG.md) - PARTIAL | 2026-02-11 | Created comprehensive CHANGELOG.md following Keep a Changelog format. Documented project lineage (3 repos: finbot 2021-2022, bb 2023-2024, backbetter 2022). Listed all v1.0.0 changes (CLI, CI/CD, tests, config consolidation) and v0.1.0 (initial consolidation). Included version history table and consolidation timeline. Linked to ADR-001. Remaining: adopt conventional commit format going forward. |
 | Consolidate dual config system - COMPLETE | 2026-02-10 | Eliminated dual config system by consolidating BaseConfig singleton into Dynaconf. Created settings_accessors.py with lazy API key loading and MAX_THREADS accessor. Updated 14 files (8 for MAX_THREADS, 6 for API keys). Deleted 5 obsolete config files. Removed circular dependency between config/ and libs/. Single source of truth for configuration. All 80 tests passing. |
 | Improve CI/CD pipeline - COMPLETE | 2026-02-10 | Enhanced CI workflow with 8 checks: Poetry metadata validation, ruff lint/format, mypy type checking (non-fatal, 109 issues), bandit security scan (non-fatal, 6 low-severity), pip-audit dependency CVE scanning (non-fatal), pytest with coverage reporting (17.53% baseline). Added pytest-cov dependency. Created .coveragerc config. Integrated Codecov for coverage tracking. Added CI status, coverage, Python, and Poetry badges to README. All 80 tests passing. |
 | Complete incomplete components - COMPLETE | 2026-02-10 | Added NTSX to daily update pipeline (sim_ntsx now runs with other fund simulations). Removed empty placeholder directories (finbot/services/investing/, finbot/models/). Clarified rebalance_optimizer.py with convenience import pointing to working backtesting implementation. Verified all util directories are populated with working code. All 80 tests passing. |
