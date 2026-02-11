@@ -438,15 +438,36 @@ finbot --help     # Access CLI (requires DYNACONF_ENV=development)
 
 These items improve professionalism and maintainability.
 
-### 3.1 Improve Documentation
+### 3.1 Improve Documentation ✓
 
-**Current state:** AGENTS.md is comprehensive internally; README is basic; no API docs.
+**Status:** PARTIALLY COMPLETE (2026-02-11)
 
-- [ ] Expand README.md: add a project motivation section, architecture diagram (Mermaid or ASCII), and link to example notebooks
-- [ ] Add API documentation using mkdocs or Sphinx (at minimum, document the public API of fund_simulator, BacktestRunner, dca_optimizer, monte_carlo_simulator)
-- [ ] Add docstrings to any utility files missing them (spot-check across the 176 utils)
-- [ ] Write ADR-002 for any major new architectural decisions (e.g., adding a CLI, choosing a web framework)
-- [ ] Add a high-level overview doc for the utility library (`finbot/utils/README.md`) explaining the categories and key modules
+**Previous state:** AGENTS.md was comprehensive internally; README was basic with no architecture diagrams; no utility library overview; no ADRs beyond ADR-001.
+
+**What Was Done:**
+- [x] Expanded README.md with project motivation, problem/solution framing, use cases
+- [x] Added two Mermaid architecture diagrams (high-level data flow + detailed component diagram)
+- [x] Added links to all 5 example notebooks with descriptions
+- [x] Added links to research documentation (3 papers)
+- [x] Created `finbot/utils/README.md` - Comprehensive 400+ line overview of utility library
+  - 15-category reference table with key functions
+  - Detailed descriptions for each category
+  - Example usage for major categories
+  - Contributing guidelines for new utilities
+- [x] Wrote ADR-002 documenting CLI interface decision
+  - Framework selection rationale (Click vs alternatives)
+  - Design principles and implementation details
+  - Consequences analysis and future enhancements
+
+**Remaining Items:**
+- [ ] Add API documentation using mkdocs or Sphinx (comprehensive documentation system)
+  - Document public API of fund_simulator, BacktestRunner, dca_optimizer, monte_carlo_simulator
+  - Would benefit from dedicated implementation session
+- [ ] Add docstrings to utility files missing them (spot-check across 176 utils)
+  - Many functions already have docstrings, but some are missing
+  - Gradual improvement recommended as files are touched
+
+**Result:** Significantly improved documentation accessibility. README now provides clear motivation and architecture overview. Utility library well-documented with searchable reference. CLI decision formally documented.
 
 ### 3.2 Strengthen Type Safety
 
@@ -575,6 +596,7 @@ _Move items here as they are finished._
 
 | Item | Completed | Notes |
 |------|-----------|-------|
+| Improve documentation (README, utils overview, ADR-002) - PARTIAL | 2026-02-11 | Expanded README.md with motivation, problem/solution framing, 2 Mermaid architecture diagrams, notebook links. Created finbot/utils/README.md (400+ lines) documenting 15 utility categories with examples and contributing guidelines. Wrote ADR-002 documenting CLI interface decision (framework selection, design principles, consequences). Remaining: mkdocs/Sphinx API docs, add missing docstrings to utilities. |
 | Improve git history (create CHANGELOG.md) - PARTIAL | 2026-02-11 | Created comprehensive CHANGELOG.md following Keep a Changelog format. Documented project lineage (3 repos: finbot 2021-2022, bb 2023-2024, backbetter 2022). Listed all v1.0.0 changes (CLI, CI/CD, tests, config consolidation) and v0.1.0 (initial consolidation). Included version history table and consolidation timeline. Linked to ADR-001. Remaining: adopt conventional commit format going forward. |
 | Consolidate dual config system - COMPLETE | 2026-02-10 | Eliminated dual config system by consolidating BaseConfig singleton into Dynaconf. Created settings_accessors.py with lazy API key loading and MAX_THREADS accessor. Updated 14 files (8 for MAX_THREADS, 6 for API keys). Deleted 5 obsolete config files. Removed circular dependency between config/ and libs/. Single source of truth for configuration. All 80 tests passing. |
 | Improve CI/CD pipeline - COMPLETE | 2026-02-10 | Enhanced CI workflow with 8 checks: Poetry metadata validation, ruff lint/format, mypy type checking (non-fatal, 109 issues), bandit security scan (non-fatal, 6 low-severity), pip-audit dependency CVE scanning (non-fatal), pytest with coverage reporting (17.53% baseline). Added pytest-cov dependency. Created .coveragerc config. Integrated Codecov for coverage tracking. Added CI status, coverage, Python, and Poetry badges to README. All 80 tests passing. |

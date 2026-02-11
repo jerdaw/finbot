@@ -1,11 +1,43 @@
 # Finbot
 
-Financial data collection, simulation, and backtesting platform.
+**Financial data collection, simulation, and backtesting platform for quantitative analysis**
 
 [![CI](https://github.com/jer/finbot/actions/workflows/ci.yml/badge.svg)](https://github.com/jer/finbot/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/jer/finbot/branch/main/graph/badge.svg)](https://codecov.io/gh/jer/finbot)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![Poetry](https://img.shields.io/badge/poetry-1.7+-blue.svg)](https://python-poetry.org/)
+
+## Overview
+
+Finbot is a comprehensive platform for quantitative financial analysis, combining:
+
+- **Data Collection**: Automated pipelines for Yahoo Finance, FRED, Alpha Vantage, Google Sheets, Shiller datasets, and BLS
+- **Simulation**: Realistic modeling of leveraged ETFs, bond ladders, indexes, and Monte Carlo scenarios
+- **Backtesting**: 10 pre-built strategies with Backtrader integration and comprehensive performance metrics
+- **Optimization**: Grid-search DCA optimizer and portfolio rebalancing tools
+- **Analysis**: Research-grade documentation with statistical significance testing
+
+### Why Finbot?
+
+**Problem**: Testing investment strategies requires stitching together disparate tools, managing data inconsistencies, and writing repetitive boilerplate code.
+
+**Solution**: Finbot provides a unified platform where you can:
+- Fetch historical data from 6+ sources with a single function call
+- Simulate leveraged funds back to 1950 with realistic cost modeling (fees, spreads, borrowing costs)
+- Backtest any strategy with one class definition
+- Optimize portfolios across multiple dimensions (allocations, durations, intervals)
+- Generate publication-ready research with example notebooks
+
+**Use Cases**:
+- Test rebalancing strategies (60/40, All-Weather, etc.)
+- Evaluate leveraged ETF performance vs unleveraged alternatives
+- Model bond ladder mechanics across different yield environments
+- Optimize DCA timing and allocation ratios
+- Generate Monte Carlo risk scenarios for retirement planning
+
+### Project History
+
+This repository consolidates three years of development across three repositories (2021-2024). See [CHANGELOG.md](CHANGELOG.md) for detailed history and [ADR-001](docs/adr/ADR-001-consolidate-three-repos.md) for consolidation rationale.
 
 ## Quick Start
 
@@ -124,17 +156,129 @@ Run `make help` to see all available commands.
 
 ## Architecture
 
-See [docs/adr/](docs/adr/) for architectural decision records.
+### High-Level Data Flow
 
-**Data pipeline:** Data Collection (utils) -> Simulations (services) -> Backtesting (services) -> Performance Analysis
+```mermaid
+graph LR
+    A[Data Sources] -->|YFinance, FRED, Alpha Vantage, etc.| B[Data Collection Utils]
+    B -->|Price Histories, Economic Data| C[Data Storage]
+    C -->|Parquet Files| D[Simulators]
+    C -->|Parquet Files| E[Backtesting Engine]
+    D -->|Simulated Histories| E
+    E -->|Portfolio Performance| F[Optimization]
+    E -->|Performance Metrics| G[Analysis & Visualization]
+    F -->|Optimal Parameters| G
+
+    style A fill:#e1f5ff
+    style C fill:#fff4e1
+    style G fill:#e8f5e9
+```
+
+### Architecture Diagram
+
+```mermaid
+graph TB
+    subgraph "Infrastructure Layer"
+        CONFIG[config/<br/>Dynaconf Settings]
+        CONST[constants/<br/>Paths & API URLs]
+        LIBS[libs/<br/>API Manager & Logger]
+    end
+
+    subgraph "Utility Layer"
+        DC[finbot/utils/data_collection/<br/>YFinance, FRED, Alpha Vantage, GF, BLS]
+        FIN[finbot/utils/finance/<br/>CGR, Drawdown, Risk Metrics]
+        PD[finbot/utils/pandas/<br/>Save/Load, Filter, Transform]
+        DT[finbot/utils/datetime/<br/>Business Dates, Conversions]
+    end
+
+    subgraph "Service Layer"
+        SIM[finbot/services/simulation/<br/>Fund, Bond Ladder, Monte Carlo]
+        BT[finbot/services/backtesting/<br/>10 Strategies, Backtrader Integration]
+        OPT[finbot/services/optimization/<br/>DCA Optimizer, Rebalance Optimizer]
+    end
+
+    subgraph "Interface Layer"
+        CLI[CLI Commands<br/>simulate, backtest, optimize, update]
+        NB[Jupyter Notebooks<br/>5 Example Analyses]
+        SCRIPTS[scripts/<br/>Daily Update Pipeline]
+    end
+
+    CONFIG --> DC
+    CONFIG --> SIM
+    CONST --> DC
+    LIBS --> DC
+
+    DC --> SIM
+    DC --> BT
+    FIN --> BT
+    FIN --> OPT
+    PD --> SIM
+    PD --> BT
+    DT --> DC
+
+    SIM --> BT
+    SIM --> OPT
+    BT --> OPT
+
+    CLI --> SIM
+    CLI --> BT
+    CLI --> OPT
+    CLI --> DC
+    NB --> SIM
+    NB --> BT
+    NB --> OPT
+    SCRIPTS --> DC
+    SCRIPTS --> SIM
+
+    style CONFIG fill:#e3f2fd
+    style CONST fill:#e3f2fd
+    style LIBS fill:#e3f2fd
+    style DC fill:#fff3e0
+    style SIM fill:#e8f5e9
+    style BT fill:#e8f5e9
+    style OPT fill:#e8f5e9
+    style CLI fill:#f3e5f5
+    style NB fill:#f3e5f5
+```
+
+### Package Structure
 
 | Layer | Purpose |
 | --- | --- |
-| `config/` | Dynaconf-based environment configuration |
-| `constants/` | Application constants and path definitions |
-| `libs/` | API manager and async logger |
-| `finbot/utils/` | Data collection, finance, pandas, datetime utilities |
+| `config/` | Dynaconf-based environment configuration, settings accessors |
+| `constants/` | Application constants, path definitions, API URLs |
+| `libs/` | API manager with rate limiting, queue-based async logger |
+| `finbot/utils/` | 176-file utility library (data collection, finance, pandas, datetime, plotting, etc.) |
 | `finbot/services/simulation/` | Fund, index, bond ladder, Monte Carlo simulators |
-| `finbot/services/backtesting/` | Backtrader-based backtesting engine with strategies |
+| `finbot/services/backtesting/` | Backtrader-based backtesting engine with 10 strategies |
 | `finbot/services/optimization/` | DCA and rebalance portfolio optimizers |
+| `finbot/cli/` | Click-based CLI with 4 commands (simulate, backtest, optimize, update) |
 | `scripts/` | Daily data update pipeline |
+| `notebooks/` | 5 example Jupyter notebooks with analysis |
+| `docs/` | Research papers, ADRs, planning documents |
+
+See [docs/adr/](docs/adr/) for architectural decision records and [finbot/utils/README.md](finbot/utils/README.md) for utility library overview.
+
+## Example Notebooks
+
+Explore comprehensive analyses demonstrating all major features:
+
+1. **[Fund Simulation Demo](notebooks/01_fund_simulation_demo.ipynb)** - Compare simulated vs actual ETF performance (SPY, UPRO, TQQQ)
+2. **[DCA Optimization Results](notebooks/02_dca_optimization_results.ipynb)** - Find optimal portfolio allocations and timing
+3. **[Backtest Strategy Comparison](notebooks/03_backtest_strategy_comparison.ipynb)** - Compare all 10 strategies with risk-return analysis
+4. **[Monte Carlo Risk Analysis](notebooks/04_monte_carlo_risk_analysis.ipynb)** - Portfolio risk scenarios and VaR analysis
+5. **[Bond Ladder Analysis](notebooks/05_bond_ladder_analysis.ipynb)** - Bond ladder construction and yield curve modeling
+
+Each notebook includes:
+- Setup and data loading
+- Multiple analysis sections with interactive visualizations
+- Key findings with actionable insights
+- Statistical validation and next steps
+
+## Research Documentation
+
+Three comprehensive research papers (docs/research/):
+
+- **[Leveraged ETF Simulation Accuracy](docs/research/leveraged-etf-simulation-accuracy.md)** - Tracking error analysis and methodology validation
+- **[DCA Optimization Findings](docs/research/dca-optimization-findings.md)** - Optimal allocations across market regimes
+- **[Strategy Backtest Results](docs/research/strategy-backtest-results.md)** - 10 strategies compared with statistical significance testing
