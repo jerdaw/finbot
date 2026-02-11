@@ -83,8 +83,8 @@ git checkout -b test-numpy-2
 git fetch origin pull/XXX/head:test-numpy-2
 
 # Install and test
-poetry install
-poetry run pytest tests/
+uv sync
+uv run pytest tests/
 
 # If tests pass, merge the PR
 ```

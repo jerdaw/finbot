@@ -20,8 +20,47 @@ classifiers = [
     "Topic :: Office/Business :: Financial :: Investment",
     "Topic :: Scientific/Engineering :: Mathematics",
 ]
-# Dependencies are managed by Poetry in [tool.poetry.dependencies]
-dynamic = ["dependencies"]
+dependencies = [
+    "pandas>=2.1.3,<3",
+    "numpy>=1.26.0,<2",
+    "numpy-financial>=1.0.0,<2",
+    "scipy>=1.11.0,<2",
+    "requests>=2.31.0,<3",
+    "yfinance>=0.2.33,<0.3",
+    "backtrader>=1.9.78.123,<2",
+    "quantstats>=0.0.81,<1",
+    "pyportfolioopt>=1.5.5,<2",
+    "pyarrow>=14.0.1",
+    "matplotlib>=3.8.2,<4",
+    "seaborn>=0.13.0,<0.14",
+    "plotly>=5.18.0,<6",
+    "tqdm>=4.66.1,<5",
+    "scikit-learn>=1.3.2,<2",
+    "statsmodels>=0.14.1,<0.15",
+    "pandas-datareader>=0.10.0,<0.11",
+    "selenium>=4.16.0,<5",
+    "webdriver-manager>=4.0.1,<5",
+    "openpyxl>=3.1.2,<4",
+    "xlrd>=2.0.1,<3",
+    "zstandard>=0.22.0",
+    "httpx>=0.28.1,<0.29",
+    "dynaconf>=3.2.4,<4",
+    "limits>=5.8.0,<6",
+    "pillow>=12.1.0,<13",
+    "jupyter>=1.0.0,<2",
+    "prettytable>=3.9.0,<4",
+    "google-auth>=2.26.2,<3",
+    "google-auth-oauthlib>=1.2.0,<2",
+    "google-auth-httplib2>=0.3.0,<0.4",
+    "google-api-python-client>=2.113.0,<3",
+    "nasdaq-data-link>=1.0.4,<2",
+    "pywavelets>=1.5.0,<2",
+    "ruptures>=1.1.9,<2",
+    "filterpy>=1.4.5,<2",
+    "beautifulsoup4>=4.12.2,<5",
+    "python-dotenv>=1.0.0,<2",
+    "click>=8.1.7,<9",
+]
 
 [project.urls]
 Homepage = "https://github.com/jerdaw/finbot"
@@ -32,73 +71,28 @@ Documentation = "https://github.com/jerdaw/finbot/blob/main/README.md"
 [project.scripts]
 finbot = "finbot.cli.main:cli"
 
-[tool.poetry]
-packages = [
-    { include = "finbot" },
+[dependency-groups]
+dev = [
+    "pre-commit>=3.6.0,<4",
+    "mypy>=1.7.1,<2",
+    "ruff>=0.15.0,<0.16",
+    "pytest>=9.0.2,<10",
+    "bandit>=1.7.6,<2",
+    "ssort>=0.16.0,<0.17",
+    "pyupgrade>=3.15.0,<4",
+    "types-python-dateutil>=2.8.19.14,<3",
+    "types-requests>=2.31.0.10,<3",
+    "pandas-stubs>=2.1.1.230928,<3",
+    "types-tqdm>=4.66.0.5,<5",
+    "types-beautifulsoup4>=4.12.0.20240106,<5",
+    "google-api-python-client-stubs>=1.23.0,<2",
+    "types-seaborn>=0.13.1.20240115,<1",
+    "pytest-cov>=7.0.0,<8",
+    "mkdocs>=1.6.1,<2",
+    "mkdocs-material>=9.5.49,<10",
+    "mkdocstrings[python]>=0.27.0,<1",
+    "types-psutil>=7.2.2.20260130,<8",
 ]
-
-[tool.poetry.dependencies]
-python = ">=3.11,<3.15"
-pandas = "^2.1.3"
-numpy = "^1.26.0"
-numpy-financial = "^1.0.0"
-scipy = "^1.11.0"
-requests = "^2.31.0"
-yfinance = "^0.2.33"
-backtrader = "^1.9.78.123"
-quantstats = "^0.0.81"
-pyportfolioopt = "^1.5.5"
-pyarrow = ">=14.0.1"
-matplotlib = "^3.8.2"
-seaborn = "^0.13.0"
-plotly = "^5.18.0"
-tqdm = "^4.66.1"
-scikit-learn = "^1.3.2"
-statsmodels = "^0.14.1"
-pandas-datareader = "^0.10.0"
-selenium = "^4.16.0"
-webdriver-manager = "^4.0.1"
-openpyxl = "^3.1.2"
-xlrd = "^2.0.1"
-zstandard = ">=0.22.0"
-httpx = "^0.28.1"
-dynaconf = "^3.2.4"
-limits = "^5.8.0"
-pillow = "^12.1.0"
-jupyter = "^1.0.0"
-prettytable = "^3.9.0"
-google-auth = "^2.26.2"
-google-auth-oauthlib = "^1.2.0"
-google-auth-httplib2 = "^0.3.0"
-google-api-python-client = "^2.113.0"
-nasdaq-data-link = "^1.0.4"
-pywavelets = "^1.5.0"
-ruptures = "^1.1.9"
-filterpy = "^1.4.5"
-beautifulsoup4 = "^4.12.2"
-python-dotenv = "^1.0.0"
-click = "^8.1.7"
-
-[tool.poetry.group.dev.dependencies]
-pre-commit = "^3.6.0"
-mypy = "^1.7.1"
-ruff = "^0.15.0"
-pytest = "^9.0.2"
-bandit = "^1.7.6"
-ssort = "^0.16.0"
-pyupgrade = "^3.15.0"
-types-python-dateutil = "^2.8.19.14"
-types-requests = "^2.31.0.10"
-pandas-stubs = "^2.1.1.230928"
-types-tqdm = "^4.66.0.5"
-types-beautifulsoup4 = "^4.12.0.20240106"
-google-api-python-client-stubs = "^1.23.0"
-types-seaborn = "^0.13.1.20240115"
-pytest-cov = "^7.0.0"
-mkdocs = "^1.6.1"
-mkdocs-material = "^9.5.49"
-mkdocstrings = {extras = ["python"], version = "^0.27.0"}
-types-psutil = "^7.2.2.20260130"
 
 [tool.ruff]
 respect-gitignore = true
@@ -223,5 +217,5 @@ strict_optional = true
 exclude_dirs = ["tests", "./tests/*.py", "*/test_*.py", "*/*_test.py"]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"

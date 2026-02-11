@@ -28,8 +28,8 @@ All benchmark scripts are located in the `benchmarks/` directory:
 
 Run benchmarks with:
 ```bash
-DYNACONF_ENV=development poetry run python benchmarks/benchmark_fund_simulator.py
-DYNACONF_ENV=development poetry run python benchmarks/benchmark_dca_optimizer.py
+DYNACONF_ENV=development uv run python benchmarks/benchmark_fund_simulator.py
+DYNACONF_ENV=development uv run python benchmarks/benchmark_dca_optimizer.py
 ```
 
 ---
@@ -284,14 +284,14 @@ Monte Carlo simulation is naturally parallelizable and benefits from NumPy's opt
 
 ```bash
 # Install dependencies
-poetry install
+uv sync
 
 # Set environment
 export DYNACONF_ENV=development
 
 # Run all benchmarks
-poetry run python benchmarks/benchmark_fund_simulator.py
-poetry run python benchmarks/benchmark_dca_optimizer.py
+uv run python benchmarks/benchmark_fund_simulator.py
+uv run python benchmarks/benchmark_dca_optimizer.py
 
 # Or use make command (if implemented)
 make benchmark

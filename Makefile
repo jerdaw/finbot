@@ -6,7 +6,7 @@ help:
 	@echo "======================="
 	@echo ""
 	@echo "Setup & Installation:"
-	@echo "  make install        Install dependencies with Poetry"
+	@echo "  make install        Install dependencies with uv"
 	@echo "  make update         Update all dependencies"
 	@echo ""
 	@echo "Code Quality:"
@@ -45,29 +45,29 @@ help:
 
 # Setup & Installation
 install:
-	@echo "Installing dependencies with Poetry..."
-	poetry install
+	@echo "Installing dependencies with uv..."
+	uv sync
 
 update:
 	@echo "Updating dependencies..."
-	poetry update
+	uv lock --upgrade && uv sync
 
 # Code Quality
 lint:
 	@echo "Running ruff linter with auto-fix..."
-	poetry run ruff check . --fix --exclude notebooks/
+	uv run ruff check . --fix --exclude notebooks/
 
 format:
 	@echo "Formatting code with ruff..."
-	poetry run ruff format . --exclude notebooks/
+	uv run ruff format . --exclude notebooks/
 
 type:
 	@echo "Running mypy type checker..."
-	@poetry run mypy finbot/ scripts/ || echo "⚠ Type checking found issues (non-fatal)"
+	@uv run mypy finbot/ scripts/ || echo "⚠ Type checking found issues (non-fatal)"
 
 security:
 	@echo "Running bandit security scanner..."
-	@poetry run bandit -r finbot || echo "⚠ Security scan found issues (non-fatal)"
+	@uv run bandit -r finbot || echo "⚠ Security scan found issues (non-fatal)"
 
 check: lint format type security
 	@echo ""
@@ -76,20 +76,20 @@ check: lint format type security
 # Testing
 test:
 	@echo "Running all tests with verbose output..."
-	DYNACONF_ENV=development poetry run pytest tests/ -v
+	DYNACONF_ENV=development uv run pytest tests/ -v
 
 test-cov:
 	@echo "Running tests with coverage report..."
-	DYNACONF_ENV=development poetry run pytest --cov=finbot --cov-report=term-missing --cov-report=html tests/
+	DYNACONF_ENV=development uv run pytest --cov=finbot --cov-report=term-missing --cov-report=html tests/
 
 test-quick:
 	@echo "Running tests in quiet mode..."
-	DYNACONF_ENV=development poetry run pytest tests/ -q
+	DYNACONF_ENV=development uv run pytest tests/ -q
 
 # Data Pipeline
 run-update:
 	@echo "Running daily data update pipeline..."
-	DYNACONF_ENV=development poetry run python scripts/update_daily.py
+	DYNACONF_ENV=development uv run python scripts/update_daily.py
 
 # Documentation
 docs: docs-build docs-serve
@@ -97,11 +97,11 @@ docs: docs-build docs-serve
 docs-serve:
 	@echo "Serving documentation at http://127.0.0.1:8000..."
 	@echo "Press Ctrl+C to stop"
-	poetry run mkdocs serve
+	uv run mkdocs serve
 
 docs-build:
 	@echo "Building documentation..."
-	poetry run mkdocs build
+	uv run mkdocs build
 
 # Maintenance
 clean:
@@ -121,7 +121,7 @@ clean:
 
 pre-commit:
 	@echo "Running pre-commit hooks on all files..."
-	poetry run pre-commit run --all-files
+	uv run pre-commit run --all-files
 
 # Docker
 docker-build:
@@ -142,7 +142,7 @@ docker-update:
 
 docker-test:
 	@echo "Running tests in Docker..."
-	docker run --rm -e DYNACONF_ENV=development finbot sh -c "pip install pytest && pytest tests/ -v"
+	docker run --rm -e DYNACONF_ENV=development finbot sh -c "uv run pytest tests/ -v"
 
 docker-clean:
 	@echo "Removing Docker image and volumes..."

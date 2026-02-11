@@ -5,17 +5,16 @@ FROM python:3.13-slim AS builder
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
-# Install Poetry
-RUN pip install --no-cache-dir poetry==2.3.2
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 WORKDIR /app
 
 # Copy dependency files first (better layer caching)
-COPY pyproject.toml poetry.lock ./
+COPY pyproject.toml uv.lock ./
 
 # Install dependencies into a virtual environment
-RUN poetry config virtualenvs.in-project true && \
-    poetry install --no-interaction --no-ansi --only main
+RUN uv sync --frozen --no-dev --no-install-project
 
 # Stage 2: Runtime image
 FROM python:3.13-slim AS runtime

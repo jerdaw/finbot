@@ -8,40 +8,40 @@ Finbot is a financial data collection, simulation, and backtesting platform that
 - Advanced simulation systems (fund, bond ladder, Monte Carlo, index simulators)
 - Portfolio optimization (DCA optimizer, rebalance optimizer)
 
-Python `>=3.11,<3.15`. Uses **Poetry** for dependency management.
+Python `>=3.11,<3.15`. Uses **uv** for dependency management.
 
 ## Quick Start
 
 ```bash
 # Install
-poetry install
+uv sync
 
 # Set environment
 export DYNACONF_ENV=development
 
 # Run tests
-poetry run pytest
+uv run pytest
 
 # Run daily data pipeline
-poetry run python scripts/update_daily.py
+uv run python scripts/update_daily.py
 ```
 
 ## Common Commands
 
 ```bash
 # Code quality
-poetry run ruff check . --fix    # lint + autofix
-poetry run ruff format .         # format
-poetry run mypy                  # type check (configured in pyproject.toml)
-poetry run bandit -r finbot      # security scan
+uv run ruff check . --fix    # lint + autofix
+uv run ruff format .         # format
+uv run mypy                  # type check (configured in pyproject.toml)
+uv run bandit -r finbot      # security scan
 
 # Pre-commit hooks (lightweight set)
-poetry run pre-commit run --all-files
+uv run pre-commit run --all-files
 
 # Testing
-poetry run pytest tests/ -v                    # all tests with verbose output
-poetry run pytest tests/unit/ -v              # unit tests only
-poetry run pytest -k test_import              # tests matching pattern
+uv run pytest tests/ -v                    # all tests with verbose output
+uv run pytest tests/unit/ -v              # unit tests only
+uv run pytest -k test_import              # tests matching pattern
 
 # Docker
 make docker-build                # build image
@@ -240,16 +240,16 @@ Create `.env` file in `finbot/config/` (excluded by `.gitignore`).
 
 ```bash
 # Run all tests
-poetry run pytest tests/ -v
+uv run pytest tests/ -v
 
 # Run specific test file
-poetry run pytest tests/unit/test_imports.py -v
+uv run pytest tests/unit/test_imports.py -v
 
 # Run tests matching pattern
-poetry run pytest -k test_simulation
+uv run pytest -k test_simulation
 
 # Run with coverage
-poetry run pytest --cov=finbot tests/
+uv run pytest --cov=finbot tests/
 ```
 
 **Test structure**:
@@ -269,14 +269,14 @@ poetry run pytest --cov=finbot tests/
 # Serve locally with auto-reload
 make docs-serve
 # or
-poetry run mkdocs serve
+uv run mkdocs serve
 # Access at http://127.0.0.1:8000
 
 # Build static site
 make docs-build
 
 # Deploy to GitHub Pages
-poetry run mkdocs gh-deploy
+uv run mkdocs gh-deploy
 ```
 
 **Documentation structure**:
@@ -355,9 +355,9 @@ See `docs/adr/` for architectural decision records:
 
 1. Create feature branch
 2. Make changes
-3. Run tests: `poetry run pytest`
-4. Run linter: `poetry run ruff check . --fix`
-5. Run formatter: `poetry run ruff format .`
+3. Run tests: `uv run pytest`
+4. Run linter: `uv run ruff check . --fix`
+5. Run formatter: `uv run ruff format .`
 6. Commit with descriptive message following commit authorship policy (see below)
 7. Push and create PR
 8. CI must pass
@@ -401,4 +401,4 @@ This policy applies to:
 - `docs/adr/`: Architectural decision records
 - `docs/planning/archive/`: Archived implementation plans
 - `.pre-commit-config.yaml`: Pre-commit hook configuration
-- `pyproject.toml`: Poetry dependencies, tool configuration
+- `pyproject.toml`: Dependencies (PEP 621), tool configuration

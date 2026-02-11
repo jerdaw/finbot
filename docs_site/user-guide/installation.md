@@ -24,7 +24,7 @@ git clone https://github.com/jerdaw/finbot.git
 cd finbot
 
 # Install dependencies
-poetry install
+uv sync
 
 # Activate environment
 poetry shell
@@ -76,13 +76,13 @@ echo 'export DYNACONF_ENV=development' >> ~/.bashrc
 For development:
 
 ```bash
-poetry install --with dev
+uv sync
 ```
 
 For documentation building:
 
 ```bash
-poetry install --with dev
+uv sync
 ```
 
 ### Verify Installation
@@ -90,7 +90,7 @@ poetry install --with dev
 Run the test suite:
 
 ```bash
-poetry run pytest -v
+uv run pytest -v
 ```
 
 Expected: All 80 tests pass.
