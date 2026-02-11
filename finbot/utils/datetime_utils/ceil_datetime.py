@@ -1,3 +1,21 @@
+"""Round datetime up (ceiling) to specified unit.
+
+Rounds a datetime object up to the end of a specified time unit (year, month,
+day, hour, minute, second, microsecond). For example, ceiling to "month" would
+return the last moment of that month (day=31, hour=23, minute=59, etc.).
+
+Complements floor_datetime.py for datetime rounding operations.
+
+Supports datetime.datetime, datetime.date, and pandas.Timestamp inputs.
+Handles variable month lengths correctly.
+
+Typical usage:
+    - Round query dates to period boundaries
+    - Standardize time series to end-of-period values
+    - Create time range buckets for aggregation
+    - Ensure consistent datetime formatting
+"""
+
 import datetime
 from calendar import monthrange
 from typing import Literal

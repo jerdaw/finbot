@@ -1,3 +1,18 @@
+"""Check if datetime belongs to a specific period (monthly, quarterly, etc.).
+
+Determines whether a datetime falls within a specified period type (e.g., "monthly",
+"quarterly") relative to the current time. Optionally aligns the comparison to
+period starts.
+
+Uses normalize_dt.py for period boundary calculations.
+
+Typical usage:
+    - Filter data to specific periods (current month, current quarter)
+    - Validate datetime is within expected period
+    - Implement period-based business logic
+    - Schedule actions for specific time periods
+"""
+
 from __future__ import annotations
 
 from datetime import datetime

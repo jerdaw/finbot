@@ -1,3 +1,19 @@
+"""Convert pandas frequency strings to relativedelta objects.
+
+Parses pandas-style frequency strings (e.g., 'M', 'Q', 'Y') into dateutil
+relativedelta objects representing calendar-aware durations.
+
+Unlike str_to_timedelta.py which handles fixed durations, this handles
+variable-length periods like months (28-31 days) and years (365-366 days).
+
+Part of the datetime_utils/conversions module for time representation conversions.
+
+Typical usage:
+    - Parse monthly/quarterly/yearly frequencies
+    - Handle calendar-aware date arithmetic
+    - Support business period calculations
+"""
+
 from __future__ import annotations
 
 from dateutil.relativedelta import relativedelta

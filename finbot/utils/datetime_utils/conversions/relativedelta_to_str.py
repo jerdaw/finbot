@@ -1,3 +1,19 @@
+"""Convert relativedelta objects to pandas frequency strings.
+
+Reverse operation of str_to_relativedelta.py. Converts dateutil relativedelta
+objects back into pandas frequency string notation (e.g., 'M', 'Q', 'Y').
+
+Maps common relativedelta configurations to their canonical frequency strings.
+Returns default value for relativedeltas that don't match standard frequencies.
+
+Part of the datetime_utils/conversions module for time representation conversions.
+
+Typical usage:
+    - Serialize relativedelta for config files or logs
+    - Display human-readable period labels
+    - Convert between different time representation systems
+"""
+
 from __future__ import annotations
 
 from dateutil.relativedelta import relativedelta

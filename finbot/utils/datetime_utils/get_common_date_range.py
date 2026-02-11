@@ -1,3 +1,18 @@
+"""Find exact common dates across multiple time series.
+
+Identifies dates that exist in ALL provided pandas Series using index intersection.
+More restrictive than get_overlapping_date_range.py which only requires time overlap.
+
+Returns the min and max of the intersected dates, or None if no common dates exist.
+
+Typical usage:
+    - Ensure perfect date alignment before correlation analysis
+    - Find trading days present in all data sources
+    - Validate synchronized data collection
+    - Merge time series with guaranteed no missing data
+"""
+
+
 def get_common_date_range(*series, raise_error: bool = True):
     """
     Find the actual common date range among a list of pandas Series.

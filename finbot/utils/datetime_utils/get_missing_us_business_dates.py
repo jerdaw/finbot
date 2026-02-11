@@ -1,3 +1,21 @@
+"""Identify missing business dates in time series data.
+
+Detects gaps in time series by comparing expected business dates (from
+get_us_business_dates.py) with actual dates present in the data. Handles
+both daily and monthly frequencies with special handling for end-of-month
+dates.
+
+Essential for data quality validation and identifying collection failures.
+
+Returns lists of missing dates for investigation or automated re-fetching.
+
+Typical usage:
+    - Validate completeness of downloaded price data
+    - Identify data collection failures
+    - Generate lists of dates to backfill
+    - Monitor data pipeline health
+"""
+
 import datetime
 from calendar import monthrange
 

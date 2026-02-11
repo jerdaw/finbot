@@ -1,3 +1,20 @@
+"""Get most recent US business date based on current time and cutoff.
+
+Determines the latest business date that has occurred, accounting for:
+    - Current year/month/day (defaults to today if not specified)
+    - Minimum time cutoff (e.g., don't count today until after market close)
+    - US federal holidays and weekends
+
+Useful for data collection scripts that should only request data through the
+most recent complete trading day.
+
+Typical usage:
+    - Determine end_date for data fetching ("get data through yesterday")
+    - Check if today's data is available yet
+    - Schedule data updates after market close
+    - Avoid requesting future data that doesn't exist
+"""
+
 from __future__ import annotations
 
 import calendar

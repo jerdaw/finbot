@@ -1,3 +1,22 @@
+"""Generate US business dates excluding weekends and federal holidays.
+
+Calculates valid US trading days between two dates using pandas business day
+frequency and the US Federal Holiday Calendar. Excludes Saturdays, Sundays,
+and official US federal holidays (New Year's, MLK Day, Presidents' Day,
+Memorial Day, Independence Day, Labor Day, Thanksgiving, Christmas).
+
+Essential for financial data alignment and ensuring data requests only target
+actual trading days.
+
+Supports custom holiday calendars and optional timezone awareness.
+
+Typical usage:
+    - Generate date ranges for backtesting
+    - Validate data completeness (check for missing trading days)
+    - Calculate number of trading days in a period
+    - Schedule automated data updates for business days only
+"""
+
 from __future__ import annotations
 
 from datetime import date, datetime, time

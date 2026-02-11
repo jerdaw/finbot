@@ -1,3 +1,19 @@
+"""Validate date range inputs with configurable constraints.
+
+Provides comprehensive validation for start/end date pairs with options to:
+    - Enforce type constraints (must be datetime.date objects)
+    - Prevent future dates (useful for historical data fetching)
+    - Allow None values (for open-ended ranges)
+    - Check logical ordering (start before end)
+
+Raises descriptive TypeErrors and ValueErrors for invalid inputs.
+
+Typical usage:
+    - Validate user input in data collection functions
+    - Enforce business logic constraints in backtesting
+    - Prevent common date range errors early in call stack
+"""
+
 import datetime as dt
 from typing import Any
 

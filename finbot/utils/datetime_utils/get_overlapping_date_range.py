@@ -1,3 +1,20 @@
+"""Find overlapping date range across multiple time series.
+
+Identifies the maximum date range where ALL provided pandas Series have data.
+Returns the latest start date and earliest end date across all series.
+
+Different from get_common_date_range.py which requires exact matching dates.
+This function finds where series overlap in time, even if they have different
+frequencies or missing dates.
+
+Typical usage:
+    - Align multiple time series before merging
+    - Find valid comparison period for backtest vs benchmark
+    - Ensure all data sources cover a common time period
+    - Filter data to overlapping range before analysis
+"""
+
+
 def get_overlapping_date_range(*series, raise_error: bool = True):
     """
     Find the overlapping date range among a list of pandas Series.

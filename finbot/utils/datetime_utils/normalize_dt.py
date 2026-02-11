@@ -1,3 +1,22 @@
+"""Normalize datetime to start of specified period (hourly, daily, weekly, etc.).
+
+Rounds datetime to the beginning of a named time period like "daily", "weekly",
+"monthly", "quarterly", or "yearly". Also supports relativedelta objects for
+custom period definitions.
+
+More semantic than floor_datetime.py (which uses units like "day" or "month").
+This module uses business-friendly terms like "daily" and "quarterly".
+
+Handles special cases:
+    - Weekly: Starts on Monday (weekday=0)
+    - Quarterly: Aligns to calendar quarters (Jan 1, Apr 1, Jul 1, Oct 1)
+
+Typical usage:
+    - Align timestamps for time series resampling
+    - Group data by business periods
+    - Standardize datetime values for comparison
+"""
+
 from __future__ import annotations
 
 from datetime import datetime

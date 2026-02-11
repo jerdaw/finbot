@@ -1,3 +1,19 @@
+"""Check if datetime falls within specified date and time bounds.
+
+Validates whether a datetime object is within a specified date range and/or
+time-of-day range. Supports separate date and time constraints with configurable
+inclusivity.
+
+More flexible than simple comparison operators by allowing separate date and
+time bounds (e.g., "trading days between 9:30 AM and 4:00 PM").
+
+Typical usage:
+    - Filter data to market hours
+    - Validate datetime inputs are within acceptable range
+    - Check if event occurred during specific time windows
+    - Implement time-based access control
+"""
+
 from __future__ import annotations
 
 from datetime import date, datetime, time

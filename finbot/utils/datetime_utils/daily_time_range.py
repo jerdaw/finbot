@@ -1,3 +1,21 @@
+"""Intraday time range with iteration and membership testing.
+
+Provides a class for working with time ranges within a single day, supporting
+iteration at various granularities (hours, minutes, seconds, microseconds) and
+membership testing with configurable inclusivity.
+
+Useful for:
+    - Market hours filtering (e.g., 9:30 AM to 4:00 PM)
+    - Intraday data validation
+    - Time-based scheduling within a day
+    - Filtering tick data by time of day
+
+The DailyTimeRange class supports:
+    - Iteration with __iter__ (e.g., for t in time_range)
+    - Membership testing with __contains__ (e.g., time(10, 30) in time_range)
+    - Configurable inclusivity ('both', 'left', 'right', 'neither')
+"""
+
 from __future__ import annotations
 
 from collections.abc import Iterator

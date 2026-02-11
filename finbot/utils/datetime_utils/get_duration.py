@@ -1,3 +1,19 @@
+"""Calculate duration between two datetimes with flexible granularity.
+
+Computes the time difference between two datetime objects, returning either
+a full relativedelta object or a scalar duration in a specified unit (years,
+months, days, hours, minutes, seconds, microseconds).
+
+Handles calendar-aware differences (relativedelta) for year/month calculations
+and precise time-based differences for smaller units.
+
+Typical usage:
+    - Calculate investment holding periods
+    - Measure backtest duration in any time unit
+    - Compute age of data or time since last update
+    - Convert between different time granularities
+"""
+
 import datetime
 
 from dateutil.relativedelta import relativedelta

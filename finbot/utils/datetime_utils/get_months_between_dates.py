@@ -1,3 +1,18 @@
+"""Generate set of all months between two dates.
+
+Returns a set of (year, month) tuples representing every month in the date range.
+Useful for iterating over months or identifying missing monthly data.
+
+Supports both integer tuples (2022, 1) and string tuples ('2022', '01') for
+compatibility with different data storage formats.
+
+Typical usage:
+    - Identify missing months in time series data
+    - Generate monthly data collection schedules
+    - Iterate over months for batch processing
+    - Validate data completeness
+"""
+
 from __future__ import annotations
 
 from datetime import date

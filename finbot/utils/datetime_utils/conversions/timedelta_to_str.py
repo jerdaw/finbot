@@ -1,3 +1,19 @@
+"""Convert Timedelta objects to pandas frequency strings.
+
+Reverse operation of str_to_timedelta.py. Converts pandas.Timedelta objects
+back into pandas frequency string notation (e.g., '7D', '4H', '30min').
+
+Maps common Timedelta durations to their canonical frequency strings.
+Returns default value for Timedeltas that don't match standard frequencies.
+
+Part of the datetime_utils/conversions module for time representation conversions.
+
+Typical usage:
+    - Serialize Timedelta for config files or logs
+    - Display human-readable frequency labels
+    - Convert between different time representation systems
+"""
+
 from __future__ import annotations
 
 import pandas as pd

@@ -1,3 +1,20 @@
+"""Convert pandas frequency strings to Timedelta objects.
+
+Parses pandas-style frequency strings (e.g., 'D', 'W', 'H', '30min') into
+pandas.Timedelta objects representing fixed durations.
+
+Useful for converting user-specified frequencies into time offsets. Raises
+ValueError for calendar-dependent frequencies (months, years) that can't be
+represented as fixed Timedeltas - use str_to_relativedelta.py for those.
+
+Part of the datetime_utils/conversions module for time representation conversions.
+
+Typical usage:
+    - Parse user input for time intervals
+    - Convert config file frequency settings to Timedelta
+    - Support dynamic resampling frequencies
+"""
+
 from __future__ import annotations
 
 import pandas as pd

@@ -1,3 +1,20 @@
+"""Round datetime down (floor) to specified unit.
+
+Rounds a datetime object down to the beginning of a specified time unit (year,
+month, day, hour, minute, second, microsecond). For example, flooring to "month"
+would return the first moment of that month (day=1, hour=0, minute=0, etc.).
+
+Complements ceil_datetime.py for datetime rounding operations.
+
+Supports datetime.datetime, datetime.date, and pandas.Timestamp inputs.
+
+Typical usage:
+    - Round query dates to period boundaries
+    - Standardize time series to start-of-period values
+    - Create time range buckets for aggregation
+    - Ensure consistent datetime formatting
+"""
+
 import datetime
 from typing import Literal
 

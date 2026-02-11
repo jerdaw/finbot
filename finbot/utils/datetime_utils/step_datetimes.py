@@ -1,3 +1,17 @@
+"""Generate rolling time windows at various frequencies.
+
+Creates overlapping time windows (rolling or expanding) for analyzing time series
+at different granularities: All Time, Yearly, Quarterly, Monthly, Weekly, Daily.
+
+Uses trading day assumptions (252 periods per year) for window sizing.
+
+Typical usage:
+    - Rolling performance analysis at multiple time scales
+    - Generate date ranges for sliding window backtests
+    - Time-based cross-validation splits
+    - Multi-horizon forecasting
+"""
+
 import pandas as pd
 from dateutil.relativedelta import relativedelta
 
