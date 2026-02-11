@@ -16,8 +16,8 @@ Performance benchmarksfor key finbot components.
 export DYNACONF_ENV=development
 
 # Run individual benchmarks
-poetry run python benchmarks/benchmark_fund_simulator.py
-poetry run python benchmarks/benchmark_dca_optimizer.py
+uv run python benchmarks/benchmark_fund_simulator.py
+uv run python benchmarks/benchmark_dca_optimizer.py
 ```
 
 ## Results

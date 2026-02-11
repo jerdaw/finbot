@@ -49,13 +49,13 @@ git clone https://github.com/jerdaw/finbot.git
 cd finbot
 
 # Install with Poetry
-poetry install
+uv sync
 
 # Set environment
 export DYNACONF_ENV=development
 
 # Run tests
-poetry run pytest
+uv run pytest
 ```
 
 ### Basic Usage

@@ -51,13 +51,13 @@ These hooks are available but don't run automatically. They're informational-onl
 **Run manually with:**
 ```bash
 # Check specific files
-poetry run pre-commit run --hook-stage manual mypy --files path/to/file.py
+uv run pre-commit run --hook-stage manual mypy --files path/to/file.py
 
 # Check all files (slow - ~30 seconds)
-poetry run pre-commit run --hook-stage manual mypy --all-files
+uv run pre-commit run --hook-stage manual mypy --all-files
 
 # Or run mypy directly for more control
-DYNACONF_ENV=development poetry run mypy finbot/
+DYNACONF_ENV=development uv run mypy finbot/
 ```
 
 **Current state:** 125 type errors in 41 files (see `docs/guides/type-safety-improvement-guide.md`)
@@ -73,13 +73,13 @@ DYNACONF_ENV=development poetry run mypy finbot/
 **Run manually with:**
 ```bash
 # Check specific files
-poetry run pre-commit run --hook-stage manual bandit --files path/to/file.py
+uv run pre-commit run --hook-stage manual bandit --files path/to/file.py
 
 # Check all files (slow - ~15 seconds)
-poetry run pre-commit run --hook-stage manual bandit --all-files
+uv run pre-commit run --hook-stage manual bandit --all-files
 
 # Or run bandit directly for more control
-poetry run bandit -c pyproject.toml -r finbot/ libs/
+uv run bandit -c pyproject.toml -r finbot/ libs/
 ```
 
 **Current state:** 6 low-severity warnings (all known and acceptable)
@@ -108,8 +108,8 @@ git commit -m "Add new fund simulator feature"
 # ✅ Automatic hooks pass (1-2 seconds)
 
 # 4. (Optional) Run manual checks before pushing
-poetry run pre-commit run --hook-stage manual mypy --files finbot/services/simulation/fund_simulator.py
-poetry run pre-commit run --hook-stage manual bandit --files finbot/services/simulation/fund_simulator.py
+uv run pre-commit run --hook-stage manual mypy --files finbot/services/simulation/fund_simulator.py
+uv run pre-commit run --hook-stage manual bandit --files finbot/services/simulation/fund_simulator.py
 
 # 5. Push to remote
 git push origin feature-branch
@@ -121,16 +121,16 @@ Before opening a pull request:
 
 ```bash
 # 1. Run all automatic hooks on all files
-poetry run pre-commit run --all-files
+uv run pre-commit run --all-files
 
 # 2. Run manual type checking on modified files
-poetry run pre-commit run --hook-stage manual mypy --files path/to/modified.py
+uv run pre-commit run --hook-stage manual mypy --files path/to/modified.py
 
 # 3. Run manual security scanning on modified files
-poetry run pre-commit run --hook-stage manual bandit --files path/to/modified.py
+uv run pre-commit run --hook-stage manual bandit --files path/to/modified.py
 
 # 4. Run tests
-DYNACONF_ENV=development poetry run pytest tests/ -v
+DYNACONF_ENV=development uv run pytest tests/ -v
 
 # 5. Verify CI will pass
 make check  # Runs lint + format + type + security + tests
@@ -195,7 +195,7 @@ git commit --no-verify -m "Emergency hotfix"
 **Solution:**
 - Make sure you're only running automatic hooks (manual hooks are opt-in)
 - Check if you have uncommitted changes in many files
-- Run `poetry run pre-commit clean` to clear cache
+- Run `uv run pre-commit clean` to clear cache
 
 ### Hook installation issues
 
@@ -203,11 +203,11 @@ git commit --no-verify -m "Emergency hotfix"
 **Solution:**
 ```bash
 # Pre-commit hooks run via poetry without needing installation
-poetry run pre-commit run --all-files
+uv run pre-commit run --all-files
 
 # If you really need to install, unset the path first:
 git config --global --unset core.hooksPath
-poetry run pre-commit install
+uv run pre-commit install
 ```
 
 ### Mypy/bandit dependencies missing
@@ -216,8 +216,8 @@ poetry run pre-commit install
 **Solution:**
 ```bash
 # Reinstall pre-commit environments
-poetry run pre-commit clean
-poetry run pre-commit install-hooks
+uv run pre-commit clean
+uv run pre-commit install-hooks
 ```
 
 ### Ruff version mismatch
@@ -234,7 +234,7 @@ poetry run pre-commit install-hooks
 ### Update all hooks to latest versions
 
 ```bash
-poetry run pre-commit autoupdate
+uv run pre-commit autoupdate
 ```
 
 ### Update specific hook
@@ -250,8 +250,8 @@ Edit `.pre-commit-config.yaml` and change the `rev:` field:
 
 Then run:
 ```bash
-poetry run pre-commit clean
-poetry run pre-commit install-hooks
+uv run pre-commit clean
+uv run pre-commit install-hooks
 ```
 
 ---

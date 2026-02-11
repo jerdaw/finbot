@@ -108,7 +108,7 @@ Demonstrates bond ladder construction and analysis across different interest rat
 
 1. Install dependencies:
 ```bash
-poetry install
+uv sync
 ```
 
 2. Set environment variables:
@@ -127,12 +127,12 @@ export GOOGLE_FINANCE_SERVICE_ACCOUNT_CREDENTIALS_PATH=/path/to/credentials.json
 ### Launch Jupyter
 
 ```bash
-poetry run jupyter notebook notebooks/
+uv run jupyter notebook notebooks/
 ```
 
 Or use JupyterLab:
 ```bash
-poetry run jupyter lab notebooks/
+uv run jupyter lab notebooks/
 ```
 
 ### Running Cells
@@ -140,7 +140,7 @@ poetry run jupyter lab notebooks/
 Most notebooks require historical data. If you haven't run the daily update pipeline yet:
 
 ```bash
-poetry run python scripts/update_daily.py
+uv run python scripts/update_daily.py
 ```
 
 This will:

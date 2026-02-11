@@ -34,7 +34,7 @@ docs_site/
 # Serve with auto-reload (recommended for development)
 make docs-serve
 # or
-poetry run mkdocs serve
+uv run mkdocs serve
 
 # Access at http://127.0.0.1:8000
 ```
@@ -45,14 +45,14 @@ poetry run mkdocs serve
 # Build to site/ directory
 make docs-build
 # or
-poetry run mkdocs build
+uv run mkdocs build
 ```
 
 ### Deploy to GitHub Pages
 
 ```bash
 # Build and deploy (requires push access)
-poetry run mkdocs gh-deploy
+uv run mkdocs gh-deploy
 ```
 
 ## Configuration

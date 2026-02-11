@@ -27,7 +27,7 @@ git clone https://github.com/jerdaw/finbot.git
 cd finbot
 
 # Install dependencies
-poetry install
+uv sync
 
 # Activate virtual environment
 poetry shell
@@ -104,13 +104,13 @@ Verify your installation by running the test suite:
 
 ```bash
 # Run all tests
-poetry run pytest
+uv run pytest
 
 # Run with verbose output
-poetry run pytest -v
+uv run pytest -v
 
 # Run specific test file
-poetry run pytest tests/unit/test_imports.py
+uv run pytest tests/unit/test_imports.py
 ```
 
 Expected output: `80 passed` (all tests should pass)
@@ -274,7 +274,7 @@ print(f"Expected Sharpe: {results.iloc[0]['sharpe']:.2f}")
 If you see import errors, ensure you've installed all dependencies:
 
 ```bash
-poetry install
+uv sync
 # or
 pip install -e .
 ```
@@ -320,10 +320,10 @@ If you plan to contribute:
 
 ```bash
 # Install dev dependencies
-poetry install --with dev
+uv sync
 
 # Install pre-commit hooks
-poetry run pre-commit install
+uv run pre-commit install
 
 # Run code quality checks
 make check  # Runs lint, format, type, security

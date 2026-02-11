@@ -10,13 +10,13 @@ git clone https://github.com/jerdaw/finbot.git
 cd finbot
 
 # Install with dev dependencies
-poetry install --with dev
+uv sync
 
 # Install pre-commit hooks
-poetry run pre-commit install
+uv run pre-commit install
 
 # Run tests
-poetry run pytest
+uv run pytest
 ```
 
 ## Code Quality
@@ -45,8 +45,8 @@ Automatic hooks run on every commit:
 
 Manual hooks (run on demand):
 ```bash
-poetry run pre-commit run --hook-stage manual mypy
-poetry run pre-commit run --hook-stage manual bandit
+uv run pre-commit run --hook-stage manual mypy
+uv run pre-commit run --hook-stage manual bandit
 ```
 
 ## Testing
@@ -59,7 +59,7 @@ make test
 make test-cov
 
 # Run specific test
-poetry run pytest tests/unit/test_finance_utils.py -v
+uv run pytest tests/unit/test_finance_utils.py -v
 ```
 
 ## Coding Standards
@@ -146,10 +146,10 @@ Update mkdocs documentation when adding public APIs:
 
 ```bash
 # Build documentation
-poetry run mkdocs build
+uv run mkdocs build
 
 # Serve locally
-poetry run mkdocs serve
+uv run mkdocs serve
 ```
 
 ## Questions?

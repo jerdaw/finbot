@@ -20,7 +20,7 @@
 Run this command to update the lock file with the new ruff version:
 
 ```bash
-poetry lock --no-update
+uv lock
 ```
 
 This will update only the ruff dependency in `poetry.lock` without updating other packages.
@@ -28,13 +28,13 @@ This will update only the ruff dependency in `poetry.lock` without updating othe
 ### Step 2: Install Updated Dependencies
 
 ```bash
-poetry install
+uv sync
 ```
 
 ### Step 3: Update Pre-commit Hooks
 
 ```bash
-poetry run pre-commit autoupdate
+uv run pre-commit autoupdate
 ```
 
 This will ensure pre-commit uses the latest hooks.
@@ -42,7 +42,7 @@ This will ensure pre-commit uses the latest hooks.
 ### Step 4: Run Ruff to Check for New Violations
 
 ```bash
-poetry run ruff check .
+uv run ruff check .
 ```
 
 This will show any new lint violations from the expanded rule set.
@@ -50,7 +50,7 @@ This will show any new lint violations from the expanded rule set.
 ### Step 5: Auto-fix What Can Be Fixed
 
 ```bash
-poetry run ruff check . --fix
+uv run ruff check . --fix
 ```
 
 Ruff will automatically fix many issues.
@@ -78,16 +78,16 @@ Any violations that can't be auto-fixed will need manual review. Common ones:
 ### Step 7: Format Code
 
 ```bash
-poetry run ruff format .
+uv run ruff format .
 ```
 
 ### Step 8: Verify Pre-commit Works
 
 ```bash
-poetry run pre-commit run --all-files
+uv run pre-commit run --all-files
 ```
 
-This should pass with the same results as `poetry run ruff check .`
+This should pass with the same results as `uv run ruff check .`
 
 ### Step 9: Commit Changes
 
@@ -118,8 +118,8 @@ If the new rules create too many violations:
 
 ```bash
 git checkout pyproject.toml .pre-commit-config.yaml
-poetry lock --no-update
-poetry install
+uv lock
+uv sync
 ```
 
 Or, selectively disable problematic rules in `pyproject.toml`:
@@ -136,14 +136,14 @@ After completing all steps, verify:
 
 ```bash
 # Check ruff version
-poetry run ruff --version
+uv run ruff --version
 # Should show 0.11.x
 
 # Verify rules are active
-poetry run ruff check . --select C901 --select N --select A
+uv run ruff check . --select C901 --select N --select A
 # Should show violations from new rules (or none if all fixed)
 
 # Verify pre-commit uses same version
-poetry run pre-commit run ruff --all-files --verbose
-# Should match poetry run ruff check results
+uv run pre-commit run ruff --all-files --verbose
+# Should match uv run ruff check results
 ```

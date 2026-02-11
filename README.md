@@ -5,7 +5,7 @@
 [![CI](https://github.com/jer/finbot/actions/workflows/ci.yml/badge.svg)](https://github.com/jer/finbot/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/jer/finbot/branch/main/graph/badge.svg)](https://codecov.io/gh/jer/finbot)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![Poetry](https://img.shields.io/badge/poetry-1.7+-blue.svg)](https://python-poetry.org/)
+[![uv](https://img.shields.io/badge/uv-0.6+-blue.svg)](https://docs.astral.sh/uv/)
 
 ## Overview
 
@@ -60,7 +60,7 @@ make run-update
 
 **Makefile Commands:**
 - `make help` - Show all available commands
-- `make install` - Install dependencies with Poetry
+- `make install` - Install dependencies with uv
 - `make test` - Run all tests with verbose output
 - `make check` - Run all code quality checks (lint, format, type, security)
 - `make clean` - Remove cache files and build artifacts
@@ -71,11 +71,11 @@ make run-update
 | Requirement | Minimum Version |
 | --- | --- |
 | **Python** | 3.11+ |
-| **Poetry** | 1.7+ |
+| **uv** | 0.6+ |
 
 ### Docker (Alternative)
 
-Run finbot without installing Python or Poetry:
+Run finbot without installing Python or uv:
 
 ```bash
 # Build image
@@ -163,13 +163,13 @@ make check      # Run all checks (lint + format + type + security)
 make all        # Run full CI pipeline (check + test)
 ```
 
-### Direct Poetry Commands
+### Direct uv Commands
 
 ```bash
-poetry run ruff check . --fix   # Lint
-poetry run ruff format .        # Format
-poetry run mypy                 # Type check
-poetry run pytest               # Test
+uv run ruff check . --fix   # Lint
+uv run ruff format .        # Format
+uv run mypy                 # Type check
+uv run pytest               # Test
 ```
 
 Run `make help` to see all available commands.
