@@ -83,7 +83,6 @@ class APIManager:
 if __name__ == "__main__":
     from finbot.utils.request_utils.rate_limiter import DEFAULT_RATE_LIMIT
     from finbot.utils.request_utils.retry_strategy import DEFAULT_HTTPX_RETRY_KWARGS
-
     from libs.api_manager import api_manager
     from libs.api_manager._utils.api import API
     from libs.api_manager._utils.api_resource_group import APIResourceGroup
