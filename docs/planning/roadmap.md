@@ -593,14 +593,56 @@ These items improve professionalism and maintainability.
   - Type checking: mypy (125 current errors - gradual improvement)
   - Security: bandit (6 low-severity warnings - all known)
 
-### 3.6 Modernize pyproject.toml Metadata
+### 3.6 Modernize pyproject.toml Metadata ✓
 
-**Current state:** `poetry check` emits 5 deprecation warnings about `[tool.poetry.*]` fields that should use PEP 621 `[project]` fields.
+**Status:** COMPLETED (2026-02-10)
 
-- [ ] Migrate metadata to `[project]` section: `name`, `version`, `description`, `readme`, `authors`, `requires-python`
-- [ ] Add `[project.urls]` section (homepage, repository, issues)
-- [ ] Add `[project.license]`
-- [ ] If considering Poetry → uv migration (see 4.5), do both at once
+**Previous state:** `poetry check` emitted 6 deprecation warnings about `[tool.poetry.*]` fields that should use PEP 621 `[project]` fields.
+
+**What Was Done:**
+- [x] Add `[project]` section with all required PEP 621 fields:
+  - `name = "finbot"` - Project name
+  - `version = "0.1.0"` - Semantic version
+  - `description` - One-line project description
+  - `readme = "README.md"` - Path to README
+  - `requires-python = ">=3.11,<3.15"` - Python version constraint (from Poetry's python field)
+  - `license = "MIT"` - SPDX license identifier (not deprecated table format)
+  - `authors` - List of author objects with name and email
+  - `keywords` - 6 relevant keywords for package discovery
+  - `classifiers` - 9 PyPI classifiers (removed deprecated license classifier)
+  - `dynamic = ["dependencies"]` - Indicates Poetry manages dependencies
+- [x] Add `[project.urls]` section with 4 URLs:
+  - Homepage: GitHub repository
+  - Repository: GitHub repository
+  - Issues: GitHub issues page
+  - Documentation: README.md link
+- [x] Add `[project.scripts]` section:
+  - Migrated `finbot = "finbot.cli.main:cli"` from deprecated `[tool.poetry.scripts]`
+  - CLI entry point now follows PEP 621 standard
+- [x] Remove deprecated `[tool.poetry.scripts]` section
+- [x] Remove duplicate fields from `[tool.poetry]`:
+  - Removed `name`, `version`, `description`, `readme`, `authors` (now in [project])
+  - Kept `packages` (Poetry-specific for multi-package layout)
+- [x] Update poetry.lock file to reflect pyproject.toml changes
+- [x] Verify `poetry check` passes cleanly with no warnings
+
+**Result:** All 6 deprecation warnings eliminated. `poetry check` now returns "All set!" with zero warnings. Package metadata follows modern PEP 621 standards while maintaining Poetry compatibility. CLI still works correctly. All 80 tests passing.
+
+**Before:**
+```
+Warning: [tool.poetry.name] is deprecated. Use [project.name] instead.
+Warning: [tool.poetry.version] is deprecated...
+Warning: [tool.poetry.description] is deprecated...
+Warning: [tool.poetry.readme] is deprecated...
+Warning: [tool.poetry.authors] is deprecated...
+Warning: Defining console scripts in [tool.poetry.scripts] is deprecated...
+```
+
+**After:**
+```
+poetry check
+All set!
+```
 
 ### 3.7 Consolidate Package Layout
 

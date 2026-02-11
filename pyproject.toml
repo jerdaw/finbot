@@ -1,9 +1,38 @@
-[tool.poetry]
+[project]
 name = "finbot"
 version = "0.1.0"
 description = "Financial data collection, simulation, and backtesting platform"
-authors = ["Jeremy Dawson <jeremyjdawson@gmail.com>"]
 readme = "README.md"
+requires-python = ">=3.11,<3.15"
+license = "MIT"
+authors = [
+    {name = "Jeremy Dawson", email = "jeremyjdawson@gmail.com"}
+]
+keywords = ["finance", "backtesting", "simulation", "quantitative", "trading", "portfolio"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Office/Business :: Financial :: Investment",
+    "Topic :: Scientific/Engineering :: Mathematics",
+]
+# Dependencies are managed by Poetry in [tool.poetry.dependencies]
+dynamic = ["dependencies"]
+
+[project.urls]
+Homepage = "https://github.com/jerdaw/finbot"
+Repository = "https://github.com/jerdaw/finbot"
+Issues = "https://github.com/jerdaw/finbot/issues"
+Documentation = "https://github.com/jerdaw/finbot/blob/main/README.md"
+
+[project.scripts]
+finbot = "finbot.cli.main:cli"
+
+[tool.poetry]
 packages = [
     { include = "finbot" },
     { include = "config" },
@@ -52,9 +81,6 @@ filterpy = "^1.4.5"
 beautifulsoup4 = "^4.12.2"
 python-dotenv = "^1.0.0"
 click = "^8.1.7"
-
-[tool.poetry.scripts]
-finbot = "finbot.cli.main:cli"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.6.0"
