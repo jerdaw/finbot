@@ -1,0 +1,52 @@
+# Version control
+.git
+.gitignore
+.github
+
+# Development tools
+.venv
+.mypy_cache
+.ruff_cache
+.pytest_cache
+.coverage
+htmlcov
+.pre-commit-config.yaml
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project artifacts
+backups
+logs
+site
+scrap
+temp
+.claude
+
+# Data (mounted as volume instead)
+finbot/data
+
+# Documentation (not needed at runtime)
+docs
+docs_site
+mkdocs.yml
+notebooks
+benchmarks
+
+# Build artifacts
+build
+dist
+*.egg-info
+__pycache__
+
+# Misc
+*.log
+*.log.jsonl
+uv.lock

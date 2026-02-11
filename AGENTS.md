@@ -42,6 +42,12 @@ poetry run pre-commit run --all-files
 poetry run pytest tests/ -v                    # all tests with verbose output
 poetry run pytest tests/unit/ -v              # unit tests only
 poetry run pytest -k test_import              # tests matching pattern
+
+# Docker
+make docker-build                # build image
+make docker-run CMD="status"     # run any CLI command
+make docker-update               # run daily update pipeline
+make docker-test                 # run tests in container
 ```
 
 ## Architecture

@@ -828,11 +828,21 @@ All set!
 
 These items are nice-to-haves that further enhance the project.
 
-### 4.1 Add Containerization
+### 4.1 Add Containerization ✓
 
-- [ ] Create a `Dockerfile` for reproducible environment setup
-- [ ] Add `docker-compose.yml` if any services (e.g., scheduled daily updates) warrant it
-- [ ] Document Docker usage in README
+**Status:** COMPLETED (2026-02-11)
+
+**What Was Done:**
+- [x] Created multi-stage `Dockerfile` (builder + runtime) with Python 3.13-slim, Poetry, non-root user
+- [x] Created `docker-compose.yml` with 3 services: interactive CLI, daily update pipeline, status check
+- [x] Created `.dockerignore` excluding dev tools, data (volume-mounted), docs
+- [x] Added 6 Docker targets to Makefile: docker-build, docker-run, docker-status, docker-update, docker-test, docker-clean
+- [x] Documented Docker usage in README with examples
+- [x] Data persisted via named Docker volume (`finbot-data`)
+- [x] API keys loaded from `finbot/config/.env` via env_file
+- [x] Fixed stale Makefile references to old top-level package directories
+
+**Result:** Reproducible containerized environment. Run `make docker-build && make docker-status` to get started.
 
 ### 4.2 Add a Web Dashboard (Stretch Goal)
 
@@ -919,6 +929,7 @@ _Move items here as they are finished._
 | Replace pickle with parquet | 2026-02-09 | Part of consolidation |
 | Add CI workflow | 2026-02-09 | GitHub Actions, Python 3.11-3.13 matrix |
 | Fix path_constants directory creation | 2026-02-09 | `mkdir(exist_ok=True)` |
+| Add containerization | 2026-02-11 | Multi-stage Dockerfile (Python 3.13-slim, Poetry, non-root user), docker-compose.yml with 3 services, .dockerignore, 6 Makefile targets, README docs. |
 | Data quality and observability | 2026-02-11 | Added `finbot status` CLI command, data source registry with freshness thresholds, DataFrame validation, pipeline observability logging. 14 new tests (94 total). |
 | Consolidate package layout | 2026-02-11 | Moved config/, constants/, libs/ under finbot/ as subpackages. Updated ~120 imports across ~100 files. Single namespace, no import collisions. See ADR-004. |
 | Add initial unit tests | 2026-02-09 | 18 tests across 2 files |

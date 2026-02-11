@@ -73,6 +73,26 @@ make run-update
 | **Python** | 3.11+ |
 | **Poetry** | 1.7+ |
 
+### Docker (Alternative)
+
+Run finbot without installing Python or Poetry:
+
+```bash
+# Build image
+make docker-build
+
+# Check data freshness
+make docker-status
+
+# Run daily update pipeline
+make docker-update
+
+# Run any CLI command
+make docker-run CMD="simulate --fund UPRO --start 2020-01-01"
+```
+
+Data is persisted in a Docker volume (`finbot-data`). API keys are loaded from `finbot/config/.env`.
+
 ## Usage
 
 ### Backtesting

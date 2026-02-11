@@ -1,4 +1,4 @@
-.PHONY: help install update lint format type security test test-cov test-quick clean run-update check all pre-commit docs docs-serve docs-build
+.PHONY: help install update lint format type security test test-cov test-quick clean run-update check all pre-commit docs docs-serve docs-build docker-build docker-run docker-status docker-update docker-test docker-clean
 
 # Default target - show help
 help:
@@ -29,6 +29,14 @@ help:
 	@echo "  make docs-serve     Serve documentation (auto-reload)"
 	@echo "  make docs-build     Build documentation site"
 	@echo ""
+	@echo "Docker:"
+	@echo "  make docker-build   Build Docker image"
+	@echo "  make docker-run     Run interactive finbot CLI in Docker"
+	@echo "  make docker-status  Show data freshness via Docker"
+	@echo "  make docker-update  Run daily update pipeline in Docker"
+	@echo "  make docker-test    Run tests in Docker"
+	@echo "  make docker-clean   Remove Docker image and volumes"
+	@echo ""
 	@echo "Maintenance:"
 	@echo "  make clean          Remove cache files and build artifacts"
 	@echo "  make pre-commit     Run pre-commit hooks on all files"
@@ -55,11 +63,11 @@ format:
 
 type:
 	@echo "Running mypy type checker..."
-	@poetry run mypy finbot/ libs/ config/ constants/ scripts/ || echo "⚠ Type checking found issues (non-fatal)"
+	@poetry run mypy finbot/ scripts/ || echo "⚠ Type checking found issues (non-fatal)"
 
 security:
 	@echo "Running bandit security scanner..."
-	@poetry run bandit -r finbot libs || echo "⚠ Security scan found issues (non-fatal)"
+	@poetry run bandit -r finbot || echo "⚠ Security scan found issues (non-fatal)"
 
 check: lint format type security
 	@echo ""
@@ -114,6 +122,33 @@ clean:
 pre-commit:
 	@echo "Running pre-commit hooks on all files..."
 	poetry run pre-commit run --all-files
+
+# Docker
+docker-build:
+	@echo "Building Docker image..."
+	docker build -t finbot .
+
+docker-run:
+	@echo "Running finbot CLI in Docker..."
+	docker compose run --rm finbot $(CMD)
+
+docker-status:
+	@echo "Checking data freshness in Docker..."
+	docker compose run --rm finbot-status
+
+docker-update:
+	@echo "Running daily update pipeline in Docker..."
+	docker compose run --rm finbot-update
+
+docker-test:
+	@echo "Running tests in Docker..."
+	docker run --rm -e DYNACONF_ENV=development finbot sh -c "pip install pytest && pytest tests/ -v"
+
+docker-clean:
+	@echo "Removing Docker image and volumes..."
+	docker compose down -v --rmi local 2>/dev/null || true
+	docker rmi finbot 2>/dev/null || true
+	@echo "✓ Docker cleanup complete"
 
 # Full CI Pipeline
 all: check test
