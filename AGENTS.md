@@ -299,9 +299,42 @@ See `docs/adr/` for architectural decision records:
 3. Run tests: `poetry run pytest`
 4. Run linter: `poetry run ruff check . --fix`
 5. Run formatter: `poetry run ruff format .`
-6. Commit with descriptive message (no AI attribution in commits)
+6. Commit with descriptive message following commit authorship policy (see below)
 7. Push and create PR
 8. CI must pass (all 3 Python versions)
+
+### Commit Authorship Policy
+
+**IMPORTANT:** All commits must list only human authors, co-authors, and contributors.
+
+- ✅ **Do:** Attribute commits to human developers
+- ❌ **Don't:** Include AI assistants (Claude, ChatGPT, etc.) in author, co-author, or contributor fields
+- **Rationale:** Commits represent human accountability and decision-making
+
+**Examples:**
+
+Good commit message:
+```
+Add performance benchmarks
+
+- Created benchmark_fund_simulator.py with 10 data sizes
+- Created comprehensive docs/benchmarks.md
+- Validates vectorized numpy performance claims
+```
+
+Bad commit message (don't do this):
+```
+Add performance benchmarks
+
+[changes...]
+
+Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
+```
+
+This policy applies to:
+- All past commits (if needed, amend history to comply)
+- All current commits
+- All future commits
 
 ## See Also
 
