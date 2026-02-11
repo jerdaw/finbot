@@ -1,4 +1,4 @@
-.PHONY: help install update lint format type security test test-cov test-quick clean run-update check all pre-commit
+.PHONY: help install update lint format type security test test-cov test-quick clean run-update check all pre-commit docs docs-serve docs-build
 
 # Default target - show help
 help:
@@ -23,6 +23,11 @@ help:
 	@echo ""
 	@echo "Data Pipeline:"
 	@echo "  make run-update     Run daily data update pipeline"
+	@echo ""
+	@echo "Documentation:"
+	@echo "  make docs           Build and serve documentation locally"
+	@echo "  make docs-serve     Serve documentation (auto-reload)"
+	@echo "  make docs-build     Build documentation site"
 	@echo ""
 	@echo "Maintenance:"
 	@echo "  make clean          Remove cache files and build artifacts"
@@ -77,6 +82,18 @@ test-quick:
 run-update:
 	@echo "Running daily data update pipeline..."
 	DYNACONF_ENV=development poetry run python scripts/update_daily.py
+
+# Documentation
+docs: docs-build docs-serve
+
+docs-serve:
+	@echo "Serving documentation at http://127.0.0.1:8000..."
+	@echo "Press Ctrl+C to stop"
+	poetry run mkdocs serve
+
+docs-build:
+	@echo "Building documentation..."
+	poetry run mkdocs build
 
 # Maintenance
 clean:

@@ -1,0 +1,132 @@
+site_name: Finbot Documentation
+site_description: Financial data collection, simulation, and backtesting platform
+site_author: Jeremy Dawson
+site_url: https://github.com/jerdaw/finbot
+
+repo_name: jerdaw/finbot
+repo_url: https://github.com/jerdaw/finbot
+edit_uri: blob/main/docs_site/
+
+theme:
+  name: material
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [.]
+          options:
+            docstring_style: google
+            docstring_section_style: table
+            show_root_heading: true
+            show_source: true
+            show_bases: true
+            show_signature_annotations: true
+            separate_signature: true
+            merge_init_into_class: true
+            show_if_no_docstring: false
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - codehilite
+  - md_in_html
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - User Guide:
+      - Getting Started: user-guide/getting-started.md
+      - Installation: user-guide/installation.md
+      - Quick Start: user-guide/quick-start.md
+      - CLI Reference: user-guide/cli-reference.md
+      - Configuration: user-guide/configuration.md
+  - API Reference:
+      - Overview: api/index.md
+      - Services:
+          - Backtesting:
+              - BacktestRunner: api/services/backtesting/backtest-runner.md
+              - Strategies: api/services/backtesting/strategies.md
+              - Compute Stats: api/services/backtesting/compute-stats.md
+          - Simulation:
+              - Fund Simulator: api/services/simulation/fund-simulator.md
+              - Bond Ladder: api/services/simulation/bond-ladder.md
+              - Monte Carlo: api/services/simulation/monte-carlo.md
+              - Specific Funds: api/services/simulation/specific-funds.md
+          - Optimization:
+              - DCA Optimizer: api/services/optimization/dca-optimizer.md
+      - Utilities:
+          - Finance: api/utils/finance-utils.md
+          - Datetime: api/utils/datetime-utils.md
+          - Pandas: api/utils/pandas-utils.md
+          - Data Collection: api/utils/data-collection-utils.md
+          - Data Science: api/utils/data-science-utils.md
+          - File Operations: api/utils/file-utils.md
+          - JSON: api/utils/json-utils.md
+          - HTTP Requests: api/utils/request-utils.md
+          - Plotting: api/utils/plotting-utils.md
+          - Multithreading: api/utils/multithreading-utils.md
+          - Validation: api/utils/validation-utils.md
+          - Other Utils: api/utils/other-utils.md
+      - Configuration: api/config.md
+      - Constants: api/constants.md
+  - Research:
+      - Overview: research/index.md
+      - Leveraged ETF Simulation: research/leveraged-etf-simulation.md
+      - DCA Optimization: research/dca-optimization.md
+      - Strategy Backtesting: research/strategy-backtesting.md
+  - Contributing: contributing.md
+  - Changelog: changelog.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/jerdaw/finbot
+
+docs_dir: docs_site
+site_dir: site

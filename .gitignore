@@ -172,3 +172,6 @@ dmypy.json
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# MkDocs
+site/

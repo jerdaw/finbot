@@ -449,7 +449,7 @@ These items improve professionalism and maintainability.
 
 ### 3.1 Improve Documentation ✓
 
-**Status:** PARTIALLY COMPLETE (2026-02-11)
+**Status:** COMPLETE (2026-02-11)
 
 **Previous state:** AGENTS.md was comprehensive internally; README was basic with no architecture diagrams; no utility library overview; no ADRs beyond ADR-001.
 
@@ -575,13 +575,25 @@ Completed categories (all files documented):
 14. dict_utils (1 file)
 15. function_utils (1 file)
 
-**Remaining Items:**
-- [ ] Add API documentation using mkdocs or Sphinx (comprehensive documentation system)
-  - Document public API of fund_simulator, BacktestRunner, dca_optimizer, monte_carlo_simulator
-  - Generate searchable API reference from docstrings
-  - Would benefit from dedicated implementation session
+- [x] Add API documentation using mkdocs (2026-02-11)
+  - Installed mkdocs, mkdocs-material, mkdocstrings with Python handler
+  - Created comprehensive documentation structure (docs_site/ directory)
+  - Created mkdocs.yml configuration with Material theme
+  - Created index page with project overview and quick start
+  - Created user guide pages: getting-started, installation, quick-start, cli-reference, configuration
+  - Created API reference pages for key modules:
+    - BacktestRunner (services/backtesting/)
+    - Fund Simulator (services/simulation/)
+    - DCA Optimizer (services/optimization/)
+    - Monte Carlo Simulator (services/simulation/)
+    - Finance Utilities (utils/)
+  - Created contributing guide, changelog reference, research overview
+  - Documentation builds successfully in ~2 seconds
+  - Generated static site in site/ directory (gitignored)
+  - Fully searchable with Material theme navigation
+  - Ready for deployment (mkdocs serve for local, mkdocs gh-deploy for GitHub Pages)
 
-**Result:** Significantly improved documentation accessibility. README now provides clear motivation and architecture overview. Utility library well-documented with searchable reference. CLI decision formally documented.
+**Result:** Comprehensive documentation infrastructure complete. Significantly improved documentation accessibility. README provides clear motivation and architecture. Utility library well-documented with searchable reference. CLI decision formally documented. Professional API documentation site with modern UI.
 
 ### 3.2 Strengthen Type Safety ✓
 
