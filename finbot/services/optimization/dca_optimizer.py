@@ -6,7 +6,10 @@ Runs a series of backtests throughout the duration of a security to optimize:
   3) The optimal purchase rate (e.g., daily, weekly, monthly, etc)
 """
 
+from __future__ import annotations
+
 import itertools
+from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd
@@ -18,6 +21,29 @@ from constants.path_constants import BACKTESTS_DATA_DIR
 from finbot.utils.finance_utils.get_cgr import get_cgr
 from finbot.utils.finance_utils.get_pct_change import get_pct_change
 from finbot.utils.finance_utils.get_risk_free_rate import get_risk_free_rate
+
+
+@dataclass
+class DCAParameters:
+    """Parameters for a single DCA optimization trial.
+
+    Attributes:
+        start_idx: Index in price history to start trial
+        ratio: Ratio of amount to invest on first vs last DCA day
+        dca_duration: Number of periods to DCA over
+        dca_step: Number of periods between DCA purchases
+        trial_duration: Total number of periods for this trial
+        closes: Tuple of closing prices
+        starting_cash: Starting cash amount
+    """
+
+    start_idx: int
+    ratio: float
+    dca_duration: int
+    dca_step: int
+    trial_duration: int
+    closes: tuple
+    starting_cash: float
 
 
 def dca_optimizer(
@@ -56,16 +82,37 @@ def dca_optimizer(
         Whether to save results to parquet.
     analyze_results : bool
         Whether to return analyzed results or raw DataFrame.
+
+    Raises
+    ------
+    ValueError
+        If price_history is None or empty.
     """
-    closes = (tuple(price_history),)
-    starting_cash_list = [starting_cash]
+    # Input validation
+    if price_history is None or price_history.empty:
+        raise ValueError("price_history cannot be None or empty")
+
+    closes = tuple(price_history)
     start_idxs = tuple(start_step * n for n in range((len(price_history) - max(trial_durations)) // start_step))
 
-    combs_list = (start_idxs, ratio_range, dca_durations, dca_steps, trial_durations, closes, starting_cash_list)
-    combs = tuple(itertools.product(*combs_list))
-    n_combs = np.prod([len(v) for v in combs_list])
+    # Create DCAParameters objects for each combination
+    params_list = [
+        DCAParameters(
+            start_idx=start_idx,
+            ratio=ratio,
+            dca_duration=dca_duration,
+            dca_step=dca_step,
+            trial_duration=trial_duration,
+            closes=closes,
+            starting_cash=starting_cash,
+        )
+        for start_idx, ratio, dca_duration, dca_step, trial_duration in itertools.product(
+            start_idxs, ratio_range, dca_durations, dca_steps, trial_durations
+        )
+    ]
 
-    data = process_map(_mp_helper, combs, total=n_combs, chunksize=1000, desc=f"Running DCA Optimizer - {ticker}")
+    n_combs = len(params_list)
+    data = process_map(_mp_helper, params_list, total=n_combs, chunksize=1000, desc=f"Running DCA Optimizer - {ticker}")
 
     price_hist_idxs = price_history.index
     df = _convert_to_df(data, price_hist_idxs)
@@ -78,23 +125,34 @@ def dca_optimizer(
     return df
 
 
-def _mp_helper(comb):
-    """Multiprocessing helper for a single DCA parameter combination."""
-    start_idx, ratio, dca_duration, dca_step, trial_duration, closes, starting_cash = comb
-    closes = closes[start_idx:]
-    ratio_linspace = np.linspace(ratio, 1, round(dca_duration // dca_step))
+def _mp_helper(params: DCAParameters):
+    """Multiprocessing helper for a single DCA parameter combination.
+
+    Parameters
+    ----------
+    params : DCAParameters
+        DCA optimization parameters for this trial.
+
+    Returns
+    -------
+    tuple
+        ((start_idx, ratio, dca_duration, dca_step, trial_duration), performance_metrics)
+        or (None, None) if ratio_linspace is empty.
+    """
+    closes = params.closes[params.start_idx :]
+    ratio_linspace = np.linspace(params.ratio, 1, round(params.dca_duration // params.dca_step))
     ratio_linspace /= ratio_linspace.sum()
     if ratio_linspace.size == 0:
         return None, None
     comb_res = _dca_single(
-        starting_cash=starting_cash,
+        starting_cash=params.starting_cash,
         ratio_linspace=ratio_linspace,
-        trial_duration=trial_duration,
-        dca_duration=dca_duration,
-        dca_step=dca_step,
+        trial_duration=params.trial_duration,
+        dca_duration=params.dca_duration,
+        dca_step=params.dca_step,
         closes=closes,
     )
-    return (start_idx, ratio, dca_duration, dca_step, trial_duration), comb_res
+    return (params.start_idx, params.ratio, params.dca_duration, params.dca_step, params.trial_duration), comb_res
 
 
 def _dca_single(

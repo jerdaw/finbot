@@ -336,7 +336,7 @@ finbot --help     # Access CLI (requires DYNACONF_ENV=development)
 
 ### 2.2 Fix Code Smells ✓
 
-**Status:** PARTIALLY COMPLETED (6/9 items complete)
+**Status:** COMPLETED
 
 **Previous state:** Several minor issues identified during review.
 
@@ -352,17 +352,26 @@ finbot --help     # Access CLI (requires DYNACONF_ENV=development)
   - `ADDITIVE_CONSTANT_TLT = 3.5764777900282787e-06`
   - `ADDITIVE_CONSTANT_IEF = 2.2816511415927623e-06`
   - `ADDITIVE_CONSTANT_SHY = 1.3278656100702214e-06`
-
-**Remaining Items (defer to future iteration):**
-- [ ] Replace tuple-of-tuples parameter passing in `dca_optimizer.py:58-64` with a dataclass or named tuple for multiprocessing args
-- [ ] Add input validation for `dca_optimizer.py:58` — no check if `price_history` is empty or None
-- [ ] Remove or use custom exceptions in `finbot/exceptions.py` — 8 exception classes are defined but never raised
+- [x] Replace tuple-of-tuples parameter passing in `dca_optimizer.py` with `DCAParameters` dataclass for multiprocessing args
+  - Created `DCAParameters` dataclass with 7 fields: start_idx, ratio, dca_duration, dca_step, trial_duration, closes, starting_cash
+  - Refactored `_mp_helper()` to accept `DCAParameters` instead of unpacking tuple
+  - Updated `dca_optimizer()` to create `DCAParameters` objects using list comprehension with `itertools.product()`
+- [x] Add input validation for `dca_optimizer()` — added check for empty or None `price_history` with descriptive `ValueError`
+- [x] Remove unused custom exceptions in `finbot/exceptions.py` — removed 4 unused exceptions:
+  - Removed `RequestError` (not raised anywhere)
+  - Removed `RateLimitError` (not raised anywhere)
+  - Removed `RateLimitReachedError` (not raised anywhere)
+  - Removed `RateLimitExceededError` (not raised anywhere)
+  - Kept 5 actively used exceptions: `InvalidExtensionError`, `SaveError`, `LoadError`, `ParseError`, `DataTypeError`
 
 **Result:** Improved code quality and maintainability:
 - Better logging practices (logger instead of print)
 - Dynamic risk-free rate fetching with fallback
 - Improved performance through vectorization
 - Named constants for clarity and documentation
+- Type-safe parameter passing with dataclass
+- Input validation prevents runtime errors
+- Cleaner exception hierarchy with only used exceptions
 - All 80 tests passing
 
 ### 2.3 Refactor Fund Simulations to Data-Driven Config ✓

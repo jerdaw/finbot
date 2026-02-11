@@ -35,37 +35,8 @@ class ParseError(Exception):
         super().__init__(message)
 
 
-class RequestError(Exception):
-    """Custom exception for request errors."""
-
-    def __init__(self, status_code, message="An error occurred during the HTTP request."):
-        super().__init__(message)
-        self.status_code = status_code
-
-
 class DataTypeError(Exception):
     """Custom exception for data type related errors."""
 
     def __init__(self, message="An error occurred regarding data types. Please check the data types used."):
-        super().__init__(message)
-
-
-class RateLimitError(Exception):
-    """Custom exception for rate limit errors."""
-
-    def __init__(self, message="Rate limit reached. Please try again later."):
-        super().__init__(message)
-
-
-class RateLimitReachedError(RateLimitError):
-    """Custom exception for when rate limits are reached but not exceeded."""
-
-    def __init__(self, message="Rate limit reached. Please try again later."):
-        super().__init__(message)
-
-
-class RateLimitExceededError(RateLimitError):
-    """Custom exception for when rate limits are exceeded."""
-
-    def __init__(self, message="Rate limit exceeded. Please try again later."):
         super().__init__(message)
