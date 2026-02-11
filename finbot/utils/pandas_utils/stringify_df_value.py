@@ -44,7 +44,7 @@ def stringify_df_value(value: Any) -> str:
         return "None"
 
     # Check for NaN and NA values
-    if value is pd.NA or (isinstance(value, float | pd.core.series.Series) and pd.isna(value)):
+    if value is pd.NA or (isinstance(value, float | pd.Series) and pd.isna(value)):
         return "NaN"
 
     # For other types, use the string representation

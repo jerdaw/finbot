@@ -112,7 +112,7 @@ def get_series_adjusted_for_inflation(
     price_index_data, cpi_data = _filter_data_by_common_range(price_index_data, cpi_data, common_start, common_end)
 
     # Adjust price index based on CPI
-    base_cpi = cpi_data.iloc[0]  # type: ignore
+    base_cpi = cpi_data.iloc[0]
     adjusted_price_index = price_index_data * (base_cpi / cpi_data)
 
     return adjusted_price_index

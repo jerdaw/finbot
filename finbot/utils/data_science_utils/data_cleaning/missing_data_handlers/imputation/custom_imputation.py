@@ -94,7 +94,7 @@ def custom_imputation(
         if col not in data.columns:
             raise KeyError(f"Column '{col}' not found in the DataFrame.")
         try:
-            data[col].fillna(strategy(data[col]), inplace=inplace)
+            data[col] = data[col].fillna(strategy(data[col]))
         except Exception as e:
             print(f"Error applying strategy for column '{col}': {e}")
 

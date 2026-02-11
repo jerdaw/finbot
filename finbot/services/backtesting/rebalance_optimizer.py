@@ -34,7 +34,7 @@ def rebalance_optimizer(**kwargs):
         for i in range(n_stocks):
             cur_ratios = best_ratios.copy()
             cur_ratios[i] += round(sum(best_ratios) * cur_step)
-            cur_ratios = [n / round(sum(cur_ratios)) for n in cur_ratios]
+            cur_ratios = [n / round(sum(cur_ratios)) for n in cur_ratios]  # type: ignore[misc]
             cur_test_props.append(cur_ratios)
 
         kwargs_copy["strat_kwargs"] = [

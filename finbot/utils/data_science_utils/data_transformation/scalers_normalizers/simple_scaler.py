@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 # ruff: noqa: N803 - Using sklearn naming convention (X for data parameter)
-from typing import Any
-
 import pandas as pd
 
 from finbot.utils.data_science_utils.data_transformation.scalers_normalizers._base_scaler import BaseScaler
@@ -27,7 +25,7 @@ class SimpleScaler(BaseScaler):
                 "scale_method must be one of the following: 'min', 'max', 'first', 'last', 'mean', 'median', 'mode'.",
             )
         self.scale_method = scale_method
-        self.scale_value: pd.Series[Any] | None = None
+        self.scale_value: float | int | None = None
         self.abs_fit = abs_fit
 
     def fit(self, X: pd.Series[int | float]) -> SimpleScaler:

@@ -236,7 +236,7 @@ def _request_yfinance_history(symbols: Sequence[str], interval: str) -> pd.DataF
     if "Adj Close" in res_df.columns and "Close" in res_df.columns:
         res_df.rename(columns={"Close": "Unadj Close"}, inplace=True)
     if not isinstance(res_df.columns, pd.MultiIndex):
-        res_df.columns = pd.MultiIndex.from_product([symbols, res_df.columns])
+        res_df.columns = pd.MultiIndex.from_product([list(symbols), res_df.columns])
     return res_df
 
 
@@ -495,4 +495,5 @@ def get_yfinance_base(
     # Remove the outer level of columns if there is only one symbol
     final_df = sorted_df[symbols[0]] if len(symbols) == 1 else sorted_df
 
+    assert isinstance(final_df, pd.DataFrame)
     return final_df

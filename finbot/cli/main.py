@@ -32,7 +32,7 @@ def cli(ctx: click.Context, verbose: bool) -> None:
     Examples:
       finbot simulate --fund UPRO --start 2020-01-01
       finbot backtest --strategy Rebalance --asset SPY
-      finbot optimize --method dca --assets SPY,TLT
+      finbot optimize --method dca --asset SPY
       finbot update --dry-run
     """
     # Store verbose flag in context for subcommands

@@ -14,8 +14,8 @@ class DipBuyStdev(bt.Strategy):
         self.d_since_last_sale = 0
         self.dataclose = self.datas[0].close
         self.order = None
-        self.pos_returns = PositiveReturns(self.datas[0], period=252)
-        self.neg_returns = NegativeReturns(self.datas[0], period=round(252 / 4))
+        self.pos_returns = PositiveReturns(self.datas[0], period=252)  # type: ignore[call-arg]
+        self.neg_returns = NegativeReturns(self.datas[0], period=round(252 / 4))  # type: ignore[call-arg]
 
     def notify_order(self, order):
         self.order = None

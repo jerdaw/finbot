@@ -21,9 +21,9 @@ from calendar import monthrange
 
 import pandas as pd
 from dateutil.relativedelta import relativedelta
-from loguru import logger
 from pandas.tseries.holiday import AbstractHolidayCalendar, USFederalHolidayCalendar
 
+from finbot.config import logger
 from finbot.utils.datetime_utils.get_us_business_dates import get_us_business_dates
 from finbot.utils.pandas_utils.get_timeseries_frequency import get_timeseries_frequency
 

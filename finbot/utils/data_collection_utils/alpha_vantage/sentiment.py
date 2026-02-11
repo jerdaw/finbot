@@ -136,7 +136,7 @@ def get_sentiment(
         "time_to": "",
         "sort": "EARLIEST",
         "limit": "1000",
-        "apikey": settings_accessors.get_alpha_vantage_api_key(),  # type: ignore[dict-item]
+        "apikey": settings_accessors.get_alpha_vantage_api_key(),
     }
     requested_bdates = set(get_us_business_dates(start_date, end_date))
     n_requests = 0

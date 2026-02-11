@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import warnings
+from typing import Any
 
 import backtrader as bt
 import pandas as pd
@@ -18,13 +19,13 @@ class BacktestRunner:
         duration: pd.Timedelta | None,
         start_step: pd.Timedelta | None,
         init_cash: float,
-        strat,
-        strat_kwargs: dict,
-        broker,
-        broker_kwargs: dict,
-        broker_commission,
-        sizer,
-        sizer_kwargs: dict,
+        strat: Any,
+        strat_kwargs: dict[str, Any],
+        broker: Any,
+        broker_kwargs: dict[str, Any],
+        broker_commission: Any,
+        sizer: Any,
+        sizer_kwargs: dict[str, Any],
         plot: bool,
     ):
         self.price_histories = price_histories
@@ -43,29 +44,31 @@ class BacktestRunner:
         self.plot = plot
 
         self.stocks = tuple(price_histories.keys())
-        self._latest_start_date = None
-        self._earliest_end_date = None
-        self._cerebro = None
-        self._cerebro_res = None
-        self._stats = None
-        self.order = None
+        self._latest_start_date: pd.Timestamp | None = None
+        self._earliest_end_date: pd.Timestamp | None = None
+        self._cerebro: bt.Cerebro | None = None
+        self._cerebro_res: list[Any] | None = None
+        self._stats: pd.DataFrame | None = None
+        self.order: Any = None
 
-    def run_backtest(self):
-        self._cerebro = bt.Cerebro()
+    def run_backtest(self) -> pd.DataFrame:
+        cerebro = bt.Cerebro()
+        self._cerebro = cerebro
         self._add_ph_to_cerebro()
-        self._cerebro.addstrategy(self.strat, **self.strat_kwargs)
+        cerebro.addstrategy(self.strat, **self.strat_kwargs)
         self._add_broker_to_cerebro()
-        self._cerebro.addsizer(self.sizer, **self.sizer_kwargs)
-        self._cerebro.addanalyzer(CVTracker)
-        self._cerebro.addobserver(bt.observers.BuySell)
-        self._cerebro.addobserver(bt.observers.Value)
-        self._cerebro.addobserver(bt.observers.Cash)
-        self._cerebro_res = self._cerebro.run(stdstats=False)
+        cerebro.addsizer(self.sizer, **self.sizer_kwargs)
+        cerebro.addanalyzer(CVTracker)
+        cerebro.addobserver(bt.observers.BuySell)
+        cerebro.addobserver(bt.observers.Value)
+        cerebro.addobserver(bt.observers.Cash)
+        self._cerebro_res = cerebro.run(stdstats=False)
         if self.plot:
-            self._cerebro.plot(volume=False)
+            cerebro.plot(volume=False)
         return self.get_test_stats()
 
-    def _add_ph_to_cerebro(self):
+    def _add_ph_to_cerebro(self) -> None:
+        assert self._cerebro is not None
         ph = self.price_histories
         self._latest_start_date = max(h.index[0] for h in ph.values())
         if self.start:
@@ -73,8 +76,9 @@ class BacktestRunner:
         self._earliest_end_date = min(h.index[-1] for h in ph.values())
         if self.end:
             self._earliest_end_date = min(self.end, self._earliest_end_date)
-        if self.duration:
-            self._earliest_end_date = min(self._latest_start_date + self.duration, self._earliest_end_date)
+        if self.duration and self._latest_start_date is not None:
+            end_by_duration = self._latest_start_date + self.duration
+            self._earliest_end_date = min(end_by_duration, self._earliest_end_date)
 
         for data_name, v in ph.items():
             if any("adj" in c.lower() and "close" in c.lower() for c in v.columns):
@@ -84,13 +88,15 @@ class BacktestRunner:
             ticker_feed = bt.feeds.PandasData(dataname=cur_ph)
             self._cerebro.adddata(ticker_feed, name=data_name)
 
-    def _add_broker_to_cerebro(self):
+    def _add_broker_to_cerebro(self) -> None:
+        assert self._cerebro is not None
         self._cerebro.broker = self.broker(**self.broker_kwargs)
         self._cerebro.broker.setcash(self.init_cash)
         comminfo = self.broker_commission()
         self._cerebro.broker.addcommissioninfo(comminfo)
 
-    def get_test_stats(self):
+    def get_test_stats(self) -> pd.DataFrame:
+        assert self._cerebro_res is not None
         value_hist = self._cerebro_res[0].analyzers.cvtracker.value
         cash_hist = self._cerebro_res[0].analyzers.cvtracker.cash
         cv_hist = pd.DataFrame({"Value": value_hist, "Cash": cash_hist})

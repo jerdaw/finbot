@@ -312,6 +312,7 @@ def get_pdr_base(
     sorted_df = filtered_df.sort_index(axis=1)
 
     # Change index name from "DATE" to "Date"
-    sorted_df.index.name = sorted_df.index.name.capitalize()
+    if isinstance(sorted_df.index.name, str):
+        sorted_df.index.name = sorted_df.index.name.capitalize()
 
     return sorted_df

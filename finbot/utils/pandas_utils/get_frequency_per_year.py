@@ -62,8 +62,6 @@ def get_frequency_per_interval(
     else:
         raise ValueError("`method` must be 'mean', 'mode', or 'last'.")
 
-    return None
-
 
 if __name__ == "__main__":
     spy = DEMO_DATA

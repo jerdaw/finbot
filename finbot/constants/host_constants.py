@@ -31,8 +31,8 @@ class HostSystem:
     ip_address: str = field(default_factory=lambda: socket.gethostbyname(socket.gethostname()))
     operating_system: str = field(default_factory=lambda: f"{platform.system()} {platform.release()}")
     cpu_name: str = field(default_factory=lambda: HostSystem.get_cpu_name())
-    cpu_cores: int = field(default_factory=lambda: psutil.cpu_count(logical=False))
-    cpu_threads: int = field(default_factory=lambda: psutil.cpu_count(logical=True))
+    cpu_cores: int = field(default_factory=lambda: psutil.cpu_count(logical=False) or 0)
+    cpu_threads: int = field(default_factory=lambda: psutil.cpu_count(logical=True) or 0)
     cpu_speed: float = field(default_factory=lambda: psutil.cpu_freq().max if psutil.cpu_freq() else 0)  # MHz
     total_memory: float = field(default_factory=lambda: psutil.virtual_memory().total / (1024**3))  # GB
     disk_storage: float = field(default_factory=lambda: psutil.disk_usage("/").total / (1024**3))  # GB

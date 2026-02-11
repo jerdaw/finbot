@@ -69,9 +69,9 @@ def _get_missing_intraday_months(existing_data: pd.DataFrame, start_date: date, 
             lbd = get_latest_us_business_date(yr_mn[0], yr_mn[1])
             # Set lbdt to the last/max minute for extended hours trading
             lbdt = datetime(
-                lbd.year,  # type: ignore
-                lbd.month,  # type: ignore
-                lbd.day,  # type: ignore
+                lbd.year,
+                lbd.month,
+                lbd.day,
                 19,
                 59,
                 0,
@@ -338,8 +338,8 @@ def get_time_series_intraday(
 
     # Validate and set date ranges
     date_range = _process_intraday_date_range(today, api_data_start_date, date_range)
-    start_date = date_range.min().date()  # type: ignore
-    end_date = date_range.max().date()  # type: ignore
+    start_date = date_range.min().date()
+    end_date = date_range.max().date()
 
     # Setup paths
     save_dir: Path = ALPHA_VANTAGE_DATA_DIR / "time_series_intraday"

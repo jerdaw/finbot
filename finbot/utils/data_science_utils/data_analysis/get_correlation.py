@@ -176,14 +176,16 @@ if __name__ == "__main__":
 
     from finbot.constants.data_constants import DEMO_DATA
 
-    CLOSE_DATA = DEMO_DATA["Close"].rename("Original")
+    close_series = DEMO_DATA["Close"]
+    CLOSE_DATA = close_series.rename("Original")
     INV_DATA = (CLOSE_DATA * -1).rename("Inverse")
-    RAND_DATA = pd.DataFrame(np.random.rand(len(DEMO_DATA)), index=DEMO_DATA.index).squeeze().rename("Random")
+    rand_series: pd.Series = pd.DataFrame(np.random.rand(len(DEMO_DATA)), index=DEMO_DATA.index).squeeze()  # type: ignore[assignment]
+    RAND_DATA = rand_series.rename("Random")
 
     print(CLOSE_DATA)
     print(INV_DATA)
     print(RAND_DATA)
 
-    data = [CLOSE_DATA, RAND_DATA, INV_DATA]
+    data: list[pd.DataFrame | pd.Series] = [CLOSE_DATA, RAND_DATA, INV_DATA]
     correlation_matrix = get_correlation(datas=data, method="spearman")
     print(correlation_matrix)

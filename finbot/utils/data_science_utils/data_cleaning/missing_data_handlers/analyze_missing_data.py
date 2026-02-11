@@ -62,22 +62,26 @@ def analyze_missing_data_pattern(
 
     total_count = data.shape[0]
     missing_count = data.isnull().sum()
-    missing_percentage = (missing_count / total_count * 100).round(round_decimals)
+    missing_percentage = (missing_count / total_count * 100).round(round_decimals)  # type: ignore[union-attr]
 
     if isinstance(data, pd.Series):
         rows_with_missing = total_count if missing_count > 0 else 0
     else:  # data is a DataFrame
-        rows_with_missing = data.isnull().any(axis=1).sum()  # type: ignore
+        rows_with_missing = data.isnull().any(axis=1).sum()
 
     complete_rows = total_count - rows_with_missing
 
-    analysis = pd.DataFrame(
+    analysis_raw = pd.DataFrame(
         {"missing_count": missing_count, "missing_percentage": missing_percentage},
     ).squeeze()  # squeeze to Series if input is Series
+    # squeeze() may return DataFrame or Series depending on shape
+    analysis: pd.DataFrame | pd.Series = (
+        analysis_raw if isinstance(analysis_raw, pd.DataFrame | pd.Series) else pd.Series(analysis_raw)
+    )
 
-    summary = {
-        "rows_with_missing": rows_with_missing,
-        "complete_rows": complete_rows,
+    summary: dict[str, int] = {
+        "rows_with_missing": int(rows_with_missing),
+        "complete_rows": int(complete_rows),
     }
 
     return analysis, summary

@@ -78,4 +78,4 @@ if __name__ == "__main__":
     t = datetime.datetime(2021, 2, 15, 12, 34, 56, 789012)
     print(f"Unceiled:\t\t{t}")
     for i in ("year", "month", "day", "hour", "minute", "second", "microsecond")[::-1]:
-        print(f"Ceil {i}:\t{ceil_datetime(t, i)}")  # type: ignore
+        print(f"Ceil {i}:\t{ceil_datetime(t, i)}")

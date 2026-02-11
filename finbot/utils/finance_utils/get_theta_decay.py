@@ -33,7 +33,7 @@ def calculate_theta_decay(unlevered_series: pd.Series) -> pd.Series:
     """
     raise NotImplementedError("This function is not yet been verified.")  # TODO
 
-    if not isinstance(unlevered_series, pd.Series):
+    if not isinstance(unlevered_series, pd.Series):  # type: ignore[unreachable]
         raise TypeError("Input must be a pandas Series.")
 
     changes = unlevered_series.pct_change()

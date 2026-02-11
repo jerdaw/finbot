@@ -16,7 +16,6 @@ Typical usage:
 Note: This module is work-in-progress and needs refactoring.
 """
 
-# type: ignore
 # TODO: This module is still very much a WIP. It needs to be refactored and cleaned up.
 
 from typing import Any

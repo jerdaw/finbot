@@ -43,7 +43,9 @@ def get_inflation_adjusted_value(
         start_date = FRED_DATA_START_DATE
 
     if cpi_data is None:
-        cpi_data = get_fred_data(symbols=["CPIAUCSL"], start_date=FRED_DATA_START_DATE)
+        result = get_fred_data(symbols=["CPIAUCSL"], start_date=FRED_DATA_START_DATE)
+        assert isinstance(result, pd.DataFrame)
+        cpi_data = result
 
     min_date = cpi_data.index.min().date()
     max_date = cpi_data.index.max().date()

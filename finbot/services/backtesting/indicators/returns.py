@@ -11,4 +11,4 @@ class Returns(Indicator):
         return [self.p.period]
 
     def __init__(self):
-        self.lines.returns = self.data / self.data(-self.p.period) - 1.0
+        self.lines.returns = self.data / self.data(-self.p.period) - 1.0  # type: ignore[attr-defined]
