@@ -30,7 +30,7 @@ def sort_dataframe_multiindex(df, level=0, ascending=True, inplace=False):
     sorted_columns = sorted(df.columns, key=sort_key, reverse=not ascending)
 
     # Reordering columns based on sorted top level while maintaining sub-level order
-    new_columns_order = []
+    new_columns_order: list[tuple] = []
     for col in sorted_columns:
         if col[level] not in [c[level] for c in new_columns_order]:
             new_columns_order.extend(

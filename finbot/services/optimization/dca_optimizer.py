@@ -209,7 +209,7 @@ def _dca_single(
 
 def _convert_to_df(res: list, price_hist_idxs: pd.Index) -> pd.DataFrame:
     """Convert raw results list into a structured DataFrame."""
-    as_dict = {
+    as_dict: dict[str, list] = {
         "Trial Start": [],
         "Trial End": [],
         "Trial Duration": [],
