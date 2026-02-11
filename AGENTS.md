@@ -240,10 +240,55 @@ poetry run pytest --cov=finbot tests/
 ```
 
 **Test structure**:
-- `tests/unit/`: Unit tests (18 tests currently)
+- `tests/unit/`: Unit tests (80 tests currently)
   - `test_imports.py`: Smoke tests for all key module imports
   - `test_simulation_math.py`: Unit tests for simulation math correctness
+  - `test_finance_utils.py`: Finance calculation tests
+  - `test_strategies.py`: Backtesting strategy tests
+  - More test files for core functionality
 - `tests/integration/`: Integration tests (future)
+
+## Documentation
+
+**MkDocs documentation site** (`docs_site/`):
+
+```bash
+# Serve locally with auto-reload
+make docs-serve
+# or
+poetry run mkdocs serve
+# Access at http://127.0.0.1:8000
+
+# Build static site
+make docs-build
+
+# Deploy to GitHub Pages
+poetry run mkdocs gh-deploy
+```
+
+**Documentation structure**:
+- `docs_site/`: MkDocs source (Markdown)
+  - `index.md`: Home page with project overview
+  - `user-guide/`: Installation, quick start, CLI reference, configuration
+  - `api/`: API reference for services and utilities
+  - `research/`: Research documentation
+  - `contributing.md`, `changelog.md`: Contributing guide and version history
+- `site/`: Generated static site (gitignored)
+- `docs/`: Project documentation
+  - `adr/`: Architectural Decision Records
+  - `planning/`: Roadmap and implementation guides
+  - `research/`: Research findings and analysis
+  - `guides/`: Development guides
+  - `benchmarks.md`: Performance benchmarks
+
+**Features**:
+- Material Design theme with dark mode
+- Full-text search
+- Auto-generated API reference from docstrings
+- Responsive mobile/desktop layout
+- Fast builds (~2 seconds)
+
+See [ADR-003](docs/adr/ADR-003-add-mkdocs-documentation.md) for implementation details.
 
 ## CI/CD
 
