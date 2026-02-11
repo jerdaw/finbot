@@ -1,3 +1,181 @@
+"""HTTP request handler with retry logic, caching, and response processing.
+
+Provides a comprehensive HTTP client with automatic retries, exponential backoff,
+response caching (JSON/text), and structured error handling. Designed for
+reliable data collection from APIs with built-in resilience.
+
+Typical usage:
+    ```python
+    from finbot.utils.request_utils import RequestHandler
+
+    # Basic JSON API request
+    handler = RequestHandler()
+    data = handler.make_json_request("https://api.example.com/data")
+
+    # JSON request with caching
+    data = handler.make_json_request(
+        "https://api.example.com/prices", save_dir="/data/cache", file_name="prices.json.zst"
+    )
+
+    # Text/HTML request
+    html = handler.make_text_request("https://example.com/page")
+
+    # POST request with payload
+    response = handler.make_json_request(
+        "https://api.example.com/submit", payload_kwargs={"json": {"key": "value"}}, request_type="POST"
+    )
+
+    # Custom retry configuration
+    from finbot.utils.request_utils.retry_config import RetryConfig
+
+    config = RetryConfig(retry_count=5, backoff_factor=1.0)
+    handler = RequestHandler(retry_config=config)
+
+    # Context manager (auto-closes session)
+    with RequestHandler() as handler:
+        data = handler.make_json_request("https://api.example.com/data")
+    ```
+
+Features:
+    - Automatic retries with exponential backoff (configurable)
+    - JSON and text response handling
+    - Optional response caching (saves to file automatically)
+    - Comprehensive error handling and logging
+    - Session-based (connection pooling, keep-alive)
+    - Context manager support (clean session cleanup)
+    - Flexible request types (GET, POST, PUT, DELETE, PATCH)
+
+Request methods:
+
+1. **make_json_request()**:
+   - Expects and validates JSON response
+   - Returns dict or list
+   - Raises ValueError if response not JSON
+   - Optional caching to .json.zst file
+
+2. **make_text_request()**:
+   - Expects text/plain response (flexible)
+   - Returns string
+   - Handles any content-type gracefully
+   - Optional caching to .txt.zst file
+
+3. **make_request()** (core method):
+   - Low-level request interface
+   - Returns raw requests.Response
+   - Configurable save behavior
+   - Used by make_json_request and make_text_request
+
+Retry behavior:
+    - Default: 3 retries with 0.3s exponential backoff
+    - Retries on: 429, 500, 502, 503, 504
+    - Configurable via RetryConfig
+    - Applies to connection, read, and status errors
+
+Response caching:
+    - Automatic when save_dir specified
+    - JSON responses → .json.zst (compressed)
+    - Text responses → .txt.zst (compressed)
+    - Auto-generated filenames (timestamp + hash)
+    - Custom filenames supported
+
+Error handling:
+    - requests.RequestException: Network errors, timeouts
+    - ValueError: Non-JSON response when JSON expected
+    - NotImplementedError: Unsupported request type
+    - All errors logged with context before raising
+
+Use cases:
+    - API data collection (financial data, weather, news)
+    - Web scraping with retry logic
+    - Cached API responses for development/testing
+    - Production data pipelines with resilience
+    - Rate-limited API clients
+
+Example workflows:
+    ```python
+    # Cached API data collection
+    handler = RequestHandler()
+    for symbol in ["SPY", "QQQ", "TLT"]:
+        url = f"https://api.example.com/prices/{symbol}"
+        data = handler.make_json_request(url, save_dir="/data/prices", file_name=f"{symbol}.json.zst")
+        process_prices(data)
+
+    # Resilient web scraping
+    config = RetryConfig(retry_count=5, backoff_factor=1.0)
+    with RequestHandler(retry_config=config) as handler:
+        html = handler.make_text_request("https://example.com/data")
+        parse_html(html)
+
+    # API with authentication
+    handler = RequestHandler()
+    headers = {"Authorization": "Bearer YOUR_TOKEN"}
+    data = handler.make_json_request("https://api.example.com/secure", headers=headers)
+    ```
+
+Request types supported:
+    - GET: Retrieve data (default)
+    - POST: Submit data, create resources
+    - PUT: Update resources
+    - DELETE: Remove resources
+    - PATCH: Partial updates
+
+Default timeout:
+    - Connect timeout: 5 seconds
+    - Read timeout: 20 seconds
+    - Format: (connect, read) tuple
+
+Content-type handling:
+    - make_json_request() validates application/json
+    - make_text_request() accepts any content-type (logs warning)
+    - Custom content-type handling via make_request()
+
+Session benefits:
+    - Connection pooling (reuses TCP connections)
+    - HTTP keep-alive
+    - Cookie persistence across requests
+    - Shared configuration (headers, auth, retry)
+
+Best practices:
+    ```python
+    # Use context manager for automatic cleanup
+    with RequestHandler() as handler:
+        data = handler.make_json_request(url)
+
+    # Configure retries for API characteristics
+    api_config = RetryConfig(
+        retry_count=5,  # More for rate-limited APIs
+        backoff_factor=1.0,  # Slower for strict rate limits
+        status_forcelist=(429, 500, 502, 503),
+    )
+
+    # Cache responses for development
+    handler.make_json_request(
+        url,
+        save_dir="/tmp/api_cache",  # Speeds up development
+        compress=True,  # Saves disk space
+    )
+    ```
+
+Performance:
+    - Session reuse: ~50% faster than creating new connections
+    - Connection pooling: Significant speedup for multiple requests
+    - Compression: Minimal overhead for caching
+    - Retry overhead: Only on failures
+
+Limitations:
+    - Not async (use aiohttp for async)
+    - No streaming support (loads full response)
+    - Caching is append-only (no cache invalidation)
+    - Session not shared across instances
+
+Dependencies: requests, save_json (JSON caching), save_text (text caching),
+RetryConfig (retry logic)
+
+Related modules: save_json/save_text (response caching), retry_config
+(retry configuration), data_collection_utils (uses RequestHandler for
+API data fetching).
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

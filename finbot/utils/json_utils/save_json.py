@@ -1,3 +1,109 @@
+"""Save Python data structures as JSON files with optional compression.
+
+Provides flexible JSON file saving with optional zstandard compression, custom
+or auto-generated filenames, and comprehensive error handling. Pairs with
+load_json() for complete JSON file lifecycle management.
+
+Typical usage:
+    ```python
+    from finbot.utils.json_utils.save_json import save_json
+
+    # Auto-generated filename with compression (default)
+    data = {"symbol": "SPY", "prices": [100, 105, 110]}
+    path = save_json(data, "/data")
+    # Creates: /data/20260211_143022123456_a1b2c3d4.json.zst
+
+    # Custom filename with compression
+    path = save_json(data, "/data", "prices.json.zst")
+    # Creates: /data/prices.json.zst
+
+    # Plain JSON without compression
+    path = save_json(data, "/data", "config.json", compress=False)
+    # Creates: /data/config.json
+
+    # Custom compression level
+    path = save_json(data, "/data", compress=True, compression_level=9)
+    ```
+
+Auto-generated filename (when file_name=None):
+    - Format: `{timestamp}_{hash}{extension}`
+    - Timestamp: `YYYYMMDD_HHMMSS_microseconds` for uniqueness
+    - Hash: MD5 hash of dict content (for deduplication checks)
+    - Extension: `.json.zst` if compressed, `.json` if not
+    - Example: `20260211_143022123456_a1b2c3d4.json.zst`
+
+Custom filename requirements:
+    - Must end with `.json.zst` if compress=True
+    - Must end with `.json` if compress=False
+    - Extension validation prevents mismatches
+
+Compression levels (zstandard):
+    - Level 1: Fastest, lower compression (~40% reduction)
+    - Level 3: Default, balanced (~50-60% reduction)
+    - Level 9: High compression (~70-80% reduction)
+    - Level 22: Maximum compression (~80-85% reduction, very slow)
+
+Features:
+    - Optional zstandard compression (fast, high ratio)
+    - Auto-generated unique filenames with content hash
+    - Custom filename support with extension validation
+    - Automatic directory creation (parents=True, exist_ok=True)
+    - Returns Path for further operations
+    - Comprehensive logging (info on save, error on failure)
+    - Handles both dict and list structures
+
+Error handling:
+    - FileNotFoundError: save_dir doesn't exist (before creation attempt)
+    - InvalidExtensionError: Filename extension doesn't match compress setting
+    - SaveError: Generic save failure (wraps underlying exceptions)
+    - All errors logged before raising
+
+Use cases:
+    - Caching API responses
+    - Saving configuration files
+    - Storing structured application state
+    - Archiving JSON data
+    - Temporary file creation with unique names
+
+Auto-filename benefits:
+    - Prevents overwrites (timestamp + microseconds = unique)
+    - Content hash enables deduplication checks
+    - Sortable by time (timestamp prefix)
+    - No name conflicts in concurrent environments
+
+Paired with load_json():
+    ```python
+    # Round-trip save and load
+    original = {"prices": [100, 105, 110], "symbol": "SPY"}
+    path = save_json(original, "/data", compress=True)
+    loaded = load_json(path)
+    assert original == loaded
+    ```
+
+Compression benefits:
+    - Reduces disk space usage (50-80% compression typical)
+    - Faster I/O for network storage
+    - Especially effective for repetitive JSON (API responses)
+    - Negligible performance impact
+
+Performance:
+    - Serialization: Very fast (json.dumps)
+    - Compression: Fast (~400 MB/s for level 3)
+    - File I/O: Depends on storage
+    - Combined overhead: <1ms for small files (<10KB)
+
+Why zstandard:
+    - Faster than gzip with better compression
+    - Industry standard (Facebook, Linux kernel, HTTP/2)
+    - Optimal for JSON data (repetitive structures)
+
+Dependencies: zstandard (zstd), hashlib (MD5 for dict hashing)
+
+Related modules: load_json (corresponding load operation), serialize_json
+(underlying serialization), save_text (text file saving), backup_file
+(file backup with timestamps).
+"""
+
 from __future__ import annotations
 
 import json

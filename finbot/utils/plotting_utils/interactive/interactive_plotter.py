@@ -1,3 +1,150 @@
+"""Interactive plotly-based visualizations for financial time series data.
+
+Provides a simple, consistent interface for creating interactive plots of
+time series data using plotly. Designed for financial data visualization
+with sensible defaults and flexible customization.
+
+Typical usage:
+    ```python
+    import pandas as pd
+    from finbot.utils.plotting_utils.interactive.interactive_plotter import InteractivePlotter
+
+    # Prepare data
+    df = pd.DataFrame(
+        {
+            "Date": pd.date_range("2020-01-01", periods=100),
+            "SPY": [100 + i * 0.5 for i in range(100)],
+            "QQQ": [200 + i * 0.8 for i in range(100)],
+        }
+    ).set_index("Date")
+
+    # Create plotter
+    plotter = InteractivePlotter()
+
+    # Plot single time series
+    plotter.plot_time_series(df["SPY"], title="SPY Price History")
+
+    # Plot multiple time series
+    plotter.plot_time_series(df, title="SPY vs QQQ")
+
+    # Plot with custom columns
+    plotter.plot_time_series(df, value_cols=["SPY"], title="SPY Only")
+
+    # Scatter plot
+    plotter.plot_scatter(df, x_col="SPY", y_col="QQQ", title="SPY vs QQQ Correlation")
+
+    # Histogram
+    plotter.plot_histogram(df["SPY"], title="SPY Returns Distribution")
+    ```
+
+Plot types:
+
+1. **plot_time_series()**: Line plots for time series
+   - Single or multiple series
+   - Uses index as x-axis by default
+   - Interactive zoom, pan, hover
+
+2. **plot_multiple_series()**: Multiple overlaid line plots
+   - Alternative to plot_time_series with go.Figure
+   - More control over individual series
+   - Custom legends and colors
+
+3. **plot_scatter()**: Scatter plots
+   - X-Y relationships
+   - Correlation visualization
+   - Interactive point inspection
+
+4. **plot_histogram()**: Distribution visualization
+   - Value frequency/distribution
+   - Configurable bins
+   - Useful for returns analysis
+
+Features:
+    - Interactive plots (zoom, pan, hover, export)
+    - Automatic index handling (uses df.index if time_col=None)
+    - Works with both DataFrame and Series
+    - Sensible default titles and labels
+    - Browser-based rendering (opens in browser)
+    - Export to PNG/SVG (via plotly toolbar)
+
+Interactive features (plotly):
+    - Zoom: Click and drag to zoom
+    - Pan: Drag while holding shift
+    - Reset: Double-click to reset view
+    - Hover: Detailed information on data points
+    - Legend: Click to show/hide series
+    - Export: Download as PNG/SVG
+    - Range selector: Drag to select time range
+
+Use cases:
+    - Exploratory data analysis
+    - Visualizing backt test results
+    - Comparing multiple strategies/assets
+    - Analyzing price histories
+    - Portfolio performance visualization
+    - Correlation analysis
+    - Distribution analysis (returns, drawdowns)
+
+Example workflows:
+    ```python
+    # Visualize backtest results
+    plotter = InteractivePlotter()
+    results = run_backtest(strategy, data)
+    plotter.plot_time_series(results["portfolio_value"], title="Portfolio Value Over Time")
+
+    # Compare multiple strategies
+    all_results = pd.DataFrame(
+        {"Strategy A": strategy_a_results, "Strategy B": strategy_b_results, "Benchmark": benchmark_results}
+    )
+    plotter.plot_time_series(all_results, title="Strategy Comparison")
+
+    # Analyze returns distribution
+    returns = calculate_returns(prices)
+    plotter.plot_histogram(returns, bins=50, title="Returns Distribution")
+
+    # Correlation analysis
+    plotter.plot_scatter(df, x_col="SPY", y_col="TLT", title="SPY vs TLT Correlation")
+    ```
+
+Default behavior:
+    - time_col=None: Uses DataFrame/Series index
+    - value_cols=None: Plots all columns
+    - series_cols=None: Plots all columns
+    - Automatic column name extraction from Series
+    - Opens plot in default browser
+
+Advantages over matplotlib:
+    - Interactive (zoom, pan, hover)
+    - No need for plt.show()
+    - Better for exploratory analysis
+    - Easier multiple series handling
+    - Built-in export functionality
+    - Modern, polished appearance
+
+Limitations:
+    - Requires browser for display
+    - Not suitable for static reports (use matplotlib)
+    - Performance degrades with >100K points
+    - No 3D plots (use plotly.graph_objects directly)
+
+Performance:
+    - Fast for typical financial data (<10K points)
+    - Responsive interactivity
+    - Browser rendering (GPU accelerated)
+
+Why plotly:
+    - Industry standard for interactive visualization
+    - Rich ecosystem and documentation
+    - Works well with pandas
+    - No explicit show() call needed
+    - Professional appearance
+
+Dependencies: pandas, plotly (plotly.express, plotly.graph_objects)
+
+Related modules: backtesting (generates data to plot), simulation (generates
+price histories), monte_carlo (visualization of trials).
+"""
+
 from typing import Any
 
 import pandas as pd

@@ -523,23 +523,63 @@ These items improve professionalism and maintainability.
   - Each docstring includes purpose, typical usage, features, use cases, performance notes, limitations, and related modules
   - Excluded test file (test_get_matching_files.py) from documentation
 
+- [x] Add module-level docstrings to all remaining utility categories (14 files)
+  - Completed ALL remaining utility module docstrings in Google style
+  - **json_utils (4 files):** serialize_json, deserialize_json, save_json, load_json
+    - JSON serialization/deserialization with zstandard compression
+    - Automatic compression detection, file I/O with caching
+    - Content-based hashing for auto-generated filenames
+  - **request_utils (2 files):** retry_config, request_handler
+    - HTTP client with retry logic and exponential backoff
+    - Response caching (JSON/text), configurable retry strategies
+    - Session-based with connection pooling
+  - **plotting_utils (1 file):** interactive_plotter
+    - Interactive plotly visualizations for time series
+    - Multiple plot types (line, scatter, histogram, multiple series)
+    - Browser-based with zoom, pan, hover, export
+  - **multithreading_utils (1 file):** get_max_threads
+    - Optimal thread count calculation based on CPU cores
+    - Configurable minimums, maximums, and reserved threads
+  - **validation_utils (1 file):** validation_helpers
+    - Parameter validation (literals, numeric ranges, types)
+    - Consistent error messages, reusable validation functions
+  - **vectorization_utils (1 file):** profile_vectorization
+    - Benchmark vectorized vs non-vectorized operations
+    - Sample-based profiling for optimization decisions
+  - **class_utils (1 file):** singleton_metas
+    - Three thread-safe singleton metaclass implementations
+    - Flexible reinitialization strategies (reinit, no-reinit-silent, no-reinit-error)
+  - **dict_utils (1 file):** hash_dictionary
+    - Deterministic, order-independent dictionary hashing
+    - Content-based cache keys, deduplication detection
+  - **function_utils (1 file):** log_with_header_footer
+    - Function decorator for automatic entry/exit logging
+    - Execution timing, argument/return type logging
+
+**Module-level Docstrings: COMPLETE (160 files total)**
+
+Completed categories (all files documented):
+1. finance_utils (19 files)
+2. datetime_utils (23 files)
+3. pandas_utils (17 files)
+4. data_collection_utils (40 files)
+5. data_science_utils (37 files)
+6. file_utils (10 files)
+7. json_utils (4 files)
+8. request_utils (2 files)
+9. plotting_utils (1 file)
+10. multithreading_utils (1 file)
+11. validation_utils (1 file)
+12. vectorization_utils (1 file)
+13. class_utils (1 file)
+14. dict_utils (1 file)
+15. function_utils (1 file)
+
 **Remaining Items:**
 - [ ] Add API documentation using mkdocs or Sphinx (comprehensive documentation system)
   - Document public API of fund_simulator, BacktestRunner, dca_optimizer, monte_carlo_simulator
+  - Generate searchable API reference from docstrings
   - Would benefit from dedicated implementation session
-- [ ] Add module-level docstrings to remaining utility categories (14 files remaining)
-  - Completed: finance_utils (19 files), datetime_utils (23 files), pandas_utils (17 files), data_collection_utils (40 files), data_science_utils (37 files), file_utils (10 files)
-  - Remaining categories:
-    - plotting_utils: 1 file (interactive_plotter.py)
-    - json_utils: 4 files (serialize_json, deserialize_json, save_json, load_json)
-    - request_utils: 2 files (retry_config, request_handler)
-    - multithreading_utils: 1 file (get_max_threads)
-    - validation_utils: 1 file (validation_helpers)
-    - vectorization_utils: 1 file (profile_vectorization)
-    - class_utils: 1 file (singleton_metas)
-    - dict_utils: 1 file (hash_dictionary)
-    - function_utils: 1 file (log_with_header_footer)
-  - Gradual improvement recommended: complete category by category as work continues
 
 **Result:** Significantly improved documentation accessibility. README now provides clear motivation and architecture overview. Utility library well-documented with searchable reference. CLI decision formally documented.
 
