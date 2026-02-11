@@ -1,3 +1,137 @@
+"""Multiple normalization methods for transforming data toward normal distributions.
+
+Provides three normalization techniques (standardization, Box-Cox, mean-range)
+through a unified Normalizers class. Each method targets different aspects of
+data transformation, from simple scaling to sophisticated variance stabilization.
+
+Typical usage:
+    ```python
+    # Z-score normalization (standardization)
+    normalizer = Normalizers(method="standardization")
+    normalized = normalizer.fit_transform(data)
+    # Result: mean=0, std=1
+
+    # Box-Cox transformation (variance stabilization)
+    normalizer_bc = Normalizers(method="boxcox")
+    normalized_bc = normalizer_bc.fit_transform(positive_data)
+    # Result: more normal distribution, optimal λ chosen automatically
+
+    # Mean-range normalization
+    normalizer_mr = Normalizers(method="mean_range")
+    normalized_mr = normalizer_mr.fit_transform(data)
+    # Result: centered at 0, scaled by range
+    ```
+
+Normalization methods:
+
+1. **Standardization (Z-score normalization)**:
+   - Formula: `(X - mean) / std`
+   - Maps to approximately normal distribution with mean=0, std=1
+   - Uses sklearn.preprocessing.StandardScaler
+   - Most common normalization for machine learning
+
+2. **Box-Cox Transformation**:
+   - Formula: `(X^λ - 1) / λ` if λ ≠ 0, else `log(X)`
+   - Finds optimal λ to maximize normality
+   - **Requires all positive values** (X > 0)
+   - Stabilizes variance across range
+   - Good for heteroscedastic data
+
+3. **Mean-Range Normalization**:
+   - Formula: `(X - mean) / range`
+   - Centers at 0, scales by data range
+   - Alternative to standardization
+   - Less affected by outliers than std
+
+Features:
+    - Full inverse_transform support for all methods
+    - Automatic parameter fitting (mean, std, λ, range)
+    - sklearn-compatible API via BaseScaler
+    - Works with pandas Series (preserves index)
+    - Clear error messages for invalid usage
+
+Use cases:
+
+**Standardization**:
+    - Preprocessing for machine learning (especially neural networks)
+    - Making features comparable across different scales
+    - Statistical analysis requiring z-scores
+    - Outlier detection (values > 3 standard deviations)
+
+**Box-Cox**:
+    - Stabilizing variance in heteroscedastic data
+    - Transforming skewed distributions toward normality
+    - Preprocessing for linear regression assumptions
+    - Financial returns, physical measurements
+
+**Mean-Range**:
+    - Alternative normalization less sensitive to outliers
+    - Quick scaling for visualization
+    - When standard deviation is not meaningful
+
+Parameters:
+    - method: Normalization technique ('standardization', 'boxcox', 'mean_range')
+    - **kwargs: Additional parameters (currently unused)
+
+Inverse transformation:
+    All methods support full inverse transformation:
+    ```python
+    normalizer = Normalizers(method="boxcox")
+    normalized = normalizer.fit_transform(data)
+    recovered = normalizer.inverse_transform(normalized)
+    # recovered == data (within numerical precision)
+    ```
+
+Box-Cox λ interpretation:
+    - λ = 1: No transformation (linear)
+    - λ = 0.5: Square root transformation
+    - λ = 0: Log transformation
+    - λ = -1: Reciprocal transformation
+    - Fitted λ shows optimal transformation power
+
+Advantages:
+    - **Standardization**: Simple, interpretable, widely used
+    - **Box-Cox**: Powerful variance stabilization, automatic λ selection
+    - **Mean-Range**: Robust to outliers, simple
+
+Limitations:
+    - **Standardization**: Assumes meaningful mean/std (fails for heavy-tailed distributions)
+    - **Box-Cox**: Requires strictly positive data, computationally expensive
+    - **Mean-Range**: Range sensitive to outliers, less statistical basis
+
+Error handling:
+    - ValueError for invalid method choice
+    - ValueError if Box-Cox receives non-positive data
+    - TypeError if input is not pandas Series
+    - RuntimeError if transform called before fit
+
+Best practices:
+    - Use standardization for most machine learning tasks
+    - Use Box-Cox when normality assumption is critical
+    - Check data positivity before Box-Cox
+    - Visualize distributions before/after normalization
+    - Store fitted normalizer for consistent test set transformation
+
+Example workflow:
+    ```python
+    # Fit on training data
+    normalizer = Normalizers(method="standardization")
+    train_norm = normalizer.fit_transform(train_data)
+
+    # Transform test data using same parameters
+    test_norm = normalizer.transform(test_data)
+
+    # Make predictions, then inverse transform
+    predictions_norm = model.predict(test_norm)
+    predictions_original = normalizer.inverse_transform(predictions_norm)
+    ```
+
+Dependencies: scikit-learn (StandardScaler), scipy (boxcox, inv_boxcox)
+
+Related modules: LogarithmicScaler (log transformation), SimpleScaler
+(statistical scaling), GrowthRateScaler (growth rate removal).
+"""
+
 from __future__ import annotations
 
 # ruff: noqa: N803 - Using sklearn naming convention (X for data parameter)

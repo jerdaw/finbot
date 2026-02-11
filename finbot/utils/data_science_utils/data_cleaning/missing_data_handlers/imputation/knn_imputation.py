@@ -1,3 +1,56 @@
+"""K-Nearest Neighbors (KNN) imputation for missing values.
+
+Fills missing values using the weighted mean of K-nearest neighbors. This
+method leverages the similarity structure in the data to produce more
+accurate imputations than simple statistical methods.
+
+Typical usage:
+    ```python
+    # KNN imputation with 5 neighbors (default)
+    df_filled = knn_imputation(df, n_neighbors=5)
+
+    # Use more neighbors for smoother imputation
+    df_filled = knn_imputation(df, n_neighbors=10)
+
+    # In-place imputation
+    knn_imputation(df, n_neighbors=3, inplace=True)
+    ```
+
+How KNN imputation works:
+    1. For each missing value, find K nearest neighbors based on complete features
+    2. Compute weighted average of neighbors' values (inverse distance weighting)
+    3. Fill missing value with computed average
+    4. Handle both univariate and multivariate missing patterns
+
+Parameters:
+    - n_neighbors: Number of neighbors to use (default: 5)
+    - Additional sklearn.impute.KNNImputer parameters via **kwargs
+
+Features:
+    - Preserves correlation structure in data
+    - Works with both DataFrames and Series
+    - Handles multivariate missing patterns
+    - In-place or copy modification
+    - Automatic Series to DataFrame conversion
+
+Use cases:
+    - Missing data with strong feature correlations
+    - Multivariate missing patterns (MAR assumption)
+    - When simple statistical methods are inadequate
+    - Time series with irregular missing patterns
+
+Trade-offs:
+    - More computationally expensive than simple methods
+    - Requires sufficient complete rows to find neighbors
+    - Performance depends on distance metric choice
+    - Works best with normalized/scaled features
+
+Dependencies: scikit-learn (sklearn.impute.KNNImputer)
+
+Related modules: mice_imputation, iterative_imputation (more sophisticated
+alternatives), simple_imputation (faster but less accurate).
+"""
+
 from __future__ import annotations
 
 import pandas as pd

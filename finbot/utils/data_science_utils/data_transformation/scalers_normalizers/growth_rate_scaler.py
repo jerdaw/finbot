@@ -1,3 +1,96 @@
+"""Growth rate scaling for removing compounding growth trends from time series.
+
+Removes the constant growth rate trend from time series data by computing the
+average growth rate from first to last value, then dividing out the cumulative
+effect. Useful for detrending exponentially growing series to analyze
+deviations from the long-term growth rate.
+
+Typical usage:
+    ```python
+    # Remove growth trend from stock prices
+    scaler = GrowthRateScaler()
+    detrended = scaler.fit_transform(stock_prices)
+    # Result shows deviations from constant growth path
+
+    # Reverse the transformation
+    original = scaler.inverse_transform(detrended)
+    ```
+
+How growth rate scaling works:
+    1. Calculate annualized growth rate: `g = (last / first)^(1/(n-1)) - 1`
+    2. Compute expected growth path: `(1 + g)^t` for each time step t
+    3. Divide actual values by expected growth path
+    4. Result shows ratio of actual to trend (1.0 = on trend)
+
+Growth rate formula:
+    ```
+    growth_rate = (X[-1] / X[0]) ^ (1 / (len(X) - 1)) - 1
+    cumulative_growth = (1 + growth_rate) ^ range(len(X))
+    scaled = X / cumulative_growth
+    ```
+
+Features:
+    - Automatically computes growth rate from data
+    - Full inverse_transform support
+    - Removes exponential growth trend
+    - Preserves pandas index
+    - sklearn-compatible API via BaseScaler
+
+Use cases:
+    - Detrending exponentially growing stock prices
+    - Analyzing GDP/population growth deviations
+    - Removing user/revenue growth trends
+    - Identifying growth anomalies
+    - Preparing exponential data for linear models
+
+Example interpretation:
+    ```python
+    scaler = GrowthRateScaler()
+    detrended = scaler.fit_transform(prices)
+
+    # If scaler.growth_rate_ = 0.10 (10% annual growth):
+    # detrended > 1.0: Growing faster than 10% trend
+    # detrended < 1.0: Growing slower than 10% trend
+    # detrended == 1.0: Exactly on 10% growth trend
+
+    # Identify periods of above/below trend growth
+    above_trend = detrended[detrended > 1.05]  # 5% above trend
+    below_trend = detrended[detrended < 0.95]  # 5% below trend
+    ```
+
+Advantages:
+    - Simple one-parameter model
+    - Full invertibility
+    - Interpretable (ratio to trend line)
+    - Automatic growth rate estimation
+
+Limitations:
+    - **Assumes constant growth rate** (may not fit all data)
+    - **First value must be non-zero** (raises ValueError)
+    - Sensitive to first and last values (outliers affect growth rate)
+    - Not suitable for data with changing growth regimes
+
+Error handling:
+    - ValueError if first value is zero (division by zero)
+    - TypeError if data is non-numeric
+    - RuntimeError if transform called before fit
+
+Best practices:
+    - Verify constant growth assumption is reasonable
+    - Check for outliers in first/last values
+    - Visualize fitted growth rate against data
+    - Consider trimming data before fitting if endpoints are anomalous
+
+Comparison to other scalers:
+    - **vs MAScaler**: GrowthRate removes global trend, MA removes local trend
+    - **vs LogarithmicScaler**: GrowthRate assumes exponential, Log compresses all scales
+    - **vs SimpleScaler**: GrowthRate handles compounding, Simple uses static reference
+
+Related modules: MAScaler (local trend removal), LogarithmicScaler (log
+transform), SimpleScaler (statistical scaling), rebase_cumu_pct_change
+(cumulative returns).
+"""
+
 from __future__ import annotations
 
 # ruff: noqa: N803 - Using sklearn naming convention (X for data parameter)

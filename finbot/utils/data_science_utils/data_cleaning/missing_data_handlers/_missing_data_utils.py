@@ -1,3 +1,25 @@
+"""Core validation utilities for missing data handling operations.
+
+Provides shared validation functions used across all missing data handlers
+including data type checking, parameter validation, and numeric verification.
+These utilities ensure consistent error handling and input validation
+throughout the missing data handling pipeline.
+
+Typical usage:
+    Used internally by other missing_data_handlers modules. Generally not
+    called directly by end users.
+
+Validation functions:
+    - _validate_df_or_series(): Ensures input is pandas DataFrame/Series
+    - _validate_parameters(): Validates method parameters against allowed options
+    - _check_numeric(): Verifies all/some columns are numeric types
+
+Data type checking:
+    - Supports both strict (all columns numeric) and mixed (at least one numeric)
+    - Uses numpy dtype.kind checking for efficient type validation
+    - Raises descriptive errors for invalid data types
+"""
+
 from __future__ import annotations
 
 import pandas as pd

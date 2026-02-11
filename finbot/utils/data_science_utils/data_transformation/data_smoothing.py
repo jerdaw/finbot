@@ -1,3 +1,116 @@
+"""Comprehensive time series smoothing methods using statistical and signal processing techniques.
+
+Provides a unified interface (DataSmoother class) for applying 10+ smoothing
+techniques to pandas Series. Includes moving averages, exponential smoothing,
+Kalman filtering, wavelet transforms, and more. Essential for noise reduction,
+trend identification, and time series preprocessing.
+
+Typical usage:
+    ```python
+    smoother = DataSmoother(data_series)
+
+    # Simple moving average
+    smoothed = smoother.moving_average(window_size=20)
+
+    # Exponential smoothing
+    smoothed = smoother.exponential_smoothing(alpha=0.3)
+
+    # Hodrick-Prescott filter (separate trend from cycle)
+    trend = smoother.hp_smoothing(lamb=1600)  # λ=1600 for quarterly data
+
+    # Savitzky-Golay filter (preserves peaks)
+    smoothed = smoother.savitzky_golay_smoothing(window_size=21, polynomial_order=3)
+    ```
+
+Available smoothing methods:
+
+1. **Moving Average**:
+   - Simple rolling window average
+   - Parameters: window_size
+   - Fast, easy to interpret
+
+2. **Exponential Smoothing** (Simple):
+   - Weighted average favoring recent observations
+   - Parameters: alpha (0-1)
+   - Good for data without trend/seasonality
+
+3. **Double Exponential Smoothing** (Holt):
+   - Handles level + trend
+   - Parameters: alpha (level), beta (trend), damped
+   - Use when data has trend
+
+4. **Triple Exponential Smoothing** (Holt-Winters):
+   - Handles level + trend + seasonality
+   - Parameters: alpha, beta, gamma, period, damped
+   - Best for seasonal data
+
+5. **Savitzky-Golay Filter**:
+   - Polynomial fitting in sliding window
+   - Parameters: window_size (odd), polynomial_order
+   - Preserves peaks and features better than simple averaging
+
+6. **Hodrick-Prescott Filter**:
+   - Decomposes into trend + cyclical components
+   - Parameters: lamb (smoothing parameter, higher = smoother)
+   - Common in economics/finance for trend extraction
+
+7. **Kalman Filter**:
+   - Optimal recursive estimator for linear systems
+   - Parameters: initial_state, covariances, transition matrix
+   - Powerful for noisy sensor data, state estimation
+
+8. **Wavelet Transform**:
+   - Multi-resolution decomposition
+   - Parameters: wavelet_name, mode, level
+   - Good for non-stationary signals, denoising
+
+9. **Breakpoint Analysis**:
+   - Identifies structural breaks (regime changes)
+   - Parameters: penalty, efficient_mode
+   - Detects abrupt shifts in mean/variance
+
+10. **LOESS (Local Regression)**:
+    - Non-parametric local polynomial regression
+    - Parameters: fraction, it (iterations), downsample
+    - Flexible for non-linear relationships
+
+Features:
+    - Unified DataSmoother interface for all methods
+    - Parameter validation with helpful error messages
+    - Performance warnings for large datasets
+    - Preserves pandas index
+    - Extensive __main__ examples with visualizations
+
+Use cases:
+    - Noise reduction in financial time series
+    - Trend identification for forecasting
+    - Preprocessing for machine learning
+    - Signal processing (sensor data)
+    - Economic cycle analysis (HP filter)
+
+Parameter selection guidelines:
+    - Moving average: window_size = 5-20 for daily data
+    - Exponential: alpha = 0.1-0.3 (lower = smoother)
+    - HP filter: lamb = 100 (annual), 1600 (quarterly), 14400 (monthly)
+    - Savitzky-Golay: window_size = 2-3 cycles, polynomial_order = 2-3
+
+Performance considerations:
+    - Warnings issued for large datasets (>10K points)
+    - Efficient mode available for breakpoint analysis
+    - Downsampling option for LOESS
+    - Chunking option for Kalman filter
+
+Dependencies:
+    - scipy (savgol_filter)
+    - statsmodels (ExponentialSmoothing, hpfilter, lowess)
+    - pywt (wavelet transforms)
+    - ruptures (breakpoint detection)
+    - filterpy (Kalman filtering)
+
+Related modules: scalers_normalizers (normalization methods),
+seasonal_imputation (seasonal decomposition for missing data).
+"""
+
 import numpy as np
 import pandas as pd
 import pywt

@@ -1,3 +1,38 @@
+"""Simple missing value filling methods for pandas DataFrames and Series.
+
+Provides basic imputation techniques using forward/backward fill and summary
+statistics (mean, median, mode). These are computationally efficient methods
+suitable for quick data cleaning when sophisticated imputation is not required.
+
+Typical usage:
+    ```python
+    # Forward fill missing values
+    filled_df = fill_missing_values(df, method="ffill")
+
+    # Fill with column means
+    filled_df = fill_missing_values(df, method="mean", dropna_start=True)
+
+    # In-place median filling
+    fill_missing_values(df, method="median", inplace=True)
+    ```
+
+Available fill methods:
+    - 'ffill': Forward fill (propagate last valid value)
+    - 'bfill': Backward fill (propagate next valid value)
+    - 'mean': Fill with column mean
+    - 'median': Fill with column median
+    - 'mode': Fill with column mode (most frequent value)
+
+Features:
+    - Optional dropping of leading NaN values (dropna_start)
+    - In-place or copy modification
+    - Numeric data validation
+    - Works with both DataFrames and Series
+
+For more sophisticated imputation methods (MICE, KNN, iterative), see the
+imputation/ subdirectory modules.
+"""
+
 from __future__ import annotations
 
 import pandas as pd

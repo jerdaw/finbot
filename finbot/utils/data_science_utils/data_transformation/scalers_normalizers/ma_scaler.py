@@ -1,3 +1,90 @@
+"""Moving Average (MA) scaler for detrending time series data.
+
+Scales time series by dividing by its moving average, effectively detrending
+the data and highlighting deviations from the local trend. Useful for removing
+trend effects while preserving cyclical patterns and anomalies.
+
+Typical usage:
+    ```python
+    # Scale by 20-period moving average
+    scaler = MAScaler(window_size=20)
+    scaled_series = scaler.fit_transform(prices)
+    # Result shows ratio of price to 20-period MA
+
+    # Longer window = smoother trend, more stable scaling
+    scaler_long = MAScaler(window_size=200)
+    scaled_long = scaler_long.fit_transform(prices)
+    ```
+
+How MA scaling works:
+    1. Compute moving average with specified window_size
+    2. Divide original series by moving average
+    3. Result shows deviations from local trend
+    4. Values > 1: above moving average
+    5. Values < 1: below moving average
+
+Parameters:
+    - window_size: Number of periods for moving average (default: 5)
+      - Smaller window: more responsive, captures short-term deviations
+      - Larger window: smoother, captures longer-term trends
+
+Features:
+    - Detrending without removing data points
+    - Preserves cyclical patterns and anomalies
+    - No fitting required (transform is stateless)
+    - Works with pandas Series (preserves index)
+    - sklearn-compatible API via BaseScaler
+
+Use cases:
+    - Technical analysis (price relative to moving average)
+    - Detecting overbought/oversold conditions
+    - Removing trend before machine learning
+    - Cyclical pattern analysis
+    - Mean reversion trading signals
+
+Example interpretation:
+    ```python
+    scaler = MAScaler(window_size=50)
+    scaled = scaler.fit_transform(stock_prices)
+
+    # scaled > 1.0: Price above 50-day MA (bullish signal)
+    # scaled < 1.0: Price below 50-day MA (bearish signal)
+    # scaled == 1.0: Price exactly at 50-day MA
+
+    # Extreme values indicate strong deviations
+    overbought = scaled[scaled > 1.10]  # 10% above MA
+    oversold = scaled[scaled < 0.90]  # 10% below MA
+    ```
+
+Window size selection guidelines:
+    - 5-10: Very short-term (daily noise)
+    - 20-50: Short-term trend (weeks/months)
+    - 100-200: Medium-term trend (months/year)
+    - 250+: Long-term trend (years)
+
+Advantages:
+    - Simple and interpretable
+    - Automatic trend removal
+    - Highlights local deviations
+    - No parameter fitting needed
+
+Limitations:
+    - **Inverse transform not implemented** (division by MA is not easily reversible)
+    - First window_size values will have NaN (MA not yet computable)
+    - Sensitive to window_size choice
+    - Not suitable for non-stationary data with regime changes
+
+Best practices:
+    - Choose window_size based on frequency of data and analysis goals
+    - Visualize scaled data to verify appropriate detrending
+    - Be aware of leading NaN values from MA calculation
+    - Consider combining with other transformations
+
+Related modules: SimpleScaler (statistical scaling), LogarithmicScaler (log
+transformation), GrowthRateScaler (growth rate removal), data_smoothing
+(moving average methods).
+"""
+
 from __future__ import annotations
 
 # ruff: noqa: N803 - Using sklearn naming convention (X for data parameter)

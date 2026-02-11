@@ -1,3 +1,91 @@
+"""Seasonal decomposition imputation for time series with seasonal patterns.
+
+Imputes missing values by decomposing time series into trend, seasonal, and
+residual components, filling each separately, then reconstructing. Particularly
+effective for data with strong seasonal patterns (e.g., daily, weekly, yearly).
+
+Typical usage:
+    ```python
+    # Additive seasonal imputation with auto-detected frequency
+    df_filled = seasonal_decomposition_imputation(df, model="additive")
+
+    # Multiplicative model for data with increasing seasonal variation
+    df_filled = seasonal_decomposition_imputation(df, model="multiplicative")
+
+    # Specify seasonal frequency explicitly
+    df_filled = seasonal_decomposition_imputation(
+        df,
+        model="additive",
+        freq=12,  # Monthly data with yearly seasonality
+    )
+
+    # In-place modification
+    seasonal_decomposition_imputation(df, model="additive", freq=7, inplace=True)
+    ```
+
+Decomposition models:
+    - 'additive': Y = Trend + Seasonal + Residual
+      - Use when seasonal variation is constant over time
+      - Example: Temperature, retail sales in stable markets
+
+    - 'multiplicative': Y = Trend * Seasonal * Residual
+      - Use when seasonal variation increases with trend
+      - Example: Exponentially growing sales with seasonality
+
+How it works:
+    1. Decompose time series into three components:
+       - Trend: Long-term upward/downward movement
+       - Seasonal: Repeating short-term cycles
+       - Residual: Random noise after removing trend and seasonality
+    2. Fill missing values in each component using forward/backward fill
+    3. Reconstruct imputed series based on model:
+       - Additive: sum components
+       - Multiplicative: multiply components
+
+Parameters:
+    - model: Decomposition type ('additive' or 'multiplicative')
+    - freq: Seasonal period (e.g., 12 for monthly with yearly seasonality)
+      - If None, pandas will attempt auto-detection from index frequency
+      - Must be positive integer if specified
+    - inplace: Modify data in-place or return copy
+
+Features:
+    - Preserves seasonal patterns during imputation
+    - Handles complex time series structures
+    - Automatic or manual frequency specification
+    - Forward/backward fill for component NaN values
+
+Use cases:
+    - Time series with strong seasonal patterns
+    - Economic indicators (GDP, unemployment with seasonal trends)
+    - Retail sales data (holiday effects, seasonal demand)
+    - Weather/climate data (temperature, rainfall)
+    - Web traffic with weekly/daily patterns
+
+Requirements:
+    - Sufficient data points for decomposition (typically ≥ 2 full periods)
+    - Regular time series index for auto frequency detection
+    - Numeric data only
+
+Trade-offs:
+    - Requires longer time series (≥ 2 seasonal periods)
+    - Computationally more expensive than simple methods
+    - Assumes stable seasonal pattern throughout series
+    - May not work well with irregular seasonality
+
+Best practices:
+    - Ensure time series has DatetimeIndex for auto frequency detection
+    - Choose additive vs. multiplicative based on variance pattern
+    - Specify freq explicitly if auto-detection fails
+    - Combine with other methods if decomposition incomplete
+
+Dependencies: statsmodels (statsmodels.tsa.seasonal.seasonal_decompose)
+
+Related modules: time_series_imputation (simpler time-based methods),
+functional_imputation (interpolation without seasonality), mice_imputation
+(multivariate imputation).
+"""
+
 from __future__ import annotations
 
 import pandas as pd

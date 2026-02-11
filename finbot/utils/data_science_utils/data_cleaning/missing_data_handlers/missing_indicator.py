@@ -1,3 +1,40 @@
+"""Create binary indicator variables for missing values using sklearn.
+
+Generates indicator columns showing where values were missing in the original
+data using sklearn's MissingIndicator. Useful for preserving information about
+missingness patterns when performing imputation, as missing data itself can
+be informative.
+
+Typical usage:
+    ```python
+    # Create indicators for all columns with missing values
+    df_with_indicators = add_missing_indicators(df, features="missing-only")
+    # Result has original columns + 'missing_0', 'missing_1', etc.
+
+    # Create indicators for all columns (including complete ones)
+    df_all_indicators = add_missing_indicators(df, features="all")
+
+    # Combine with imputation to preserve missingness information
+    df_filled = fill_missing_values(df, method="mean")
+    df_with_indicators = add_missing_indicators(df_filled)
+    ```
+
+Indicator features:
+    - 'missing-only': Indicators only for columns with missing values (default)
+    - 'all': Indicators for all columns regardless of missingness
+    - Naming convention: 'missing_0', 'missing_1', etc.
+    - Binary indicators (1 = missing, 0 = present)
+
+Use cases:
+    - Preserving missingness information during imputation
+    - Feature engineering (missingness as a signal)
+    - Analyzing whether "missingness" correlates with outcomes
+    - Missing data mechanism analysis (MAR, MCAR, MNAR)
+    - Machine learning: let model learn from missingness patterns
+
+Dependencies: scikit-learn (sklearn.impute.MissingIndicator)
+"""
+
 from __future__ import annotations
 
 import pandas as pd

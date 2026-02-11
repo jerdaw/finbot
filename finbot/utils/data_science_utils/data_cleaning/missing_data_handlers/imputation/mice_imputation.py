@@ -1,3 +1,65 @@
+"""Multiple Imputation by Chained Equations (MICE) for missing values.
+
+Performs sophisticated multivariate imputation using iterative modeling where
+each feature with missing values is modeled as a function of other features in
+a round-robin fashion. Also known as "fully conditional specification" or
+"sequential regression multiple imputation".
+
+Typical usage:
+    ```python
+    # MICE imputation with default 10 iterations
+    df_filled = mice_imputation(df, max_iter=10)
+
+    # More iterations for better convergence
+    df_filled = mice_imputation(df, max_iter=20)
+
+    # In-place imputation
+    mice_imputation(df, max_iter=15, inplace=True)
+    ```
+
+How MICE works:
+    1. Start with simple imputation (e.g., mean)
+    2. For each feature with missing values:
+       - Use other features as predictors in regression model
+       - Predict missing values for that feature
+       - Update imputed values
+    3. Repeat until convergence or max_iter reached
+    4. Each iteration refines imputation using updated values
+
+Algorithm characteristics:
+    - Iterative refinement produces more accurate imputations
+    - Models complex dependencies between features
+    - Handles arbitrary missing patterns (MAR assumption)
+    - Can use different models for different features
+
+Parameters:
+    - max_iter: Maximum imputation iterations (default: 10, range: 1-100)
+    - Warning issued if max_iter > 10 (can be very slow)
+
+Features:
+    - Preserves multivariate relationships
+    - Works with arbitrary missing patterns
+    - In-place or copy modification
+    - Convergence monitoring via iteration count
+
+Use cases:
+    - Complex multivariate missing patterns
+    - When features are highly correlated
+    - When simple methods produce biased estimates
+    - Research/statistical analysis requiring rigorous imputation
+
+Trade-offs:
+    - Most computationally expensive imputation method
+    - Can take very long time for large datasets or high max_iter
+    - Requires multiple complete cases to initialize
+    - May not converge for all datasets
+
+Dependencies: scikit-learn (sklearn.impute.IterativeImputer)
+
+Related modules: iterative_imputation (same algorithm, different wrapper),
+knn_imputation (simpler but faster), simple_imputation (fastest baseline).
+"""
+
 from __future__ import annotations
 
 import pandas as pd

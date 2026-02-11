@@ -1,3 +1,132 @@
+"""Logarithmic scaling and normalization for compressing large value ranges.
+
+Provides flexible logarithmic transformation with multiple base options (numeric
+or statistical), optional range normalization, and full inverse transform
+support. Particularly effective for data with exponential growth or wide
+value ranges.
+
+Typical usage:
+    ```python
+    # Natural log scaling (base e)
+    scaler = LogarithmicScaler()
+    scaled = scaler.fit_transform(prices)
+
+    # Log base 10 scaling
+    scaler_10 = LogarithmicScaler(base=10)
+    scaled_10 = scaler_10.fit_transform(prices)
+
+    # Scale so maximum value becomes 1.0
+    scaler_max = LogarithmicScaler(base="max")
+    scaled_max = scaler_max.fit_transform(prices)
+
+    # Range normalization (0-1 after log transform)
+    scaler_norm = LogarithmicScaler(normalize="range")
+    scaled_norm = scaler_norm.fit_transform(prices)
+    ```
+
+Logarithmic scaling formulas:
+
+1. **Default (no normalization)**:
+   ```
+   y = log(x + epsilon) / log(base)
+   ```
+
+2. **Range normalization**:
+   ```
+   y = (log(x + epsilon) - log(min + epsilon)) /
+       (log(max + epsilon) - log(min + epsilon))
+   ```
+   - Maps to [0, 1] range after log transform
+
+3. **First-last normalization**:
+   ```
+   y = (log(x + epsilon) - log(first + epsilon)) /
+       (log(last + epsilon) - log(first + epsilon))
+   ```
+   - Normalizes relative to start and end values
+
+Parameters:
+
+- **base** (float, int, or str):
+  - Numeric: Direct logarithm base
+  - Statistical function: 'min', 'max', 'first', 'last', 'mean', 'median', 'mode'
+    - Setting base to data's max makes max value → 1.0 after transform
+  - Default: e (natural logarithm)
+
+- **epsilon** (float):
+  - Small constant added to avoid log(0)
+  - Default: 1e-9
+  - Increase if data contains very small values
+
+- **normalize** (None or str):
+  - None: No normalization (default)
+  - 'range': Normalize to [0, 1] after log transform
+  - 'first_last': Normalize relative to first/last values
+
+Features:
+    - Full inverse_transform support (except normalized modes)
+    - Automatic base fitting from statistical functions
+    - Epsilon handling for zero/negative values
+    - sklearn-compatible API via BaseScaler
+    - Works with pandas Series (preserves index)
+
+Use cases:
+    - Compressing exponentially growing data
+    - Stabilizing variance in heteroscedastic data
+    - Transforming skewed distributions toward normality
+    - Financial data (prices, revenues with wide ranges)
+    - Population data, web traffic, epidemic curves
+
+Statistical base examples:
+    ```python
+    # Make maximum value equal 1.0
+    LogarithmicScaler(base="max").fit_transform(data)
+
+    # Make mean value equal 1.0
+    LogarithmicScaler(base="mean").fit_transform(data)
+
+    # Make last value equal 1.0 (useful for time series)
+    LogarithmicScaler(base="last").fit_transform(data)
+    ```
+
+Normalization examples:
+    ```python
+    # All three compress to [0, 1] range differently
+    scaler_range = LogarithmicScaler(normalize="range")
+    scaler_fl = LogarithmicScaler(normalize="first_last")
+    scaler_none = LogarithmicScaler()  # No normalization
+    ```
+
+Advantages:
+    - Compresses large value ranges
+    - Reduces impact of outliers
+    - Can stabilize variance
+    - Invertible (when normalize=None)
+    - Handles exponential growth
+
+Limitations:
+    - **Cannot handle zero/negative values** (requires epsilon adjustment)
+    - **No inverse for normalized modes** (raises NotImplementedError)
+    - Choice of base affects interpretation
+    - Epsilon choice can affect small values
+
+Best practices:
+    - Ensure all values are positive (or use appropriate epsilon)
+    - Choose base based on interpretability needs
+    - Use normalize='range' for bounded output [0, 1]
+    - Document base choice for reproducibility
+    - Verify epsilon is appropriate for data scale
+
+Error handling:
+    - ValueError for invalid base or epsilon
+    - ValueError for invalid normalize parameter
+    - RuntimeError if transform called before fit
+    - NotImplementedError for inverse of normalized data
+
+Related modules: SimpleScaler (statistical scaling), MAScaler (moving average),
+GrowthRateScaler (growth rate removal), Normalizers (normalization methods).
+"""
+
 from __future__ import annotations
 
 # ruff: noqa: N803, N806, RUF012 - Using sklearn naming convention (X, X_scaled); RUF012 for TARGET_FUNCS dict

@@ -1,3 +1,32 @@
+"""Core utilities for outlier detection and treatment operations.
+
+Provides shared utility functions used across all outlier handlers including
+automatic pandas type dispatch (Series vs DataFrame) and numeric column
+filtering. These utilities enable consistent outlier handling throughout
+the outlier detection and treatment pipeline.
+
+Typical usage:
+    Used internally by other outlier_handlers modules. Generally not called
+    directly by end users.
+
+Utility functions:
+    - _apply_detection_to_pandas(): Apply outlier detection method to pandas objects
+      - Returns boolean mask of outliers or filtered data
+      - Handles both Series and DataFrame inputs
+      - Column-wise application for DataFrames
+
+    - _apply_treatment_to_pandas(): Apply outlier treatment method to pandas objects
+      - Returns treated data (capped, removed, or transformed outliers)
+      - Handles both Series and DataFrame inputs
+      - Column-wise application for DataFrames
+
+Features:
+    - Automatic type dispatch (Series vs DataFrame)
+    - Numeric column filtering (dtype.kind in 'biufcm')
+    - Consistent error handling
+    - Supports arbitrary treatment/detection methods via callables
+"""
+
 from collections.abc import Callable
 
 import pandas as pd
