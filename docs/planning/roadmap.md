@@ -553,14 +553,45 @@ These items improve professionalism and maintainability.
 
 **Result:** Comprehensive CI pipeline with 8 checks (Poetry metadata, lint, format, type, security, dependency audit, tests, coverage). All 80 tests passing. Coverage reported to Codecov. Badges added to README.
 
-### 3.5 Improve Pre-commit Hooks
+### 3.5 Improve Pre-commit Hooks ✓
 
-**Current state:** 14 hooks configured; missing type checking, security scanning, and WSL-critical line ending enforcement.
+**Status:** COMPLETED (2026-02-10)
 
-- [ ] Add `mixed-line-ending` hook with `args: ['--fix=lf']` — critical since this project is developed on WSL where CRLF/LF issues are common
-- [ ] Add mypy pre-commit hook (`pre-commit/mirrors-mypy`)
-- [ ] Add bandit pre-commit hook (`PyCQA/bandit`)
-- [ ] Sync ruff version in `.pre-commit-config.yaml` with `pyproject.toml` (currently mismatched: v0.2.0 vs v0.1.15)
+**Previous state:** 14 hooks configured; missing type checking, security scanning, and WSL-critical line ending enforcement.
+
+**What Was Done:**
+- [x] Add `mixed-line-ending` hook with `args: ['--fix=lf']` to `.pre-commit-config.yaml`
+  - Critical for WSL development where CRLF/LF line ending issues are common
+  - Auto-fixes line endings to LF on commit
+  - Runs automatically on every commit
+- [x] Add mypy pre-commit hook (`pre-commit/mirrors-mypy` v1.14.1)
+  - Configured with all 8 type stub packages (types-psutil, pandas-stubs, etc.)
+  - Set to `stages: [manual]` - runs only when explicitly called (not on every commit)
+  - Rationale: 125 current mypy errors make auto-run too noisy; CI already checks comprehensively
+  - Usage: `poetry run pre-commit run --hook-stage manual mypy --files path/to/file.py`
+- [x] Add bandit pre-commit hook (`PyCQA/bandit` v1.8.0)
+  - Configured with `bandit[toml]` support for pyproject.toml configuration
+  - Set to `stages: [manual]` - runs only when explicitly called (not on every commit)
+  - Rationale: 6 low-severity warnings make auto-run unnecessary; CI already checks comprehensively
+  - Usage: `poetry run pre-commit run --hook-stage manual bandit --files path/to/file.py`
+- [x] Verify ruff version sync between `.pre-commit-config.yaml` and `pyproject.toml`
+  - Both use ruff ^0.11.0 / v0.11.13 - already synced ✅
+- [x] Create comprehensive pre-commit hooks usage guide (230 lines)
+  - New file: `docs/guides/pre-commit-hooks-usage.md`
+  - Documents automatic vs. manual hooks with clear usage examples
+  - Includes daily workflow, pre-PR checklist, troubleshooting guide
+  - Explains why mypy/bandit are manual-only (current error count, CI coverage)
+
+**Result:** Now have 17 total hooks (14 automatic + 3 manual). Automatic hooks run in ~1-2 seconds. Manual hooks available for on-demand type/security checking. Line ending enforcement prevents WSL-related issues. Comprehensive guide ensures developers understand usage patterns.
+
+**Hook Summary:**
+- **Automatic (15 hooks):** Run on every commit, must pass
+  - Basic checks: whitespace, EOF, YAML/JSON/TOML syntax, large files, private keys
+  - Line endings: mixed-line-ending (critical for WSL)
+  - Python: debug statements, AST validation, ruff lint + format
+- **Manual (2 hooks):** Run on demand, informational only
+  - Type checking: mypy (125 current errors - gradual improvement)
+  - Security: bandit (6 low-severity warnings - all known)
 
 ### 3.6 Modernize pyproject.toml Metadata
 
