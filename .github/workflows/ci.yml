@@ -28,7 +28,7 @@ jobs:
       - name: Format check with ruff
         run: uv run ruff format --check . --exclude notebooks/
 
-      - name: Run tests
+      - name: Run tests with coverage
         env:
           DYNACONF_ENV: development
-        run: uv run pytest tests/ -v
+        run: uv run pytest tests/ -v --cov=finbot --cov-report=term-missing --cov-fail-under=30

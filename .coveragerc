@@ -1,5 +1,5 @@
 [run]
-source = finbot, libs, config, constants
+source = finbot
 omit =
     */tests/*
     */test_*.py
