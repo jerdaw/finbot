@@ -80,7 +80,7 @@ test:
 
 test-cov:
 	@echo "Running tests with coverage report..."
-	DYNACONF_ENV=development uv run pytest --cov=finbot --cov-report=term-missing --cov-report=html tests/
+	DYNACONF_ENV=development uv run pytest --cov=finbot --cov-report=term-missing --cov-report=html --cov-fail-under=30 tests/
 
 test-quick:
 	@echo "Running tests in quiet mode..."
