@@ -23,6 +23,21 @@ services:
     environment:
       - DYNACONF_ENV=${DYNACONF_ENV:-development}
 
+  # Streamlit web dashboard
+  finbot-dashboard:
+    build: .
+    container_name: finbot-dashboard
+    entrypoint: ["python", "-m", "streamlit", "run", "finbot/dashboard/app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
+    command: []
+    ports:
+      - "8501:8501"
+    volumes:
+      - finbot-data:/app/finbot/data
+    env_file:
+      - finbot/config/.env
+    environment:
+      - DYNACONF_ENV=${DYNACONF_ENV:-development}
+
   # Data status check
   finbot-status:
     build: .

@@ -1,0 +1,1 @@
+"""Finbot Streamlit web dashboard."""

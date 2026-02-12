@@ -97,3 +97,77 @@ def test_import_update_daily():
     from scripts.update_daily import update_daily
 
     assert callable(update_daily)
+
+
+def test_import_dashboard_app():
+    import finbot.dashboard.app  # noqa: F401
+
+
+def test_import_dashboard_components():
+    from finbot.dashboard.components.charts import (
+        create_bar_chart,
+        create_drawdown_chart,
+        create_fan_chart,
+        create_heatmap,
+        create_histogram_chart,
+        create_time_series_chart,
+    )
+
+    assert callable(create_time_series_chart)
+    assert callable(create_histogram_chart)
+    assert callable(create_bar_chart)
+    assert callable(create_heatmap)
+    assert callable(create_fan_chart)
+    assert callable(create_drawdown_chart)
+
+
+def test_import_dashboard_sidebar():
+    from finbot.dashboard.components.sidebar import asset_selector, date_range_selector, fund_selector
+
+    assert callable(fund_selector)
+    assert callable(asset_selector)
+    assert callable(date_range_selector)
+
+
+def test_import_dashboard_cli():
+    from finbot.cli.commands.dashboard import dashboard
+
+    assert callable(dashboard)
+
+
+def test_import_dual_momentum():
+    from finbot.services.backtesting.strategies.dual_momentum import DualMomentum
+
+    assert DualMomentum is not None
+
+
+def test_import_risk_parity():
+    from finbot.services.backtesting.strategies.risk_parity import RiskParity
+
+    assert RiskParity is not None
+
+
+def test_import_multi_asset_monte_carlo():
+    from finbot.services.simulation.monte_carlo.multi_asset_monte_carlo import multi_asset_monte_carlo
+
+    assert callable(multi_asset_monte_carlo)
+
+
+def test_import_inflation_adjusted_returns():
+    from finbot.utils.finance_utils.get_inflation_adjusted_returns import get_inflation_adjusted_returns
+
+    assert callable(get_inflation_adjusted_returns)
+
+
+def test_import_health_economics():
+    from finbot.services.health_economics import (
+        HealthIntervention,
+        cost_effectiveness_analysis,
+        optimize_treatment,
+        simulate_qalys,
+    )
+
+    assert HealthIntervention is not None
+    assert callable(simulate_qalys)
+    assert callable(cost_effectiveness_analysis)
+    assert callable(optimize_treatment)

@@ -4,9 +4,11 @@
 
 Finbot is a financial data collection, simulation, and backtesting platform that consolidates:
 - Modern infrastructure (Dynaconf config, queue-based logging, API management)
-- Comprehensive backtesting engine (Backtrader-based with 10 strategies)
-- Advanced simulation systems (fund, bond ladder, Monte Carlo, index simulators)
+- Comprehensive backtesting engine (Backtrader-based with 12 strategies)
+- Advanced simulation systems (fund, bond ladder, Monte Carlo, multi-asset Monte Carlo, index simulators)
 - Portfolio optimization (DCA optimizer, rebalance optimizer)
+- Health economics analysis (QALY simulation, cost-effectiveness, treatment optimization)
+- Interactive Streamlit web dashboard
 
 Python `>=3.11,<3.15`. Uses **uv** for dependency management.
 
@@ -100,6 +102,8 @@ Entry point: `BacktestRunner` in `backtest_runner.py`
 - `macd_single.py`, `macd_dual.py`: MACD-based strategies
 - `dip_buy_sma.py`, `dip_buy_stdev.py`: Dip buying strategies
 - `sma_rebal_mix.py`: Mixed SMA + rebalance approach
+- `dual_momentum.py`: Dual momentum (absolute + relative) with safe-asset fallback
+- `risk_parity.py`: Inverse-volatility weighting with periodic rebalance
 
 **Supporting components:**
 - `analyzers/cv_tracker.py`: Tracks cash and value throughout backtest
@@ -129,7 +133,8 @@ Entry point: `BacktestRunner` in `backtest_runner.py`
 - Generic `_sim_fund()` helper reduces code duplication
 
 **Monte Carlo** (`monte_carlo/`):
-- `monte_carlo_simulator.py`: Main simulator
+- `monte_carlo_simulator.py`: Main simulator (single-asset)
+- `multi_asset_monte_carlo.py`: Correlated multi-asset simulation using multivariate normal
 - `sim_types.py`: Normal distribution simulation
 - `visualization.py`: Plot trials and histograms
 
@@ -138,6 +143,11 @@ Entry point: `BacktestRunner` in `backtest_runner.py`
   - Grid search across ratios, durations, purchase intervals using multiprocessing
   - Calculates CAGR, Sharpe, max drawdown, std dev for each combination
 - **`rebalance_optimizer.py`**: Placeholder (see `backtesting/rebalance_optimizer.py` for working version)
+
+##### `finbot/services/health_economics/` — Health Economics Analysis
+- **`qaly_simulator.py`**: Monte Carlo QALY simulation with stochastic cost/utility/mortality
+- **`cost_effectiveness.py`**: ICER, NMB, CEAC, cost-effectiveness plane (probabilistic sensitivity analysis)
+- **`treatment_optimizer.py`**: Grid-search treatment schedule optimization (dose frequency x duration)
 
 ##### `finbot/services/data_quality/` — Data Quality and Observability
 - **`data_source_registry.py`**: Registry of 7 data sources with staleness thresholds
@@ -162,6 +172,7 @@ Entry point: `BacktestRunner` in `backtest_runner.py`
 - `merge_price_histories.py`: Merge overlapping price series
 - `get_risk_free_rate.py`: Fetch risk-free rate
 - `get_drawdown.py`, `get_timeseries_stats.py`, etc.
+- `get_inflation_adjusted_returns.py`: Deflate nominal prices by FRED CPI data
 
 **Pandas utilities** (`pandas_utils/`):
 - Save/load DataFrames (parquet, CSV, Excel)
@@ -224,7 +235,10 @@ Create `.env` file in `finbot/config/` (excluded by `.gitignore`).
 | `finbot/services/simulation/monte_carlo/monte_carlo_simulator.py` | Monte Carlo simulations |
 | `finbot/services/optimization/dca_optimizer.py` | DCA grid search optimizer |
 | `scripts/update_daily.py` | Daily data update + simulation pipeline |
-| `finbot/cli/main.py` | CLI entry point (`finbot simulate/backtest/optimize/update/status`) |
+| `finbot/cli/main.py` | CLI entry point (`finbot simulate/backtest/optimize/update/status/dashboard`) |
+| `finbot/dashboard/app.py` | Streamlit dashboard entry point (6 pages) |
+| `finbot/services/health_economics/qaly_simulator.py` | QALY Monte Carlo simulation |
+| `finbot/services/health_economics/cost_effectiveness.py` | Cost-effectiveness analysis (ICER/NMB/CEAC) |
 | `finbot/services/data_quality/check_data_freshness.py` | Data freshness monitoring |
 
 ## Code Style
@@ -233,8 +247,8 @@ Create `.env` file in `finbot/config/` (excluded by `.gitignore`).
 - **Formatter**: ruff format
 - **Type checker**: mypy (config in `pyproject.toml`)
 - **Security**: bandit
-- **Lint rules**: E, F, UP, B, SIM, I (import sorting)
-- **Pre-commit hooks**: Basic checks only (trailing whitespace, YAML, AST, private keys, ruff)
+- **Lint rules**: E, F, UP, B, SIM, I, C901, N, A, C4, RUF, LOG, PERF
+- **Pre-commit hooks**: 15 automatic (whitespace, YAML, AST, private keys, ruff, line endings) + 2 manual (mypy, bandit)
 
 ## Testing
 
@@ -253,11 +267,14 @@ uv run pytest --cov=finbot tests/
 ```
 
 **Test structure**:
-- `tests/unit/`: Unit tests (94 tests currently)
+- `tests/unit/`: Unit tests (314 tests across 17 files)
   - `test_imports.py`: Smoke tests for all key module imports
-  - `test_simulation_math.py`: Unit tests for simulation math correctness
+  - `test_simulation_math.py`: Simulation math correctness
   - `test_finance_utils.py`: Finance calculation tests
-  - `test_strategies.py`: Backtesting strategy tests
+  - `test_strategies.py`, `test_strategies_parametrized.py`: All 12 backtesting strategies
+  - `test_health_economics.py`: QALY simulator, CEA, treatment optimizer
+  - `test_dashboard_charts.py`: Chart component tests
+  - `test_new_strategies.py`: DualMomentum, RiskParity, multi-asset Monte Carlo
   - More test files for core functionality
 - `tests/integration/`: Integration tests (future)
 
@@ -289,6 +306,7 @@ uv run mkdocs gh-deploy
 - `site/`: Generated static site (gitignored)
 - `docs/`: Project documentation
   - `adr/`: Architectural Decision Records
+  - `guidelines/`: Development guidelines (testing, documentation, roadmap process)
   - `planning/`: Roadmap and implementation guides
   - `research/`: Research findings and analysis
   - `guides/`: Development guides
