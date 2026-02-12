@@ -15,7 +15,7 @@
 
 ## What You Need to Do
 
-### Step 1: Update Poetry Lock File
+### Step 1: Update uv Lock File
 
 Run this command to update the lock file with the new ruff version:
 
@@ -23,7 +23,7 @@ Run this command to update the lock file with the new ruff version:
 uv lock
 ```
 
-This will update only the ruff dependency in `poetry.lock` without updating other packages.
+This will update only the ruff dependency in `uv.lock` without updating other packages.
 
 ### Step 2: Install Updated Dependencies
 
@@ -92,7 +92,7 @@ This should pass with the same results as `uv run ruff check .`
 ### Step 9: Commit Changes
 
 ```bash
-git add pyproject.toml .pre-commit-config.yaml poetry.lock
+git add pyproject.toml .pre-commit-config.yaml uv.lock
 git commit -m "Update ruff to 0.11.0 and expand lint rules
 
 - Update ruff from ^0.1.8 to ^0.11.0

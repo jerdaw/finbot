@@ -202,7 +202,7 @@ git commit --no-verify -m "Emergency hotfix"
 **Problem:** `pre-commit install` fails with "core.hooksPath set"
 **Solution:**
 ```bash
-# Pre-commit hooks run via poetry without needing installation
+# Pre-commit hooks run via uv without needing installation
 uv run pre-commit run --all-files
 
 # If you really need to install, unset the path first:
@@ -222,7 +222,7 @@ uv run pre-commit install-hooks
 
 ### Ruff version mismatch
 
-**Problem:** Pre-commit ruff version differs from Poetry ruff version
+**Problem:** Pre-commit ruff version differs from project ruff version
 **Solution:**
 - Check `.pre-commit-config.yaml` rev matches `pyproject.toml` ruff version
 - Both should be `^0.11.0` / `v0.11.13`

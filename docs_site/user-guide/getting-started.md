@@ -16,10 +16,10 @@ Finbot is a comprehensive platform for:
 ### Prerequisites
 
 - Python >=3.11, <3.15
-- Poetry (recommended) or pip
+- uv (recommended) or pip
 - Optional: API keys for data sources
 
-### Install with Poetry (Recommended)
+### Install with uv (Recommended)
 
 ```bash
 # Clone the repository
@@ -29,8 +29,9 @@ cd finbot
 # Install dependencies
 uv sync
 
-# Activate virtual environment
-poetry shell
+# Activate virtual environment (optional, uv creates .venv automatically)
+source .venv/bin/activate  # On Linux/Mac
+.venv\Scripts\activate     # On Windows
 
 # Set environment (development or production)
 export DYNACONF_ENV=development

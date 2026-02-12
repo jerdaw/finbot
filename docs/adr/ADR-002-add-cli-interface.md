@@ -77,16 +77,18 @@ finbot/cli/
     └── output.py            # Output saving utilities (CSV/parquet/JSON)
 ```
 
-#### Poetry Integration
+#### Package Entry Point
 
 Added to `pyproject.toml`:
 
 ```toml
-[tool.poetry.scripts]
+[project.scripts]
 finbot = "finbot.cli.main:cli"
 ```
 
 This registers `finbot` as a command-line executable when the package is installed.
+
+**Note:** Originally implemented with Poetry `[tool.poetry.scripts]` in 2026-02-10, migrated to PEP 621 `[project.scripts]` with uv adoption in 2026-02-11.
 
 #### Example Commands
 
