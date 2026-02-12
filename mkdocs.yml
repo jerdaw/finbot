@@ -1,7 +1,7 @@
 site_name: Finbot Documentation
 site_description: Financial data collection, simulation, and backtesting platform
 site_author: Jeremy Dawson
-site_url: https://github.com/jerdaw/finbot
+site_url: https://jerdaw.github.io/finbot/
 
 repo_name: jerdaw/finbot
 repo_url: https://github.com/jerdaw/finbot
