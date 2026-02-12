@@ -2,10 +2,10 @@
 
 **Financial data collection, simulation, and backtesting platform for quantitative analysis**
 
-[![CI](https://github.com/jer/finbot/actions/workflows/ci.yml/badge.svg)](https://github.com/jer/finbot/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/jer/finbot/branch/main/graph/badge.svg)](https://codecov.io/gh/jer/finbot)
+[![CI](https://github.com/jerdaw/finbot/actions/workflows/ci.yml/badge.svg)](https://github.com/jerdaw/finbot/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/jerdaw/finbot/branch/main/graph/badge.svg)](https://codecov.io/gh/jerdaw/finbot)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![uv](https://img.shields.io/badge/uv-0.6+-blue.svg)](https://docs.astral.sh/uv/)
+[![uv](https://img.shields.io/badge/uv-0.9+-blue.svg)](https://docs.astral.sh/uv/)
 
 ## Overview
 

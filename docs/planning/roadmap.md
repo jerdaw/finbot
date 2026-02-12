@@ -168,7 +168,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Professional (first impression)
     - **What:** Update badge URLs from jer/finbot to jerdaw/finbot, verify badges work
     - **Evidence:** Working status badges on README
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-12)
+    - **Implementation:** Fixed 3 badges (CI: jer→jerdaw, Codecov: jer→jerdaw, uv: 0.6+→0.9+)
 
 17. **Add docstring coverage enforcement** (M: 2-4 hours)
     - **CanMEDS:** Communicator (documentation standards)
