@@ -1,6 +1,6 @@
 [project]
 name = "finbot"
-version = "0.1.0"
+version = "1.0.0"
 description = "Financial data collection, simulation, and backtesting platform"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"

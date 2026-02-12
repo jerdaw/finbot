@@ -1,10 +1,12 @@
 # Finbot Roadmap
 
 **Created:** 2026-02-10
-**Last Updated:** 2026-02-11
-**Status:** All priorities complete
+**Last Updated:** 2026-02-12
+**Status:** Previous priorities complete, new admissions-focused improvements added
 
-Improvements, fixes, and enhancements identified from a comprehensive project evaluation. Organized by priority tier. All items have been implemented — see Completed Items table below and git history for details.
+Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
+
+See Completed Items table below and git history for details on implemented features.
 
 ---
 
@@ -54,7 +56,337 @@ All 6 items complete. Added containerization, Streamlit web dashboard (6 pages),
 
 ---
 
-## Completed Items
+## Priority 5: Admissions-Focused Improvements (OMSAS/CanMEDS)
+
+New improvements identified 2026-02-12 to strengthen the project for Ontario medical school admissions. Focus on demonstrating leadership, collaboration, professionalism, scholarship, and impact aligned with CanMEDS competency framework.
+
+### 5.1 Governance & Professionalism (Immediate Wins - All Size S, ~2 hours total)
+
+**Why these matter for admissions:** Professional governance artifacts demonstrate maturity, accountability, and leadership. GitHub Community Standards compliance signals project legitimacy.
+
+1. **Add LICENSE file to repository root** (S: 10 min)
+   - **CanMEDS:** Professional (legal compliance, governance)
+   - **What:** Create standard MIT LICENSE file at repo root with name and year 2024
+   - **Evidence:** LICENSE file visible on GitHub, auto-detected license badge
+   - **Status:** ✅ Complete (2026-02-12)
+
+2. **Fix version mismatch** (S: 5 min)
+   - **CanMEDS:** Professional (attention to detail, credibility)
+   - **What:** Update pyproject.toml version to "1.0.0" to match CHANGELOG
+   - **Evidence:** Consistent version across all artifacts
+   - **Status:** ✅ Complete (2026-02-12)
+   - **Prereqs:** None
+
+3. **Create git tags and GitHub Releases** (S: 30 min)
+   - **CanMEDS:** Professional (versioning, milestones)
+   - **What:** Create tags v0.1.0 and v1.0.0, create GitHub releases with CHANGELOG notes
+   - **Evidence:** Releases page, version tags, download links
+   - **Status:** ⬜ Not started
+   - **Prereqs:** Item 2 (version fix)
+
+4. **Add SECURITY.md** (S: 30 min)
+   - **CanMEDS:** Professional (security governance)
+   - **What:** Create SECURITY.md covering: supported versions, vulnerability reporting, response time, scope (data handling, API keys, no financial advice)
+   - **Evidence:** Security tab on GitHub, linked security policy
+   - **Status:** ✅ Complete (2026-02-12)
+
+5. **Add CODE_OF_CONDUCT.md** (S: 10 min)
+   - **CanMEDS:** Collaborator, Leader (inclusive collaboration)
+   - **What:** Add Contributor Covenant v2.1 CODE_OF_CONDUCT.md to repo root
+   - **Evidence:** Code of Conduct badge, Community Standards check
+   - **Status:** ⬜ Not started
+
+6. **Add CONTRIBUTING.md to repo root** (S: 15 min)
+   - **CanMEDS:** Leader, Collaborator (structuring collaboration)
+   - **What:** Create CONTRIBUTING.md in repo root (condensed version or copy of docs_site/contributing.md)
+   - **Evidence:** "Contributing" link on GitHub, Community Standards check
+   - **Status:** ✅ Complete (2026-02-12)
+
+7. **Add GitHub Issue and PR templates** (S: 30 min)
+   - **CanMEDS:** Leader (project management, structured collaboration)
+   - **What:** Create .github/ISSUE_TEMPLATE/bug_report.md, feature_request.md, PULL_REQUEST_TEMPLATE.md
+   - **Evidence:** Structured issue/PR forms on GitHub
+   - **Status:** ⬜ Not started
+
+### 5.2 Quality & Reliability (High-Impact Second Wave)
+
+8. **Expand CI pipeline** (M: 2-4 hours)
+   - **CanMEDS:** Professional (engineering rigor)
+   - **What:** Add mypy, bandit, pip-audit steps; add Python matrix (3.11, 3.12, 3.13); pin actions to SHA
+   - **Evidence:** 6+ CI checks, multi-version compatibility, security scanning
+   - **Status:** ⬜ Not started
+
+9. **Raise test coverage from ~35% to 60%+** (L: 1-2 weeks)
+   - **CanMEDS:** Scholar (rigor, thoroughness)
+   - **What:** Write tests for bond ladder, backtest_batch, rebalance_optimizer, data collection (with mocks); update CI threshold
+   - **Evidence:** 60%+ coverage badge, codecov report
+   - **Status:** ⬜ Not started
+
+10. **Add integration tests** (M: 1-2 days)
+    - **CanMEDS:** Scholar (systems-level thinking)
+    - **What:** Write integration tests for: fund simulation, backtest runner, DCA optimizer, CLI commands
+    - **Evidence:** Populated tests/integration/, passing integration tests
+    - **Status:** ⬜ Not started
+
+11. **Add py.typed marker file** (S: 5 min)
+    - **CanMEDS:** Professional (standards compliance)
+    - **What:** Create empty finbot/py.typed file for PEP 561
+    - **Evidence:** PEP 561 compliance, downstream type checking support
+    - **Status:** ⬜ Not started
+
+12. **Enable stricter mypy settings** (L: 1-2 weeks)
+    - **CanMEDS:** Professional (quality standards)
+    - **What:** Gradually enable disallow_untyped_defs=true, add type annotations
+    - **Evidence:** Stricter mypy config, type-safe codebase
+    - **Status:** ⬜ Not started
+
+### 5.3 Documentation & Communication
+
+13. **Deploy MkDocs documentation to GitHub Pages** (M: 2-4 hours)
+    - **CanMEDS:** Communicator (published resource)
+    - **What:** Add GitHub Actions workflow for mkdocs gh-deploy, configure site_url, fix broken links
+    - **Evidence:** Live documentation URL (https://jerdaw.github.io/finbot/)
+    - **Status:** ⬜ Not started
+    - **Prereqs:** Item 14 (fix Poetry references)
+
+14. **Fix outdated Poetry references** (S: 30 min)
+    - **CanMEDS:** Communicator (consistency)
+    - **What:** Search docs for "Poetry" references, update to "uv"
+    - **Evidence:** Consistent documentation
+    - **Status:** ⬜ Not started
+
+15. **Improve API documentation coverage** (M: 1-2 days)
+    - **CanMEDS:** Communicator (thoroughness)
+    - **What:** Add mkdocstrings pages for: health economics, data quality, bond ladder, strategies, CLI, dashboard
+    - **Evidence:** Comprehensive API docs site
+    - **Status:** ⬜ Not started
+    - **Prereqs:** Item 13 (deploy docs)
+
+16. **Fix README badge URLs** (S: 15 min)
+    - **CanMEDS:** Professional (first impression)
+    - **What:** Update badge URLs from jer/finbot to jerdaw/finbot, verify badges work
+    - **Evidence:** Working status badges on README
+    - **Status:** ⬜ Not started
+
+17. **Add docstring coverage enforcement** (M: 2-4 hours)
+    - **CanMEDS:** Communicator (documentation standards)
+    - **What:** Add interrogate or pydocstyle to CI with 80% threshold
+    - **Evidence:** Docstring coverage badge
+    - **Status:** ⬜ Not started
+
+18. **Add "Limitations and Known Issues" document** (S: 1-2 hours)
+    - **CanMEDS:** Scholar, Professional (intellectual honesty)
+    - **What:** Create docs/limitations.md covering: survivorship bias, simulation assumptions, data limitations, overfitting risks
+    - **Evidence:** Transparent limitations documentation
+    - **Status:** ⬜ Not started
+
+### 5.4 Health Economics & Scholarship (Medical School Relevance)
+
+**Why these matter for admissions:** Direct link to medicine through health economics. Demonstrates scholarly depth, health advocacy, and clinical relevance.
+
+19. **Strengthen health economics methodology documentation** (M: 1-2 days)
+    - **CanMEDS:** Scholar, Health Advocate (methodology rigor)
+    - **What:** Write docs/research/health-economics-methodology.md with QALY methodology, ICER thresholds (NICE/CADTH), validation, citations
+    - **Evidence:** Research doc with academic references
+    - **Status:** ⬜ Not started
+
+20. **Enhance health economics Jupyter notebook** (M: 1 day)
+    - **CanMEDS:** Scholar, Health Advocate (clinical scenario)
+    - **What:** Enhance notebook 06 with realistic clinical scenario, CADTH/NICE thresholds, CEAC interpretation, policy implications, references
+    - **Evidence:** Publication-quality notebook
+    - **Status:** ⬜ Not started
+
+21. **Create health economics tutorial** (M: 1 day)
+    - **CanMEDS:** Communicator, Health Advocate (teaching ability)
+    - **What:** Create docs_site/user-guide/health-economics-tutorial.md with clinical scenario, code walkthrough, ICER/NMB interpretation, references
+    - **Evidence:** Teaching-quality tutorial
+    - **Status:** ⬜ Not started
+
+22. **Add simulation validation against known results** (M: 1-2 days)
+    - **CanMEDS:** Scholar (rigor, validation)
+    - **What:** Create tests/validation/ with tests comparing simulations vs historical data, document error margins
+    - **Evidence:** Validation test suite, accuracy metrics
+    - **Status:** ⬜ Not started
+    - **Note:** Requires historical data files
+
+23. **Strengthen research methodology sections** (M: 1-2 days)
+    - **CanMEDS:** Scholar (publication-grade)
+    - **What:** Add Abstract, Methods, Results, Discussion, Limitations, References to each docs/research/ document
+    - **Evidence:** Publication-grade research docs
+    - **Status:** ⬜ Not started
+
+### 5.5 Ethics, Privacy & Security
+
+24. **Add data ethics and responsible use documentation** (M: 2-4 hours)
+    - **CanMEDS:** Professional, Health Advocate (ethical awareness)
+    - **What:** Create docs/ethics/responsible-use.md covering: financial advice disclaimer, data privacy, backtesting limitations, health economics caveats
+    - **Evidence:** Ethics documentation, responsible use policy
+    - **Status:** ⬜ Not started
+
+25. **Add financial disclaimer** (S: 1 hour)
+    - **CanMEDS:** Professional (regulatory awareness)
+    - **What:** Add DISCLAIMER.md to repo root, add to README/CLI/dashboard
+    - **Evidence:** Visible disclaimer in multiple locations
+    - **Status:** ⬜ Not started
+
+26. **Add structured logging for audit trails** (M: 1 day)
+    - **CanMEDS:** Professional (governance, accountability)
+    - **What:** Ensure all operations logged with structured JSON (timestamp, parameters, results)
+    - **Evidence:** Audit trail capability
+    - **Status:** ⬜ Not started
+
+27. **Add dependency license auditing** (S: 1-2 hours)
+    - **CanMEDS:** Professional (legal compliance)
+    - **What:** Add pip-licenses to CI, create THIRD_PARTY_LICENSES.md or verify compatible licenses
+    - **Evidence:** License audit report, compliance verification
+    - **Status:** ⬜ Not started
+
+28. **Add Docker security scanning** (M: 2-4 hours)
+    - **CanMEDS:** Professional (security-conscious)
+    - **What:** Add trivy or grype container scanning to CI, document container security posture
+    - **Evidence:** Container security scan results
+    - **Status:** ⬜ Not started
+
+29. **Add dashboard accessibility improvements** (M: 1-2 days)
+    - **CanMEDS:** Health Advocate, Professional (inclusive design)
+    - **What:** Add alt text, WCAG AA contrast, keyboard navigation, screen reader labels; document accessibility
+    - **Evidence:** Accessible dashboard, accessibility documentation
+    - **Status:** ⬜ Not started
+
+### 5.6 Additional Quality & Testing
+
+30. **Add property-based testing with Hypothesis** (M: 1-2 days)
+    - **CanMEDS:** Scholar (edge case rigor)
+    - **What:** Add hypothesis to dev deps, write property tests for fund simulator, CGR, drawdown, etc.
+    - **Evidence:** Advanced testing methodology, edge case coverage
+    - **Status:** ⬜ Not started
+
+31. **Add CLI smoke tests** (S: 2-4 hours)
+    - **CanMEDS:** Professional (user interface testing)
+    - **What:** Add tests using Click's CliRunner for --help, --version, all commands
+    - **Evidence:** CLI test coverage
+    - **Status:** ⬜ Not started
+
+32. **Add input validation across CLI** (M: 1-2 days)
+    - **CanMEDS:** Professional (user-centered design)
+    - **What:** Add Click parameter validation, helpful error messages, test error paths
+    - **Evidence:** User-friendly CLI with validated inputs
+    - **Status:** ⬜ Not started
+
+33. **Add performance regression testing** (M: 2-4 hours)
+    - **CanMEDS:** Professional (engineering maturity)
+    - **What:** Add CI step that runs benchmarks and fails on regression
+    - **Evidence:** Performance monitoring in CI
+    - **Status:** ⬜ Not started
+
+34. **Fix remaining mypy exclusions** (M: 1-2 days)
+    - **CanMEDS:** Professional (quality standards)
+    - **What:** Address 4 modules with ignore_errors=true, add proper type annotations
+    - **Evidence:** Zero mypy exclusions
+    - **Status:** ⬜ Not started
+
+### 5.7 Professional Polish & Deployment
+
+35. **Add CODEOWNERS file** (S: 10 min)
+    - **CanMEDS:** Professional, Leader (governance)
+    - **What:** Create .github/CODEOWNERS mapping directories
+    - **Evidence:** Automatic review requests, governance artifact
+    - **Status:** ⬜ Not started
+
+36. **Add conventional commit linting** (S: 1-2 hours)
+    - **CanMEDS:** Professional (governance maturity)
+    - **What:** Add commitlint pre-commit hook validating conventional commits
+    - **Evidence:** Consistent commit history
+    - **Status:** ⬜ Not started
+
+37. **Add release automation workflow** (M: 2-4 hours)
+    - **CanMEDS:** Professional (DevOps maturity)
+    - **What:** Create .github/workflows/release.yml for tag-triggered releases
+    - **Evidence:** Automated release pipeline
+    - **Status:** ⬜ Not started
+    - **Prereqs:** Item 3 (git tags)
+
+38. **Add automated changelog generation** (S: 2-4 hours)
+    - **CanMEDS:** Professional (process automation)
+    - **What:** Add git-cliff or similar, configure for conventional commits
+    - **Evidence:** Auto-generated release notes
+    - **Status:** ⬜ Not started
+    - **Prereqs:** Item 36 (conventional commits)
+
+39. **Publish package to TestPyPI** (M: 2-4 hours)
+    - **CanMEDS:** Leader (making tools available)
+    - **What:** Add GitHub Actions workflow to publish to TestPyPI on release
+    - **Evidence:** TestPyPI listing, installable package
+    - **Status:** ⬜ Not started
+    - **Prereqs:** Items 2, 3 (version fix, releases)
+
+40. **Add docs deployment workflow** (S: 1-2 hours)
+    - **CanMEDS:** Professional (CI/CD maturity)
+    - **What:** Create .github/workflows/docs.yml for auto-deploy to GitHub Pages
+    - **Evidence:** Auto-deployed documentation
+    - **Status:** ⬜ Not started
+
+41. **Add docs build status badge** (S: 10 min)
+    - **CanMEDS:** Professional (project maturity signals)
+    - **What:** Add documentation workflow badge to README
+    - **Evidence:** Additional status badge
+    - **Status:** ⬜ Not started
+    - **Prereqs:** Item 40 (docs workflow)
+
+42. **Add project logo/branding** (S: 1-2 hours)
+    - **CanMEDS:** Communicator (visual identity)
+    - **What:** Create simple SVG logo, add to README and docs site
+    - **Evidence:** Visual branding, professional appearance
+    - **Status:** ⬜ Not started
+    - **Note:** Requires human approval of design
+
+43. **Add OpenSSF Scorecard or REUSE compliance** (M: 1-2 days)
+    - **CanMEDS:** Professional (best practice compliance)
+    - **What:** Run OpenSSF Scorecard, address findings, add badge to README
+    - **Evidence:** Third-party validation badge
+    - **Status:** ⬜ Not started
+    - **Prereqs:** Items 1, 4, 5, 6 (governance files)
+
+44. **Add data freshness monitoring documentation** (S: 2-4 hours)
+    - **CanMEDS:** Professional (operations documentation)
+    - **What:** Create docs/guides/data-quality-guide.md explaining registry, thresholds, monitoring
+    - **Evidence:** Operations documentation
+    - **Status:** ⬜ Not started
+
+45. **Clean up stale top-level directories** (S: 30 min)
+    - **CanMEDS:** Professional (clean structure)
+    - **What:** Verify config/ and constants/ top-level dirs are redundant, remove or symlink
+    - **Evidence:** Clean repository structure
+    - **Status:** ⬜ Not started
+    - **Note:** Verify no references remain
+
+---
+
+## Priority 5 Summary
+
+**New items added:** 45 (2026-02-12)
+**Focus:** OMSAS/CanMEDS-aligned improvements for medical school admissions
+**Categories:**
+- 5.1 Governance & Professionalism (7 items, mostly S)
+- 5.2 Quality & Reliability (5 items, mixed)
+- 5.3 Documentation & Communication (6 items, mixed)
+- 5.4 Health Economics & Scholarship (5 items, M)
+- 5.5 Ethics, Privacy & Security (6 items, mixed)
+- 5.6 Additional Quality & Testing (5 items, mixed)
+- 5.7 Professional Polish & Deployment (11 items, mixed)
+
+**Effort breakdown:**
+- Small (S): 13 items (~1-2 hours each)
+- Medium (M): 25 items (~1-2 days each)
+- Large (L): 7 items (~1-2 weeks each)
+
+**Immediate wins (items 1-7):** All Size S, ~2 hours total, immediately improves GitHub Community Standards and professional appearance.
+
+**High-impact medical relevance (items 19-23):** Health economics methodology, clinical scenarios, validation - demonstrates medical/clinical competency.
+
+---
+
+## Completed Items (Priority 0-4)
 
 | Item | Completed | Notes |
 |------|-----------|-------|
