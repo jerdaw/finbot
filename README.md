@@ -302,3 +302,47 @@ Three comprehensive research papers (docs/research/):
 - **[Leveraged ETF Simulation Accuracy](docs/research/leveraged-etf-simulation-accuracy.md)** - Tracking error analysis and methodology validation
 - **[DCA Optimization Findings](docs/research/dca-optimization-findings.md)** - Optimal allocations across market regimes
 - **[Strategy Backtest Results](docs/research/strategy-backtest-results.md)** - 10 strategies compared with statistical significance testing
+
+## Limitations and Known Issues
+
+**Important:** Finbot is a research and educational tool. All models make simplifying assumptions and past performance does not guarantee future results.
+
+See **[docs/limitations.md](docs/limitations.md)** for comprehensive documentation of:
+- Survivorship bias and its impact
+- Simulation assumptions and trade-offs
+- Data quality and coverage limitations
+- Overfitting risks in strategy optimization
+- Tax and cost considerations not modeled
+- Known bugs and workarounds
+
+**Key Takeaways:**
+- Use results as inputs to decisions, not sole decision-maker
+- Combine quantitative analysis with qualitative judgment
+- Always consult qualified financial professionals
+- This is not financial advice
+
+## Contributing
+
+Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for:
+- Development setup
+- Code quality standards
+- Pull request process
+- Issue templates
+
+## License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+## Citation
+
+If you use Finbot in academic research:
+
+```bibtex
+@software{finbot2024,
+  author = {Dawson, Jeremy},
+  title = {Finbot: Financial Data Collection, Simulation, and Backtesting Platform},
+  year = {2024},
+  url = {https://github.com/jerdaw/finbot},
+  version = {1.0.0}
+}
+```
