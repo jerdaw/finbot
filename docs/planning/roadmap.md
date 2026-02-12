@@ -81,7 +81,7 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
    - **CanMEDS:** Professional (versioning, milestones)
    - **What:** Create tags v0.1.0 and v1.0.0, create GitHub releases with CHANGELOG notes
    - **Evidence:** Releases page, version tags, download links
-   - **Status:** ⬜ Not started
+   - **Status:** ✅ Complete (2026-02-12)
    - **Prereqs:** Item 2 (version fix)
 
 4. **Add SECURITY.md** (S: 30 min)
@@ -94,7 +94,7 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
    - **CanMEDS:** Collaborator, Leader (inclusive collaboration)
    - **What:** Add Contributor Covenant v2.1 CODE_OF_CONDUCT.md to repo root
    - **Evidence:** Code of Conduct badge, Community Standards check
-   - **Status:** ⬜ Not started
+   - **Status:** ✅ Complete (2026-02-12)
 
 6. **Add CONTRIBUTING.md to repo root** (S: 15 min)
    - **CanMEDS:** Leader, Collaborator (structuring collaboration)
@@ -106,7 +106,7 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
    - **CanMEDS:** Leader (project management, structured collaboration)
    - **What:** Create .github/ISSUE_TEMPLATE/bug_report.md, feature_request.md, PULL_REQUEST_TEMPLATE.md
    - **Evidence:** Structured issue/PR forms on GitHub
-   - **Status:** ⬜ Not started
+   - **Status:** ✅ Complete (2026-02-12)
 
 ### 5.2 Quality & Reliability (High-Impact Second Wave)
 
