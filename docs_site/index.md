@@ -48,7 +48,7 @@ Finbot consolidates three key areas of quantitative finance:
 git clone https://github.com/jerdaw/finbot.git
 cd finbot
 
-# Install with Poetry
+# Install with uv
 uv sync
 
 # Set environment
@@ -117,7 +117,7 @@ optimal_results = dca_optimizer(
 ## Requirements
 
 - Python >=3.11, <3.15
-- Poetry for dependency management
+- uv for dependency management
 - Optional: API keys for data sources (Alpha Vantage, NASDAQ Data Link, BLS, Google Finance)
 
 ## License

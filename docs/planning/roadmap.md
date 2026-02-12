@@ -154,7 +154,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Communicator (consistency)
     - **What:** Search docs for "Poetry" references, update to "uv"
     - **Evidence:** Consistent documentation
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-12)
+    - **Implementation:** Updated 7 files (ADR-002, pre-commit guide, docs_site index/getting-started/installation, UPDATE_RUFF_INSTRUCTIONS)
 
 15. **Improve API documentation coverage** (M: 1-2 days)
     - **CanMEDS:** Communicator (thoroughness)
