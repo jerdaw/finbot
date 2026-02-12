@@ -114,7 +114,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
    - **CanMEDS:** Professional (engineering rigor)
    - **What:** Add mypy, bandit, pip-audit steps; add Python matrix (3.11, 3.12, 3.13); pin actions to SHA
    - **Evidence:** 6+ CI checks, multi-version compatibility, security scanning
-   - **Status:** ⬜ Not started
+   - **Status:** ✅ Complete (2026-02-12)
+   - **Implementation:** 4 separate jobs (lint-and-format, type-check, security, test), Python 3.11/3.12/3.13 matrix, mypy/bandit/pip-audit checks
 
 9. **Raise test coverage from ~35% to 60%+** (L: 1-2 weeks)
    - **CanMEDS:** Scholar (rigor, thoroughness)
@@ -132,7 +133,7 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Professional (standards compliance)
     - **What:** Create empty finbot/py.typed file for PEP 561
     - **Evidence:** PEP 561 compliance, downstream type checking support
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-12)
 
 12. **Enable stricter mypy settings** (L: 1-2 weeks)
     - **CanMEDS:** Professional (quality standards)
