@@ -181,7 +181,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Scholar, Professional (intellectual honesty)
     - **What:** Create docs/limitations.md covering: survivorship bias, simulation assumptions, data limitations, overfitting risks
     - **Evidence:** Transparent limitations documentation
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-12)
+    - **Implementation:** Comprehensive 9-section document (survivorship bias, simulation assumptions, data limits, overfitting, taxes/costs, technical limits, model risk, known issues, future improvements)
 
 ### 5.4 Health Economics & Scholarship (Medical School Relevance)
 
