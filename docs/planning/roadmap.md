@@ -147,8 +147,9 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Communicator (published resource)
     - **What:** Add GitHub Actions workflow for mkdocs gh-deploy, configure site_url, fix broken links
     - **Evidence:** Live documentation URL (https://jerdaw.github.io/finbot/)
-    - **Status:** ⬜ Not started
-    - **Prereqs:** Item 14 (fix Poetry references)
+    - **Status:** 🔄 Partially Complete (2026-02-12) - Workflow created, user must enable GitHub Pages
+    - **Implementation:** Updated site_url, created .github/workflows/docs.yml, tested build (5.27s)
+    - **Prereqs:** Item 14 (fix Poetry references) ✅
 
 14. **Fix outdated Poetry references** (S: 30 min)
     - **CanMEDS:** Communicator (consistency)
