@@ -95,13 +95,26 @@ class BacktestRunner:
         comminfo = self.broker_commission()
         self._cerebro.broker.addcommissioninfo(comminfo)
 
-    def get_test_stats(self) -> pd.DataFrame:
+    def _build_cv_hist(self) -> pd.DataFrame:
+        """Build the Value+Cash time series DataFrame from cerebro results."""
         assert self._cerebro_res is not None
         value_hist = self._cerebro_res[0].analyzers.cvtracker.value
         cash_hist = self._cerebro_res[0].analyzers.cvtracker.cash
         cv_hist = pd.DataFrame({"Value": value_hist, "Cash": cash_hist})
         index = pd.concat(self.price_histories.values(), axis=1).index
         cv_hist.index = index
+        return cv_hist
+
+    def get_value_history(self) -> pd.DataFrame:
+        """Return the Value and Cash time series from the backtest.
+
+        Must be called after run_backtest(). Returns a DataFrame with
+        'Value' and 'Cash' columns indexed by date.
+        """
+        return self._build_cv_hist()
+
+    def get_test_stats(self) -> pd.DataFrame:
+        cv_hist = self._build_cv_hist()
         self._stats = compute_stats(
             cv_hist["Value"],
             cv_hist["Cash"],

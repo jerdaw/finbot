@@ -1,4 +1,4 @@
-.PHONY: help install update lint format type security test test-cov test-quick clean run-update check all pre-commit docs docs-serve docs-build docker-build docker-run docker-status docker-update docker-test docker-clean
+.PHONY: help install update lint format type security test test-cov test-quick clean run-update check all pre-commit docs docs-serve docs-build dashboard dashboard-dev docker-build docker-run docker-status docker-update docker-test docker-clean
 
 # Default target - show help
 help:
@@ -23,6 +23,10 @@ help:
 	@echo ""
 	@echo "Data Pipeline:"
 	@echo "  make run-update     Run daily data update pipeline"
+	@echo ""
+	@echo "Dashboard:"
+	@echo "  make dashboard      Launch Streamlit dashboard"
+	@echo "  make dashboard-dev  Launch dashboard in dev mode (auto-reload)"
 	@echo ""
 	@echo "Documentation:"
 	@echo "  make docs           Build and serve documentation locally"
@@ -90,6 +94,15 @@ test-quick:
 run-update:
 	@echo "Running daily data update pipeline..."
 	DYNACONF_ENV=development uv run python scripts/update_daily.py
+
+# Dashboard
+dashboard:
+	@echo "Starting Finbot Dashboard at http://localhost:8501..."
+	DYNACONF_ENV=development uv run finbot dashboard
+
+dashboard-dev:
+	@echo "Starting Finbot Dashboard in dev mode..."
+	DYNACONF_ENV=development uv run streamlit run finbot/dashboard/app.py --server.runOnSave true
 
 # Documentation
 docs: docs-build docs-serve

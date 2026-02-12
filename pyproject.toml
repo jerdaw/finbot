@@ -60,6 +60,7 @@ dependencies = [
     "beautifulsoup4>=4.12.2,<5",
     "python-dotenv>=1.0.0,<2",
     "click>=8.1.7,<9",
+    "streamlit>=1.40,<2",
 ]
 
 [project.urls]
@@ -128,6 +129,10 @@ extend-ignore = ["E501"]  # Line length handled by line-length setting
 fixable = ["ALL"]
 unfixable = []
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.per-file-ignores]
+# Streamlit requires numeric-prefixed filenames for page ordering
+"finbot/dashboard/pages/*.py" = ["N999"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
@@ -206,6 +211,10 @@ ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = "limits.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "streamlit.*"
 ignore_missing_imports = true
 
 # WIP modules with complex type issues to be fixed incrementally

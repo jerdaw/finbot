@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import click
 
-from finbot.cli.commands import backtest, optimize, simulate, status, update
+from finbot.cli.commands import backtest, dashboard, optimize, simulate, status, update
 from finbot.config import logger
 
 
@@ -27,6 +27,7 @@ def cli(ctx: click.Context, verbose: bool) -> None:
       optimize   Run portfolio optimization (DCA, rebalance)
       update     Run daily data update pipeline
       status     Show data freshness and pipeline health
+      dashboard  Launch the Streamlit web dashboard
 
     \b
     Examples:
@@ -34,6 +35,7 @@ def cli(ctx: click.Context, verbose: bool) -> None:
       finbot backtest --strategy Rebalance --asset SPY
       finbot optimize --method dca --asset SPY
       finbot update --dry-run
+      finbot dashboard --port 8501
     """
     # Store verbose flag in context for subcommands
     ctx.ensure_object(dict)
@@ -49,6 +51,7 @@ cli.add_command(backtest)
 cli.add_command(optimize)
 cli.add_command(update)
 cli.add_command(status)
+cli.add_command(dashboard)
 
 
 if __name__ == "__main__":

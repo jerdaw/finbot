@@ -102,6 +102,25 @@ Demonstrates bond ladder construction and analysis across different interest rat
 
 ---
 
+### 6. Health Economics Demo
+**File:** `06_health_economics_demo.ipynb`
+
+Demonstrates the health economics toolkit, adapting Monte Carlo simulation and optimization frameworks to health intervention analysis.
+
+**Analysis Performed:**
+- QALY Monte Carlo simulation for a hypothetical drug
+- Cost-effectiveness analysis (Drug A vs No Treatment)
+- Treatment schedule optimization via grid search
+
+**Key Features:**
+- QALY and cost distributions with survival curves
+- Cost-effectiveness plane with WTP threshold lines
+- CEAC (Cost-Effectiveness Acceptability Curve)
+- Net Monetary Benefit vs WTP analysis
+- Treatment optimizer NMB/ICER by dose frequency and duration
+
+---
+
 ## Running the Notebooks
 
 ### Prerequisites
@@ -160,6 +179,7 @@ Each notebook uses different data sources:
 | Backtest Comparison | Price histories (YF) | Yahoo Finance API |
 | Monte Carlo | Price histories (YF) | Yahoo Finance API |
 | Bond Ladder | FRED yield curve data | FRED API (Federal Reserve) |
+| Health Economics | None (self-contained) | Simulated data |
 
 ## Notes
 
