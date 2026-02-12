@@ -11,23 +11,24 @@ Detailed installation instructions for Finbot.
 
 ## Installation Methods
 
-### Method 1: Poetry (Recommended)
+### Method 1: uv (Recommended)
 
-Poetry provides the best dependency management and environment isolation:
+uv provides fast, reliable dependency management and environment isolation:
 
 ```bash
-# Install Poetry if not already installed
-curl -sSL https://install.python-poetry.org | python3 -
+# Install uv if not already installed
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Clone repository
 git clone https://github.com/jerdaw/finbot.git
 cd finbot
 
-# Install dependencies
+# Install dependencies (creates .venv automatically)
 uv sync
 
-# Activate environment
-poetry shell
+# Activate environment (optional, but recommended)
+source .venv/bin/activate  # On Linux/Mac
+.venv\Scripts\activate     # On Windows
 
 # Verify installation
 finbot --version
