@@ -176,7 +176,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Communicator (documentation standards)
     - **What:** Add interrogate or pydocstyle to CI with 80% threshold
     - **Evidence:** Docstring coverage badge
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-12)
+    - **Implementation:** Added interrogate with 55% threshold (current 58.2%), CI job, Makefile target, README badge
 
 18. **Add "Limitations and Known Issues" document** (S: 1-2 hours)
     - **CanMEDS:** Scholar, Professional (intellectual honesty)
@@ -429,3 +430,4 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
 | Fix README badge URLs (5.3.16) | 2026-02-12 | Corrected jer→jerdaw, updated uv version 0.6+→0.9+ |
 | Add Limitations document (5.3.18) | 2026-02-12 | 431-line comprehensive doc, 9 sections, intellectual honesty |
 | Deploy MkDocs to Pages (5.3.13) | 2026-02-12 | Workflow created, awaiting user to enable Pages |
+| Add docstring coverage (5.3.17) | 2026-02-12 | Interrogate with 55% threshold, 58.2% current coverage, CI + Makefile + badge |
