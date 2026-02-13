@@ -89,6 +89,8 @@ nav:
       - Health Economics Tutorial: user-guide/health-economics-tutorial.md
   - API Reference:
       - Overview: api/index.md
+      - CLI: api/cli.md
+      - Dashboard: api/dashboard.md
       - Services:
           - Backtesting:
               - BacktestRunner: api/services/backtesting/backtest-runner.md
@@ -101,6 +103,8 @@ nav:
               - Specific Funds: api/services/simulation/specific-funds.md
           - Optimization:
               - DCA Optimizer: api/services/optimization/dca-optimizer.md
+          - Health Economics: api/services/health-economics.md
+          - Data Quality: api/services/data-quality.md
       - Utilities:
           - Finance: api/utils/finance-utils.md
           - Datetime: api/utils/datetime-utils.md
