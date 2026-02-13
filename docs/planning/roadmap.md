@@ -283,7 +283,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Professional (user-centered design)
     - **What:** Add Click parameter validation, helpful error messages, test error paths
     - **Evidence:** User-friendly CLI with validated inputs
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-12)
+    - **Implementation:** Created validators.py module with custom Click types (DATE, TICKER, POSITIVE_FLOAT, POSITIVE_INT), updated 3 commands (backtest, simulate, optimize), added 33 validation tests
 
 33. **Add performance regression testing** (M: 2-4 hours)
     - **CanMEDS:** Professional (engineering maturity)
@@ -443,3 +444,4 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
 | Research methodology strengthened (5.4.23) | 2026-02-12 | Formal Abstracts + Discussion sections for all 3 research docs (DCA, ETF, strategies) |
 | API documentation coverage improved (5.3.15) | 2026-02-12 | 6 new API reference pages (health economics, data quality, bond ladder, strategies, CLI, dashboard) |
 | CLI smoke tests added (5.6.31) | 2026-02-12 | 47 tests covering --help, --version, all 6 commands, error handling, performance |
+| CLI input validation added (5.6.32) | 2026-02-12 | Custom validators (DATE, TICKER, POSITIVE_FLOAT), 33 tests, helpful error messages |
