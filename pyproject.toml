@@ -93,6 +93,7 @@ dev = [
     "mkdocs-material>=9.5.49,<10",
     "mkdocstrings[python]>=0.27.0,<1",
     "types-psutil>=7.2.2.20260130,<8",
+    "interrogate>=1.7.0",
 ]
 
 [tool.ruff]
@@ -255,6 +256,41 @@ filterwarnings = [
 
 [tool.bandit]
 exclude_dirs = ["tests", "./tests/*.py", "*/test_*.py", "*/*_test.py"]
+
+[tool.interrogate]
+# Docstring coverage enforcement
+# Current coverage: 56.6% (as of 2026-02-12)
+# Goal: 80% (gradual improvement)
+# Starting threshold set to 55% to allow for minor fluctuations
+fail-under = 55.0
+exclude = [
+    "setup.py",
+    "docs",
+    "build",
+    "dist",
+    "notebooks",
+    "scripts",
+]
+ignore-init-method = true
+ignore-init-module = false
+ignore-magic = false
+ignore-module = false
+ignore-nested-functions = false
+ignore-nested-classes = false
+ignore-private = false
+ignore-property-decorators = false
+ignore-regex = ["^test_.*", ".*_test\\.py$"]
+ignore-semiprivate = false
+# Verbose output for CI
+verbose = 1
+# Quiet mode (only summary)
+quiet = false
+# Generate badge
+generate-badge = "."
+# Badge format
+badge-format = "svg"
+# Use color in output
+color = true
 
 [build-system]
 requires = ["hatchling"]
