@@ -6,6 +6,7 @@ import click
 import pandas as pd
 
 from finbot.cli.utils.output import save_output
+from finbot.cli.validators import POSITIVE_FLOAT, TICKER
 from finbot.config import logger
 
 
@@ -18,15 +19,16 @@ from finbot.config import logger
 )
 @click.option(
     "--asset",
-    type=str,
+    type=TICKER,
     required=True,
     help="Asset ticker to optimize (e.g., SPY, QQQ)",
 )
 @click.option(
     "--cash",
-    type=float,
+    type=POSITIVE_FLOAT,
     default=1000.0,
-    help="Starting cash amount (default: 1000)",
+    show_default=True,
+    help="Starting cash amount (must be positive)",
 )
 @click.option(
     "--output",

@@ -6,24 +6,25 @@ import click
 import pandas as pd
 
 from finbot.cli.utils.output import save_output
+from finbot.cli.validators import DATE, TICKER
 from finbot.config import logger
 
 
 @click.command()
 @click.option(
     "--fund",
-    type=str,
+    type=TICKER,
     help="Fund ticker to simulate (e.g., UPRO, TQQQ, TMF)",
 )
 @click.option(
     "--start",
-    type=str,
-    help="Start date (YYYY-MM-DD format)",
+    type=DATE,
+    help="Start date (YYYY-MM-DD format, e.g., 2020-01-15)",
 )
 @click.option(
     "--end",
-    type=str,
-    help="End date (YYYY-MM-DD format)",
+    type=DATE,
+    help="End date (YYYY-MM-DD format, e.g., 2024-12-31)",
 )
 @click.option(
     "--output",
