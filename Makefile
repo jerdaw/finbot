@@ -1,4 +1,4 @@
-.PHONY: help install update lint format type security test test-cov test-quick clean run-update check all pre-commit docs docs-serve docs-build dashboard dashboard-dev docker-build docker-run docker-status docker-update docker-test docker-clean
+.PHONY: help install update lint format type docstring security test test-cov test-quick clean run-update check all pre-commit docs docs-serve docs-build dashboard dashboard-dev docker-build docker-run docker-status docker-update docker-test docker-clean
 
 # Default target - show help
 help:
@@ -13,8 +13,9 @@ help:
 	@echo "  make lint           Run ruff linter with auto-fix"
 	@echo "  make format         Format code with ruff"
 	@echo "  make type           Run mypy type checker"
+	@echo "  make docstring      Check docstring coverage with interrogate"
 	@echo "  make security       Run bandit security scanner"
-	@echo "  make check          Run all checks (lint + format + type + security)"
+	@echo "  make check          Run all checks (lint + format + type + docstring + security)"
 	@echo ""
 	@echo "Testing:"
 	@echo "  make test           Run all tests with verbose output"
@@ -69,11 +70,15 @@ type:
 	@echo "Running mypy type checker..."
 	@uv run mypy finbot/ scripts/ || echo "⚠ Type checking found issues (non-fatal)"
 
+docstring:
+	@echo "Checking docstring coverage..."
+	@uv run interrogate finbot/ || echo "⚠ Docstring coverage below threshold (non-fatal)"
+
 security:
 	@echo "Running bandit security scanner..."
 	@uv run bandit -r finbot || echo "⚠ Security scan found issues (non-fatal)"
 
-check: lint format type security
+check: lint format type docstring security
 	@echo ""
 	@echo "✓ All code quality checks passed!"
 
