@@ -162,7 +162,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Communicator (thoroughness)
     - **What:** Add mkdocstrings pages for: health economics, data quality, bond ladder, strategies, CLI, dashboard
     - **Evidence:** Comprehensive API docs site
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-12)
+    - **Implementation:** Created 6 comprehensive API reference pages with mkdocstrings integration, examples, and cross-references
     - **Prereqs:** Item 13 (deploy docs)
 
 16. **Fix README badge URLs** (S: 15 min)
@@ -439,3 +440,4 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
 | Health econ notebook enhanced (5.4.20) | 2026-02-12 | Diabetes clinical scenario, international thresholds, policy implications, 5 refs |
 | Health econ tutorial (5.4.21) | 2026-02-12 | 7-step walkthrough, code examples, interpretation for 3 audiences (clinicians/policymakers/patients) |
 | Research methodology strengthened (5.4.23) | 2026-02-12 | Formal Abstracts + Discussion sections for all 3 research docs (DCA, ETF, strategies) |
+| API documentation coverage improved (5.3.15) | 2026-02-12 | 6 new API reference pages (health economics, data quality, bond ladder, strategies, CLI, dashboard) |
