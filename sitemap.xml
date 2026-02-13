@@ -17,11 +17,35 @@
          <lastmod>2026-02-13</lastmod>
     </url>
     <url>
+         <loc>https://jerdaw.github.io/finbot/api/cli/</loc>
+         <lastmod>2026-02-13</lastmod>
+    </url>
+    <url>
+         <loc>https://jerdaw.github.io/finbot/api/dashboard/</loc>
+         <lastmod>2026-02-13</lastmod>
+    </url>
+    <url>
+         <loc>https://jerdaw.github.io/finbot/api/services/data-quality/</loc>
+         <lastmod>2026-02-13</lastmod>
+    </url>
+    <url>
+         <loc>https://jerdaw.github.io/finbot/api/services/health-economics/</loc>
+         <lastmod>2026-02-13</lastmod>
+    </url>
+    <url>
          <loc>https://jerdaw.github.io/finbot/api/services/backtesting/backtest-runner/</loc>
          <lastmod>2026-02-13</lastmod>
     </url>
     <url>
+         <loc>https://jerdaw.github.io/finbot/api/services/backtesting/strategies/</loc>
+         <lastmod>2026-02-13</lastmod>
+    </url>
+    <url>
          <loc>https://jerdaw.github.io/finbot/api/services/optimization/dca-optimizer/</loc>
+         <lastmod>2026-02-13</lastmod>
+    </url>
+    <url>
+         <loc>https://jerdaw.github.io/finbot/api/services/simulation/bond-ladder/</loc>
          <lastmod>2026-02-13</lastmod>
     </url>
     <url>
