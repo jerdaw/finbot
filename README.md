@@ -322,6 +322,24 @@ See **[docs/limitations.md](docs/limitations.md)** for comprehensive documentati
 - Always consult qualified financial professionals
 - This is not financial advice
 
+## Ethics and Responsible Use
+
+**IMPORTANT:** This software is for educational and research purposes only.
+
+See **[docs/ethics/responsible-use.md](docs/ethics/responsible-use.md)** for comprehensive ethical guidelines covering:
+- **Financial Advice Disclaimer:** Not a substitute for professional financial advisors
+- **Data Privacy and Security:** Practices for protecting API keys and credentials
+- **Backtesting Limitations:** Survivorship bias, overfitting, and regime dependency
+- **Health Economics Caveats:** Not medical advice; methodological limitations
+- **User Responsibilities:** Risk management, independent judgment, and ethical conduct
+- **Liability Limitations:** No warranty; use at your own risk
+
+**Key Principles:**
+- Seek professional advice for financial and health decisions
+- Understand all limitations before using results
+- Exercise independent judgment and due diligence
+- Use responsibly and ethically
+
 ## Contributing
 
 Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for:

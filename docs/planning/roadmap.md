@@ -232,7 +232,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Professional, Health Advocate (ethical awareness)
     - **What:** Create docs/ethics/responsible-use.md covering: financial advice disclaimer, data privacy, backtesting limitations, health economics caveats
     - **Evidence:** Ethics documentation, responsible use policy
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-12)
+    - **Implementation:** Created comprehensive 10-section ethics document (430 lines) covering financial disclaimers, data privacy, backtesting caveats, health economics ethics, liability limitations, user responsibilities, and additional resources
 
 25. **Add financial disclaimer** (S: 1 hour)
     - **CanMEDS:** Professional (regulatory awareness)
@@ -445,3 +446,4 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
 | API documentation coverage improved (5.3.15) | 2026-02-12 | 6 new API reference pages (health economics, data quality, bond ladder, strategies, CLI, dashboard) |
 | CLI smoke tests added (5.6.31) | 2026-02-12 | 47 tests covering --help, --version, all 6 commands, error handling, performance |
 | CLI input validation added (5.6.32) | 2026-02-12 | Custom validators (DATE, TICKER, POSITIVE_FLOAT), 33 tests, helpful error messages |
+| Data ethics documentation added (5.5.24) | 2026-02-12 | 10-section comprehensive ethics document (430 lines), linked from README |
