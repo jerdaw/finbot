@@ -201,7 +201,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Scholar, Health Advocate (clinical scenario)
     - **What:** Enhance notebook 06 with realistic clinical scenario, CADTH/NICE thresholds, CEAC interpretation, policy implications, references
     - **Evidence:** Publication-quality notebook
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-12)
+    - **Implementation:** Type 2 diabetes scenario (Metformin vs. GLP-1), NICE/CADTH/WHO/US thresholds, policy implications, 5 academic references
 
 21. **Create health economics tutorial** (M: 1 day)
     - **CanMEDS:** Communicator, Health Advocate (teaching ability)
@@ -433,3 +434,4 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
 | Deploy MkDocs to Pages (5.3.13) | 2026-02-12 | Workflow created, awaiting user to enable Pages |
 | Add docstring coverage (5.3.17) | 2026-02-12 | Interrogate with 55% threshold, 58.2% current coverage, CI + Makefile + badge |
 | Health econ methodology (5.4.19) | 2026-02-12 | 47-page research document, 22 academic references, WHO/NICE/CADTH guidelines |
+| Health econ notebook enhanced (5.4.20) | 2026-02-12 | Diabetes clinical scenario, international thresholds, policy implications, 5 refs |
