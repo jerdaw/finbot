@@ -91,7 +91,7 @@ dev = [
     "pytest-cov>=7.0.0,<8",
     "mkdocs>=1.6.1,<2",
     "mkdocs-material>=9.5.49,<10",
-    "mkdocstrings[python]>=0.27.0,<1",
+    "mkdocstrings[python]>=0.27.0,<2",
     "types-psutil>=7.2.2.20260130,<8",
     "interrogate>=1.7.0",
 ]
