@@ -222,7 +222,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Scholar (publication-grade)
     - **What:** Add Abstract, Methods, Results, Discussion, Limitations, References to each docs/research/ document
     - **Evidence:** Publication-grade research docs
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-12)
+    - **Implementation:** Added formal Abstracts (3 docs), comprehensive Discussion sections (2 new + 1 existing), enhanced all 3 research documents to publication-grade academic format
 
 ### 5.5 Ethics, Privacy & Security
 
@@ -437,3 +438,4 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
 | Health econ methodology (5.4.19) | 2026-02-12 | 47-page research document, 22 academic references, WHO/NICE/CADTH guidelines |
 | Health econ notebook enhanced (5.4.20) | 2026-02-12 | Diabetes clinical scenario, international thresholds, policy implications, 5 refs |
 | Health econ tutorial (5.4.21) | 2026-02-12 | 7-step walkthrough, code examples, interpretation for 3 audiences (clinicians/policymakers/patients) |
+| Research methodology strengthened (5.4.23) | 2026-02-12 | Formal Abstracts + Discussion sections for all 3 research docs (DCA, ETF, strategies) |

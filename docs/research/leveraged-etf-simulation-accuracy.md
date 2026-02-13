@@ -7,6 +7,20 @@
 
 ---
 
+## Abstract
+
+**Background:** Leveraged Exchange-Traded Funds (ETFs) deliver multiples of daily index returns through daily rebalancing, but their long-term performance deviates from simple leverage multiplication due to volatility decay, borrowing costs, and various frictions. Accurate simulation of leveraged ETF behavior is critical for backtesting strategies and understanding product mechanics.
+
+**Methods:** We developed and validated a leveraged ETF simulator that models fund performance using underlying index returns, leverage multipliers (1x-3x), expense ratios, overnight LIBOR-based borrowing costs, and empirical spread adjustments. Four funds were analyzed (SPY, SSO, UPRO, TQQQ) spanning 1x-3x leverage across S&P 500 and Nasdaq-100 indices. Accuracy was assessed using tracking error, total return difference, correlation, and mean absolute error against actual ETF historical data (2010-2024).
+
+**Results:** The simulator achieved high accuracy across all leverage levels. SPY (1x) tracking error <0.5% validated baseline model accuracy. SSO (2x) tracking error 1.2-1.8% and UPRO (3x) tracking error 2.5-4.0% aligned with theoretical volatility decay predictions. TQQQ (3x Nasdaq) exhibited highest tracking error (3.0-5.5%) due to elevated underlying volatility. Correlations exceeded 0.985 for all funds, demonstrating fundamental dynamics were accurately captured. Tracking error decomposition revealed borrowing cost approximation as the dominant error source (40%) for leveraged products.
+
+**Conclusions:** The Finbot leveraged ETF simulator provides sufficient accuracy (2-5% tracking error) for backtesting and research applications. Simulation enables historical extension beyond ETF inception dates, hypothetical fund creation, and risk analysis across diverse market regimes. The LIBOR-based borrowing model successfully approximates financing costs without proprietary data. Volatility decay effects are correctly modeled, confirming leveraged products' unsuitability for long-term buy-and-hold strategies.
+
+**Keywords:** Leveraged ETFs, financial simulation, volatility decay, path dependency, LIBOR, tracking error, backtesting
+
+---
+
 ## Executive Summary
 
 This research document evaluates the accuracy of the Finbot leveraged ETF simulator against actual historical ETF performance. The simulator models leveraged fund behavior by applying leverage multipliers to underlying index returns while accounting for daily expense ratios, borrowing costs (LIBOR), spread costs, and fund-specific adjustments.
