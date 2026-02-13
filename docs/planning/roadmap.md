@@ -276,7 +276,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Professional (user interface testing)
     - **What:** Add tests using Click's CliRunner for --help, --version, all commands
     - **Evidence:** CLI test coverage
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-12)
+    - **Implementation:** Created comprehensive test_cli.py with 47 tests (9 test classes, parametrized tests, performance tests)
 
 32. **Add input validation across CLI** (M: 1-2 days)
     - **CanMEDS:** Professional (user-centered design)
@@ -441,3 +442,4 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
 | Health econ tutorial (5.4.21) | 2026-02-12 | 7-step walkthrough, code examples, interpretation for 3 audiences (clinicians/policymakers/patients) |
 | Research methodology strengthened (5.4.23) | 2026-02-12 | Formal Abstracts + Discussion sections for all 3 research docs (DCA, ETF, strategies) |
 | API documentation coverage improved (5.3.15) | 2026-02-12 | 6 new API reference pages (health economics, data quality, bond ladder, strategies, CLI, dashboard) |
+| CLI smoke tests added (5.6.31) | 2026-02-12 | 47 tests covering --help, --version, all 6 commands, error handling, performance |
