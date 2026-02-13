@@ -86,6 +86,7 @@ nav:
       - Quick Start: user-guide/quick-start.md
       - CLI Reference: user-guide/cli-reference.md
       - Configuration: user-guide/configuration.md
+      - Health Economics Tutorial: user-guide/health-economics-tutorial.md
   - API Reference:
       - Overview: api/index.md
       - Services:

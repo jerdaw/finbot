@@ -208,7 +208,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Communicator, Health Advocate (teaching ability)
     - **What:** Create docs_site/user-guide/health-economics-tutorial.md with clinical scenario, code walkthrough, ICER/NMB interpretation, references
     - **Evidence:** Teaching-quality tutorial
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-12)
+    - **Implementation:** 7-step tutorial (800+ lines) with T2D scenario, code examples, interpretation guidance for 3 audiences
 
 22. **Add simulation validation against known results** (M: 1-2 days)
     - **CanMEDS:** Scholar (rigor, validation)
@@ -435,3 +436,4 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
 | Add docstring coverage (5.3.17) | 2026-02-12 | Interrogate with 55% threshold, 58.2% current coverage, CI + Makefile + badge |
 | Health econ methodology (5.4.19) | 2026-02-12 | 47-page research document, 22 academic references, WHO/NICE/CADTH guidelines |
 | Health econ notebook enhanced (5.4.20) | 2026-02-12 | Diabetes clinical scenario, international thresholds, policy implications, 5 refs |
+| Health econ tutorial (5.4.21) | 2026-02-12 | 7-step walkthrough, code examples, interpretation for 3 audiences (clinicians/policymakers/patients) |
