@@ -6,37 +6,55 @@ import click
 import pandas as pd
 
 from finbot.cli.utils.output import save_output
+from finbot.cli.validators import DATE, POSITIVE_FLOAT, TICKER
 from finbot.config import logger
+
+# Available strategies for validation
+AVAILABLE_STRATEGIES = [
+    "Rebalance",
+    "NoRebalance",
+    "SMACrossover",
+    "SMACrossoverDouble",
+    "SMACrossoverTriple",
+    "MACDSingle",
+    "MACDDual",
+    "DipBuySMA",
+    "DipBuyStdev",
+    "SMARebalMix",
+    "DualMomentum",
+    "RiskParity",
+]
 
 
 @click.command()
 @click.option(
     "--strategy",
-    type=str,
+    type=click.Choice(AVAILABLE_STRATEGIES, case_sensitive=False),
     required=True,
     help="Strategy name (e.g., Rebalance, SMACrossover, MACDSingle)",
 )
 @click.option(
     "--asset",
-    type=str,
+    type=TICKER,
     required=True,
     help="Asset ticker to backtest (e.g., SPY, QQQ)",
 )
 @click.option(
     "--start",
-    type=str,
-    help="Start date (YYYY-MM-DD format)",
+    type=DATE,
+    help="Start date (YYYY-MM-DD format, e.g., 2020-01-15)",
 )
 @click.option(
     "--end",
-    type=str,
-    help="End date (YYYY-MM-DD format)",
+    type=DATE,
+    help="End date (YYYY-MM-DD format, e.g., 2024-12-31)",
 )
 @click.option(
     "--cash",
-    type=float,
+    type=POSITIVE_FLOAT,
     default=100000.0,
-    help="Initial cash amount (default: 100000)",
+    show_default=True,
+    help="Initial cash amount (must be positive)",
 )
 @click.option(
     "--output",
@@ -89,20 +107,22 @@ def backtest(  # noqa: C901 - CLI command handlers are inherently complex
     if verbose:
         logger.info(f"Starting backtest: {strategy} on {asset}")
 
-    # Import strategy
+    # Import strategy (strategy is already validated by Click.Choice)
     try:
         from finbot.services.backtesting.strategies.dip_buy_sma import DipBuySMA
         from finbot.services.backtesting.strategies.dip_buy_stdev import DipBuyStdev
+        from finbot.services.backtesting.strategies.dual_momentum import DualMomentum
         from finbot.services.backtesting.strategies.macd_dual import MACDDual
         from finbot.services.backtesting.strategies.macd_single import MACDSingle
         from finbot.services.backtesting.strategies.no_rebalance import NoRebalance
         from finbot.services.backtesting.strategies.rebalance import Rebalance
+        from finbot.services.backtesting.strategies.risk_parity import RiskParity
         from finbot.services.backtesting.strategies.sma_crossover import SMACrossover
         from finbot.services.backtesting.strategies.sma_crossover_double import SMACrossoverDouble
         from finbot.services.backtesting.strategies.sma_crossover_triple import SMACrossoverTriple
         from finbot.services.backtesting.strategies.sma_rebal_mix import SmaRebalMix
 
-        # Map strategy names to classes
+        # Map strategy names to classes (no need to validate, Click.Choice did it)
         strategy_map: dict[str, type] = {
             "rebalance": Rebalance,
             "norebalance": NoRebalance,
@@ -114,18 +134,14 @@ def backtest(  # noqa: C901 - CLI command handlers are inherently complex
             "dipbuysma": DipBuySMA,
             "dipbuystdev": DipBuyStdev,
             "smarebalmix": SmaRebalMix,
+            "dualmomentum": DualMomentum,
+            "riskparity": RiskParity,
         }
 
         strategy_key = strategy.lower().replace("_", "").replace("-", "")
-        if strategy_key not in strategy_map:
-            available = ", ".join(strategy_map.keys())
-            click.echo(f"Error: Unknown strategy '{strategy}'", err=True)
-            click.echo(f"Available strategies: {available}", err=True)
-            raise click.Abort
-
         strategy_class = strategy_map[strategy_key]
 
-    except (ImportError, AttributeError) as e:
+    except (ImportError, AttributeError, KeyError) as e:
         logger.error(f"Failed to import strategy: {e}")
         click.echo(f"Error: Could not load strategy '{strategy}': {e}", err=True)
         raise click.Abort from e
