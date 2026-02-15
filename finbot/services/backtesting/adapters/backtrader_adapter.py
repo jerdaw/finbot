@@ -1,0 +1,142 @@
+"""Backtrader adapter implementing the core BacktestEngine contract."""
+
+from __future__ import annotations
+
+from copy import deepcopy
+from datetime import UTC, datetime
+from typing import Any
+from uuid import uuid4
+
+import backtrader as bt
+import pandas as pd
+
+from finbot.core.contracts import BacktestRunMetadata, BacktestRunRequest, BacktestRunResult
+from finbot.core.contracts.interfaces import BacktestEngine
+from finbot.core.contracts.schemas import validate_bar_dataframe
+from finbot.core.contracts.serialization import build_backtest_run_result_from_stats
+from finbot.services.backtesting.backtest_runner import BacktestRunner
+from finbot.services.backtesting.brokers.fixed_commission_scheme import FixedCommissionScheme
+from finbot.services.backtesting.strategies.dual_momentum import DualMomentum
+from finbot.services.backtesting.strategies.no_rebalance import NoRebalance
+from finbot.services.backtesting.strategies.rebalance import Rebalance
+from finbot.services.backtesting.strategies.risk_parity import RiskParity
+from finbot.utils.dict_utils.hash_dictionary import hash_dictionary
+
+DEFAULT_STRATEGY_REGISTRY: dict[str, type[bt.Strategy]] = {
+    "dualmomentum": DualMomentum,
+    "norebalance": NoRebalance,
+    "rebalance": Rebalance,
+    "riskparity": RiskParity,
+}
+
+
+class BacktraderAdapter(BacktestEngine):
+    """BacktestEngine contract adapter backed by Backtrader/BacktestRunner."""
+
+    def __init__(
+        self,
+        price_histories: dict[str, pd.DataFrame],
+        *,
+        strategy_registry: dict[str, type[bt.Strategy]] | None = None,
+        broker: type[bt.brokers.BackBroker] = bt.brokers.BackBroker,
+        broker_kwargs: dict[str, Any] | None = None,
+        broker_commission: type[FixedCommissionScheme] = FixedCommissionScheme,
+        sizer: type[bt.sizers.AllInSizer] = bt.sizers.AllInSizer,
+        sizer_kwargs: dict[str, Any] | None = None,
+        data_snapshot_id: str = "local-yfinance-parquet",
+        random_seed: int | None = None,
+    ):
+        self._price_histories = price_histories
+        self._strategy_registry = strategy_registry or DEFAULT_STRATEGY_REGISTRY
+        self._broker = broker
+        self._broker_kwargs = broker_kwargs or {}
+        self._broker_commission = broker_commission
+        self._sizer = sizer
+        self._sizer_kwargs = sizer_kwargs or {}
+        self._data_snapshot_id = data_snapshot_id
+        self._random_seed = random_seed
+
+    def run(self, request: BacktestRunRequest) -> BacktestRunResult:
+        strategy_cls = self._resolve_strategy(request.strategy_name)
+        selected_histories = self._select_price_histories(request.symbols)
+
+        runner = BacktestRunner(
+            price_histories=selected_histories,
+            start=request.start,
+            end=request.end,
+            duration=None,
+            start_step=None,
+            init_cash=request.initial_cash,
+            strat=strategy_cls,
+            strat_kwargs=deepcopy(request.parameters),
+            broker=self._broker,
+            broker_kwargs=deepcopy(self._broker_kwargs),
+            broker_commission=self._broker_commission,
+            sizer=self._sizer,
+            sizer_kwargs=deepcopy(self._sizer_kwargs),
+            plot=False,
+        )
+        stats_df = runner.run_backtest()
+
+        metadata = BacktestRunMetadata(
+            run_id=f"bt-{uuid4()}",
+            engine_name="backtrader",
+            engine_version=str(getattr(bt, "__version__", "unknown")),
+            strategy_name=strategy_cls.__name__,
+            created_at=datetime.now(UTC),
+            config_hash=self._build_config_hash(request=request),
+            data_snapshot_id=self._data_snapshot_id,
+            random_seed=self._random_seed,
+        )
+
+        assumptions = {
+            "symbols": list(request.symbols),
+            "parameters": deepcopy(request.parameters),
+            "start": str(request.start) if request.start is not None else None,
+            "end": str(request.end) if request.end is not None else None,
+            "broker": self._broker.__name__,
+            "broker_commission": self._broker_commission.__name__,
+            "sizer": self._sizer.__name__,
+        }
+
+        return build_backtest_run_result_from_stats(
+            stats_df=stats_df,
+            metadata=metadata,
+            assumptions=assumptions,
+        )
+
+    def _resolve_strategy(self, strategy_name: str) -> type[bt.Strategy]:
+        strategy_key = strategy_name.lower().replace("_", "")
+        if strategy_key not in self._strategy_registry:
+            available = sorted(self._strategy_registry.keys())
+            raise ValueError(f"Unknown strategy '{strategy_name}'. Available: {available}")
+        return self._strategy_registry[strategy_key]
+
+    def _select_price_histories(self, symbols: tuple[str, ...]) -> dict[str, pd.DataFrame]:
+        if not symbols:
+            raise ValueError("At least one symbol is required")
+
+        histories: dict[str, pd.DataFrame] = {}
+        for symbol in symbols:
+            if symbol not in self._price_histories:
+                raise ValueError(f"Missing price history for symbol: {symbol}")
+            symbol_df = self._price_histories[symbol].copy()
+            validate_bar_dataframe(symbol_df)
+            histories[symbol] = symbol_df
+        return histories
+
+    def _build_config_hash(self, request: BacktestRunRequest) -> str:
+        hash_input = {
+            "strategy_name": request.strategy_name,
+            "symbols": list(request.symbols),
+            "start": str(request.start),
+            "end": str(request.end),
+            "initial_cash": request.initial_cash,
+            "parameters": request.parameters,
+            "broker": self._broker.__name__,
+            "broker_kwargs": self._broker_kwargs,
+            "broker_commission": self._broker_commission.__name__,
+            "sizer": self._sizer.__name__,
+            "sizer_kwargs": self._sizer_kwargs,
+        }
+        return hash_dictionary(hash_input)

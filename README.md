@@ -67,6 +67,26 @@ make run-update
 - `make clean` - Remove cache files and build artifacts
 - `make all` - Run full CI pipeline (check + test)
 
+## Current Implementation Status (2026-02-14)
+
+Adapter-first backtesting/live-readiness transition is in progress.
+
+- Current phase: Phase 2 (Backtrader Adapter + parity harness prep)
+- Completed:
+  - ADR-005 (`docs/adr/ADR-005-adapter-first-backtesting-live-readiness.md`)
+  - Contracts/schemas/versioning (`finbot/core/contracts/`)
+  - Baseline report + reproducible script (`docs/research/backtesting-baseline-report.md`, `scripts/generate_backtesting_baseline.py`)
+  - Backtrader adapter skeleton (`finbot/services/backtesting/adapters/backtrader_adapter.py`)
+- Next:
+  - A/B parity harness (`E2-T2`)
+  - CI parity gate (`E2-T4`)
+
+Planning and handoff docs:
+- `docs/planning/backtesting-live-readiness-implementation-plan.md`
+- `docs/planning/backtesting-live-readiness-backlog.md`
+- `docs/planning/backtesting-live-readiness-handoff-2026-02-14.md`
+- `docs/planning/roadmap.md` (Priority 6)
+
 ## Prerequisites
 
 | Requirement | Minimum Version |

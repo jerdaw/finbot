@@ -171,3 +171,17 @@ def test_import_health_economics():
     assert callable(simulate_qalys)
     assert callable(cost_effectiveness_analysis)
     assert callable(optimize_treatment)
+
+
+def test_import_core_contracts():
+    from finbot.core.contracts import BacktestEngine, BacktestRunResult, MarketDataProvider
+
+    assert BacktestEngine is not None
+    assert MarketDataProvider is not None
+    assert BacktestRunResult is not None
+
+
+def test_import_backtrader_adapter():
+    from finbot.services.backtesting.adapters import BacktraderAdapter
+
+    assert BacktraderAdapter is not None
