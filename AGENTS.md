@@ -28,6 +28,27 @@ uv run pytest
 uv run python scripts/update_daily.py
 ```
 
+## Current Delivery Status (2026-02-14)
+
+Backtesting/live-readiness transition is active and using an adapter-first path.
+
+- **Phase:** Phase 2 (Backtrader Adapter + parity harness)
+- **Completed in Priority 6:**
+  - ADR-005 architecture decision
+  - Golden strategy/dataset baseline and parity tolerance spec
+  - Core contracts/schemas/versioning/migration in `finbot/core/contracts/`
+  - Backtesting baseline report + reproducible generation script
+  - Initial Backtrader adapter implementation and tests
+- **Next implementation targets:**
+  - `E2-T2` A/B parity harness (`tests/integration/test_backtest_parity_ab.py`)
+  - `E2-T4` CI parity gate for one golden strategy
+
+Authoritative tracking docs:
+- `docs/planning/backtesting-live-readiness-implementation-plan.md`
+- `docs/planning/backtesting-live-readiness-backlog.md`
+- `docs/planning/backtesting-live-readiness-handoff-2026-02-14.md`
+- `docs/planning/roadmap.md` (Priority 6)
+
 ## Common Commands
 
 ```bash

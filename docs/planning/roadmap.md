@@ -1,8 +1,8 @@
 # Finbot Roadmap
 
 **Created:** 2026-02-10
-**Last Updated:** 2026-02-12
-**Status:** Previous priorities complete, new admissions-focused improvements added
+**Last Updated:** 2026-02-14
+**Status:** Priority 0-5 baseline complete/progressing; Priority 6 adapter-first backtesting/live-readiness kickoff in progress
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
 
@@ -400,6 +400,62 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
 
 ---
 
+## Priority 6: Backtesting-to-Live Readiness (Adapter-First)
+
+New improvements added 2026-02-14 to support a backtesting-first roadmap now while de-risking future live-trading adoption.
+
+46. **Create adapter-first architecture ADR** (S: 1-2 hours)
+    - **What:** Add ADR documenting no-rewrite-now decision, internal contracts, phase gates, and pilot decision criteria
+    - **Evidence:** `docs/adr/ADR-005-adapter-first-backtesting-live-readiness.md`
+    - **Status:** ✅ Complete (2026-02-14)
+
+47. **Define golden strategy and frozen dataset baseline** (S: 1-2 hours)
+    - **What:** Pick 3 golden strategies and freeze file paths/date windows/params for parity testing
+    - **Evidence:** `docs/planning/golden-strategies-and-datasets.md`
+    - **Status:** ✅ Complete (2026-02-14)
+
+48. **Define migration parity tolerance spec** (S: 1-2 hours)
+    - **What:** Define exact metric pass/fail thresholds and failure handling policy
+    - **Evidence:** `docs/planning/parity-tolerance-spec.md`
+    - **Status:** ✅ Complete (2026-02-14)
+
+49. **Create engine-agnostic contract package skeleton** (M: 3-5 days)
+    - **What:** Add typed market data/execution/portfolio/result contracts under `finbot/core/contracts/`
+    - **Evidence:** `finbot/core/contracts/`
+    - **Status:** ✅ Complete (2026-02-14, initial scaffold)
+
+50. **Add initial contract test suite** (M: 3-5 days)
+    - **What:** Add tests for schema compatibility, protocol conformance, and model defaults
+    - **Evidence:** `tests/unit/test_core_contracts.py`
+    - **Status:** ✅ Complete (2026-02-14, initial suite)
+
+51. **Publish baseline benchmark/report pack** (M: 3-5 days)
+    - **What:** Document runtime/failure/KPI/reproducibility baseline for golden strategies
+    - **Evidence:** `docs/research/backtesting-baseline-report.md`, `docs/research/backtesting-baseline-results-2026-02-14.csv`, `scripts/generate_backtesting_baseline.py`
+    - **Status:** ✅ Complete (2026-02-14)
+
+52. **Define canonical event/result schema helpers** (M: 3-5 days)
+    - **What:** Add canonical bar/result schema helpers and stats-to-canonical mapping utilities
+    - **Evidence:** `finbot/core/contracts/schemas.py`, `finbot/core/contracts/serialization.py`
+    - **Status:** ✅ Complete (2026-02-14)
+
+53. **Add schema versioning policy + legacy migration path** (M: 3-5 days)
+    - **What:** Add version field handling, compatibility checks, payload migration, and policy docs
+    - **Evidence:** `finbot/core/contracts/versioning.py`, `docs/guidelines/backtesting-contract-schema-versioning.md`, `tests/unit/test_core_contracts.py`
+    - **Status:** ✅ Complete (2026-02-14)
+
+54. **Implement Backtrader adapter skeleton behind contracts** (M: 3-5 days)
+    - **What:** Add contract-backed Backtrader adapter and initial behavior tests for core strategies
+    - **Evidence:** `finbot/services/backtesting/adapters/backtrader_adapter.py`, `tests/unit/test_backtrader_adapter.py`
+    - **Status:** ✅ Complete (2026-02-14, initial implementation)
+
+Priority 6 execution documents:
+- `docs/planning/backtesting-live-readiness-implementation-plan.md`
+- `docs/planning/backtesting-live-readiness-backlog.md`
+- `docs/planning/backtesting-live-readiness-handoff-2026-02-14.md`
+
+---
+
 ## Completed Items (Priority 0-4)
 
 | Item | Completed | Notes |
@@ -447,3 +503,12 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
 | CLI smoke tests added (5.6.31) | 2026-02-12 | 47 tests covering --help, --version, all 6 commands, error handling, performance |
 | CLI input validation added (5.6.32) | 2026-02-12 | Custom validators (DATE, TICKER, POSITIVE_FLOAT), 33 tests, helpful error messages |
 | Data ethics documentation added (5.5.24) | 2026-02-12 | 10-section comprehensive ethics document (430 lines), linked from README |
+| ADR-005 adapter-first strategy (6.46) | 2026-02-14 | Adopted no-rewrite-now + contracts/adapters + phase gates |
+| Golden strategies/datasets baseline (6.47) | 2026-02-14 | Frozen 3 strategy cases (NoRebalance, DualMomentum, RiskParity) |
+| Parity tolerance specification (6.48) | 2026-02-14 | Defined hard-equality and bps-level migration thresholds |
+| Core contracts scaffold (6.49) | 2026-02-14 | Added `finbot/core/contracts` with typed models/protocols/versioning |
+| Contract test suite initial (6.50) | 2026-02-14 | Added unit tests for contract model defaults + protocol compatibility |
+| Baseline benchmark/report pack (6.51) | 2026-02-14 | Added reproducible baseline report, CSV output, and generation script |
+| Canonical schema helpers (6.52) | 2026-02-14 | Added canonical bar/result schema helpers and stats mapping utilities |
+| Schema versioning + migration policy (6.53) | 2026-02-14 | Added migration path (0.x->1.0), compatibility checks, and versioning guideline |
+| Backtrader adapter skeleton (6.54) | 2026-02-14 | Added contract-backed adapter with unit coverage for NoRebalance, DualMomentum, RiskParity |
