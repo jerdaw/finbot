@@ -18,6 +18,14 @@ from finbot.core.contracts.models import (
 )
 from finbot.core.contracts.orders import Order, OrderExecution, OrderStatus, RejectionReason
 from finbot.core.contracts.regime import MarketRegime, RegimeConfig, RegimeDetector, RegimeMetrics, RegimePeriod
+from finbot.core.contracts.risk import (
+    DrawdownLimitRule,
+    ExposureLimitRule,
+    PositionLimitRule,
+    RiskConfig,
+    RiskRuleType,
+    RiskViolation,
+)
 from finbot.core.contracts.schemas import (
     BACKTEST_STATS_COLUMN_TO_METRIC,
     BAR_DATAFRAME_COLUMNS,
@@ -65,8 +73,10 @@ __all__ = [
     "CostSummary",
     "CostType",
     "DataSnapshot",
+    "DrawdownLimitRule",
     "ErrorCategory",
     "ExecutionSimulator",
+    "ExposureLimitRule",
     "FillEvent",
     "LatencyConfig",
     "MarketDataProvider",
@@ -80,11 +90,15 @@ __all__ = [
     "OrderType",
     "PortfolioSnapshot",
     "PortfolioStateStore",
+    "PositionLimitRule",
     "RegimeConfig",
     "RegimeDetector",
     "RegimeMetrics",
     "RegimePeriod",
     "RejectionReason",
+    "RiskConfig",
+    "RiskRuleType",
+    "RiskViolation",
     "WalkForwardConfig",
     "WalkForwardResult",
     "WalkForwardWindow",
