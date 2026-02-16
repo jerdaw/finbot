@@ -10,8 +10,10 @@ from decimal import Decimal
 from finbot.core.contracts.latency import LATENCY_INSTANT, LatencyConfig
 from finbot.core.contracts.models import OrderSide, OrderType
 from finbot.core.contracts.orders import Order, OrderExecution, OrderStatus, RejectionReason
+from finbot.core.contracts.risk import RiskConfig
 from finbot.services.execution.order_validator import OrderValidator
 from finbot.services.execution.pending_actions import ActionType, PendingAction, PendingActionQueue
+from finbot.services.execution.risk_checker import RiskChecker
 
 
 class ExecutionSimulator:
@@ -39,6 +41,7 @@ class ExecutionSimulator:
         slippage_bps: Decimal = Decimal("5"),
         commission_per_share: Decimal = Decimal("0"),
         latency_config: LatencyConfig = LATENCY_INSTANT,
+        risk_config: RiskConfig | None = None,
     ):
         """Initialize execution simulator.
 
@@ -47,8 +50,10 @@ class ExecutionSimulator:
             slippage_bps: Slippage in basis points (default: 5 bps = 0.05%)
             commission_per_share: Commission per share traded
             latency_config: Latency configuration (default: instant execution)
+            risk_config: Risk control configuration (default: no risk controls)
         """
         self.cash = initial_cash
+        self.initial_cash = initial_cash
         self.positions: dict[str, Decimal] = {}
         self.slippage_bps = slippage_bps
         self.commission_per_share = commission_per_share
@@ -60,6 +65,11 @@ class ExecutionSimulator:
         self.validator = OrderValidator()
         self.action_queue = PendingActionQueue()
         self.current_time = datetime.now()
+        self.risk_checker = RiskChecker(risk_config) if risk_config else None
+
+        # Initialize risk state if risk checker exists
+        if self.risk_checker:
+            self.risk_checker.update_state(initial_cash, is_new_day=True)
 
     def submit_order(self, order: Order, timestamp: datetime | None = None) -> Order:
         """Submit order for execution with latency simulation.
@@ -76,7 +86,20 @@ class ExecutionSimulator:
 
         self.current_time = timestamp
 
-        # Validate order immediately
+        # Risk checks first (if enabled)
+        if self.risk_checker:
+            current_prices: dict[str, Decimal] = {}
+            risk_check = self.risk_checker.check_order(order, self.positions, current_prices, self.cash)
+            if risk_check:
+                rejection_reason, rejection_message = risk_check
+                order.status = OrderStatus.REJECTED
+                order.rejected_at = timestamp
+                order.rejection_reason = rejection_reason
+                order.rejection_message = rejection_message
+                self.completed_orders[order.order_id] = order
+                return order
+
+        # Validate order
         current_prices: dict[str, Decimal] = {}
         validation = self.validator.validate(order, self.cash, self.positions, current_prices)
 
@@ -238,6 +261,31 @@ class ExecutionSimulator:
             Order if found, None otherwise
         """
         return self.pending_orders.get(order_id) or self.completed_orders.get(order_id)
+
+    def enable_trading(self) -> None:
+        """Enable trading (clear kill-switch).
+
+        Only effective if risk controls are enabled.
+        """
+        if self.risk_checker:
+            self.risk_checker.enable_trading()
+
+    def disable_trading(self) -> None:
+        """Disable trading (activate kill-switch).
+
+        Only effective if risk controls are enabled.
+        """
+        if self.risk_checker:
+            self.risk_checker.disable_trading()
+
+    def reset_daily_risk_tracking(self) -> None:
+        """Reset daily drawdown tracking (call at start of new trading day).
+
+        Only effective if risk controls are enabled.
+        """
+        if self.risk_checker:
+            portfolio_value = self.get_account_value({})
+            self.risk_checker.reset_daily_tracking(portfolio_value)
 
     def _process_due_actions(self, current_time: datetime) -> None:
         """Process all actions due by current time.
@@ -402,5 +450,10 @@ class ExecutionSimulator:
         else:
             self.positions[order.symbol] = self.positions.get(order.symbol, Decimal("0")) - fill_quantity
             self.cash += fill_quantity * fill_price - commission
+
+        # Update risk state
+        if self.risk_checker:
+            portfolio_value = self.get_account_value({order.symbol: fill_price})
+            self.risk_checker.update_state(portfolio_value)
 
         return execution

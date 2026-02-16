@@ -299,8 +299,23 @@ and enable focused testing in a separate task.
 
 ### E5-T3 (M) Risk controls interface
 
+- Status: ✅ Complete (2026-02-16)
+- Completed:
+  - [x] Risk control contracts (RiskConfig, RiskViolation, RiskRuleType)
+  - [x] Risk rules: PositionLimitRule, ExposureLimitRule, DrawdownLimitRule
+  - [x] RiskChecker with comprehensive checking logic
+  - [x] Position limits (max shares, max value per symbol)
+  - [x] Exposure limits (gross and net as % of capital)
+  - [x] Drawdown protection (daily and total from peak)
+  - [x] Kill-switch (emergency trading halt)
+  - [x] Risk state tracking (peak value, daily start value)
+  - [x] ExecutionSimulator integration (optional risk_config parameter)
+  - [x] Updated rejection reasons (4 new risk-specific reasons)
+  - [x] 14 comprehensive risk control tests (all passing)
+  - [x] 629 tests passing total (up from 615, +14 tests)
+  - [x] Fully backward compatible (risk controls are optional)
 - Acceptance:
-  - Position/exposure/drawdown/kill-switch rules integrated.
+  - Position/exposure/drawdown/kill-switch rules integrated. ✅
 
 ### E5-T4 (M) State checkpoint and recovery
 
@@ -410,5 +425,5 @@ and enable focused testing in a separate task.
 - `E2`: ✅ Complete (all tasks done: adapter, parity harness, golden tests, CI gate)
 - `E3`: ✅ Complete (All tasks: E3-T1 cost models, E3-T2 corporate actions + data quality, E3-T3 walk-forward + regime analysis)
 - `E4`: ✅ Complete (All tasks: E4-T1 experiment registry, E4-T2 snapshot infrastructure, E4-T3 batch observability, E4-T4 dashboard comparison)
-- `E5`: 🚧 In progress (E5-T1 complete, E5-T2/T3/T4 remaining)
+- `E5`: 🚧 In progress (E5-T1/T2/T3 complete, E5-T4 remaining)
 - `E6`: Not started
