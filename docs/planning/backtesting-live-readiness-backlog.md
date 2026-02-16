@@ -205,12 +205,28 @@
 4. `E1-T1` Create `finbot/core/contracts/` skeleton.
 5. `E1-T4` Add initial contract tests.
 
-## Sprint 2 Backlog (Immediate)
+## Sprint 2 Backlog - ✅ COMPLETE
 
 1. [x] `E2-T1` Backtrader adapter skeleton.
 2. [x] `E2-T2` A/B parity harness for one strategy (GS-01 passing with 100% parity).
 3. [x] `E2-T4` CI parity gate for one golden strategy (dedicated CI job, datasets in git).
 4. [x] `E0-T2` Publish first baseline report draft.
+5. [x] Migration status report (`docs/research/adapter-migration-status-2026-02-16.md`).
+
+## Sprint 3 Backlog (Next)
+
+**Decision Point:** Expand parity coverage (E2-T3) OR start fidelity improvements (E3)?
+
+**Option A: Complete Epic E2 (Recommended)**
+1. [ ] `E2-T3` Add golden-master parity tests for GS-02 (DualMomentum + SPY/TLT)
+2. [ ] `E2-T3` Add golden-master parity tests for GS-03 (RiskParity + SPY/QQQ/TLT)
+3. [ ] `E2-T4` Extend CI parity gate to include GS-02 and GS-03
+4. [ ] Publish Epic E2 completion report
+
+**Option B: Start Epic E3 (Alternative)**
+1. [ ] `E3-T1` Expand cost model (commission, spread, slippage, borrow)
+2. [ ] `E3-T2` Corporate action + calendar correctness (splits, dividends)
+3. [ ] `E3-T3` Walk-forward + regime evaluation support
 
 ## Progress Tracking
 
