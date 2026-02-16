@@ -1,8 +1,10 @@
 # Golden Strategies and Frozen Datasets
 
 **Created:** 2026-02-14
+**Last Updated:** 2026-02-16
 **Status:** Active baseline set for parity validation
 **Data Snapshot As Of:** 2026-02-09
+**Repository Status:** Golden datasets committed to git for CI parity testing
 
 ## Purpose
 
@@ -15,6 +17,15 @@ These cases are used for A/B parity checks (legacy path vs adapter path).
 - Keep data source and file paths fixed for parity runs.
 - Keep date windows fixed.
 - Any change to this file requires updating parity baselines and noting rationale.
+
+## Dataset Repository Status
+
+Golden strategy datasets are committed to the repository to enable CI parity testing:
+- `finbot/data/yfinance_data/history/SPY_history_1d.parquet` (303KB)
+- `finbot/data/yfinance_data/history/TLT_history_1d.parquet` (199KB)
+- `finbot/data/yfinance_data/history/QQQ_history_1d.parquet` (252KB)
+
+These files are excluded from the general `.gitignore` rule for the data directory to ensure deterministic, fast CI runs without external data fetching.
 
 ## Golden Strategy Set
 

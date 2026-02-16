@@ -100,6 +100,7 @@
 
 ### E2-T4 (S) Wire CI parity gate
 
+- Status: ✅ Complete (2026-02-16, dedicated parity-gate job in CI)
 - Acceptance:
   - Parity regressions fail CI.
 
@@ -208,7 +209,7 @@
 
 1. [x] `E2-T1` Backtrader adapter skeleton.
 2. [x] `E2-T2` A/B parity harness for one strategy (GS-01 passing with 100% parity).
-3. [ ] `E2-T4` CI parity gate for one golden strategy.
+3. [x] `E2-T4` CI parity gate for one golden strategy (dedicated CI job, datasets in git).
 4. [x] `E0-T2` Publish first baseline report draft.
 
 ## Progress Tracking
