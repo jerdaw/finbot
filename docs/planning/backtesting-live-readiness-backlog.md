@@ -193,8 +193,28 @@
 
 ### E4-T2 (M) Snapshot-based reproducibility mode
 
+- Status: 🟡 Partially Complete (2026-02-16) - Core infrastructure done, adapter integration deferred
+- Completed:
+  - [x] DataSnapshot contract with content-addressable hashing
+  - [x] DataSnapshotRegistry with create/load/list/delete operations
+  - [x] Content-based deduplication (same data → same snapshot ID)
+  - [x] Snapshot utilities (cleanup_orphaned_snapshots, get_snapshot_stats)
+  - [x] 21 comprehensive unit tests (all passing)
+  - [x] 530 tests passing total (up from 509)
+  - [x] Implementation plan documented
+- Deferred (Future work):
+  - [ ] BacktraderAdapter integration (auto_snapshot parameter)
+  - [ ] Replay functionality using snapshots
+  - [ ] Integration tests for replay reproducibility
+  - [ ] User guide documentation
 - Acceptance:
-  - Runs can be replayed from dataset snapshot reference.
+  - Snapshot infrastructure complete and tested. ✅
+  - Can create/load/manage snapshots manually. ✅
+  - Runs can be replayed from dataset snapshot reference. ⬜ (Deferred to avoid breaking parity)
+
+**Note:** Core snapshot infrastructure is complete and fully functional. BacktraderAdapter
+integration deferred to maintain 100% parity on golden strategies and enable focused testing
+in a separate task.
 
 ### E4-T3 (M) Batch observability instrumentation
 
