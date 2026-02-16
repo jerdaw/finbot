@@ -2,7 +2,7 @@
 
 **Created:** 2026-02-10
 **Last Updated:** 2026-02-16
-**Status:** Priority 0-5 baseline complete/progressing; Priority 6 adapter-first backtesting/live-readiness in progress (Epic E2: ✅ COMPLETE)
+**Status:** Priority 0-5 baseline complete/progressing; Priority 6 adapter-first backtesting/live-readiness in progress (Epic E2: ✅ COMPLETE, E3-T1 + E3-T2: ✅ COMPLETE)
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
 
@@ -474,10 +474,30 @@ New improvements added 2026-02-14 to support a backtesting-first roadmap now whi
     - **Evidence:** `finbot/core/contracts/costs.py`, `finbot/services/backtesting/costs/`, `finbot/services/backtesting/analyzers/trade_tracker.py`, `tests/unit/test_cost_models.py`, `tests/integration/test_cost_tracking.py`, `notebooks/cost_model_examples.ipynb`
     - **Status:** ✅ Complete (2026-02-16, full end-to-end integration with 455 tests passing)
 
+60. **Corporate action handling with adjusted prices** (M: 3-5 days)
+    - **What:** Implement adjusted price handling (Adj Close) for splits/dividends with proportional OHLC adjustment
+    - **Evidence:** `finbot/services/backtesting/backtest_runner.py` (adjusted price logic), `tests/unit/test_adjusted_prices.py` (3 tests), `tests/unit/test_corporate_actions.py` (6 tests with synthetic split/dividend data)
+    - **Status:** ✅ Complete (2026-02-16, 100% parity maintained)
+
+61. **Missing data policy configuration** (M: 3-5 days)
+    - **What:** Add configurable missing data policies (FORWARD_FILL, DROP, ERROR, INTERPOLATE, BACKFILL)
+    - **Evidence:** `finbot/core/contracts/missing_data.py`, `finbot/services/backtesting/adapters/backtrader_adapter.py` (policy integration), `tests/unit/test_missing_data_policies.py` (11 comprehensive tests)
+    - **Status:** ✅ Complete (2026-02-16, 467 tests passing, 100% parity maintained)
+
+62. **Corporate actions and data quality documentation** (M: 3-5 days)
+    - **What:** Create comprehensive user guide and practical examples for adjusted prices and missing data policies
+    - **Evidence:** `docs/user-guides/corporate-actions-and-data-quality.md` (comprehensive guide), `notebooks/corporate_actions_and_missing_data_demo.ipynb` (interactive tutorial)
+    - **Status:** ✅ Complete (2026-02-16)
+
 Priority 6 execution documents:
 - `docs/planning/backtesting-live-readiness-implementation-plan.md`
 - `docs/planning/backtesting-live-readiness-backlog.md`
 - `docs/planning/backtesting-live-readiness-handoff-2026-02-14.md`
+
+**Current Phase:** Epic E3 (Backtesting Fidelity Improvements)
+- E3-T1: Cost models ✅ Complete
+- E3-T2: Corporate actions + data quality ✅ Complete
+- E3-T3: Walk-forward + regime evaluation (next)
 
 ---
 
@@ -537,3 +557,11 @@ Priority 6 execution documents:
 | Canonical schema helpers (6.52) | 2026-02-14 | Added canonical bar/result schema helpers and stats mapping utilities |
 | Schema versioning + migration policy (6.53) | 2026-02-14 | Added migration path (0.x->1.0), compatibility checks, and versioning guideline |
 | Backtrader adapter skeleton (6.54) | 2026-02-14 | Added contract-backed adapter with unit coverage for NoRebalance, DualMomentum, RiskParity |
+| A/B parity harness (6.55) | 2026-02-16 | Integration test harness comparing legacy vs adapter, GS-01 100% parity |
+| CI parity gate (6.56) | 2026-02-16 | Dedicated parity-gate CI job, golden datasets committed, automated regression prevention |
+| Migration status report (6.57) | 2026-02-16 | Sprint 2 closure: parity results, lessons learned, risk assessment, recommendations |
+| Parity coverage expansion (6.58) | 2026-02-16 | All 3 golden strategies (GS-01/02/03) at 100% parity, CI running all strategies |
+| Cost model expansion (6.59) | 2026-02-16 | Full integration: contracts, implementations, TradeTracker, serialization, 5 tests |
+| Corporate action handling (6.60) | 2026-02-16 | Adjusted prices (Adj Close), OHLC proportional adjustment, 9 tests (adjusted + splits/dividends) |
+| Missing data policies (6.61) | 2026-02-16 | 5 policies (FORWARD_FILL/DROP/ERROR/INTERPOLATE/BACKFILL), 11 comprehensive tests, 467 total tests |
+| Corporate actions documentation (6.62) | 2026-02-16 | User guide + Jupyter notebook demonstrating adjusted prices and missing data policies |
