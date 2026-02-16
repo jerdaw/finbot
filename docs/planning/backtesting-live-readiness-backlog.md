@@ -280,9 +280,22 @@ and enable focused testing in a separate task.
 
 ### E5-T2 (M) Order lifecycle and latency hooks
 
+- Status: ✅ Complete (2026-02-16)
+- Completed:
+  - [x] Order lifecycle states fully implemented in E5-T1 (NEW → SUBMITTED → FILLED/REJECTED/CANCELLED)
+  - [x] Latency configuration contracts (LatencyConfig with submission/fill/cancel latencies)
+  - [x] Pre-configured profiles (INSTANT, FAST, NORMAL, SLOW)
+  - [x] Pending action queue for time-based processing
+  - [x] Submission latency (orders delayed before SUBMITTED status)
+  - [x] Fill latency (random between min/max, realistic simulation)
+  - [x] Cancellation latency (delayed cancellation processing)
+  - [x] 17 comprehensive latency tests (all passing)
+  - [x] 615 tests passing total (up from 598, +17 tests)
+  - [x] Integration into contracts package
+  - [x] Backward compatible (defaults to LATENCY_INSTANT)
 - Acceptance:
-  - States: new/partial/filled/canceled/rejected are supported.
-  - Latency simulation hooks included.
+  - States: new/partial/filled/canceled/rejected are supported. ✅
+  - Latency simulation hooks included. ✅
 
 ### E5-T3 (M) Risk controls interface
 
