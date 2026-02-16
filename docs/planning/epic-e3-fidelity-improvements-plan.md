@@ -401,7 +401,16 @@ This correctly warns when Adj Close is available but not being used.
 - ✅ All 3 golden strategy parity tests pass (100% parity maintained)
 - ✅ 458 tests passing total
 
-**Step 2: Corporate Action Tests** - Not started
+**Step 2: Corporate Action Tests** ✅ Complete (2026-02-16)
+- ✅ Synthetic data generators for splits and dividends
+- ✅ Test 2:1 stock split handling
+- ✅ Test 3:1 stock split handling
+- ✅ Test dividend payment handling
+- ✅ Test multiple dividends
+- ✅ Test combined split + dividend scenarios
+- ✅ Test reverse split (1:5)
+- ✅ 6 comprehensive tests added and passing
+- ✅ 464 tests passing total
 **Step 3: Trading Calendar Validation** - Not started
 **Step 4: Missing Data Policies** - Not started
 **Step 5: Documentation** - Not started
@@ -409,7 +418,7 @@ This correctly warns when Adj Close is available but not being used.
 ### Acceptance Criteria
 
 - [x] Backtrader uses adjusted prices (Adj Close) by default
-- [ ] Corporate action tests pass (splits, dividends)
+- [x] Corporate action tests pass (splits, dividends)
 - [ ] Trading calendar validation implemented
 - [ ] Missing data policies configurable
 - [x] All unit tests pass
