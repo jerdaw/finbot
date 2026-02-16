@@ -2,7 +2,7 @@
 
 **Created:** 2026-02-10
 **Last Updated:** 2026-02-16
-**Status:** Priority 0-5 baseline complete/progressing; Priority 6 adapter-first backtesting/live-readiness in progress (Sprint 2: ✅ COMPLETE)
+**Status:** Priority 0-5 baseline complete/progressing; Priority 6 adapter-first backtesting/live-readiness in progress (Epic E2: ✅ COMPLETE)
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
 
@@ -463,6 +463,11 @@ New improvements added 2026-02-14 to support a backtesting-first roadmap now whi
     - **What:** Document adapter parity results, lessons learned, risk assessment, and phase recommendations
     - **Evidence:** `docs/research/adapter-migration-status-2026-02-16.md`
     - **Status:** ✅ Complete (2026-02-16, Sprint 2 closure report)
+
+58. **Expand parity coverage to all golden strategies** (M: 3-5 days)
+    - **What:** Enable GS-02 (DualMomentum) and GS-03 (RiskParity) parity tests, update CI gate
+    - **Evidence:** `tests/integration/test_backtest_parity_ab.py` (all 3 tests enabled), CI running all strategies
+    - **Status:** ✅ Complete (2026-02-16, 100% parity on all golden strategies)
 
 Priority 6 execution documents:
 - `docs/planning/backtesting-live-readiness-implementation-plan.md`
