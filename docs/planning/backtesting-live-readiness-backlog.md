@@ -94,6 +94,7 @@
 
 ### E2-T3 (M) Add golden-master parity tests
 
+- Status: ✅ Complete (2026-02-16, all golden strategies passing with 100% parity)
 - Acceptance:
   - All golden strategies covered.
   - Parity checks use tolerance spec from E0-T4.
@@ -213,26 +214,25 @@
 4. [x] `E0-T2` Publish first baseline report draft.
 5. [x] Migration status report (`docs/research/adapter-migration-status-2026-02-16.md`).
 
-## Sprint 3 Backlog (Next)
+## Sprint 3 Status - ✅ COMPLETE (Epic E2 Closure)
 
-**Decision Point:** Expand parity coverage (E2-T3) OR start fidelity improvements (E3)?
+**Epic E2 now complete** - all golden strategies validated with 100% parity:
+1. [x] `E2-T3` Golden-master parity tests for GS-02 (DualMomentum + SPY/TLT) - 100% parity
+2. [x] `E2-T3` Golden-master parity tests for GS-03 (RiskParity + SPY/QQQ/TLT) - 100% parity
+3. [x] `E2-T4` Extended CI parity gate to all 3 golden strategies
 
-**Option A: Complete Epic E2 (Recommended)**
-1. [ ] `E2-T3` Add golden-master parity tests for GS-02 (DualMomentum + SPY/TLT)
-2. [ ] `E2-T3` Add golden-master parity tests for GS-03 (RiskParity + SPY/QQQ/TLT)
-3. [ ] `E2-T4` Extend CI parity gate to include GS-02 and GS-03
-4. [ ] Publish Epic E2 completion report
+## Next Epic: E3 (Backtesting Fidelity Improvements)
 
-**Option B: Start Epic E3 (Alternative)**
+**Sprint 4 Options:**
 1. [ ] `E3-T1` Expand cost model (commission, spread, slippage, borrow)
 2. [ ] `E3-T2` Corporate action + calendar correctness (splits, dividends)
 3. [ ] `E3-T3` Walk-forward + regime evaluation support
 
 ## Progress Tracking
 
-- `E0`: Complete
-- `E1`: Complete
-- `E2`: In progress (`E2-T1` complete; `E2-T2`, `E2-T3`, `E2-T4` pending)
+- `E0`: ✅ Complete
+- `E1`: ✅ Complete
+- `E2`: ✅ Complete (all tasks done: adapter, parity harness, golden tests, CI gate)
 - `E3`: Not started
 - `E4`: Not started
 - `E5`: Not started

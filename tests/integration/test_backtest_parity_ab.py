@@ -484,7 +484,6 @@ class TestGoldenStrategyParity:
         # Assert overall pass
         assert report.overall_passed, f"Parity check failed for {report.strategy_id}\n{report}"
 
-    @pytest.mark.skip(reason="Multi-asset strategies require TLT, QQQ data - implement after GS-01 passes")
     def test_gs02_dualmomentum_spy_tlt(self, data_dir: Path):
         """GS-02: Dual Momentum Rotation (DualMomentum + SPY/TLT).
 
@@ -505,7 +504,6 @@ class TestGoldenStrategyParity:
         print(report)
         assert report.overall_passed, f"Parity check failed for {report.strategy_id}\n{report}"
 
-    @pytest.mark.skip(reason="Multi-asset strategies require TLT, QQQ data - implement after GS-01 passes")
     def test_gs03_riskparity_spy_qqq_tlt(self, data_dir: Path):
         """GS-03: Multi-Asset Risk Parity (RiskParity + SPY/QQQ/TLT).
 
