@@ -26,6 +26,13 @@
 - [x] CI parity gate for one golden strategy (dedicated job in `.github/workflows/ci.yml`)
 - [x] Migration status report draft refresh (`docs/research/adapter-migration-status-2026-02-16.md`)
 
+## Sprint 3 Status (as of 2026-02-16) - ✅ COMPLETE (Epic E2 Closure)
+
+- [x] Enabled GS-02 (DualMomentum + SPY/TLT) parity tests - 100% parity achieved
+- [x] Enabled GS-03 (RiskParity + SPY/QQQ/TLT) parity tests - 100% parity achieved
+- [x] Extended CI parity gate to all 3 golden strategies
+- [x] **Epic E2 (Backtrader Adapter and Parity Harness) - COMPLETE**
+
 ## Decision Summary
 
 1. Keep the current Backtrader-based stack as production baseline.

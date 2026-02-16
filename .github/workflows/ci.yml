@@ -153,6 +153,14 @@ jobs:
         env:
           DYNACONF_ENV: development
         run: |
-          echo "Running adapter parity gate for golden strategies..."
+          echo "Running adapter parity gate for all golden strategies..."
+          echo "GS-01: NoRebalance + SPY (buy-and-hold control)"
           uv run pytest tests/integration/test_backtest_parity_ab.py::TestGoldenStrategyParity::test_gs01_norebalance_spy -v
-          echo "✅ Parity gate passed - adapter output matches legacy path within tolerance"
+          echo ""
+          echo "GS-02: DualMomentum + SPY/TLT (regime switching)"
+          uv run pytest tests/integration/test_backtest_parity_ab.py::TestGoldenStrategyParity::test_gs02_dualmomentum_spy_tlt -v
+          echo ""
+          echo "GS-03: RiskParity + SPY/QQQ/TLT (multi-asset volatility weighting)"
+          uv run pytest tests/integration/test_backtest_parity_ab.py::TestGoldenStrategyParity::test_gs03_riskparity_spy_qqq_tlt -v
+          echo ""
+          echo "✅ All parity gates passed - adapter output matches legacy path within tolerance"
