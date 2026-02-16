@@ -3,6 +3,7 @@
 from finbot.core.contracts.batch import BatchItemResult, BatchRun, BatchStatus, ErrorCategory
 from finbot.core.contracts.costs import CostEvent, CostModel, CostSummary, CostType
 from finbot.core.contracts.interfaces import BacktestEngine, ExecutionSimulator, MarketDataProvider, PortfolioStateStore
+from finbot.core.contracts.latency import LATENCY_FAST, LATENCY_INSTANT, LATENCY_NORMAL, LATENCY_SLOW, LatencyConfig
 from finbot.core.contracts.missing_data import DEFAULT_MISSING_DATA_POLICY, MissingDataPolicy
 from finbot.core.contracts.models import (
     BacktestRunMetadata,
@@ -46,6 +47,10 @@ __all__ = [
     "CANONICAL_METRIC_KEYS",
     "CONTRACT_SCHEMA_VERSION",
     "DEFAULT_MISSING_DATA_POLICY",
+    "LATENCY_FAST",
+    "LATENCY_INSTANT",
+    "LATENCY_NORMAL",
+    "LATENCY_SLOW",
     "LEGACY_BACKTEST_RESULT_VERSION",
     "BacktestEngine",
     "BacktestRunMetadata",
@@ -63,6 +68,7 @@ __all__ = [
     "ErrorCategory",
     "ExecutionSimulator",
     "FillEvent",
+    "LatencyConfig",
     "MarketDataProvider",
     "MarketRegime",
     "MissingDataPolicy",
