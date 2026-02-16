@@ -15,6 +15,7 @@ from finbot.core.contracts.models import (
     OrderType,
     PortfolioSnapshot,
 )
+from finbot.core.contracts.orders import Order, OrderExecution, OrderStatus, RejectionReason
 from finbot.core.contracts.regime import MarketRegime, RegimeConfig, RegimeDetector, RegimeMetrics, RegimePeriod
 from finbot.core.contracts.schemas import (
     BACKTEST_STATS_COLUMN_TO_METRIC,
@@ -65,8 +66,11 @@ __all__ = [
     "MarketDataProvider",
     "MarketRegime",
     "MissingDataPolicy",
+    "Order",
+    "OrderExecution",
     "OrderRequest",
     "OrderSide",
+    "OrderStatus",
     "OrderType",
     "PortfolioSnapshot",
     "PortfolioStateStore",
@@ -74,6 +78,7 @@ __all__ = [
     "RegimeDetector",
     "RegimeMetrics",
     "RegimePeriod",
+    "RejectionReason",
     "WalkForwardConfig",
     "WalkForwardResult",
     "WalkForwardWindow",

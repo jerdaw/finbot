@@ -266,8 +266,17 @@ and enable focused testing in a separate task.
 
 ### E5-T1 (M) Broker-neutral execution contracts
 
+- Status: ✅ Complete (2026-02-16)
+- Completed:
+  - [x] Order lifecycle contracts (OrderStatus, RejectionReason, OrderExecution, Order)
+  - [x] Order validator with comprehensive validation logic
+  - [x] Execution simulator for paper trading with slippage/commission
+  - [x] Order registry with date-organized JSON storage
+  - [x] 21 comprehensive unit tests (all passing)
+  - [x] 598 tests passing total (up from 583)
+  - [x] Integration into contracts package
 - Acceptance:
-  - Shared strategy contract works for backtest and paper modes.
+  - Shared strategy contract works for backtest and paper modes. ✅
 
 ### E5-T2 (M) Order lifecycle and latency hooks
 
@@ -387,6 +396,6 @@ and enable focused testing in a separate task.
 - `E1`: ✅ Complete
 - `E2`: ✅ Complete (all tasks done: adapter, parity harness, golden tests, CI gate)
 - `E3`: ✅ Complete (All tasks: E3-T1 cost models, E3-T2 corporate actions + data quality, E3-T3 walk-forward + regime analysis)
-- `E4`: 🚧 In progress (E4-T1 complete, E4-T2/T3/T4 remaining)
-- `E5`: Not started
+- `E4`: ✅ Complete (All tasks: E4-T1 experiment registry, E4-T2 snapshot infrastructure, E4-T3 batch observability, E4-T4 dashboard comparison)
+- `E5`: 🚧 In progress (E5-T1 complete, E5-T2/T3/T4 remaining)
 - `E6`: Not started
