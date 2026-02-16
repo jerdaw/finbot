@@ -469,10 +469,10 @@ New improvements added 2026-02-14 to support a backtesting-first roadmap now whi
     - **Evidence:** `tests/integration/test_backtest_parity_ab.py` (all 3 tests enabled), CI running all strategies
     - **Status:** ✅ Complete (2026-02-16, 100% parity on all golden strategies)
 
-59. **Cost model expansion - infrastructure** (M: 3-5 days)
-    - **What:** Create parameterized cost model contracts and implementations (commission, spread, slippage)
-    - **Evidence:** `finbot/core/contracts/costs.py`, `finbot/services/backtesting/costs/`, `tests/unit/test_cost_models.py`, `notebooks/cost_model_examples.ipynb`
-    - **Status:** ✅ Complete (2026-02-16, infrastructure + examples done, adapter integration deferred)
+59. **Cost model expansion - full integration** (M: 3-5 days)
+    - **What:** Create parameterized cost model contracts, implementations, and integrate into adapter
+    - **Evidence:** `finbot/core/contracts/costs.py`, `finbot/services/backtesting/costs/`, `finbot/services/backtesting/analyzers/trade_tracker.py`, `tests/unit/test_cost_models.py`, `tests/integration/test_cost_tracking.py`, `notebooks/cost_model_examples.ipynb`
+    - **Status:** ✅ Complete (2026-02-16, full end-to-end integration with 455 tests passing)
 
 Priority 6 execution documents:
 - `docs/planning/backtesting-live-readiness-implementation-plan.md`
