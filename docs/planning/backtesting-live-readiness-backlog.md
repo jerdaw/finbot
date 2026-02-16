@@ -179,8 +179,17 @@
 
 ### E4-T1 (M) Experiment registry and metadata hashes
 
+- Status: ✅ Complete (2026-02-16)
+- Completed:
+  - [x] ExperimentRegistry class with save/load/query/delete
+  - [x] Year/month organized JSON file storage
+  - [x] Query by strategy, date range, config hash
+  - [x] 14 unit tests (all passing)
+  - [x] 509 tests passing total (up from 489)
+  - [x] Implementation plan documented
 - Acceptance:
-  - Runs store immutable metadata + config hash + seed.
+  - Runs store immutable metadata + config hash + seed. ✅
+  - File-based registry with query capabilities. ✅
 
 ### E4-T2 (M) Snapshot-based reproducibility mode
 
@@ -297,12 +306,24 @@
    - ✅ 467 tests passing (up from 464)
    - ✅ 100% parity maintained
 
-3. [ ] `E3-T3` Walk-forward + regime evaluation support
+3. [x] `E3-T3` Walk-forward + regime evaluation support ✅
 
-## Sprint 5 Status - ✅ Complete (E3-T2 Fully Delivered)
+## Sprint 5 Status - ✅ Complete (E3-T3 Fully Delivered)
+
+## Sprint 6 Status - ✅ Complete (E4-T1 Fully Delivered)
+
+**Epic E4: Reproducibility and Observability**
+
+1. [x] `E4-T1` Experiment registry and metadata hashes - **Fully complete**
+   - ✅ ExperimentRegistry class (save/load/query/delete)
+   - ✅ Year/month organized JSON file storage
+   - ✅ Query by strategy, date range, config hash
+   - ✅ 14 unit tests (all passing)
+   - ✅ 509 tests passing total (up from 489)
+   - ✅ Implementation plan documented
 
 **Next Sprint:**
-- E3-T3: Walk-forward + regime evaluation support
+- E4-T2: Snapshot-based reproducibility mode
 
 ## Progress Tracking
 
@@ -310,6 +331,6 @@
 - `E1`: ✅ Complete
 - `E2`: ✅ Complete (all tasks done: adapter, parity harness, golden tests, CI gate)
 - `E3`: ✅ Complete (All tasks: E3-T1 cost models, E3-T2 corporate actions + data quality, E3-T3 walk-forward + regime analysis)
-- `E4`: Not started
+- `E4`: 🚧 In progress (E4-T1 complete, E4-T2/T3/T4 remaining)
 - `E5`: Not started
 - `E6`: Not started
