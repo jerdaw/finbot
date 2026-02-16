@@ -34,6 +34,10 @@ class RejectionReason(StrEnum):
     MARKET_CLOSED = "market_closed"
     DUPLICATE_ORDER = "duplicate_order"
     RISK_LIMIT_EXCEEDED = "risk_limit_exceeded"
+    RISK_POSITION_LIMIT = "risk_position_limit"
+    RISK_EXPOSURE_LIMIT = "risk_exposure_limit"
+    RISK_DRAWDOWN_LIMIT = "risk_drawdown_limit"
+    RISK_TRADING_DISABLED = "risk_trading_disabled"
     UNKNOWN = "unknown"
 
 
