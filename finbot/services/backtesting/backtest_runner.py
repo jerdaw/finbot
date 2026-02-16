@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import warnings
 from typing import Any
 
 import backtrader as bt
@@ -83,9 +82,22 @@ class BacktestRunner:
             self._earliest_end_date = min(end_by_duration, self._earliest_end_date)
 
         for data_name, v in ph.items():
-            if any("adj" in c.lower() and "close" in c.lower() for c in v.columns):
-                warnings.warn(f"price_histories entry {data_name} is not using adjusted returns.", stacklevel=2)
-            cur_ph = v.truncate(before=self._latest_start_date, after=self._earliest_end_date)
+            # Use adjusted prices if available (accounts for splits/dividends)
+            cur_ph = v.truncate(before=self._latest_start_date, after=self._earliest_end_date).copy()
+
+            if "Adj Close" in cur_ph.columns:
+                # Preserve original close for reference
+                if "Close" in cur_ph.columns:
+                    cur_ph["Close_Unadjusted"] = cur_ph["Close"]
+                # Use adjusted close for backtesting (correct for splits/dividends)
+                cur_ph["Close"] = cur_ph["Adj Close"]
+                # Also adjust OHLC if we have adj close (maintain relative relationships)
+                if "Close_Unadjusted" in cur_ph.columns and cur_ph["Close_Unadjusted"].iloc[-1] != 0:
+                    adjustment_factor = cur_ph["Close"] / cur_ph["Close_Unadjusted"]
+                    for col in ["Open", "High", "Low"]:
+                        if col in cur_ph.columns:
+                            cur_ph[col] = cur_ph[col] * adjustment_factor
+
             self.price_histories[data_name] = cur_ph
             ticker_feed = bt.feeds.PandasData(dataname=cur_ph)
             self._cerebro.adddata(ticker_feed, name=data_name)

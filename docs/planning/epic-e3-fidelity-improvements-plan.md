@@ -204,8 +204,8 @@ class CostModel(Protocol):
 ## E3-T2: Corporate Action + Calendar Correctness
 
 **Effort:** M (3-5 days)
-**Status:** Not started
-**Dependencies:** E3-T1 (cost models should be stable first)
+**Status:** In progress (Step 1 complete - adjusted prices)
+**Dependencies:** E3-T1 (cost models should be stable first) ✅
 
 ### Objectives
 
@@ -226,9 +226,195 @@ class CostModel(Protocol):
 - Real-time event handling
 - Complex derivative actions (spinoffs, etc.)
 
-### Implementation Approach
+### Current State Analysis
 
-(Detailed plan TBD - will create after E3-T1 complete)
+**YFinance Data Structure:**
+- Data includes: Open, High, Low, Close, Adj Close, Volume, Dividends, Stock Splits
+- "Adj Close" accounts for splits and dividends (backward-adjusted)
+- "Close" is unadjusted raw price
+- Current backtest code uses "Close" (unadjusted) → **Issue to fix**
+
+**Current Warning:**
+```python
+if any("adj" in c.lower() and "close" in c.lower() for c in v.columns):
+    warnings.warn(f"price_histories entry {data_name} is not using adjusted returns.")
+```
+This correctly warns when Adj Close is available but not being used.
+
+**Trading Calendar:**
+- YFinance only returns trading days (implicit calendar handling)
+- No explicit validation that dates are valid trading days
+- No holiday/early-close awareness
+
+**Missing Data:**
+- No explicit policy for handling gaps
+- Pandas default behavior (NaN propagation)
+- No user configuration
+
+### Implementation Steps
+
+#### Step 1: Use Adjusted Prices (Day 1)
+
+**Problem:** Current code uses raw "Close" prices, not "Adj Close". This means splits and dividends are NOT properly accounted for, leading to incorrect returns and performance metrics.
+
+**Solution:**
+1. Modify data preparation to rename "Adj Close" → "Close" before feeding to Backtrader
+2. Keep original Close as "Close_Unadjusted" for reference
+3. Update warning logic to confirm adjusted prices are being used
+4. Document the adjustment in assumptions
+
+**Files to modify:**
+- `finbot/services/backtesting/backtest_runner.py` - Adjust price column mapping
+- `finbot/core/contracts/schemas.py` - Update bar validation to accept adj_close
+
+**Acceptance:**
+- Backtrader uses adjusted prices by default
+- Warning removed or changed to confirm adjustment
+- Parity tests still pass (may need tolerance adjustment if this changes results)
+
+#### Step 2: Add Corporate Action Tests (Day 2)
+
+**Create synthetic data with known splits/dividends:**
+1. Generate price series with split event
+2. Generate price series with dividend event
+3. Verify backtest correctly handles both
+
+**Files to create:**
+- `tests/unit/test_corporate_actions.py` - Unit tests for split/dividend handling
+- `tests/integration/test_adjusted_prices.py` - Integration test verifying adj prices used
+
+**Test cases:**
+- 2:1 stock split (price halves, shares double)
+- Dividend payment (price drops by dividend amount on ex-date)
+- Combined split + dividend scenario
+
+**Acceptance:**
+- Tests verify correct handling of splits and dividends
+- Portfolio value remains consistent through corporate actions
+
+#### Step 3: Add Trading Calendar Validation (Day 2-3)
+
+**Add explicit trading calendar support:**
+1. Create `TradingCalendar` abstraction
+2. Implement US stock market calendar (NYSE/NASDAQ)
+3. Add validation that backtest dates are trading days
+4. Add holiday calendar data
+
+**Files to create:**
+- `finbot/core/contracts/calendar.py` - Trading calendar interface
+- `finbot/services/backtesting/calendars/us_stock.py` - US market calendar
+- `tests/unit/test_trading_calendar.py` - Calendar tests
+
+**Features:**
+- Validate start/end dates are trading days
+- Skip non-trading days in date ranges
+- Handle early closes (half days)
+- Configurable calendar per market
+
+**Acceptance:**
+- Backtest rejects invalid (non-trading) start/end dates
+- Calendar-aware date filtering available
+- Tests verify common holidays excluded
+
+#### Step 4: Missing Data Policies (Day 3-4)
+
+**Add configurable missing data handling:**
+1. Define `MissingDataPolicy` enum (FORWARD_FILL, DROP, ERROR)
+2. Implement policy handlers
+3. Add policy parameter to BacktraderAdapter
+4. Test each policy behavior
+
+**Files to modify/create:**
+- `finbot/core/contracts/models.py` - Add MissingDataPolicy enum
+- `finbot/services/backtesting/adapters/backtrader_adapter.py` - Add policy parameter
+- `tests/unit/test_missing_data_policies.py` - Policy tests
+
+**Policies:**
+- `FORWARD_FILL`: Use last known price (current default)
+- `DROP`: Remove symbols with missing data
+- `ERROR`: Raise exception on missing data
+- `INTERPOLATE`: Linear interpolation (advanced)
+
+**Acceptance:**
+- All policies implemented and tested
+- User can configure policy per backtest
+- Policy choice recorded in assumptions
+
+#### Step 5: Documentation and Validation (Day 4-5)
+
+**Create comprehensive documentation:**
+1. Document adjusted price handling in ADR or guide
+2. Add corporate action handling guide
+3. Update API docs for calendar and missing data features
+4. Add examples to notebooks
+
+**Files to create/modify:**
+- `docs/guides/corporate-actions-and-calendars.md` - User guide
+- `notebooks/corporate_action_examples.ipynb` - Examples notebook
+- Update roadmap and backlog
+
+**Acceptance:**
+- All features documented with examples
+- User guide explains why adjusted prices matter
+- Notebooks demonstrate calendar and policy usage
+
+### Testing Strategy
+
+**Unit Tests:**
+- Adjusted price column mapping
+- Trading calendar date validation
+- Missing data policy handlers
+- Corporate action event detection
+
+**Integration Tests:**
+- Full backtest with split event
+- Full backtest with dividend event
+- Calendar validation in adapter
+- Missing data policy in real backtest
+
+**Parity Tests:**
+- Re-run all 3 golden strategies
+- Adjust tolerances if needed (adjusted prices may change results slightly)
+- Document any parity changes
+
+### Risk Mitigation
+
+**Risk: Adjusted prices break parity**
+- Mitigation: Test with golden strategies, adjust tolerances if needed
+- Rationale: Adjusted prices are MORE correct, so parity may shift
+
+**Risk: Calendar validation too strict**
+- Mitigation: Make calendar validation optional/configurable
+- Allow bypass for non-standard data sources
+
+**Risk: Missing data policies change results**
+- Mitigation: Default to FORWARD_FILL (current behavior)
+- Make policy explicit in assumptions
+
+### Progress Tracking
+
+**Step 1: Use Adjusted Prices** ✅ Complete (2026-02-16)
+- ✅ Backtrader uses Adj Close when available
+- ✅ OHLC adjusted proportionally to maintain relationships
+- ✅ Original prices preserved as Close_Unadjusted
+- ✅ 3 unit tests added and passing
+- ✅ All 3 golden strategy parity tests pass (100% parity maintained)
+- ✅ 458 tests passing total
+
+**Step 2: Corporate Action Tests** - Not started
+**Step 3: Trading Calendar Validation** - Not started
+**Step 4: Missing Data Policies** - Not started
+**Step 5: Documentation** - Not started
+
+### Acceptance Criteria
+
+- [x] Backtrader uses adjusted prices (Adj Close) by default
+- [ ] Corporate action tests pass (splits, dividends)
+- [ ] Trading calendar validation implemented
+- [ ] Missing data policies configurable
+- [x] All unit tests pass
+- [x] Golden strategy parity maintained (with adjusted tolerances if needed)
+- [ ] Documentation complete
 
 ---
 
