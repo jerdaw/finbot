@@ -1,8 +1,8 @@
 # Finbot Roadmap
 
 **Created:** 2026-02-10
-**Last Updated:** 2026-02-14
-**Status:** Priority 0-5 baseline complete/progressing; Priority 6 adapter-first backtesting/live-readiness kickoff in progress
+**Last Updated:** 2026-02-16
+**Status:** Priority 0-5 baseline complete/progressing; Priority 6 adapter-first backtesting/live-readiness in progress (E2-T2 complete)
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
 
@@ -448,6 +448,11 @@ New improvements added 2026-02-14 to support a backtesting-first roadmap now whi
     - **What:** Add contract-backed Backtrader adapter and initial behavior tests for core strategies
     - **Evidence:** `finbot/services/backtesting/adapters/backtrader_adapter.py`, `tests/unit/test_backtrader_adapter.py`
     - **Status:** ✅ Complete (2026-02-14, initial implementation)
+
+55. **Build A/B parity harness for golden strategies** (M: 3-5 days)
+    - **What:** Add integration test harness comparing legacy path vs adapter path with machine-readable diffs
+    - **Evidence:** `tests/integration/test_backtest_parity_ab.py`
+    - **Status:** ✅ Complete (2026-02-16, GS-01 passing with 100% parity)
 
 Priority 6 execution documents:
 - `docs/planning/backtesting-live-readiness-implementation-plan.md`

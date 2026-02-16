@@ -87,6 +87,7 @@
 ### E2-T2 (M) Build A/B harness
 
 - Output: `tests/integration/test_backtest_parity_ab.py`
+- Status: ✅ Complete (2026-02-16, GS-01 passing with 100% parity)
 - Acceptance:
   - Old and adapter paths can run on same inputs.
   - Output diffs are machine-readable.
@@ -206,7 +207,7 @@
 ## Sprint 2 Backlog (Immediate)
 
 1. [x] `E2-T1` Backtrader adapter skeleton.
-2. [ ] `E2-T2` A/B parity harness for one strategy.
+2. [x] `E2-T2` A/B parity harness for one strategy (GS-01 passing with 100% parity).
 3. [ ] `E2-T4` CI parity gate for one golden strategy.
 4. [x] `E0-T2` Publish first baseline report draft.
 
