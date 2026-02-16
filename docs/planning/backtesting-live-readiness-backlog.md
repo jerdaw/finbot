@@ -131,9 +131,22 @@
 
 ### E3-T2 (M) Corporate action + calendar correctness
 
+- Status: 🔄 In Progress (Step 1 complete - adjusted prices)
+- Completed:
+  - [x] Backtrader uses adjusted prices (Adj Close) by default
+  - [x] OHLC prices adjusted proportionally to maintain relationships
+  - [x] Original prices preserved as Close_Unadjusted for reference
+  - [x] 3 unit tests verifying adjusted price behavior
+  - [x] Parity maintained (all 3 golden strategies 100% parity)
+- Remaining:
+  - [ ] Corporate action tests with synthetic split/dividend data
+  - [ ] Trading calendar validation and holiday awareness
+  - [ ] Missing data policy configuration
+  - [ ] Documentation and user guides
 - Acceptance:
-  - Split/dividend handling validated.
-  - Session/calendar behavior tested.
+  - Backtrader uses adjusted prices. ✅
+  - Split/dividend handling validated. (pending tests)
+  - Session/calendar behavior tested. (pending implementation)
 
 ### E3-T3 (M) Walk-forward + regime evaluation
 
