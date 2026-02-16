@@ -109,6 +109,16 @@
 
 ### E3-T1 (M) Cost model expansion
 
+- Status: 🔄 In Progress (2026-02-16, infrastructure complete, integration pending)
+- Progress:
+  - [x] Cost model contracts created (CostModel, CostEvent, CostSummary, CostType)
+  - [x] Default cost models implemented (Zero* models)
+  - [x] Advanced cost models implemented (Flat, Percentage, Fixed, Sqrt)
+  - [x] Comprehensive unit tests (36 tests, all passing)
+  - [x] Parity maintained (all 3 golden strategies still 100%)
+  - [ ] Integration into BacktestRunResult schema
+  - [ ] Cost tracking in adapter
+  - [ ] Example notebook
 - Acceptance:
   - Commission/spread/slippage/borrow are parameterized.
   - Unit tests for each component.
@@ -221,10 +231,18 @@
 2. [x] `E2-T3` Golden-master parity tests for GS-03 (RiskParity + SPY/QQQ/TLT) - 100% parity
 3. [x] `E2-T4` Extended CI parity gate to all 3 golden strategies
 
-## Next Epic: E3 (Backtesting Fidelity Improvements)
+## Sprint 4 Status - 🔄 In Progress (Epic E3 Started)
 
-**Sprint 4 Options:**
-1. [ ] `E3-T1` Expand cost model (commission, spread, slippage, borrow)
+**Epic E3: Backtesting Fidelity Improvements**
+
+1. [🔄] `E3-T1` Expand cost model - Infrastructure complete, integration pending
+   - ✅ Cost model contracts (CostModel, CostEvent, CostSummary, CostType)
+   - ✅ 7 cost model implementations (Zero, Flat, Percentage, Fixed, Sqrt)
+   - ✅ 36 unit tests (all passing)
+   - ✅ Parity maintained (100% on all 3 golden strategies)
+   - 🔲 Integration into adapter and result schema
+   - 🔲 Example notebook demonstrating usage
+
 2. [ ] `E3-T2` Corporate action + calendar correctness (splits, dividends)
 3. [ ] `E3-T3` Walk-forward + regime evaluation support
 
@@ -233,7 +251,7 @@
 - `E0`: ✅ Complete
 - `E1`: ✅ Complete
 - `E2`: ✅ Complete (all tasks done: adapter, parity harness, golden tests, CI gate)
-- `E3`: Not started
+- `E3`: 🔄 In Progress (E3-T1 infrastructure complete, integration pending)
 - `E4`: Not started
 - `E5`: Not started
 - `E6`: Not started

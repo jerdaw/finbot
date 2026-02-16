@@ -1,5 +1,6 @@
 """Typed contracts for engine-agnostic backtesting and execution."""
 
+from finbot.core.contracts.costs import CostEvent, CostModel, CostSummary, CostType
 from finbot.core.contracts.interfaces import BacktestEngine, ExecutionSimulator, MarketDataProvider, PortfolioStateStore
 from finbot.core.contracts.models import (
     BacktestRunMetadata,
@@ -44,6 +45,10 @@ __all__ = [
     "BacktestRunRequest",
     "BacktestRunResult",
     "BarEvent",
+    "CostEvent",
+    "CostModel",
+    "CostSummary",
+    "CostType",
     "ExecutionSimulator",
     "FillEvent",
     "MarketDataProvider",
