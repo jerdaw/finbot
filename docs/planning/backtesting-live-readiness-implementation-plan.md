@@ -19,12 +19,12 @@
 - [x] Canonical schema helpers and payload serialization (`finbot/core/contracts/schemas.py`, `finbot/core/contracts/serialization.py`)
 - [x] Schema versioning policy and legacy migration path (`docs/guidelines/backtesting-contract-schema-versioning.md`, `finbot/core/contracts/versioning.py`)
 
-## Sprint 2 Status (as of 2026-02-16)
+## Sprint 2 Status (as of 2026-02-16) - ✅ COMPLETE
 
 - [x] Backtrader adapter skeleton (`finbot/services/backtesting/adapters/backtrader_adapter.py`)
 - [x] A/B parity harness for one golden strategy (GS-01 passing with 100% parity)
 - [x] CI parity gate for one golden strategy (dedicated job in `.github/workflows/ci.yml`)
-- [ ] Migration status report draft refresh after adapter parity run
+- [x] Migration status report draft refresh (`docs/research/adapter-migration-status-2026-02-16.md`)
 
 ## Decision Summary
 
