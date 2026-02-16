@@ -2,7 +2,7 @@
 
 **Created:** 2026-02-10
 **Last Updated:** 2026-02-16
-**Status:** Priority 0-5 baseline complete/progressing; Priority 6 adapter-first backtesting/live-readiness in progress (E2-T2 complete)
+**Status:** Priority 0-5 baseline complete/progressing; Priority 6 adapter-first backtesting/live-readiness in progress (Sprint 2: 3/4 complete)
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
 
@@ -453,6 +453,11 @@ New improvements added 2026-02-14 to support a backtesting-first roadmap now whi
     - **What:** Add integration test harness comparing legacy path vs adapter path with machine-readable diffs
     - **Evidence:** `tests/integration/test_backtest_parity_ab.py`
     - **Status:** ✅ Complete (2026-02-16, GS-01 passing with 100% parity)
+
+56. **Wire CI parity gate for golden strategies** (S: 1-2 hours)
+    - **What:** Add dedicated CI job running GS-01 parity test, commit golden datasets to repo
+    - **Evidence:** `.github/workflows/ci.yml` (parity-gate job), golden datasets in git
+    - **Status:** ✅ Complete (2026-02-16, automated regression prevention active)
 
 Priority 6 execution documents:
 - `docs/planning/backtesting-live-readiness-implementation-plan.md`
