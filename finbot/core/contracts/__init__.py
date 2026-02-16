@@ -14,6 +14,7 @@ from finbot.core.contracts.models import (
     OrderType,
     PortfolioSnapshot,
 )
+from finbot.core.contracts.regime import MarketRegime, RegimeConfig, RegimeDetector, RegimeMetrics, RegimePeriod
 from finbot.core.contracts.schemas import (
     BACKTEST_STATS_COLUMN_TO_METRIC,
     BAR_DATAFRAME_COLUMNS,
@@ -33,6 +34,7 @@ from finbot.core.contracts.versioning import (
     is_schema_compatible,
     migrate_backtest_result_payload,
 )
+from finbot.core.contracts.walkforward import WalkForwardConfig, WalkForwardResult, WalkForwardWindow
 
 __all__ = [
     "BACKTEST_RESULT_SCHEMA_VERSION",
@@ -54,12 +56,20 @@ __all__ = [
     "ExecutionSimulator",
     "FillEvent",
     "MarketDataProvider",
+    "MarketRegime",
     "MissingDataPolicy",
     "OrderRequest",
     "OrderSide",
     "OrderType",
     "PortfolioSnapshot",
     "PortfolioStateStore",
+    "RegimeConfig",
+    "RegimeDetector",
+    "RegimeMetrics",
+    "RegimePeriod",
+    "WalkForwardConfig",
+    "WalkForwardResult",
+    "WalkForwardWindow",
     "backtest_result_from_payload",
     "backtest_result_to_payload",
     "build_backtest_run_result_from_stats",

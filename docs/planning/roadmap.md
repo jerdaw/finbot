@@ -2,7 +2,7 @@
 
 **Created:** 2026-02-10
 **Last Updated:** 2026-02-16
-**Status:** Priority 0-5 baseline complete/progressing; Priority 6 adapter-first backtesting/live-readiness in progress (Epic E2: ✅ COMPLETE, E3-T1 + E3-T2: ✅ COMPLETE)
+**Status:** Priority 0-5 baseline complete/progressing; Priority 6 adapter-first backtesting/live-readiness in progress (Epic E2: ✅ COMPLETE, Epic E3: ✅ COMPLETE)
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
 
@@ -489,15 +489,19 @@ New improvements added 2026-02-14 to support a backtesting-first roadmap now whi
     - **Evidence:** `docs/user-guides/corporate-actions-and-data-quality.md` (comprehensive guide), `notebooks/corporate_actions_and_missing_data_demo.ipynb` (interactive tutorial)
     - **Status:** ✅ Complete (2026-02-16)
 
+63. **Walk-forward testing and regime analysis** (M: 3-5 days)
+    - **What:** Add walk-forward validation and market regime detection for strategy robustness analysis
+    - **Evidence:** `finbot/core/contracts/walkforward.py`, `finbot/core/contracts/regime.py`, `finbot/services/backtesting/walkforward.py`, `finbot/services/backtesting/regime.py`, `tests/unit/test_walkforward.py` (9 tests), `tests/unit/test_regime.py` (11 tests), `docs/user-guides/walkforward-and-regime-analysis.md`
+    - **Status:** ✅ Complete (2026-02-16, 489 tests passing, 100% parity maintained)
+
 Priority 6 execution documents:
 - `docs/planning/backtesting-live-readiness-implementation-plan.md`
 - `docs/planning/backtesting-live-readiness-backlog.md`
 - `docs/planning/backtesting-live-readiness-handoff-2026-02-14.md`
+- `docs/planning/e3-t3-walkforward-regime-implementation-plan.md`
 
-**Current Phase:** Epic E3 (Backtesting Fidelity Improvements)
-- E3-T1: Cost models ✅ Complete
-- E3-T2: Corporate actions + data quality ✅ Complete
-- E3-T3: Walk-forward + regime evaluation (next)
+**Current Phase:** Epic E4 (Reproducibility and Observability) - next
+- Epic E3: ✅ Complete (all 3 tasks: cost models, corporate actions + data quality, walk-forward + regime analysis)
 
 ---
 
@@ -565,3 +569,4 @@ Priority 6 execution documents:
 | Corporate action handling (6.60) | 2026-02-16 | Adjusted prices (Adj Close), OHLC proportional adjustment, 9 tests (adjusted + splits/dividends) |
 | Missing data policies (6.61) | 2026-02-16 | 5 policies (FORWARD_FILL/DROP/ERROR/INTERPOLATE/BACKFILL), 11 comprehensive tests, 467 total tests |
 | Corporate actions documentation (6.62) | 2026-02-16 | User guide + Jupyter notebook demonstrating adjusted prices and missing data policies |
+| Walk-forward + regime analysis (6.63) | 2026-02-16 | Walk-forward testing (rolling/anchored), regime detection (4 regimes), 20 tests, 489 total tests |

@@ -160,9 +160,20 @@
 
 ### E3-T3 (M) Walk-forward + regime evaluation
 
+- Status: ✅ Complete (2026-02-16)
+- Completed:
+  - [x] Walk-forward models (WalkForwardConfig, WalkForwardWindow, WalkForwardResult)
+  - [x] Regime detection models (MarketRegime, RegimeConfig, RegimePeriod, RegimeMetrics)
+  - [x] Walk-forward implementation (generate_windows, run_walk_forward)
+  - [x] Regime detection implementation (SimpleRegimeDetector, segment_by_regime)
+  - [x] 9 walk-forward tests
+  - [x] 11 regime detection tests
+  - [x] Comprehensive user guide with examples
+  - [x] 489 tests passing total (up from 467)
+  - [x] 100% parity maintained
 - Acceptance:
-  - Walk-forward helper API added.
-  - Regime segmented metrics generated.
+  - Walk-forward helper API added. ✅
+  - Regime segmented metrics generated. ✅
 
 ## Epic E4: Reproducibility and Observability (Weeks 27-36)
 
@@ -298,7 +309,7 @@
 - `E0`: ✅ Complete
 - `E1`: ✅ Complete
 - `E2`: ✅ Complete (all tasks done: adapter, parity harness, golden tests, CI gate)
-- `E3`: 🔄 In Progress (E3-T1 and E3-T2 complete, E3-T3 remains)
+- `E3`: ✅ Complete (All tasks: E3-T1 cost models, E3-T2 corporate actions + data quality, E3-T3 walk-forward + regime analysis)
 - `E4`: Not started
 - `E5`: Not started
 - `E6`: Not started
