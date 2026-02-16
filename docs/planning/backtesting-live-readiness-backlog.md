@@ -245,8 +245,22 @@ and enable focused testing in a separate task.
 
 ### E4-T4 (S) Dashboard experiment comparison page
 
+- Status: ✅ Complete (2026-02-16)
+- Completed:
+  - [x] Dashboard page (pages/7_experiments.py)
+  - [x] Experiment selection with filters (strategy, limit)
+  - [x] Assumptions comparison table (shows only differences)
+  - [x] Metrics comparison table with highlighting (green=best, red=worst)
+  - [x] Visual comparison with interactive bar charts
+  - [x] Export to CSV functionality
+  - [x] Comparison utilities (build, format, highlight, plot, export)
+  - [x] 14 comprehensive unit tests (all passing)
+  - [x] 583 tests passing total (up from 569)
+  - [x] Implementation plan documented
 - Acceptance:
-  - Experiment cohorts can be compared by assumptions and results.
+  - Experiment cohorts can be compared by assumptions and results. ✅
+  - Side-by-side metric visualization. ✅
+  - Export functionality. ✅
 
 ## Epic E5: Live-Readiness Without Production Live (Weeks 37-44)
 
