@@ -2,6 +2,7 @@
 
 from finbot.core.contracts.costs import CostEvent, CostModel, CostSummary, CostType
 from finbot.core.contracts.interfaces import BacktestEngine, ExecutionSimulator, MarketDataProvider, PortfolioStateStore
+from finbot.core.contracts.missing_data import DEFAULT_MISSING_DATA_POLICY, MissingDataPolicy
 from finbot.core.contracts.models import (
     BacktestRunMetadata,
     BacktestRunRequest,
@@ -39,6 +40,7 @@ __all__ = [
     "BAR_DATAFRAME_COLUMNS",
     "CANONICAL_METRIC_KEYS",
     "CONTRACT_SCHEMA_VERSION",
+    "DEFAULT_MISSING_DATA_POLICY",
     "LEGACY_BACKTEST_RESULT_VERSION",
     "BacktestEngine",
     "BacktestRunMetadata",
@@ -52,6 +54,7 @@ __all__ = [
     "ExecutionSimulator",
     "FillEvent",
     "MarketDataProvider",
+    "MissingDataPolicy",
     "OrderRequest",
     "OrderSide",
     "OrderType",
