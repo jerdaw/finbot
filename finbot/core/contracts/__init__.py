@@ -1,5 +1,6 @@
 """Typed contracts for engine-agnostic backtesting and execution."""
 
+from finbot.core.contracts.batch import BatchItemResult, BatchRun, BatchStatus, ErrorCategory
 from finbot.core.contracts.costs import CostEvent, CostModel, CostSummary, CostType
 from finbot.core.contracts.interfaces import BacktestEngine, ExecutionSimulator, MarketDataProvider, PortfolioStateStore
 from finbot.core.contracts.missing_data import DEFAULT_MISSING_DATA_POLICY, MissingDataPolicy
@@ -50,11 +51,15 @@ __all__ = [
     "BacktestRunRequest",
     "BacktestRunResult",
     "BarEvent",
+    "BatchItemResult",
+    "BatchRun",
+    "BatchStatus",
     "CostEvent",
     "CostModel",
     "CostSummary",
     "CostType",
     "DataSnapshot",
+    "ErrorCategory",
     "ExecutionSimulator",
     "FillEvent",
     "MarketDataProvider",
