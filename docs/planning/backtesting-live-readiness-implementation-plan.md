@@ -23,7 +23,7 @@
 
 - [x] Backtrader adapter skeleton (`finbot/services/backtesting/adapters/backtrader_adapter.py`)
 - [x] A/B parity harness for one golden strategy (GS-01 passing with 100% parity)
-- [ ] CI parity gate for one golden strategy
+- [x] CI parity gate for one golden strategy (dedicated job in `.github/workflows/ci.yml`)
 - [ ] Migration status report draft refresh after adapter parity run
 
 ## Decision Summary
