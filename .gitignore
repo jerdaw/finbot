@@ -16,6 +16,14 @@ temp/*
 finbot/data/**
 !finbot/data/.gitkeep
 
+# Exception: Keep golden strategy datasets for CI parity testing
+# These are frozen baselines from golden-strategies-and-datasets.md
+!finbot/data/yfinance_data/
+!finbot/data/yfinance_data/history/
+!finbot/data/yfinance_data/history/SPY_history_1d.parquet
+!finbot/data/yfinance_data/history/TLT_history_1d.parquet
+!finbot/data/yfinance_data/history/QQQ_history_1d.parquet
+
 # Ignore everything in the backups directory but not the directory itself
 backups/*
 !backups/.gitkeep

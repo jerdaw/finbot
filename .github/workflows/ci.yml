@@ -131,3 +131,28 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
         continue-on-error: true
+
+  parity-gate:
+    name: Backtest Parity Gate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Set up Python
+        run: uv python install 3.13
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Run parity tests for golden strategies
+        env:
+          DYNACONF_ENV: development
+        run: |
+          echo "Running adapter parity gate for golden strategies..."
+          uv run pytest tests/integration/test_backtest_parity_ab.py::TestGoldenStrategyParity::test_gs01_norebalance_spy -v
+          echo "✅ Parity gate passed - adapter output matches legacy path within tolerance"
