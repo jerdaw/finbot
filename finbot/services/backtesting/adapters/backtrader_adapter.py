@@ -11,12 +11,14 @@ import backtrader as bt
 import pandas as pd
 
 from finbot.core.contracts import (
+    DEFAULT_MISSING_DATA_POLICY,
     BacktestRunMetadata,
     BacktestRunRequest,
     BacktestRunResult,
     CostEvent,
     CostSummary,
     CostType,
+    MissingDataPolicy,
 )
 from finbot.core.contracts.costs import CostModel
 from finbot.core.contracts.interfaces import BacktestEngine
@@ -58,6 +60,7 @@ class BacktraderAdapter(BacktestEngine):
         commission_model: CostModel | None = None,
         spread_model: CostModel | None = None,
         slippage_model: CostModel | None = None,
+        missing_data_policy: MissingDataPolicy = DEFAULT_MISSING_DATA_POLICY,
     ):
         self._price_histories = price_histories
         self._strategy_registry = strategy_registry or DEFAULT_STRATEGY_REGISTRY
@@ -72,6 +75,8 @@ class BacktraderAdapter(BacktestEngine):
         self._commission_model = commission_model or ZeroCommission()
         self._spread_model = spread_model or ZeroSpread()
         self._slippage_model = slippage_model or ZeroSlippage()
+        # Missing data policy - default to forward fill
+        self._missing_data_policy = missing_data_policy
 
     def run(self, request: BacktestRunRequest) -> BacktestRunResult:
         strategy_cls = self._resolve_strategy(request.strategy_name)
@@ -121,6 +126,7 @@ class BacktraderAdapter(BacktestEngine):
             "commission_model": self._commission_model.get_name(),
             "spread_model": self._spread_model.get_name(),
             "slippage_model": self._slippage_model.get_name(),
+            "missing_data_policy": self._missing_data_policy.value,
         }
 
         result = build_backtest_run_result_from_stats(
@@ -156,9 +162,43 @@ class BacktraderAdapter(BacktestEngine):
             if symbol not in self._price_histories:
                 raise ValueError(f"Missing price history for symbol: {symbol}")
             symbol_df = self._price_histories[symbol].copy()
+            # Apply missing data policy before validation
+            symbol_df = self._apply_missing_data_policy(symbol_df, symbol)
             validate_bar_dataframe(symbol_df)
             histories[symbol] = symbol_df
         return histories
+
+    def _apply_missing_data_policy(self, df: pd.DataFrame, symbol: str) -> pd.DataFrame:
+        """Apply configured missing data policy to a dataframe.
+
+        Args:
+            df: Price history dataframe
+            symbol: Symbol name (for error messages)
+
+        Returns:
+            DataFrame with missing data handled according to policy
+
+        Raises:
+            ValueError: If policy is ERROR and missing data is detected
+        """
+        if self._missing_data_policy == MissingDataPolicy.FORWARD_FILL:
+            return df.ffill()
+        elif self._missing_data_policy == MissingDataPolicy.DROP:
+            return df.dropna()
+        elif self._missing_data_policy == MissingDataPolicy.ERROR:
+            if df.isnull().any().any():
+                null_counts = df.isnull().sum()
+                null_cols = null_counts[null_counts > 0].to_dict()
+                raise ValueError(
+                    f"Missing data detected in {symbol} with policy=ERROR. Null counts by column: {null_cols}"
+                )
+            return df
+        elif self._missing_data_policy == MissingDataPolicy.INTERPOLATE:
+            return df.interpolate(method="linear")
+        elif self._missing_data_policy == MissingDataPolicy.BACKFILL:
+            return df.bfill()
+        else:
+            raise ValueError(f"Unknown missing data policy: {self._missing_data_policy}")
 
     def _build_config_hash(self, request: BacktestRunRequest) -> str:
         hash_input = {

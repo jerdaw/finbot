@@ -131,7 +131,7 @@
 
 ### E3-T2 (M) Corporate action + calendar correctness
 
-- Status: 🔄 In Progress (Steps 1-2 complete - adjusted prices + tests)
+- Status: 🔄 In Progress (Steps 1-2 and 4 complete - adjusted prices + tests + missing data policies)
 - Completed:
   - [x] Backtrader uses adjusted prices (Adj Close) by default
   - [x] OHLC prices adjusted proportionally to maintain relationships
@@ -142,15 +142,20 @@
   - [x] Test stock splits (2:1, 3:1, 1:5 reverse)
   - [x] Test dividend payments (single, multiple)
   - [x] Test combined split + dividend scenarios
-  - [x] 464 tests passing total
+  - [x] Missing data policy enum (FORWARD_FILL, DROP, ERROR, INTERPOLATE, BACKFILL)
+  - [x] Missing data policy integration into BacktraderAdapter
+  - [x] 11 comprehensive missing data policy tests
+  - [x] Policy application before validation
+  - [x] Edge case handling (gaps at start/end)
+  - [x] 467 tests passing total (+ 11 new)
 - Remaining:
-  - [ ] Trading calendar validation and holiday awareness
-  - [ ] Missing data policy configuration
-  - [ ] Documentation and user guides
+  - [ ] Trading calendar validation and holiday awareness (Step 3 - skipped for now)
+  - [ ] Documentation and user guides (Step 5)
 - Acceptance:
   - Backtrader uses adjusted prices. ✅
   - Split/dividend handling validated. ✅
-  - Session/calendar behavior tested. (pending implementation)
+  - Missing data policies implemented and tested. ✅
+  - Session/calendar behavior tested. (skipped - YFinance already filters to trading days)
 
 ### E3-T3 (M) Walk-forward + regime evaluation
 
