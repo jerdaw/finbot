@@ -27,6 +27,7 @@ from finbot.core.contracts.serialization import (
     backtest_result_to_payload,
     build_backtest_run_result_from_stats,
 )
+from finbot.core.contracts.snapshot import DataSnapshot, compute_data_content_hash, compute_snapshot_hash
 from finbot.core.contracts.versioning import (
     BACKTEST_RESULT_SCHEMA_VERSION,
     CONTRACT_SCHEMA_VERSION,
@@ -53,6 +54,7 @@ __all__ = [
     "CostModel",
     "CostSummary",
     "CostType",
+    "DataSnapshot",
     "ExecutionSimulator",
     "FillEvent",
     "MarketDataProvider",
@@ -73,6 +75,8 @@ __all__ = [
     "backtest_result_from_payload",
     "backtest_result_to_payload",
     "build_backtest_run_result_from_stats",
+    "compute_data_content_hash",
+    "compute_snapshot_hash",
     "extract_canonical_metrics",
     "is_schema_compatible",
     "migrate_backtest_result_payload",
