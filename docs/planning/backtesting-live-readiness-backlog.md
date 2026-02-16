@@ -109,19 +109,21 @@
 
 ### E3-T1 (M) Cost model expansion
 
-- Status: 🔄 In Progress (2026-02-16, infrastructure complete, integration pending)
-- Progress:
+- Status: ✅ Complete (2026-02-16, infrastructure + examples delivered)
+- Completed:
   - [x] Cost model contracts created (CostModel, CostEvent, CostSummary, CostType)
   - [x] Default cost models implemented (Zero* models)
   - [x] Advanced cost models implemented (Flat, Percentage, Fixed, Sqrt)
   - [x] Comprehensive unit tests (36 tests, all passing)
   - [x] Parity maintained (all 3 golden strategies still 100%)
-  - [ ] Integration into BacktestRunResult schema
-  - [ ] Cost tracking in adapter
-  - [ ] Example notebook
+  - [x] Example notebook demonstrating usage
+- Deferred (future work):
+  - [ ] Integration into BacktestRunResult schema (E3-T1b)
+  - [ ] Cost tracking in adapter (E3-T1b)
+  - [ ] Full cost breakdown in results (E3-T1b)
 - Acceptance:
-  - Commission/spread/slippage/borrow are parameterized.
-  - Unit tests for each component.
+  - Commission/spread/slippage/borrow are parameterized. ✅
+  - Unit tests for each component. ✅
 
 ### E3-T2 (M) Corporate action + calendar correctness
 
@@ -231,20 +233,25 @@
 2. [x] `E2-T3` Golden-master parity tests for GS-03 (RiskParity + SPY/QQQ/TLT) - 100% parity
 3. [x] `E2-T4` Extended CI parity gate to all 3 golden strategies
 
-## Sprint 4 Status - 🔄 In Progress (Epic E3 Started)
+## Sprint 4 Status - ✅ Complete (E3-T1 Infrastructure Delivered)
 
 **Epic E3: Backtesting Fidelity Improvements**
 
-1. [🔄] `E3-T1` Expand cost model - Infrastructure complete, integration pending
+1. [x] `E3-T1` Expand cost model - Infrastructure + examples complete
    - ✅ Cost model contracts (CostModel, CostEvent, CostSummary, CostType)
    - ✅ 7 cost model implementations (Zero, Flat, Percentage, Fixed, Sqrt)
    - ✅ 36 unit tests (all passing)
    - ✅ Parity maintained (100% on all 3 golden strategies)
-   - 🔲 Integration into adapter and result schema
-   - 🔲 Example notebook demonstrating usage
+   - ✅ Example notebook demonstrating all cost models
+   - 🔲 Full adapter integration (deferred to E3-T1b)
 
 2. [ ] `E3-T2` Corporate action + calendar correctness (splits, dividends)
 3. [ ] `E3-T3` Walk-forward + regime evaluation support
+
+**Next Sprint Options:**
+- E3-T1b: Complete cost model integration into adapter
+- E3-T2: Corporate action + calendar correctness
+- E3-T3: Walk-forward + regime evaluation
 
 ## Progress Tracking
 
