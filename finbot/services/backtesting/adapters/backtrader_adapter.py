@@ -10,12 +10,22 @@ from uuid import uuid4
 import backtrader as bt
 import pandas as pd
 
-from finbot.core.contracts import BacktestRunMetadata, BacktestRunRequest, BacktestRunResult
+from finbot.core.contracts import (
+    BacktestRunMetadata,
+    BacktestRunRequest,
+    BacktestRunResult,
+    CostEvent,
+    CostSummary,
+    CostType,
+)
+from finbot.core.contracts.costs import CostModel
 from finbot.core.contracts.interfaces import BacktestEngine
 from finbot.core.contracts.schemas import validate_bar_dataframe
 from finbot.core.contracts.serialization import build_backtest_run_result_from_stats
+from finbot.services.backtesting.analyzers.trade_tracker import TradeInfo
 from finbot.services.backtesting.backtest_runner import BacktestRunner
 from finbot.services.backtesting.brokers.fixed_commission_scheme import FixedCommissionScheme
+from finbot.services.backtesting.costs import ZeroCommission, ZeroSlippage, ZeroSpread
 from finbot.services.backtesting.strategies.dual_momentum import DualMomentum
 from finbot.services.backtesting.strategies.no_rebalance import NoRebalance
 from finbot.services.backtesting.strategies.rebalance import Rebalance
@@ -45,6 +55,9 @@ class BacktraderAdapter(BacktestEngine):
         sizer_kwargs: dict[str, Any] | None = None,
         data_snapshot_id: str = "local-yfinance-parquet",
         random_seed: int | None = None,
+        commission_model: CostModel | None = None,
+        spread_model: CostModel | None = None,
+        slippage_model: CostModel | None = None,
     ):
         self._price_histories = price_histories
         self._strategy_registry = strategy_registry or DEFAULT_STRATEGY_REGISTRY
@@ -55,6 +68,10 @@ class BacktraderAdapter(BacktestEngine):
         self._sizer_kwargs = sizer_kwargs or {}
         self._data_snapshot_id = data_snapshot_id
         self._random_seed = random_seed
+        # Cost models - default to zero costs to maintain backwards compatibility
+        self._commission_model = commission_model or ZeroCommission()
+        self._spread_model = spread_model or ZeroSpread()
+        self._slippage_model = slippage_model or ZeroSlippage()
 
     def run(self, request: BacktestRunRequest) -> BacktestRunResult:
         strategy_cls = self._resolve_strategy(request.strategy_name)
@@ -78,6 +95,10 @@ class BacktraderAdapter(BacktestEngine):
         )
         stats_df = runner.run_backtest()
 
+        # Extract trades and calculate costs
+        trades = runner.get_trades()
+        costs = self._calculate_costs_from_trades(trades)
+
         metadata = BacktestRunMetadata(
             run_id=f"bt-{uuid4()}",
             engine_name="backtrader",
@@ -97,12 +118,26 @@ class BacktraderAdapter(BacktestEngine):
             "broker": self._broker.__name__,
             "broker_commission": self._broker_commission.__name__,
             "sizer": self._sizer.__name__,
+            "commission_model": self._commission_model.get_name(),
+            "spread_model": self._spread_model.get_name(),
+            "slippage_model": self._slippage_model.get_name(),
         }
 
-        return build_backtest_run_result_from_stats(
+        result = build_backtest_run_result_from_stats(
             stats_df=stats_df,
             metadata=metadata,
             assumptions=assumptions,
+        )
+
+        # Add costs to result (replace with new result including costs)
+        return BacktestRunResult(
+            metadata=result.metadata,
+            metrics=result.metrics,
+            schema_version=result.schema_version,
+            assumptions=result.assumptions,
+            artifacts=result.artifacts,
+            warnings=result.warnings,
+            costs=costs,
         )
 
     def _resolve_strategy(self, strategy_name: str) -> type[bt.Strategy]:
@@ -140,3 +175,77 @@ class BacktraderAdapter(BacktestEngine):
             "sizer_kwargs": self._sizer_kwargs,
         }
         return hash_dictionary(hash_input)
+
+    def _calculate_costs_from_trades(self, trades: list[TradeInfo]) -> CostSummary:
+        """Calculate costs from executed trades using configured cost models."""
+        cost_events: list[CostEvent] = []
+        total_commission = 0.0
+        total_spread = 0.0
+        total_slippage = 0.0
+
+        for trade in trades:
+            # Calculate commission
+            commission = self._commission_model.calculate_cost(
+                symbol=trade.symbol,
+                quantity=abs(trade.size),
+                price=trade.price,
+                timestamp=pd.Timestamp(trade.timestamp),
+            )
+            total_commission += commission
+            if commission > 0:
+                cost_events.append(
+                    CostEvent(
+                        timestamp=pd.Timestamp(trade.timestamp),
+                        symbol=trade.symbol,
+                        cost_type=CostType.COMMISSION,
+                        amount=commission,
+                        basis=self._commission_model.get_name(),
+                    )
+                )
+
+            # Calculate spread
+            spread = self._spread_model.calculate_cost(
+                symbol=trade.symbol,
+                quantity=abs(trade.size),
+                price=trade.price,
+                timestamp=pd.Timestamp(trade.timestamp),
+            )
+            total_spread += spread
+            if spread > 0:
+                cost_events.append(
+                    CostEvent(
+                        timestamp=pd.Timestamp(trade.timestamp),
+                        symbol=trade.symbol,
+                        cost_type=CostType.SPREAD,
+                        amount=spread,
+                        basis=self._spread_model.get_name(),
+                    )
+                )
+
+            # Calculate slippage
+            slippage = self._slippage_model.calculate_cost(
+                symbol=trade.symbol,
+                quantity=abs(trade.size),
+                price=trade.price,
+                timestamp=pd.Timestamp(trade.timestamp),
+            )
+            total_slippage += slippage
+            if slippage > 0:
+                cost_events.append(
+                    CostEvent(
+                        timestamp=pd.Timestamp(trade.timestamp),
+                        symbol=trade.symbol,
+                        cost_type=CostType.SLIPPAGE,
+                        amount=slippage,
+                        basis=self._slippage_model.get_name(),
+                    )
+                )
+
+        return CostSummary(
+            total_commission=total_commission,
+            total_spread=total_spread,
+            total_slippage=total_slippage,
+            total_borrow=0.0,
+            total_market_impact=0.0,
+            cost_events=tuple(cost_events),
+        )

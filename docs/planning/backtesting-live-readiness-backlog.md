@@ -109,7 +109,7 @@
 
 ### E3-T1 (M) Cost model expansion
 
-- Status: ✅ Complete (2026-02-16, infrastructure + examples delivered)
+- Status: ✅ Complete (2026-02-16, full integration delivered)
 - Completed:
   - [x] Cost model contracts created (CostModel, CostEvent, CostSummary, CostType)
   - [x] Default cost models implemented (Zero* models)
@@ -117,13 +117,17 @@
   - [x] Comprehensive unit tests (36 tests, all passing)
   - [x] Parity maintained (all 3 golden strategies still 100%)
   - [x] Example notebook demonstrating usage
-- Deferred (future work):
-  - [ ] Integration into BacktestRunResult schema (E3-T1b)
-  - [ ] Cost tracking in adapter (E3-T1b)
-  - [ ] Full cost breakdown in results (E3-T1b)
+  - [x] Integration into BacktestRunResult schema (costs field added, optional)
+  - [x] Cost tracking in adapter (TradeTracker analyzer captures all trades)
+  - [x] Full cost breakdown in results (CostSummary with per-trade events)
+  - [x] Cost serialization/deserialization (JSON-compatible)
+  - [x] Integration tests (5 tests verifying end-to-end cost tracking)
 - Acceptance:
   - Commission/spread/slippage/borrow are parameterized. ✅
   - Unit tests for each component. ✅
+  - Cost events tracked in BacktestRunResult. ✅
+  - Cost metrics included in result summary. ✅
+  - All 3 golden strategy parity tests pass with defaults. ✅
 
 ### E3-T2 (M) Corporate action + calendar correctness
 
@@ -233,23 +237,25 @@
 2. [x] `E2-T3` Golden-master parity tests for GS-03 (RiskParity + SPY/QQQ/TLT) - 100% parity
 3. [x] `E2-T4` Extended CI parity gate to all 3 golden strategies
 
-## Sprint 4 Status - ✅ Complete (E3-T1 Infrastructure Delivered)
+## Sprint 4 Status - ✅ Complete (E3-T1 Fully Delivered)
 
 **Epic E3: Backtesting Fidelity Improvements**
 
-1. [x] `E3-T1` Expand cost model - Infrastructure + examples complete
+1. [x] `E3-T1` Expand cost model - **Fully complete** (infrastructure + integration + examples)
    - ✅ Cost model contracts (CostModel, CostEvent, CostSummary, CostType)
    - ✅ 7 cost model implementations (Zero, Flat, Percentage, Fixed, Sqrt)
    - ✅ 36 unit tests (all passing)
    - ✅ Parity maintained (100% on all 3 golden strategies)
    - ✅ Example notebook demonstrating all cost models
-   - 🔲 Full adapter integration (deferred to E3-T1b)
+   - ✅ Full adapter integration (BacktestRunResult.costs field, TradeTracker analyzer)
+   - ✅ Cost serialization/deserialization
+   - ✅ 5 integration tests verifying end-to-end cost tracking
+   - ✅ 455 tests passing (up from 450)
 
 2. [ ] `E3-T2` Corporate action + calendar correctness (splits, dividends)
 3. [ ] `E3-T3` Walk-forward + regime evaluation support
 
 **Next Sprint Options:**
-- E3-T1b: Complete cost model integration into adapter
 - E3-T2: Corporate action + calendar correctness
 - E3-T3: Walk-forward + regime evaluation
 
@@ -258,7 +264,7 @@
 - `E0`: ✅ Complete
 - `E1`: ✅ Complete
 - `E2`: ✅ Complete (all tasks done: adapter, parity harness, golden tests, CI gate)
-- `E3`: 🔄 In Progress (E3-T1 infrastructure complete, integration pending)
+- `E3`: 🔄 In Progress (E3-T1 fully complete, E3-T2 and E3-T3 remain)
 - `E4`: Not started
 - `E5`: Not started
 - `E6`: Not started

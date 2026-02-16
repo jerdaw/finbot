@@ -7,6 +7,7 @@ import backtrader as bt
 import pandas as pd
 
 from finbot.services.backtesting.analyzers.cv_tracker import CVTracker
+from finbot.services.backtesting.analyzers.trade_tracker import TradeTracker
 from finbot.services.backtesting.compute_stats import compute_stats
 
 
@@ -59,6 +60,7 @@ class BacktestRunner:
         self._add_broker_to_cerebro()
         cerebro.addsizer(self.sizer, **self.sizer_kwargs)
         cerebro.addanalyzer(CVTracker)
+        cerebro.addanalyzer(TradeTracker)
         cerebro.addobserver(bt.observers.BuySell)
         cerebro.addobserver(bt.observers.Value)
         cerebro.addobserver(bt.observers.Cash)
@@ -112,6 +114,16 @@ class BacktestRunner:
         'Value' and 'Cash' columns indexed by date.
         """
         return self._build_cv_hist()
+
+    def get_trades(self) -> list[Any]:
+        """Return the list of executed trades from the backtest.
+
+        Must be called after run_backtest(). Returns TradeInfo objects
+        captured by the TradeTracker analyzer.
+        """
+        assert self._cerebro_res is not None
+        trade_analysis = self._cerebro_res[0].analyzers.tradetracker.get_analysis()
+        return trade_analysis.get("trades", [])
 
     def get_test_stats(self) -> pd.DataFrame:
         cv_hist = self._build_cv_hist()
