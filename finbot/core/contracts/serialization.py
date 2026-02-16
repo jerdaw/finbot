@@ -7,6 +7,7 @@ from typing import Any
 
 import pandas as pd
 
+from finbot.core.contracts.costs import CostEvent, CostSummary, CostType
 from finbot.core.contracts.models import BacktestRunMetadata, BacktestRunResult
 from finbot.core.contracts.schemas import extract_canonical_metrics
 from finbot.core.contracts.versioning import BACKTEST_RESULT_SCHEMA_VERSION, migrate_backtest_result_payload
@@ -31,10 +32,60 @@ def build_backtest_run_result_from_stats(
     )
 
 
+def _serialize_costs(costs: CostSummary | None) -> dict[str, Any] | None:
+    """Serialize CostSummary to JSON-serializable dictionary."""
+    if costs is None:
+        return None
+
+    return {
+        "total_commission": costs.total_commission,
+        "total_spread": costs.total_spread,
+        "total_slippage": costs.total_slippage,
+        "total_borrow": costs.total_borrow,
+        "total_market_impact": costs.total_market_impact,
+        "cost_events": [
+            {
+                "timestamp": event.timestamp.isoformat(),
+                "symbol": event.symbol,
+                "cost_type": event.cost_type.value,
+                "amount": event.amount,
+                "basis": event.basis,
+            }
+            for event in costs.cost_events
+        ],
+    }
+
+
+def _deserialize_costs(costs_payload: dict[str, Any] | None) -> CostSummary | None:
+    """Deserialize CostSummary from JSON payload."""
+    if costs_payload is None:
+        return None
+
+    cost_events = tuple(
+        CostEvent(
+            timestamp=pd.Timestamp(event["timestamp"]),
+            symbol=event["symbol"],
+            cost_type=CostType(event["cost_type"]),
+            amount=float(event["amount"]),
+            basis=event["basis"],
+        )
+        for event in costs_payload.get("cost_events", [])
+    )
+
+    return CostSummary(
+        total_commission=float(costs_payload["total_commission"]),
+        total_spread=float(costs_payload["total_spread"]),
+        total_slippage=float(costs_payload["total_slippage"]),
+        total_borrow=float(costs_payload["total_borrow"]),
+        total_market_impact=float(costs_payload["total_market_impact"]),
+        cost_events=cost_events,
+    )
+
+
 def backtest_result_to_payload(result: BacktestRunResult) -> dict[str, Any]:
     """Serialize a result dataclass to a JSON-like dictionary payload."""
 
-    return {
+    payload = {
         "schema_version": result.schema_version,
         "metadata": {
             "run_id": result.metadata.run_id,
@@ -51,6 +102,12 @@ def backtest_result_to_payload(result: BacktestRunResult) -> dict[str, Any]:
         "artifacts": dict(result.artifacts),
         "warnings": list(result.warnings),
     }
+
+    # Add costs if present
+    if result.costs is not None:
+        payload["costs"] = _serialize_costs(result.costs)
+
+    return payload
 
 
 def backtest_result_from_payload(payload: dict[str, Any]) -> BacktestRunResult:
@@ -71,6 +128,9 @@ def backtest_result_from_payload(payload: dict[str, Any]) -> BacktestRunResult:
         random_seed=metadata_payload.get("random_seed"),
     )
 
+    # Deserialize costs if present
+    costs = _deserialize_costs(migrated.get("costs"))
+
     return BacktestRunResult(
         metadata=metadata,
         metrics={key: float(value) for key, value in migrated["metrics"].items()},
@@ -78,6 +138,7 @@ def backtest_result_from_payload(payload: dict[str, Any]) -> BacktestRunResult:
         assumptions=dict(migrated.get("assumptions", {})),
         artifacts=dict(migrated.get("artifacts", {})),
         warnings=tuple(str(item) for item in migrated.get("warnings", [])),
+        costs=costs,
     )
 
 

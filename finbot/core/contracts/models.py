@@ -5,11 +5,14 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import StrEnum
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import pandas as pd
 
 from finbot.core.contracts.versioning import BACKTEST_RESULT_SCHEMA_VERSION
+
+if TYPE_CHECKING:
+    from finbot.core.contracts.costs import CostSummary
 
 
 class OrderSide(StrEnum):
@@ -118,3 +121,4 @@ class BacktestRunResult:
     assumptions: dict[str, Any] = field(default_factory=dict)
     artifacts: dict[str, str] = field(default_factory=dict)
     warnings: tuple[str, ...] = ()
+    costs: CostSummary | None = None  # Optional cost breakdown (added in schema v2)
