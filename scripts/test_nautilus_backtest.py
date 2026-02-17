@@ -9,9 +9,6 @@ Usage:
 
 from __future__ import annotations
 
-from datetime import datetime
-from decimal import Decimal
-
 import pandas as pd
 
 from finbot.adapters.nautilus import NautilusAdapter
@@ -47,15 +44,12 @@ def create_test_request() -> BacktestRunRequest:
     Returns:
         BacktestRunRequest for testing
     """
-    data = create_minimal_test_data()
-
     request = BacktestRunRequest(
         strategy_name="test_strategy",
-        symbols=["SPY"],
-        data=data,
-        start_date=datetime(2020, 1, 2),
-        end_date=datetime(2020, 1, 6),
-        initial_cash=Decimal("100000"),
+        symbols=("SPY",),  # tuple, not list
+        start=pd.Timestamp("2020-01-02"),
+        end=pd.Timestamp("2020-01-06"),
+        initial_cash=100000.0,  # float, not Decimal
         parameters={},  # Empty for now
     )
 
@@ -84,7 +78,7 @@ def main():
     print("✅ Created request:")
     print(f"   Strategy: {request.strategy_name}")
     print(f"   Symbols: {request.symbols}")
-    print(f"   Period: {request.start_date.date()} to {request.end_date.date()}")
+    print(f"   Period: {request.start} to {request.end}")
     print(f"   Initial cash: ${request.initial_cash:,}")
     print()
 
