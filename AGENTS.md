@@ -4,9 +4,14 @@
 
 Finbot is a financial data collection, simulation, and backtesting platform that consolidates:
 - Modern infrastructure (Dynaconf config, queue-based logging, API management)
+- **Engine-agnostic execution system** with orders, latency simulation, risk controls, and state checkpoints
 - Comprehensive backtesting engine (Backtrader-based with 12 strategies)
+- **Typed contracts** for portable backtests with versioning, serialization, and migration
 - Advanced simulation systems (fund, bond ladder, Monte Carlo, multi-asset Monte Carlo, index simulators)
 - Portfolio optimization (DCA optimizer, rebalance optimizer)
+- **Cost models** and **corporate actions** handling for realistic backtests
+- **Walk-forward analysis** and **market regime detection** for robust strategy evaluation
+- **Experiment tracking** with snapshots, batch observability, and dashboard comparison
 - Health economics analysis (QALY simulation, cost-effectiveness, treatment optimization)
 - Interactive Streamlit web dashboard
 
@@ -28,26 +33,33 @@ uv run pytest
 uv run python scripts/update_daily.py
 ```
 
-## Current Delivery Status (2026-02-14)
+## Current Delivery Status (2026-02-16)
 
-Backtesting/live-readiness transition is active and using an adapter-first path.
+Backtesting/live-readiness transition is **Epics E0-E5 complete** (adapter-first path).
 
-- **Phase:** Phase 2 (Backtrader Adapter + parity harness)
-- **Completed in Priority 6:**
-  - ADR-005 architecture decision
-  - Golden strategy/dataset baseline and parity tolerance spec
-  - Core contracts/schemas/versioning/migration in `finbot/core/contracts/`
-  - Backtesting baseline report + reproducible generation script
-  - Initial Backtrader adapter implementation and tests
-- **Next implementation targets:**
-  - `E2-T2` A/B parity harness (`tests/integration/test_backtest_parity_ab.py`)
-  - `E2-T4` CI parity gate for one golden strategy
+- **Completed Epics:**
+  - ✅ **E0**: Foundational contracts (schemas, versioning, serialization, snapshots)
+  - ✅ **E1**: Backtrader adapter implementation
+  - ✅ **E2**: A/B parity testing (harness, golden tests, CI gate)
+  - ✅ **E3**: Cost models, corporate actions, walk-forward analysis, regime detection
+  - ✅ **E4**: Experiment tracking (registry, snapshots, batch observability, dashboard)
+  - ✅ **E5**: Live-readiness execution system (orders, latency, risk controls, checkpoints)
+
+- **E5 Deliverables (Live-Readiness Without Production):**
+  - Order lifecycle tracking with full execution history
+  - Latency simulation (submission, fill, cancellation delays)
+  - Risk controls (position limits, exposure limits, drawdown protection, kill-switch)
+  - State checkpoint and recovery for disaster recovery
+  - 645 total tests (16 new tests for E5)
+
+- **Next Phase:** E6 (NautilusTrader Pilot and Decision Gate)
 
 Authoritative tracking docs:
-- `docs/planning/backtesting-live-readiness-implementation-plan.md`
-- `docs/planning/backtesting-live-readiness-backlog.md`
-- `docs/planning/backtesting-live-readiness-handoff-2026-02-14.md`
-- `docs/planning/roadmap.md` (Priority 6)
+- `docs/planning/backtesting-live-readiness-backlog.md` (Epic tracking)
+- `docs/planning/e5-t1-orders-executions-implementation-plan.md`
+- `docs/planning/e5-t2-latency-hooks-implementation-plan.md`
+- `docs/planning/e5-t3-risk-controls-implementation-plan.md`
+- `docs/planning/e5-t4-state-checkpoint-implementation-plan.md`
 
 ## Common Commands
 
@@ -105,6 +117,184 @@ All packages live under the single `finbot/` namespace:
 - **`logger/`**: Queue-based async logging
   - Dual output: colored console (stdout for INFO+, stderr for ERROR+) + JSON file
   - Rotating file handlers (5MB, 3 backups)
+
+#### `finbot/core/contracts/` — Engine-Agnostic Contracts
+
+Typed contracts for portable, engine-agnostic backtesting and execution. Enables multiple backends (Backtrader, NautilusTrader) with consistent interfaces.
+
+**Core Modules:**
+
+- **`models.py`**: Core data models
+  - `BacktestRunRequest`, `BacktestRunResult`, `BacktestRunMetadata`: Backtest request/response
+  - `BarEvent`, `FillEvent`, `OrderRequest`: Event types
+  - `PortfolioSnapshot`: Point-in-time portfolio state
+  - `OrderSide`, `OrderType`: Enums for order parameters
+
+- **`orders.py`**: Order lifecycle tracking
+  - `Order`: Complete order state (status, fills, rejections, timestamps)
+  - `OrderExecution`: Individual fill records
+  - `OrderStatus`: Enum (NEW, SUBMITTED, PARTIALLY_FILLED, FILLED, REJECTED, CANCELLED)
+  - `RejectionReason`: Typed rejection reasons (funds, validation, risk controls)
+
+- **`checkpoint.py`**: State persistence for disaster recovery
+  - `ExecutionCheckpoint`: Snapshot of ExecutionSimulator state
+  - `CHECKPOINT_VERSION`: Schema version for migration support
+  - Captures: cash, positions, orders, risk state, configuration
+
+- **`latency.py`**: Realistic order timing simulation
+  - `LatencyConfig`: Submission, fill, and cancellation delays
+  - Pre-configured profiles: `LATENCY_INSTANT`, `LATENCY_FAST`, `LATENCY_NORMAL`, `LATENCY_SLOW`
+  - Supports min/max ranges for realistic variance
+
+- **`risk.py`**: Risk management rules
+  - `RiskConfig`: Composable risk rule configuration
+  - `PositionLimitRule`: Max shares/value per position
+  - `ExposureLimitRule`: Gross/net exposure limits
+  - `DrawdownLimitRule`: Daily/total drawdown protection
+  - `RiskViolation`: Typed violation records
+
+- **`costs.py`**: Cost modeling for realistic simulations
+  - `CostModel`: Slippage + commission configuration
+  - `CostEvent`: Individual cost records (type, amount, timestamp)
+  - `CostSummary`: Aggregated cost metrics
+  - `CostType`: Enum (COMMISSION, SLIPPAGE, BORROW, FEE)
+
+- **`schemas.py`**: Data validation and canonical metrics
+  - `validate_bar_dataframe()`: OHLCV data validation
+  - `extract_canonical_metrics()`: Standardized performance metrics
+  - `CANONICAL_METRIC_KEYS`: Standard metric names (CAGR, Sharpe, Sortino, max drawdown, etc.)
+  - Column mappings for cross-engine compatibility
+
+- **`versioning.py`**: Schema versioning and migration
+  - `CONTRACT_SCHEMA_VERSION`: Current contract version
+  - `BACKTEST_RESULT_SCHEMA_VERSION`: Result format version
+  - `is_schema_compatible()`: Version compatibility check
+  - `migrate_backtest_result_payload()`: Automatic migration
+
+- **`serialization.py`**: Portable result serialization
+  - `backtest_result_to_payload()`: Serialize to JSON-compatible dict
+  - `backtest_result_from_payload()`: Deserialize with migration
+  - `build_backtest_run_result_from_stats()`: Build from metrics dict
+
+- **`snapshot.py`**: Data lineage tracking
+  - `DataSnapshot`: Captures data source versions and checksums
+  - `compute_data_content_hash()`: Content-based hashing
+  - `compute_snapshot_hash()`: Snapshot fingerprinting
+
+- **`walkforward.py`**: Walk-forward analysis
+  - `WalkForwardConfig`: Window configuration (rolling/anchored)
+  - `WalkForwardWindow`: Single window definition
+  - `WalkForwardResult`: Aggregated walk-forward metrics
+
+- **`regime.py`**: Market regime detection
+  - `MarketRegime`: Enum (BULL, BEAR, SIDEWAYS, HIGH_VOL, LOW_VOL)
+  - `RegimeConfig`: Detection parameters (lookback, thresholds)
+  - `RegimeDetector`: Regime classification logic
+  - `RegimePeriod`: Regime time periods
+
+- **`batch.py`**: Batch execution tracking
+  - `BatchRun`: Batch metadata and status
+  - `BatchItemResult`: Individual backtest result
+  - `BatchStatus`: Enum (PENDING, RUNNING, COMPLETED, FAILED)
+  - `ErrorCategory`: Typed error classification
+
+- **`interfaces.py`**: Engine abstraction interfaces
+  - `BacktestEngine`: Engine interface (Backtrader, Nautilus)
+  - `ExecutionSimulator`: Execution interface for paper trading
+  - `MarketDataProvider`: Data source interface
+  - `PortfolioStateStore`: State persistence interface
+
+- **`missing_data.py`**: Missing data policies
+  - `MissingDataPolicy`: How to handle gaps (ERROR, WARN, SKIP, FILL)
+  - `DEFAULT_MISSING_DATA_POLICY`: Project-wide default
+
+**Export:** All contracts available via `from finbot.core.contracts import ...`
+
+#### `finbot/services/execution/` — Execution Simulation System
+
+Paper trading simulator with realistic latency, risk controls, and state persistence. Engine-agnostic, usable standalone or integrated with backtesting engines.
+
+**Core Components:**
+
+- **`execution_simulator.py`**: Main execution simulator (350+ lines)
+  - Order submission with latency simulation
+  - Market/limit order execution with slippage
+  - Position and cash tracking
+  - Risk checking before order acceptance
+  - Pending action queue for delayed execution
+  - Full order lifecycle tracking
+  - Configurable commission and slippage
+  - State checkpoint support via `simulator_id`
+
+- **`order_validator.py`**: Order validation logic
+  - Quantity validation (positive, non-zero)
+  - Symbol validation (non-empty)
+  - Limit price validation for limit orders
+  - Returns typed rejection reasons
+
+- **`pending_actions.py`**: Latency simulation (104 lines)
+  - `PendingActionQueue`: Time-based action queue
+  - `PendingAction`: Scheduled actions (submit, fill, cancel)
+  - Binary search insertion for O(log n) performance
+  - Process actions up to current time
+
+- **`risk_checker.py`**: Risk controls enforcement (300 lines)
+  - Position limit checking (max shares, max value)
+  - Exposure limit checking (gross, net)
+  - Drawdown limit checking (daily, total)
+  - Trading kill-switch (enable/disable)
+  - Peak value and daily start tracking
+  - Returns typed violation reasons
+
+- **`checkpoint_manager.py`**: State persistence (360 lines)
+  - `create_checkpoint()`: Extract simulator state
+  - `save_checkpoint()`: Persist to JSON with versioning
+  - `load_checkpoint()`: Load from disk (latest or specific timestamp)
+  - `restore_simulator()`: Rebuild simulator from checkpoint
+  - `list_checkpoints()`: Available checkpoints for simulator
+  - Storage: `checkpoints/{simulator_id}/{timestamp}.json`
+
+- **`checkpoint_serialization.py`**: Checkpoint serialization (168 lines)
+  - `serialize_checkpoint()`: JSON-compatible dict conversion
+  - `deserialize_checkpoint()`: Rebuild from dict
+  - Decimal-to-string conversion for precision
+  - Datetime ISO format handling
+  - Order and execution serialization helpers
+
+**Example Usage:**
+
+```python
+from decimal import Decimal
+from finbot.core.contracts import Order, OrderSide, OrderType, LatencyConfig
+from finbot.core.contracts.risk import RiskConfig, DrawdownLimitRule
+from finbot.services.execution import ExecutionSimulator, CheckpointManager
+
+# Create simulator with risk controls and latency
+risk_config = RiskConfig(
+    drawdown_limit=DrawdownLimitRule(max_daily_drawdown_pct=Decimal("5"))
+)
+simulator = ExecutionSimulator(
+    initial_cash=Decimal("100000"),
+    latency_config=LATENCY_NORMAL,
+    risk_config=risk_config,
+    simulator_id="my-paper-account",
+)
+
+# Submit order (will be delayed by latency)
+order = Order(...)
+simulator.submit_order(order, timestamp=datetime.now())
+
+# Process market data (triggers fills)
+simulator.process_market_data(current_time, current_prices)
+
+# Checkpoint state for recovery
+manager = CheckpointManager("checkpoints")
+checkpoint = manager.create_checkpoint(simulator)
+manager.save_checkpoint(checkpoint)
+
+# Later: restore from checkpoint
+restored = manager.restore_simulator(checkpoint)
+```
 
 ##### `finbot/services/backtesting/` — Backtrader-Based Backtesting Engine
 Entry point: `BacktestRunner` in `backtest_runner.py`
@@ -248,16 +438,31 @@ Create `.env` file in `finbot/config/` (excluded by `.gitignore`).
 
 | File | Purpose |
 | --- | --- |
+| **Core Contracts** | |
+| `finbot/core/contracts/models.py` | Backtest request/result models, events |
+| `finbot/core/contracts/orders.py` | Order lifecycle tracking |
+| `finbot/core/contracts/checkpoint.py` | State persistence contracts |
+| `finbot/core/contracts/risk.py` | Risk management rules |
+| `finbot/core/contracts/schemas.py` | Data validation, canonical metrics |
+| **Execution System** | |
+| `finbot/services/execution/execution_simulator.py` | Paper trading simulator with latency/risk controls |
+| `finbot/services/execution/checkpoint_manager.py` | State checkpoint/restore for disaster recovery |
+| `finbot/services/execution/risk_checker.py` | Risk limit enforcement (position, exposure, drawdown) |
+| **Backtesting** | |
 | `finbot/services/backtesting/run_backtest.py` | Run single backtest |
 | `finbot/services/backtesting/backtest_batch.py` | Run backtests in parallel |
 | `finbot/services/backtesting/backtest_runner.py` | BacktestRunner class (Cerebro wrapper) |
+| **Simulations** | |
 | `finbot/services/simulation/fund_simulator.py` | Simulate leveraged funds with fees |
 | `finbot/services/simulation/bond_ladder/bond_ladder_simulator.py` | Simulate bond ladders |
 | `finbot/services/simulation/monte_carlo/monte_carlo_simulator.py` | Monte Carlo simulations |
+| **Optimization** | |
 | `finbot/services/optimization/dca_optimizer.py` | DCA grid search optimizer |
+| **Infrastructure** | |
 | `scripts/update_daily.py` | Daily data update + simulation pipeline |
 | `finbot/cli/main.py` | CLI entry point (`finbot simulate/backtest/optimize/update/status/dashboard`) |
 | `finbot/dashboard/app.py` | Streamlit dashboard entry point (6 pages) |
+| **Other Services** | |
 | `finbot/services/health_economics/qaly_simulator.py` | QALY Monte Carlo simulation |
 | `finbot/services/health_economics/cost_effectiveness.py` | Cost-effectiveness analysis (ICER/NMB/CEAC) |
 | `finbot/services/data_quality/check_data_freshness.py` | Data freshness monitoring |
@@ -288,12 +493,19 @@ uv run pytest --cov=finbot tests/
 ```
 
 **Test structure**:
-- `tests/unit/`: Unit tests (314 tests across 17 files)
+- `tests/unit/`: Unit tests (645 tests across 30+ files)
   - `test_imports.py`: Smoke tests for all key module imports
   - `test_simulation_math.py`: Simulation math correctness
   - `test_finance_utils.py`: Finance calculation tests
   - `test_strategies.py`, `test_strategies_parametrized.py`: All 12 backtesting strategies
   - `test_health_economics.py`: QALY simulator, CEA, treatment optimizer
+  - `test_order_lifecycle.py`: Order tracking and execution (20 tests)
+  - `test_latency_simulation.py`: Latency hooks and pending actions (17 tests)
+  - `test_risk_controls.py`: Risk management (14 tests)
+  - `test_checkpoint_recovery.py`: State persistence (18 tests)
+  - `test_backtrader_adapter.py`: Backtrader adapter compliance
+  - `test_cost_models.py`, `test_corporate_actions.py`: Cost tracking, dividend/split handling
+  - `test_walkforward.py`, `test_regime_detection.py`: Walk-forward and regime analysis
   - `test_dashboard_charts.py`: Chart component tests
   - `test_new_strategies.py`: DualMomentum, RiskParity, multi-asset Monte Carlo
   - More test files for core functionality
@@ -371,6 +583,12 @@ See `docs/adr/` for architectural decision records:
 | **Vectorized simulation** | Numpy broadcasting in `fund_simulator.py` | Faster than numba loop, no JIT compilation required |
 | **Parquet everywhere** | All serialization uses `to_parquet()`/`read_parquet()` | Safer, faster, smaller than pickle |
 | **Auto-create dirs** | `path_constants._process_dir()` uses `mkdir(exist_ok=True)` | Works in CI, fresh clones, no manual setup |
+| **Typed contracts** | Frozen dataclasses in `finbot/core/contracts/` | Engine-agnostic, immutable, serializable |
+| **Versioned schemas** | `CONTRACT_SCHEMA_VERSION` + migration functions | Forward compatibility, automatic upgrades |
+| **Pluggable risk** | `RiskConfig` with composable rules | Add/remove risk controls without code changes |
+| **Pending action queue** | Binary search insertion in `PendingActionQueue` | O(log n) insertion, realistic latency simulation |
+| **Checkpoint versioning** | `CHECKPOINT_VERSION` in all checkpoints | Detect incompatible restores, enable migration |
+| **Decimal precision** | String serialization for Decimal in JSON | Preserve precision across checkpoint/restore |
 
 ## Performance Notes
 
