@@ -42,6 +42,7 @@ class ExecutionSimulator:
         commission_per_share: Decimal = Decimal("0"),
         latency_config: LatencyConfig = LATENCY_INSTANT,
         risk_config: RiskConfig | None = None,
+        simulator_id: str | None = None,
     ):
         """Initialize execution simulator.
 
@@ -51,7 +52,9 @@ class ExecutionSimulator:
             commission_per_share: Commission per share traded
             latency_config: Latency configuration (default: instant execution)
             risk_config: Risk control configuration (default: no risk controls)
+            simulator_id: Unique simulator identifier (auto-generated if not provided)
         """
+        self.simulator_id = simulator_id or f"sim-{uuid.uuid4().hex[:8]}"
         self.cash = initial_cash
         self.initial_cash = initial_cash
         self.positions: dict[str, Decimal] = {}
