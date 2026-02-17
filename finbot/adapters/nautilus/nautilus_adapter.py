@@ -151,15 +151,16 @@ class NautilusAdapter(BacktestEngine):
         from nautilus_trader.model.identifiers import Venue
 
         # Convert to Money object with proper currency
-        from nautilus_trader.model.objects import Money
+        from nautilus_trader.model.objects import Currency, Money
 
-        starting_balance = Money(int(request.initial_cash * 100), currency="USD")  # Amount in cents
+        usd = Currency.from_str("USD")
+        starting_balance = Money(int(request.initial_cash * 100), currency=usd)  # Amount in cents
 
         engine.add_venue(
             venue=Venue("SIM"),
             oms_type="NETTING",
             account_type="CASH",
-            base_currency="USD",
+            base_currency=usd,
             starting_balances=[starting_balance],
         )
 
