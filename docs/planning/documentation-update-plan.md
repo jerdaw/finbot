@@ -88,15 +88,15 @@ Current documentation is outdated and doesn't reflect these capabilities.
 - [x] Update key entry points table
 - [x] Add execution system design patterns
 
-#### 1.2 Update README.md
-- [ ] Add execution simulation to features
-- [ ] Add checkpoint/recovery to features
-- [ ] Add risk management to features
-- [ ] Add corporate actions to features
-- [ ] Add regime detection to features
-- [ ] Update architecture diagram (if exists)
-- [ ] Add execution system example usage
-- [ ] Update quick start with new capabilities
+#### 1.2 Update README.md ✅
+- [x] Add execution simulation to features
+- [x] Add checkpoint/recovery to features
+- [x] Add risk management to features
+- [x] Add corporate actions to features
+- [x] Add regime detection to features
+- [x] Update architecture diagram (added Contract Layer)
+- [x] Add execution system example usage (Paper Trading section)
+- [x] Update Implementation Status with E0-E5 completion
 
 #### 1.3 Create Handoff Document ✅
 - [x] Create `docs/planning/post-e5-handoff-2026-02-16.md`
@@ -108,7 +108,7 @@ Current documentation is outdated and doesn't reflect these capabilities.
 - [x] Include file tree of new modules
 - [x] Include key design decisions
 
-### Phase 2: ADRs (Medium Priority)
+### Phase 2: ADRs (Medium Priority) ✅ COMPLETE
 
 #### 2.1 Create ADR-006: Execution System Architecture ✅
 - [x] Decision: Separate ExecutionSimulator from backtesting engines
@@ -122,36 +122,36 @@ Current documentation is outdated and doesn't reflect these capabilities.
 - [x] Consequences: Human-readable, version control friendly, slightly larger files
 - [x] Alternatives considered: Pickle (unsafe), binary formats (not readable)
 
-#### 2.3 Create ADR-008: Risk Management Integration
-- [ ] Decision: Pluggable risk checker with multiple rule types
-- [ ] Context: Need for position limits, exposure limits, drawdown protection
-- [ ] Consequences: Flexible, composable, easy to test
-- [ ] Rules: Position limits, exposure limits, drawdown limits, kill switch
+#### 2.3 Create ADR-008: Risk Management Integration ✅
+- [x] Decision: Pluggable risk checker with multiple rule types
+- [x] Context: Need for position limits, exposure limits, drawdown protection
+- [x] Consequences: Flexible, composable, easy to test
+- [x] Rules: Position limits, exposure limits, drawdown limits, kill switch
 
-#### 2.4 Create ADR-009: Latency Simulation Approach
-- [ ] Decision: Pending action queue with scheduled execution times
-- [ ] Context: Need realistic order timing for paper trading
-- [ ] Consequences: Accurate simulation, testable, configurable profiles
-- [ ] Profiles: INSTANT, FAST, NORMAL, SLOW
+#### 2.4 Create ADR-009: Latency Simulation Approach ✅
+- [x] Decision: Pending action queue with scheduled execution times
+- [x] Context: Need realistic order timing for paper trading
+- [x] Consequences: Accurate simulation, testable, configurable profiles
+- [x] Profiles: INSTANT, FAST, NORMAL, SLOW
 
-#### 2.5 Create ADR-010: Cost Models and Corporate Actions
-- [ ] Decision: Separate cost events from execution, adjust prices for corporate actions
-- [ ] Context: Need accurate cost tracking and historical price adjustment
-- [ ] Consequences: More realistic backtests, better cost visibility
+#### 2.5 Create ADR-010: Cost Models and Corporate Actions ✅
+- [x] Decision: Separate cost events from execution, adjust prices for corporate actions
+- [x] Context: Need accurate cost tracking and historical price adjustment
+- [x] Consequences: More realistic backtests, better cost visibility
 
-### Phase 3: Implementation Summaries (Low Priority)
+### Phase 3: Implementation Summaries (Low Priority) ✅ COMPLETE
 
-#### 3.1 Archive E5 Implementation Plans
-- [ ] Move to `docs/planning/archive/e5/`
-- [ ] Keep e5-t1, e5-t2, e5-t3, e5-t4 plans
-- [ ] Create `docs/planning/archive/e5/README.md` summary
+#### 3.1 Archive E5 Implementation Plans ✅
+- [x] Move to `docs/planning/archive/e5/`
+- [x] Keep e5-t1, e5-t2, e5-t3, e5-t4 plans
+- [x] Create `docs/planning/archive/e5/README.md` summary
 
-#### 3.2 Create E5 Summary Document
-- [ ] Document all E5 deliverables
-- [ ] Document test coverage added (from 629 to 645)
-- [ ] Document files created/modified
-- [ ] Document key design decisions
-- [ ] Link to individual task plans
+#### 3.2 Create E5 Summary Document ✅
+- [x] Document all E5 deliverables
+- [x] Document test coverage added (from 629 to 645)
+- [x] Document files created/modified
+- [x] Document key design decisions
+- [x] Link to individual task plans
 
 ### Phase 4: API and Developer Docs (Low Priority)
 
