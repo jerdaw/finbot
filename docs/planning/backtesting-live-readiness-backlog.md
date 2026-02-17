@@ -426,4 +426,4 @@ and enable focused testing in a separate task.
 - `E3`: ✅ Complete (All tasks: E3-T1 cost models, E3-T2 corporate actions + data quality, E3-T3 walk-forward + regime analysis)
 - `E4`: ✅ Complete (All tasks: E4-T1 experiment registry, E4-T2 snapshot infrastructure, E4-T3 batch observability, E4-T4 dashboard comparison)
 - `E5`: ✅ Complete (All tasks: E5-T1 orders/executions, E5-T2 latency simulation, E5-T3 risk controls, E5-T4 state checkpoints)
-- `E6`: Not started
+- `E6`: 🚧 In progress (E6-T1 Phase 1 complete, Phase 2 skeleton created, awaiting manual implementation)
