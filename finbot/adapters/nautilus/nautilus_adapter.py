@@ -255,13 +255,15 @@ class NautilusAdapter(BacktestEngine):
             - Calculates performance metrics (Sharpe, drawdown, etc.)
         """
         # Extract portfolio state
+        from nautilus_trader.model.identifiers import Venue
+        from nautilus_trader.model.objects import Currency
 
-        # Get account from engine
-        account_id = engine.portfolio.account_ids()[0]  # First account (SIM)
-        account = engine.portfolio.account(account_id)
+        # Get account from engine (SIM venue account)
+        usd = Currency.from_str("USD")
+        account = engine.portfolio.account(Venue("SIM"))
 
-        # Extract final values
-        final_cash = float(account.balance_total(currency="USD").as_double())
+        # Extract final values (convert from cents to dollars)
+        final_cash = float(account.balance_total(usd).as_double()) / 100.0
         final_value = final_cash  # Simplified for pilot - cash only, no positions
 
         # Calculate return
