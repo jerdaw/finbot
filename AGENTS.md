@@ -67,6 +67,7 @@ uv run python scripts/update_daily.py
 - 100% parity maintained on all golden strategies
 - CI parity gate prevents regressions
 - 7 CI jobs (lint, type-check, security, test, docs, parity, performance)
+- All GitHub Actions pinned to SHA hashes for supply chain security
 
 **Authoritative tracking docs:**
 - `docs/planning/roadmap.md` (overall roadmap)
