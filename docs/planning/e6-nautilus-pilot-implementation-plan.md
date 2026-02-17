@@ -402,3 +402,52 @@ Pilot NautilusTrader integration to evaluate it as an alternative/complementary 
 
 **Status:** Automated work complete, manual implementation required
 **Next:** User must install Nautilus and implement TODOs
+
+### E6-T2: Comparative Evaluation Report ✅ TEMPLATE READY
+- [x] Create comprehensive evaluation template
+- [x] Define evaluation dimensions (8 categories)
+- [x] Create comparison matrices
+- [x] Define quantified scoring system
+- [x] Document decision factors (Go/No-Go/Hybrid/Defer)
+- [ ] **REQUIRES MANUAL WORK:** Fill in template after E6-T1 completes
+
+**Files Created:**
+- `docs/research/nautilus-pilot-evaluation.md` ✅ (comprehensive template)
+
+**Status:** Template ready, awaiting E6-T1 completion to fill in
+
+### E6-T3: Go/No-Go Decision Memo ✅ TEMPLATE READY
+- [x] Create ADR template for decision
+- [x] Define 4 decision options (Go/No-Go/Hybrid/Defer)
+- [x] Create implementation plans for each option
+- [x] Define quantified tradeoff framework
+- [x] Create risk assessment structure
+- [x] Define validation criteria
+- [ ] **REQUIRES MANUAL WORK:** Fill in template after E6-T2 completes
+
+**Files Created:**
+- `docs/adr/ADR-011-nautilus-decision.md` ✅ (decision template)
+
+**Status:** Template ready, awaiting E6-T2 evaluation to fill in
+
+---
+
+## E6 Preparation Summary
+
+**Automated Work:** ✅ COMPLETE
+- Research and documentation (Phase 1)
+- Adapter skeleton creation (Phase 2)
+- Evaluation framework (E6-T2 template)
+- Decision framework (E6-T3 template)
+
+**Manual Work Required:**
+1. **E6-T1:** Install Nautilus, implement adapter, run tests (12-26 hours)
+2. **E6-T2:** Fill in evaluation template with findings (8-12 hours)
+3. **E6-T3:** Make and document decision (4-8 hours)
+
+**Ready to Proceed:**
+- Implementation guide: `docs/planning/e6-t1-implementation-guide.md`
+- Setup guide: `docs/planning/e6-nautilus-setup-guide.md`
+- Evaluation template: `docs/research/nautilus-pilot-evaluation.md`
+- Decision template: `docs/adr/ADR-011-nautilus-decision.md`
+- Adapter skeleton: `finbot/adapters/nautilus/nautilus_adapter.py`
