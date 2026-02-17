@@ -12,7 +12,6 @@ Status: PILOT - Minimal implementation for E6-T1 evaluation
 from __future__ import annotations
 
 from datetime import datetime
-from decimal import Decimal
 
 import pandas as pd
 
@@ -285,13 +284,12 @@ class NautilusAdapter(BacktestEngine):
         # Create result with actual values
         result = BacktestRunResult(
             metadata=metadata,
-            total_return=Decimal(str(total_return)),
-            final_value=final_value,
             metrics={
                 "final_cash": final_cash,
+                "final_value": final_value,
                 "initial_cash": request.initial_cash,
+                "total_return_pct": total_return,
             },
-            data_snapshot=None,  # Optional
         )
 
         return result
