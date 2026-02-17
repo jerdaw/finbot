@@ -155,7 +155,7 @@ class NautilusAdapter(BacktestEngine):
             oms_type="NETTING",
             account_type="CASH",
             base_currency="USD",
-            starting_balances=[request.initial_cash],
+            starting_balances=[int(request.initial_cash * 100)],  # Convert to cents (integer)
         )
 
     def _load_data(self, engine, request: BacktestRunRequest) -> None:
