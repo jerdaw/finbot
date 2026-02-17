@@ -33,33 +33,46 @@ uv run pytest
 uv run python scripts/update_daily.py
 ```
 
-## Current Delivery Status (2026-02-16)
+## Current Delivery Status (2026-02-17)
 
-Backtesting/live-readiness transition is **Epics E0-E5 complete** (adapter-first path).
+**Status:** Production-ready. Priority 0-6 substantially complete (P5: 93.3%, P6: 100%).
 
-- **Completed Epics:**
-  - ✅ **E0**: Foundational contracts (schemas, versioning, serialization, snapshots)
-  - ✅ **E1**: Backtrader adapter implementation
-  - ✅ **E2**: A/B parity testing (harness, golden tests, CI gate)
-  - ✅ **E3**: Cost models, corporate actions, walk-forward analysis, regime detection
-  - ✅ **E4**: Experiment tracking (registry, snapshots, batch observability, dashboard)
-  - ✅ **E5**: Live-readiness execution system (orders, latency, risk controls, checkpoints)
+### Priority 5: OMSAS/CanMEDS Improvements (93.3% Complete)
 
-- **E5 Deliverables (Live-Readiness Without Production):**
-  - Order lifecycle tracking with full execution history
-  - Latency simulation (submission, fill, cancellation delays)
-  - Risk controls (position limits, exposure limits, drawdown protection, kill-switch)
-  - State checkpoint and recovery for disaster recovery
-  - 645 total tests (16 new tests for E5)
+**Completed:** 42/45 items across 7 categories
+- ✅ Governance & Professionalism (7/7): LICENSE, SECURITY, CODE_OF_CONDUCT, templates
+- ✅ Quality & Reliability (4/5): CI/CD, test coverage (59.20%), integration tests, py.typed
+- ✅ Documentation (6/6): MkDocs site, API docs, docstring enforcement, limitations
+- ✅ Health Economics (4/5): Research papers, clinical scenarios, methodology
+- ✅ Ethics & Security (6/6): Disclaimers, audit trails, license auditing, Docker security
+- ✅ Testing (5/5): Property-based testing, CLI tests, performance regression
+- ✅ Professional Polish (10/11): CODEOWNERS, releases, changelog, TestPyPI, OpenSSF
 
-- **Next Phase:** E6 (NautilusTrader Pilot and Decision Gate)
+**Remaining:** 3 items (Item 12 partially started, Items 22 & 42 blocked on external resources)
 
-Authoritative tracking docs:
+### Priority 6: Backtesting-to-Live Readiness (100% Complete)
+
+**All Epics Complete (E0-E6):**
+- ✅ **E0**: Baseline and decision framing
+- ✅ **E1**: Contracts and schema layer
+- ✅ **E2**: Backtrader adapter and parity harness (100% parity on 3 golden strategies)
+- ✅ **E3**: Fidelity improvements (cost models, corporate actions, walk-forward, regime)
+- ✅ **E4**: Reproducibility (experiment tracking, snapshots, batch observability, dashboard)
+- ✅ **E5**: Live-readiness (orders, latency simulation, risk controls, checkpoints)
+- ✅ **E6**: NautilusTrader pilot and decision gate (Hybrid approach adopted)
+
+**Key Metrics:**
+- 866 total tests (all passing)
+- 59.20% test coverage (98.83% of 60% target)
+- 100% parity maintained on all golden strategies
+- CI parity gate prevents regressions
+- 7 CI jobs (lint, type-check, security, test, docs, parity, performance)
+
+**Authoritative tracking docs:**
+- `docs/planning/roadmap.md` (overall roadmap)
+- `docs/planning/priority-5-6-completion-status.md` (detailed summary)
 - `docs/planning/backtesting-live-readiness-backlog.md` (Epic tracking)
-- `docs/planning/e5-t1-orders-executions-implementation-plan.md`
-- `docs/planning/e5-t2-latency-hooks-implementation-plan.md`
-- `docs/planning/e5-t3-risk-controls-implementation-plan.md`
-- `docs/planning/e5-t4-state-checkpoint-implementation-plan.md`
+- `docs/planning/archive/` (20+ completed implementation plans)
 
 ## Common Commands
 
@@ -88,6 +101,19 @@ make docker-test                 # run tests in container
 ## Architecture
 
 **Data Flow:** Data Collection (utils) → Simulations (services) → Backtesting (services) → Performance Analysis
+
+### Backtesting Engines
+
+Finbot supports two backtesting engines through a unified adapter interface:
+- **Backtrader** (default): Mature, bar-based, great for pure backtesting
+- **NautilusTrader**: Event-driven, realistic fills, built for live trading
+
+**Choosing an engine:** See [docs/guides/choosing-backtest-engine.md](docs/guides/choosing-backtest-engine.md)
+
+**Hybrid approach (recommended):** Use both engines based on use case
+- Backtrader for familiar backtesting workflows
+- Nautilus for strategies planned for live trading
+- Decision rationale: [ADR-011](docs/adr/ADR-011-nautilus-decision.md)
 
 ### Global Access Pattern
 
@@ -559,8 +585,18 @@ See [ADR-003](docs/adr/ADR-003-add-mkdocs-documentation.md) for implementation d
 GitHub Actions workflow (`.github/workflows/ci.yml`) runs on push/PR to main:
 - Lint: `ruff check .`
 - Format check: `ruff format --check .`
-- Tests: `pytest tests/ -v`
-- Python 3.13 (single version to conserve CI minutes on free tier)
+- Type check: `mypy finbot/` (continue-on-error)
+- Security: `bandit -r finbot/`, `pip-audit` (continue-on-error)
+- Tests: `pytest tests/ -v --cov` (Python 3.11, 3.12, 3.13)
+- Parity gate: Golden strategy parity tests (GS-01, GS-02, GS-03)
+- **Performance regression:** Benchmark fund_simulator and backtest_adapter (fails if >20% slower)
+
+**Performance Regression Testing** (Priority 5 Item 33):
+- Automated benchmarks run on every PR
+- Compares to baseline in `tests/performance/baseline.json`
+- Fails CI if performance degrades >20%
+- See `tests/performance/README.md` for details
+- Update baseline: `uv run python tests/performance/benchmark_runner.py --update-baseline`
 
 ## Architecture Decisions
 
@@ -580,6 +616,7 @@ See `docs/adr/` for architectural decision records:
 | **Settings Accessors** | `settings_accessors` module in `finbot/config/` | Lazy accessors for MAX_THREADS and API keys (alpha_vantage, nasdaq_data_link, bls, google_finance) |
 | **Lazy API keys** | `APIKeyManager.get_key()` only loads on first access | Prevents import failures when keys not needed |
 | **Queue-based logging** | `finbot/libs/logger/setup_queue_logging.py` | Non-blocking async logging for performance |
+| **Structured audit logs** | `finbot/libs/audit/audit_logger.py` | Queryable audit trails for compliance and debugging |
 | **Vectorized simulation** | Numpy broadcasting in `fund_simulator.py` | Faster than numba loop, no JIT compilation required |
 | **Parquet everywhere** | All serialization uses `to_parquet()`/`read_parquet()` | Safer, faster, smaller than pickle |
 | **Auto-create dirs** | `path_constants._process_dir()` uses `mkdir(exist_ok=True)` | Works in CI, fresh clones, no manual setup |
@@ -615,7 +652,10 @@ See `docs/adr/` for architectural decision records:
 3. Run tests: `uv run pytest`
 4. Run linter: `uv run ruff check . --fix`
 5. Run formatter: `uv run ruff format .`
-6. Commit with descriptive message following commit authorship policy (see below)
+6. Commit with conventional commit message following commit authorship policy (see below)
+   - Format: `type(scope): subject` (e.g., `feat(api): add new endpoint`)
+   - Pre-commit hook validates commit messages automatically
+   - See CONTRIBUTING.md for complete guidelines
 7. Push and create PR
 8. CI must pass
 
