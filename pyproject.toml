@@ -61,6 +61,7 @@ dependencies = [
     "python-dotenv>=1.0.0,<2",
     "click>=8.1.7,<9",
     "streamlit>=1.40,<2",
+    "nautilus-trader>=1.222.0,<2",
 ]
 
 [project.urls]
