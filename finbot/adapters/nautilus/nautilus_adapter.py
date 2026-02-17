@@ -270,15 +270,16 @@ class NautilusAdapter(BacktestEngine):
         total_return = ((final_value - request.initial_cash) / request.initial_cash) * 100.0
 
         # Create metadata
+        import uuid
+
         metadata = BacktestRunMetadata(
-            engine=self.name,
+            run_id=str(uuid.uuid4()),
+            engine_name=self.name,
             engine_version=self.version,
             strategy_name=request.strategy_name,
-            symbols=request.symbols,
-            start_date=request.start,
-            end_date=request.end,
-            initial_cash=request.initial_cash,
-            run_timestamp=datetime.now(),
+            created_at=datetime.now(),
+            config_hash="",  # TODO: Hash request parameters
+            data_snapshot_id="",  # TODO: Hash data
         )
 
         # Create result with actual values
