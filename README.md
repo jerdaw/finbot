@@ -14,9 +14,10 @@ Finbot is a comprehensive platform for quantitative financial analysis, combinin
 
 - **Data Collection**: Automated pipelines for Yahoo Finance, FRED, Alpha Vantage, Google Sheets, Shiller datasets, and BLS
 - **Simulation**: Realistic modeling of leveraged ETFs, bond ladders, indexes, and Monte Carlo scenarios
-- **Backtesting**: 10 pre-built strategies with Backtrader integration and comprehensive performance metrics
+- **Backtesting**: Engine-agnostic backtesting with 12 strategies, typed contracts, and comprehensive performance metrics
+- **Execution**: Paper trading simulator with realistic latency, risk controls, and state recovery for disaster resilience
 - **Optimization**: Grid-search DCA optimizer and portfolio rebalancing tools
-- **Analysis**: Research-grade documentation with statistical significance testing
+- **Analysis**: Walk-forward analysis, market regime detection, and research-grade documentation with statistical significance testing
 
 ### Why Finbot?
 
@@ -25,16 +26,20 @@ Finbot is a comprehensive platform for quantitative financial analysis, combinin
 **Solution**: Finbot provides a unified platform where you can:
 - Fetch historical data from 6+ sources with a single function call
 - Simulate leveraged funds back to 1950 with realistic cost modeling (fees, spreads, borrowing costs)
-- Backtest any strategy with one class definition
+- Backtest any strategy with engine-agnostic contracts (swap Backtrader for NautilusTrader without code changes)
+- Run paper trading with realistic latency, slippage, and execution delays
 - Optimize portfolios across multiple dimensions (allocations, durations, intervals)
+- Validate strategies with walk-forward analysis and regime detection
 - Generate publication-ready research with example notebooks
 
 **Use Cases**:
-- Test rebalancing strategies (60/40, All-Weather, etc.)
+- Test rebalancing strategies (60/40, All-Weather, etc.) with realistic execution costs
 - Evaluate leveraged ETF performance vs unleveraged alternatives
 - Model bond ladder mechanics across different yield environments
 - Optimize DCA timing and allocation ratios
 - Generate Monte Carlo risk scenarios for retirement planning
+- Paper trade with risk controls (position limits, drawdown protection, exposure limits)
+- Analyze strategy performance across market regimes (bull, bear, sideways)
 
 ### Project History
 
@@ -67,24 +72,29 @@ make run-update
 - `make clean` - Remove cache files and build artifacts
 - `make all` - Run full CI pipeline (check + test)
 
-## Current Implementation Status (2026-02-14)
+## Current Implementation Status (2026-02-16)
 
-Adapter-first backtesting/live-readiness transition is in progress.
+Engine-agnostic backtesting system with live-readiness execution simulator complete.
 
-- Current phase: Phase 2 (Backtrader Adapter + parity harness prep)
-- Completed:
-  - ADR-005 (`docs/adr/ADR-005-adapter-first-backtesting-live-readiness.md`)
-  - Contracts/schemas/versioning (`finbot/core/contracts/`)
-  - Baseline report + reproducible script (`docs/research/backtesting-baseline-report.md`, `scripts/generate_backtesting_baseline.py`)
-  - Backtrader adapter skeleton (`finbot/services/backtesting/adapters/backtrader_adapter.py`)
-- Next:
-  - A/B parity harness (`E2-T2`)
-  - CI parity gate (`E2-T4`)
+- **Epics E0-E5 Complete** (645 tests passing)
+  - ✅ E0: Typed contracts for engine portability
+  - ✅ E1: Backtrader adapter implementation
+  - ✅ E2: A/B parity testing with CI gate
+  - ✅ E3: Cost models, corporate actions, walk-forward analysis, regime detection
+  - ✅ E4: Experiment tracking with reproducible snapshots
+  - ✅ E5: Execution simulator with latency, risk controls, state checkpoints
+- **Next**: E6 (NautilusTrader pilot integration)
+
+Key deliverables:
+- Engine-agnostic contracts (`finbot/core/contracts/`)
+- Execution simulator with risk management (`finbot/services/execution/`)
+- Backtrader adapter (`finbot/adapters/backtrader/`)
+- Walk-forward and regime detection tools
+- State checkpoint/recovery system
 
 Planning and handoff docs:
-- `docs/planning/backtesting-live-readiness-implementation-plan.md`
+- `docs/planning/post-e5-handoff-2026-02-16.md`
 - `docs/planning/backtesting-live-readiness-backlog.md`
-- `docs/planning/backtesting-live-readiness-handoff-2026-02-14.md`
 - `docs/planning/roadmap.md` (Priority 6)
 
 ## Prerequisites
@@ -134,6 +144,41 @@ runner = BacktestRunner(
     plot=False,
 )
 stats = runner.run_backtest()
+```
+
+### Paper Trading with Risk Controls
+
+```python
+from decimal import Decimal
+from datetime import datetime
+from finbot.core.contracts import LATENCY_NORMAL
+from finbot.core.contracts.risk import RiskConfig, DrawdownLimitRule
+from finbot.services.execution import ExecutionSimulator
+
+# Create paper trading simulator with drawdown protection
+risk_config = RiskConfig(
+    drawdown_limit=DrawdownLimitRule(max_daily_drawdown_pct=Decimal("5"))
+)
+simulator = ExecutionSimulator(
+    initial_cash=Decimal("100000"),
+    slippage_bps=Decimal("5"),
+    commission_per_share=Decimal("0.01"),
+    latency_config=LATENCY_NORMAL,  # Realistic execution delays
+    risk_config=risk_config,
+    simulator_id="paper-001",
+)
+
+# Submit order (delayed by realistic latency)
+simulator.submit_order(order, timestamp=datetime.now())
+
+# Process market data (triggers fills)
+simulator.process_market_data(current_time, current_prices)
+
+# Save state for disaster recovery
+from finbot.services.execution import CheckpointManager
+manager = CheckpointManager("checkpoints")
+checkpoint = manager.create_checkpoint(simulator)
+manager.save_checkpoint(checkpoint)
 ```
 
 ### Fund Simulation
@@ -225,6 +270,11 @@ graph TB
         LIBS[libs/<br/>API Manager & Logger]
     end
 
+    subgraph "Contract Layer"
+        CONTRACTS[core/contracts/<br/>Typed Contracts, Orders, Risk, Checkpoints]
+        ADAPTERS[adapters/<br/>Backtrader, NautilusTrader]
+    end
+
     subgraph "Utility Layer"
         DC[finbot/utils/data_collection/<br/>YFinance, FRED, Alpha Vantage, GF, BLS]
         FIN[finbot/utils/finance/<br/>CGR, Drawdown, Risk Metrics]
@@ -233,9 +283,11 @@ graph TB
     end
 
     subgraph "Service Layer"
+        EXEC[finbot/services/execution/<br/>Paper Trading Simulator, Risk Controls, Checkpoints]
         SIM[finbot/services/simulation/<br/>Fund, Bond Ladder, Monte Carlo]
-        BT[finbot/services/backtesting/<br/>10 Strategies, Backtrader Integration]
+        BT[finbot/services/backtesting/<br/>12 Strategies, Cost Models, Corporate Actions, Regime Detection]
         OPT[finbot/services/optimization/<br/>DCA Optimizer, Rebalance Optimizer]
+        EXP[finbot/services/experiment/<br/>Tracking, Snapshots, Batch Execution]
     end
 
     subgraph "Interface Layer"
@@ -249,6 +301,11 @@ graph TB
     CONST --> DC
     LIBS --> DC
 
+    CONTRACTS --> ADAPTERS
+    CONTRACTS --> EXEC
+    CONTRACTS --> BT
+    ADAPTERS --> BT
+
     DC --> SIM
     DC --> BT
     FIN --> BT
@@ -257,27 +314,35 @@ graph TB
     PD --> BT
     DT --> DC
 
+    EXEC --> BT
     SIM --> BT
     SIM --> OPT
     BT --> OPT
+    BT --> EXP
 
     CLI --> SIM
     CLI --> BT
     CLI --> OPT
     CLI --> DC
+    CLI --> EXEC
     NB --> SIM
     NB --> BT
     NB --> OPT
+    NB --> EXEC
     SCRIPTS --> DC
     SCRIPTS --> SIM
 
     style CONFIG fill:#e3f2fd
     style CONST fill:#e3f2fd
     style LIBS fill:#e3f2fd
+    style CONTRACTS fill:#fce4ec
+    style ADAPTERS fill:#fce4ec
     style DC fill:#fff3e0
+    style EXEC fill:#e1f5fe
     style SIM fill:#e8f5e9
     style BT fill:#e8f5e9
     style OPT fill:#e8f5e9
+    style EXP fill:#e8f5e9
     style CLI fill:#f3e5f5
     style NB fill:#f3e5f5
 ```
@@ -289,16 +354,60 @@ graph TB
 | `config/` | Dynaconf-based environment configuration, settings accessors |
 | `constants/` | Application constants, path definitions, API URLs |
 | `libs/` | API manager with rate limiting, queue-based async logger |
+| `finbot/core/contracts/` | **NEW**: Engine-agnostic typed contracts (orders, risk, checkpoints, costs, regimes) |
+| `finbot/adapters/` | **NEW**: Engine adapters (Backtrader, future NautilusTrader) |
+| `finbot/services/execution/` | **NEW**: Paper trading simulator with latency, risk controls, state recovery |
+| `finbot/services/experiment/` | **NEW**: Experiment tracking and snapshot management |
 | `finbot/utils/` | 176-file utility library (data collection, finance, pandas, datetime, plotting, etc.) |
 | `finbot/services/simulation/` | Fund, index, bond ladder, Monte Carlo simulators |
-| `finbot/services/backtesting/` | Backtrader-based backtesting engine with 10 strategies |
+| `finbot/services/backtesting/` | Backtesting engine with 12 strategies, cost tracking, corporate actions, regime detection |
 | `finbot/services/optimization/` | DCA and rebalance portfolio optimizers |
 | `finbot/cli/` | Click-based CLI with 4 commands (simulate, backtest, optimize, update) |
-| `scripts/` | Daily data update pipeline |
+| `scripts/` | Daily data update pipeline, baseline generation |
 | `notebooks/` | 5 example Jupyter notebooks with analysis |
 | `docs/` | Research papers, ADRs, planning documents |
 
 See [docs/adr/](docs/adr/) for architectural decision records and [finbot/utils/README.md](finbot/utils/README.md) for utility library overview.
+
+## Key Features
+
+### Engine-Agnostic Backtesting
+
+Write strategies once, run on any engine (Backtrader, NautilusTrader, or custom backends):
+
+- **Typed Contracts**: Immutable dataclasses for portability (`BacktestRunRequest`, `BacktestRunResult`, `PortfolioSnapshot`)
+- **Schema Versioning**: Forward-compatible contracts with migration support
+- **Adapter Pattern**: Swap engines without changing strategy code
+- **Parity Testing**: CI gates ensure equivalent results across engines
+
+### Live-Ready Execution Simulator
+
+Paper trading with production-grade features:
+
+- **Realistic Latency**: Four latency profiles (INSTANT, FAST, NORMAL, SLOW) with configurable delays for order submission, fills, and cancellations
+- **Risk Controls**: Position limits, exposure limits (gross/net), drawdown protection (daily/total), trading kill-switch
+- **Order Lifecycle**: Full tracking of pending, accepted, filled, partial fills, rejected, and cancelled orders
+- **State Checkpoints**: JSON-based disaster recovery with versioned snapshots for resuming after crashes
+
+### Advanced Analysis Tools
+
+Research-grade features for strategy development:
+
+- **Cost Models**: Track slippage, commissions, spreads, and borrowing costs with detailed event logging
+- **Corporate Actions**: Handle dividends, splits, and other corporate events in backtests
+- **Walk-Forward Analysis**: Out-of-sample validation with rolling training/test windows
+- **Regime Detection**: Identify market regimes (bull, bear, sideways) and analyze strategy performance by regime
+- **Experiment Tracking**: Reproducible experiments with data snapshots, version control, and comparison tools
+
+### Production-Ready Infrastructure
+
+Built for reliability and scale:
+
+- **Queue-Based Logging**: Non-blocking async logging with dual output (console + JSON files)
+- **Parquet Storage**: Fast, safe serialization (replaced pickle throughout for security)
+- **API Rate Limiting**: Built-in retry with exponential backoff for data collection
+- **Data Quality**: Automated freshness monitoring with staleness thresholds
+- **Docker Support**: Run without installing Python or dependencies
 
 ## Example Notebooks
 
