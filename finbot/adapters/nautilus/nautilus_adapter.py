@@ -150,12 +150,17 @@ class NautilusAdapter(BacktestEngine):
         """
         from nautilus_trader.model.identifiers import Venue
 
+        # Convert to Money object with proper currency
+        from nautilus_trader.model.objects import Money
+
+        starting_balance = Money(int(request.initial_cash * 100), currency="USD")  # Amount in cents
+
         engine.add_venue(
             venue=Venue("SIM"),
             oms_type="NETTING",
             account_type="CASH",
             base_currency="USD",
-            starting_balances=[int(request.initial_cash * 100)],  # Convert to cents (integer)
+            starting_balances=[starting_balance],
         )
 
     def _load_data(self, engine, request: BacktestRunRequest) -> None:
