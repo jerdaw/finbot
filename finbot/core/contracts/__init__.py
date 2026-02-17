@@ -1,6 +1,7 @@
 """Typed contracts for engine-agnostic backtesting and execution."""
 
 from finbot.core.contracts.batch import BatchItemResult, BatchRun, BatchStatus, ErrorCategory
+from finbot.core.contracts.checkpoint import CHECKPOINT_VERSION, ExecutionCheckpoint
 from finbot.core.contracts.costs import CostEvent, CostModel, CostSummary, CostType
 from finbot.core.contracts.interfaces import BacktestEngine, ExecutionSimulator, MarketDataProvider, PortfolioStateStore
 from finbot.core.contracts.latency import LATENCY_FAST, LATENCY_INSTANT, LATENCY_NORMAL, LATENCY_SLOW, LatencyConfig
@@ -53,6 +54,7 @@ __all__ = [
     "BACKTEST_STATS_COLUMN_TO_METRIC",
     "BAR_DATAFRAME_COLUMNS",
     "CANONICAL_METRIC_KEYS",
+    "CHECKPOINT_VERSION",
     "CONTRACT_SCHEMA_VERSION",
     "DEFAULT_MISSING_DATA_POLICY",
     "LATENCY_FAST",
@@ -75,6 +77,7 @@ __all__ = [
     "DataSnapshot",
     "DrawdownLimitRule",
     "ErrorCategory",
+    "ExecutionCheckpoint",
     "ExecutionSimulator",
     "ExposureLimitRule",
     "FillEvent",
