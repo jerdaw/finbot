@@ -148,9 +148,9 @@ class NautilusAdapter(BacktestEngine):
             - Cash account type for simplicity
             - NETTING order management (not hedging)
         """
-        from nautilus_trader.model.identifiers import Venue
-
         # Convert to Money object with proper currency
+        from nautilus_trader.model.enums import AccountType, OmsType
+        from nautilus_trader.model.identifiers import Venue
         from nautilus_trader.model.objects import Currency, Money
 
         usd = Currency.from_str("USD")
@@ -158,8 +158,8 @@ class NautilusAdapter(BacktestEngine):
 
         engine.add_venue(
             venue=Venue("SIM"),
-            oms_type="NETTING",
-            account_type="CASH",
+            oms_type=OmsType.NETTING,
+            account_type=AccountType.CASH,
             base_currency=usd,
             starting_balances=[starting_balance],
         )
