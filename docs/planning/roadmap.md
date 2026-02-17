@@ -142,11 +142,16 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **Evidence:** PEP 561 compliance, downstream type checking support
     - **Status:** ✅ Complete (2026-02-12)
 
-12. **Enable stricter mypy settings** (L: 1-2 weeks)
+12. **Enable stricter mypy settings** (L: 3-5 weeks)
     - **CanMEDS:** Professional (quality standards)
     - **What:** Gradually enable disallow_untyped_defs=true, add type annotations
     - **Evidence:** Stricter mypy config, type-safe codebase
-    - **Status:** ⬜ Not started
+    - **Status:** 🟡 Phase 2 complete (`check_untyped_defs = true` already enabled)
+    - **Details:** Implementation plan created at `docs/planning/stricter-mypy-implementation-plan.md`
+      - Phase 1: Annotation audit (2-3 days) - Not started
+      - Phase 2: Enable check_untyped_defs ✅ Already complete
+      - Phases 3-7: Module-by-module annotation (3-4 weeks) - Not started
+    - **Note:** Realistic timeline is 3-5 weeks (not 1-2 weeks). Deferred to future work.
 
 ### 5.3 Documentation & Communication
 
