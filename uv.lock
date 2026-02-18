@@ -741,21 +741,6 @@ wheels = [
 ]
 
 [[package]]
-name = "ecos"
-version = "2.0.14"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "numpy" },
-    { name = "scipy" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/2e/5f/17716c533da95ed110815b159efa22b1064c8c41fd5c862f21aff7a7fec0/ecos-2.0.14.tar.gz", hash = "sha256:64b3201c0e0a7f0129050557c4ac50b00031e80a10534506dba1200c8dc1efe4", size = 142430, upload-time = "2024-06-18T03:48:34.809Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/af/c3/84e392f2410f51fa557198937cc52a2e80f887c517ef4e3fb6d46e3bb008/ecos-2.0.14-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:4a7e2704a3ef9acfb8146d594deff9942d3a0f0d0399de8fe2e0bd95e8b0855c", size = 92545, upload-time = "2024-06-18T03:47:50.589Z" },
-    { url = "https://files.pythonhosted.org/packages/82/12/42f4d953f9284571726b085f99e13bfa84522bf63bf2e7a81460013b09e6/ecos-2.0.14-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f3cbb1a66ecf10955a1a4bcd6b99db55148000cb79fd176bfac26d98b21a4814", size = 222132, upload-time = "2024-06-18T03:47:47.498Z" },
-    { url = "https://files.pythonhosted.org/packages/56/9a/ca30572f3e3ff3cef6a0ea8aa6cdc12c36f9fefe559f65c7d6265713196a/ecos-2.0.14-cp312-cp312-win_amd64.whl", hash = "sha256:718eb62afb8e45426bcc365ebaf3ca9f610afcbb754de6073ef5f104da8fca1f", size = 72248, upload-time = "2024-06-18T03:48:51.504Z" },
-]
-
-[[package]]
 name = "et-xmlfile"
 version = "2.0.0"
 source = { registry = "https://pypi.org/simple" }
@@ -900,7 +885,7 @@ requires-dist = [
     { name = "pandas", specifier = ">=2.1.3,<3" },
     { name = "pandas-datareader", specifier = ">=0.10.0,<0.11" },
     { name = "pillow", specifier = ">=12.1.0,<13" },
-    { name = "plotly", specifier = ">=5.18.0,<6" },
+    { name = "plotly", specifier = ">=5.18.0,<7" },
     { name = "prettytable", specifier = ">=3.9.0,<4" },
     { name = "pyarrow", specifier = ">=14.0.1" },
     { name = "pyportfolioopt", specifier = ">=1.5.5,<2" },
@@ -2807,15 +2792,15 @@ wheels = [
 
 [[package]]
 name = "plotly"
-version = "5.24.1"
+version = "6.5.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
+    { name = "narwhals" },
     { name = "packaging" },
-    { name = "tenacity" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/79/4f/428f6d959818d7425a94c190a6b26fbc58035cbef40bf249be0b62a9aedd/plotly-5.24.1.tar.gz", hash = "sha256:dbc8ac8339d248a4bcc36e08a5659bacfe1b079390b8953533f4eb22169b4bae", size = 9479398, upload-time = "2024-09-12T15:36:31.068Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e3/4f/8a10a9b9f5192cb6fdef62f1d77fa7d834190b2c50c0cd256bd62879212b/plotly-6.5.2.tar.gz", hash = "sha256:7478555be0198562d1435dee4c308268187553cc15516a2f4dd034453699e393", size = 7015695, upload-time = "2026-01-14T21:26:51.222Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e5/ae/580600f441f6fc05218bd6c9d5794f4aef072a7d9093b291f1c50a9db8bc/plotly-5.24.1-py3-none-any.whl", hash = "sha256:f67073a1e637eb0dc3e46324d9d51e2fe76e9727c892dde64ddf1e1b51f29089", size = 19054220, upload-time = "2024-09-12T15:36:24.08Z" },
+    { url = "https://files.pythonhosted.org/packages/8a/67/f95b5460f127840310d2187f916cf0023b5875c0717fdf893f71e1325e87/plotly-6.5.2-py3-none-any.whl", hash = "sha256:91757653bd9c550eeea2fa2404dba6b85d1e366d54804c340b2c874e5a7eb4a4", size = 9895973, upload-time = "2026-01-14T21:26:47.135Z" },
 ]
 
 [[package]]
@@ -3089,19 +3074,17 @@ wheels = [
 
 [[package]]
 name = "pyportfolioopt"
-version = "1.5.6"
+version = "1.5.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cvxpy" },
-    { name = "ecos" },
     { name = "numpy" },
     { name = "pandas" },
-    { name = "plotly" },
     { name = "scipy" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b3/54/902758bac4322d0eae8199aa5bf2d9c41316ddad82d82d5960ca27174ceb/pyportfolioopt-1.5.6.tar.gz", hash = "sha256:7e94f41c84fb5865c7a64de995a3ba580188f3ba494f6dfbc02721b5de323f6e", size = 56782, upload-time = "2024-12-01T19:42:09.509Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/5f/e3/922d2279adc6e965c5aacce89ff317d6c9f8cabbbb70fa604a84443c6b1e/pyportfolioopt-1.5.5.tar.gz", hash = "sha256:371ade1fed1deeea7042ba3178b3cf9aac9cd0b1700e949cab8a8c2e72e5566a", size = 57860, upload-time = "2023-05-07T14:22:15.824Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d4/9e/c8ffe7e9ba4ff0317fccd2e1dc466c47e64acea1b5e6b2f167d7d3097c93/pyportfolioopt-1.5.6-py3-none-any.whl", hash = "sha256:22cfa4978dac893fa78cbd91b0793c4d8fa024a577118d47769f19f069e09d8c", size = 62703, upload-time = "2024-12-01T19:42:07.784Z" },
+    { url = "https://files.pythonhosted.org/packages/e3/7d/4930adde3743e4d3bf4e30a19af14c3d9f622e8e7b4e6bb7dfb68f98ce8f/pyportfolioopt-1.5.5-py3-none-any.whl", hash = "sha256:16dc6a09450a74610f88b10fa44fe83d400bdc45baadd68496f59bf4a0bf9d44", size = 61942, upload-time = "2023-05-07T14:22:13.235Z" },
 ]
 
 [[package]]
