@@ -3,10 +3,24 @@
 **Financial data collection, simulation, and backtesting platform for quantitative analysis**
 
 [![CI](https://github.com/jerdaw/finbot/actions/workflows/ci.yml/badge.svg)](https://github.com/jerdaw/finbot/actions/workflows/ci.yml)
+[![Docs](https://github.com/jerdaw/finbot/actions/workflows/docs.yml/badge.svg)](https://github.com/jerdaw/finbot/actions/workflows/docs.yml)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/jerdaw/finbot/badge)](https://securityscorecards.dev/viewer/?uri=github.com/jerdaw/finbot)
 [![codecov](https://codecov.io/gh/jerdaw/finbot/branch/main/graph/badge.svg)](https://codecov.io/gh/jerdaw/finbot)
 [![Docstring Coverage](https://img.shields.io/badge/docstring%20coverage-58.2%25-brightgreen.svg)](https://github.com/jerdaw/finbot)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![uv](https://img.shields.io/badge/uv-0.9+-blue.svg)](https://docs.astral.sh/uv/)
+
+## IMPORTANT DISCLAIMER
+
+**Finbot is for educational and research purposes only. This software does not constitute financial, investment, or medical advice. Past performance is not indicative of future results. You use this software entirely at your own risk.**
+
+See [DISCLAIMER.md](DISCLAIMER.md) for complete legal terms, limitations, and risk disclosures. By using this software, you acknowledge that:
+- This is NOT financial or investment advice
+- Results should NOT replace professional consultation
+- You accept all risks and limitations
+- The authors assume NO liability for losses
+
+**Always consult qualified professionals before making financial or medical decisions.**
 
 ## Overview
 
@@ -127,6 +141,12 @@ Data is persisted in a Docker volume (`finbot-data`). API keys are loaded from `
 ## Usage
 
 ### Backtesting
+
+Finbot supports two backtesting engines through a unified adapter interface:
+- **Backtrader** - Mature, bar-based backtesting (default)
+- **NautilusTrader** - Event-driven, live-trading capable
+
+See **[Choosing a Backtest Engine](https://jerdaw.github.io/finbot/guides/choosing-backtest-engine/)** for a comprehensive comparison and decision guide.
 
 ```python
 from finbot.services.backtesting.backtest_runner import BacktestRunner
@@ -404,6 +424,7 @@ Research-grade features for strategy development:
 Built for reliability and scale:
 
 - **Queue-Based Logging**: Non-blocking async logging with dual output (console + JSON files)
+- **Audit Trails**: Structured logging for all operations with queryable audit logs
 - **Parquet Storage**: Fast, safe serialization (replaced pickle throughout for security)
 - **API Rate Limiting**: Built-in retry with exponential backoff for data collection
 - **Data Quality**: Automated freshness monitoring with staleness thresholds
@@ -480,6 +501,16 @@ Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for:
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details.
+
+### Third-Party Licenses
+
+Finbot depends on various open-source libraries. See [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) for a comprehensive audit of all dependencies and their licenses.
+
+**Key points:**
+- Most dependencies use permissive licenses (MIT, BSD, Apache 2.0)
+- A few dependencies use GPL/LGPL licenses (backtrader, ecos, frozendict, nautilus_trader, portion)
+- All licenses are compatible with the MIT license when used as library dependencies
+- No proprietary dependencies
 
 ## Citation
 

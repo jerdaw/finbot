@@ -86,6 +86,8 @@ nav:
       - Quick Start: user-guide/quick-start.md
       - CLI Reference: user-guide/cli-reference.md
       - Configuration: user-guide/configuration.md
+      - Choosing a Backtest Engine: guides/choosing-backtest-engine.md
+      - Data Quality & Monitoring: user-guide/data-quality-guide.md
       - Health Economics Tutorial: user-guide/health-economics-tutorial.md
   - API Reference:
       - Overview: api/index.md
@@ -125,6 +127,12 @@ nav:
       - Leveraged ETF Simulation: research/leveraged-etf-simulation.md
       - DCA Optimization: research/dca-optimization.md
       - Strategy Backtesting: research/strategy-backtesting.md
+  - Development Guides:
+      - Docker Security Scanning: guides/docker-security-scanning.md
+      - Pre-commit Hooks: guides/pre-commit-hooks-usage.md
+      - Release Process: guides/release-process.md
+      - Data Quality Guide: guides/data-quality-guide.md
+      - Audit Trails: guides/audit-trails.md
   - Contributing: contributing.md
   - Changelog: changelog.md
 

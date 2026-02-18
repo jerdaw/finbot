@@ -261,6 +261,5 @@ Potential improvements:
 
 ## See Also
 
-- [Data Quality Guide](../../guides/data-quality-guide.md) - Operations documentation
+- [Data Quality & Monitoring Guide](../../user-guide/data-quality-guide.md) - Operations documentation
 - [CLI Reference](../../user-guide/cli-reference.md#status) - `finbot status` command
-- [Update Pipeline](../../guides/update-pipeline.md) - Daily data update workflow
