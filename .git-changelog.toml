@@ -1,0 +1,53 @@
+# git-changelog configuration file
+# https://pawamoy.github.io/git-changelog/
+
+[git-changelog]
+# Provider (gitlab, github, bitbucket)
+provider = "github"
+
+# Repository namespace/name
+repository = "jerdaw/finbot"
+
+# Commit message convention (angular, conventional, basic)
+convention = "conventional"
+
+# Output format (markdown, json)
+output = "markdown"
+
+# Template to use (angular, keepachangelog)
+template = "keepachangelog"
+
+# Parse Git trailers
+parse_trailers = true
+
+# Parse GitHub/GitLab references (#123, !456)
+parse_refs = true
+
+# Sections to include in changelog
+sections = [
+    {type = "feat", section = "Features"},
+    {type = "fix", section = "Bug Fixes"},
+    {type = "docs", section = "Documentation"},
+    {type = "style", section = "Code Style"},
+    {type = "refactor", section = "Code Refactoring"},
+    {type = "perf", section = "Performance Improvements"},
+    {type = "test", section = "Tests"},
+    {type = "build", section = "Build System"},
+    {type = "ci", section = "Continuous Integration"},
+    {type = "chore", section = "Chores"},
+    {type = "revert", section = "Reverts"}
+]
+
+# Commit types to include (empty = all)
+types = ["feat", "fix", "refactor", "perf"]
+
+# Bump version map (for semver)
+bump_latest = true
+bump = "auto"
+
+[git-changelog.bump_map]
+feat = "minor"
+fix = "patch"
+refactor = "patch"
+perf = "patch"
+breaking = "major"
