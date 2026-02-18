@@ -337,9 +337,12 @@ and enable focused testing in a separate task.
 
 ### E6-T3 (S) Go/No-Go recommendation memo
 
-- Output: `docs/adr/ADR-006-live-execution-engine-decision.md`
+- Output: `docs/adr/ADR-011-nautilus-decision.md`
+- Status: ✅ Complete (2026-02-17)
 - Acceptance:
-  - Decision and rationale recorded with quantified tradeoffs.
+  - Decision and rationale recorded with quantified tradeoffs. ✅
+  - Clear recommendation: Hybrid approach ✅
+  - Implementation plan with decision gates ✅
 
 ## Dependencies
 
@@ -426,4 +429,4 @@ and enable focused testing in a separate task.
 - `E3`: ✅ Complete (All tasks: E3-T1 cost models, E3-T2 corporate actions + data quality, E3-T3 walk-forward + regime analysis)
 - `E4`: ✅ Complete (All tasks: E4-T1 experiment registry, E4-T2 snapshot infrastructure, E4-T3 batch observability, E4-T4 dashboard comparison)
 - `E5`: ✅ Complete (All tasks: E5-T1 orders/executions, E5-T2 latency simulation, E5-T3 risk controls, E5-T4 state checkpoints)
-- `E6`: 🚧 In progress (E6-T1 Phase 1 complete, Phase 2 skeleton created, awaiting manual implementation)
+- `E6`: ✅ Complete (All tasks: E6-T1 adapter implementation, E6-T2 evaluation report, E6-T3 decision memo - Hybrid approach adopted)

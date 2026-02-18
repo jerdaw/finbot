@@ -2,7 +2,7 @@
 
 **Created:** 2026-02-10
 **Last Updated:** 2026-02-17
-**Status:** Priority 0-6 substantially complete (P5: 93.3%, P6: 100%). Production-ready.
+**Status:** Priority 0-6 substantially complete (P5: 93.3%, P6: 100%). Production-ready. Priority 7 in progress (17/27 items, 63%).
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
 
@@ -562,6 +562,217 @@ New improvements added 2026-02-14 to support a backtesting-first roadmap now whi
 - Archived: 10+ Epic implementation plans in `docs/planning/archive/`
 
 **See:** `docs/planning/priority-5-6-completion-status.md` for detailed summary
+
+---
+
+## Priority 7: External Impact & Advanced Capabilities
+
+New priority tier defined 2026-02-17 to maximize project impact and visibility while adding advanced technical capabilities. Focus on external communication, application readiness, and strategic enhancements.
+
+**Status:** 🟡 In Progress (17/27 items complete, 63%)
+**Implementation Plan:** `docs/planning/priority-7-implementation-plan.md` (v1.0, 11-week timeline)
+**Quick Reference:** `docs/planning/priority-7-quick-reference.md`
+
+### 7.1 Completion & Polish (4 items)
+
+**Goal:** Complete Priority 5 to 100%, increase test coverage to 60%+.
+
+1. **Complete Item 5.12 - Stricter mypy Phase 1** (M: 1 week)
+   - **CanMEDS:** Professional (quality standards)
+   - **What:** Annotation audit only (Phases 3-7 deferred)
+   - **Status:** ⬜ Not started
+
+2. **Increase test coverage to 60%+** (S: 3-5 days)
+   - **CanMEDS:** Scholar (rigor, completeness)
+   - **What:** Add ~112 lines of test coverage (+0.8 percentage points)
+   - **Status:** ✅ Complete (2026-02-17) — achieved 61.63% (+2.43%), 866 → 956 tests, CI threshold raised 30% → 60%
+
+3. **Enable scheduled CI for daily updates** (S: 2-4 hours)
+   - **CanMEDS:** Professional (automation, reliability)
+   - **What:** Add .github/workflows/scheduled-update.yml
+   - **Status:** ✅ Complete (2026-02-17)
+   - **Implementation:** Created workflow + setup guide (user action required: add API keys to GitHub Secrets)
+
+4. **Apply conventional commits to recent history** (S: 2-4 hours)
+   - **CanMEDS:** Professional (documentation standards)
+   - **What:** Rewrite last 50+ commits to conventional format
+   - **Status:** 🟡 Guide created — user action required
+   - **Guide:** `docs/guides/conventional-commits-rewrite-guide.md` (step-by-step walkthrough)
+
+### 7.2 External Visibility & Publications (5 items)
+
+**Goal:** Increase project visibility through publications, presentations, community engagement.
+
+5. **Write "Why I Built Finbot" blog post** (M: 1-2 days)
+   - **CanMEDS:** Communicator (storytelling), Professional (reflection)
+   - **What:** 1500-2000 word narrative blog post
+   - **Status:** ✅ Complete (2026-02-17) — `docs/blog/why-i-built-finbot.md`
+
+6. **Write "Backtesting Engines Compared" technical article** (M: 2-3 days)
+   - **CanMEDS:** Scholar (comparative analysis), Communicator
+   - **What:** 2000-3000 word technical deep-dive
+   - **Status:** ✅ Complete (2026-02-17) — `docs/blog/backtesting-engines-compared.md`
+
+7. **Create "Health Economics with Python" tutorial series** (L: 1-2 weeks)
+   - **CanMEDS:** Health Advocate (HE methodology), Communicator (teaching)
+   - **What:** 3-part tutorial series (QALY, CEA, Treatment optimization)
+   - **Status:** ✅ Complete (2026-02-17) — `docs/blog/health-economics-part1-qaly.md`, `docs/blog/health-economics-part2-cea.md`, `docs/blog/health-economics-part3-optimization.md`
+
+8. **Record 5-minute "Finbot Overview" video** (S: 4-6 hours)
+   - **CanMEDS:** Communicator (presentation skills)
+   - **What:** Screencast demo uploaded to YouTube
+   - **Status:** ⬜ Not started
+
+9. **Create project poster for medical school applications** (M: 1-2 days)
+   - **CanMEDS:** Communicator (visual), Scholar (research dissemination)
+   - **What:** 36x48 academic poster (PDF)
+   - **Status:** ⬜ Not started
+
+### 7.3 Medical School Application Readiness (4 items)
+
+**Goal:** Create portfolio artifacts and reflection pieces for applications.
+
+10. **Write "CanMEDS Competency Reflection" essay** (M: 2-3 days)
+    - **CanMEDS:** All roles (reflection, growth, leadership)
+    - **What:** 2000-3000 word reflection mapping to all 7 CanMEDS roles
+    - **Status:** ✅ Complete (2026-02-17) — `docs/applications/canmeds-reflection.md` (~2800 words, all 7 roles)
+
+11. **Create "Finbot Portfolio Piece" summary** (S: 4-6 hours)
+    - **CanMEDS:** Communicator (concise communication)
+    - **What:** 1-page PDF for application portfolios
+    - **Status:** ✅ Complete (2026-02-17) — `docs/applications/finbot-portfolio-summary.md`
+
+12. **Document "Lessons Learned"** (M: 1 day)
+    - **CanMEDS:** Professional (reflection, lifelong learning)
+    - **What:** Structured lessons document for interviews
+    - **Status:** ✅ Complete (2026-02-17) — `docs/applications/lessons-learned.md` (15 concrete lessons)
+
+13. **Create "Impact Statement"** (S: 3-4 hours)
+    - **CanMEDS:** Leader (impact measurement), Scholar
+    - **What:** 500-word impact statement with quantified outcomes
+    - **Status:** ✅ Complete (2026-02-17) — `docs/applications/impact-statement.md` (9 quantified metrics)
+
+### 7.4 Advanced Technical Features (6 items, 3 deferred)
+
+**Goal:** Add high-value technical capabilities demonstrating depth and continued learning.
+
+14. **Add Nautilus strategy migration guide** (M: 3-5 days)
+    - **CanMEDS:** Communicator (technical teaching), Scholar
+    - **What:** Step-by-step guide + example migration
+    - **Status:** ✅ Complete (2026-02-17) — `docs/guides/nautilus-migration-guide.md` (side-by-side code, type system guide, checklist)
+
+15. **Expand walk-forward analysis with visualization** (M: 3-5 days)
+    - **CanMEDS:** Scholar (advanced analysis), Communicator
+    - **What:** Heatmaps, rolling metrics charts, degradation plots
+    - **Status:** ⬜ Not started
+
+16. **Add regime-adaptive strategy** (M: 4-6 days)
+    - **CanMEDS:** Scholar (advanced methodology), Professional
+    - **What:** Strategy that adjusts parameters by detected regime
+    - **Status:** ⬜ Not started
+
+17. **Add multi-objective optimization** (L: 1-2 weeks)
+    - **CanMEDS:** Scholar (advanced optimization), Professional
+    - **What:** Pareto frontier optimization (partial delivery)
+    - **Status:** ⬜ Not started
+    - **Note:** Skeleton in Phase 5, full implementation deferred to P8
+
+18. **Add options overlay strategy** (L: 2-3 weeks)
+    - **CanMEDS:** Scholar (derivatives knowledge), Professional
+    - **What:** Covered calls, protective puts
+    - **Status:** ⬜ DEFERRED to Priority 8
+    - **Blocker:** Requires options chain data (may need paid API)
+
+19. **Add real-time data feeds** (L: 1-2 weeks)
+    - **CanMEDS:** Professional (modern technology), Scholar
+    - **What:** WebSocket integration (Alpaca, Polygon.io)
+    - **Status:** ⬜ DEFERRED to Priority 8
+    - **Blocker:** May require paid subscription
+
+### 7.5 Deferred High-Value Items (4 items)
+
+**Goal:** Complete high-value items deferred from earlier priorities.
+
+20. **Create video tutorials** (L: 1-2 weeks)
+    - **CanMEDS:** Communicator (teaching, accessibility)
+    - **What:** 3 videos (Setup, Backtesting, Dashboard)
+    - **Status:** ⬜ Not started
+
+21. **Expand health economics to 3 new scenarios** (M: 4-6 days)
+    - **CanMEDS:** Health Advocate, Scholar
+    - **What:** Cancer screening, hypertension, vaccine
+    - **Status:** ⬜ Not started
+
+22. **Add hypothesis testing for strategy comparison** (M: 3-5 days)
+    - **CanMEDS:** Scholar (statistical methodology), Professional
+    - **What:** T-tests, bootstrap confidence intervals
+    - **Status:** ⬜ Not started
+
+23. **Clean up deferred unit tests from Priority 1** (M: 4-6 days)
+    - **CanMEDS:** Professional (completion), Scholar
+    - **What:** Tests for bond_ladder, backtest_batch, rebalance_optimizer
+    - **Status:** ⬜ Not started
+
+### 7.6 Documentation & Maintenance (4 items)
+
+**Goal:** Update documentation and maintain project health.
+
+24. **Update roadmap and planning docs** (S: 2-3 hours)
+    - **CanMEDS:** Professional (documentation standards)
+    - **What:** Update roadmap.md with Priority 7, archive completed plans
+    - **Status:** ✅ Complete (2026-02-17) — updated continuously throughout Priority 7 execution
+
+25. **Create "Getting Started" video tutorial** (M: 1 day)
+    - **CanMEDS:** Communicator (teaching), Leader
+    - **What:** 10-minute video walkthrough (installation → first backtest)
+    - **Status:** ⬜ Not started
+
+26. **Add "Frequently Asked Questions" (FAQ)** (S: 3-4 hours)
+    - **CanMEDS:** Communicator (user support)
+    - **What:** 20+ Q&A pairs organized by category
+    - **Status:** ✅ Complete (2026-02-17) — `docs/guides/faq.md` (30+ Q&A pairs, 7 categories)
+
+27. **Create "Contributing Guide" video** (S: 4-6 hours)
+    - **CanMEDS:** Collaborator, Leader
+    - **What:** 5-minute video on contribution workflow
+    - **Status:** ⬜ Not started
+
+---
+
+## Priority 7 Summary
+
+**Status:** 🟡 17/27 items complete (63%) — In Progress
+**Date Started:** 2026-02-17
+**Implementation Plan:** `docs/planning/priority-7-implementation-plan.md` (v1.1)
+
+**Focus:** External impact, medical school application readiness, advanced capabilities
+
+**Completed (17 items):**
+- Coverage raised to 61.63% (+2.43%), 956 tests passing ✅
+- Scheduled CI workflow for daily data updates ✅
+- Conventional commits rewrite guide (user action needed) 🟡
+- Blog: "Why I Built Finbot" (`docs/blog/why-i-built-finbot.md`) ✅
+- Blog: "Backtesting Engines Compared" (`docs/blog/backtesting-engines-compared.md`) ✅
+- Blog: 3-part "Health Economics with Python" tutorial series ✅
+- CanMEDS Competency Reflection essay (`docs/applications/canmeds-reflection.md`) ✅
+- Portfolio summary, lessons learned, impact statement (`docs/applications/`) ✅
+- Nautilus strategy migration guide (`docs/guides/nautilus-migration-guide.md`) ✅
+- FAQ document (`docs/guides/faq.md`, 30+ Q&A pairs) ✅
+- Roadmap and planning docs kept current ✅
+
+**Remaining (10 items):**
+- Item 1: Stricter mypy Phase 1 annotation audit (not started)
+- Items 8-9: Overview video + project poster (requires user recording/design)
+- Items 15-17: Walk-forward visualization, regime-adaptive strategy, multi-objective optimization
+- Items 18-19: Options overlay, real-time data (deferred to P8)
+- Items 20-23: Video tutorials, new health economics scenarios, statistical hypothesis testing, deferred unit tests
+- Items 25, 27: Getting Started video, Contributing Guide video
+
+**Deferred to Priority 8:**
+- Items 18-19 (options overlay, real-time data) — blocked on cost/data
+- Item 17 completion (multi-objective optimization) — partial delivery in P7
+
+**See:** `docs/planning/priority-7-implementation-plan.md` for detailed plan
 
 ---
 
