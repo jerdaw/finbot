@@ -6,7 +6,14 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
+from finbot.dashboard.disclaimer import show_sidebar_accessibility, show_sidebar_disclaimer
+
 st.set_page_config(page_title="Data Status — Finbot", layout="wide")
+
+# Show disclaimer and accessibility info
+show_sidebar_disclaimer()
+show_sidebar_accessibility()
+
 st.title("Data Status")
 st.markdown("Monitor data source freshness, file counts, and storage usage.")
 
