@@ -106,7 +106,7 @@ All 6 items complete. Added containerization, Streamlit web dashboard (6 pages),
 
 New priority tier defined 2026-02-17 to maximize project impact and visibility while adding advanced technical capabilities. Focus on external communication, application readiness, and strategic enhancements.
 
-**Status:** 🟡 In Progress (24/27 items complete, 89%)
+**Status:** ✅ Complete (25/27 active items complete — 5 media items on hold pending user recording/design)
 **Implementation Plan:** `docs/planning/priority-7-implementation-plan.md` (v1.1); Batches 2–4 archived in `docs/planning/archive/`
 **Quick Reference:** `docs/planning/priority-7-quick-reference.md`
 
@@ -133,8 +133,7 @@ New priority tier defined 2026-02-17 to maximize project impact and visibility w
 4. **Apply conventional commits to recent history** (S: 2-4 hours)
    - **CanMEDS:** Professional (documentation standards)
    - **What:** Rewrite last 50+ commits to conventional format
-   - **Status:** 🟡 Guide created — user action required
-   - **Guide:** `docs/guides/conventional-commits-rewrite-guide.md` (step-by-step walkthrough)
+   - **Status:** ✅ Complete (2026-02-18) — `git filter-branch --msg-filter` applied conventional format to all 68 non-conforming commits; all 81 post-v1.0.0 commits now follow conventional format
 
 ### 7.2 External Visibility & Publications (5 items)
 
@@ -158,12 +157,12 @@ New priority tier defined 2026-02-17 to maximize project impact and visibility w
 8. **Record 5-minute "Finbot Overview" video** (S: 4-6 hours)
    - **CanMEDS:** Communicator (presentation skills)
    - **What:** Screencast demo uploaded to YouTube
-   - **Status:** ⬜ Not started
+   - **Status:** ⏸ ON HOLD — requires user screen recording
 
 9. **Create project poster for medical school applications** (M: 1-2 days)
    - **CanMEDS:** Communicator (visual), Scholar (research dissemination)
    - **What:** 36x48 academic poster (PDF)
-   - **Status:** ⬜ Not started
+   - **Status:** ⏸ ON HOLD — requires human design work
 
 ### 7.3 Medical School Application Readiness (4 items)
 
@@ -232,7 +231,7 @@ New priority tier defined 2026-02-17 to maximize project impact and visibility w
 20. **Create video tutorials** (L: 1-2 weeks)
     - **CanMEDS:** Communicator (teaching, accessibility)
     - **What:** 3 videos (Setup, Backtesting, Dashboard)
-    - **Status:** ⬜ Not started
+    - **Status:** ⏸ ON HOLD — requires user screen recording
 
 21. **Expand health economics to 3 new scenarios** (M: 4-6 days)
     - **CanMEDS:** Health Advocate, Scholar
@@ -261,7 +260,7 @@ New priority tier defined 2026-02-17 to maximize project impact and visibility w
 25. **Create "Getting Started" video tutorial** (M: 1 day)
     - **CanMEDS:** Communicator (teaching), Leader
     - **What:** 10-minute video walkthrough (installation → first backtest)
-    - **Status:** ⬜ Not started
+    - **Status:** ⏸ ON HOLD — requires user screen recording
 
 26. **Add "Frequently Asked Questions" (FAQ)** (S: 3-4 hours)
     - **CanMEDS:** Communicator (user support)
@@ -271,22 +270,22 @@ New priority tier defined 2026-02-17 to maximize project impact and visibility w
 27. **Create "Contributing Guide" video** (S: 4-6 hours)
     - **CanMEDS:** Collaborator, Leader
     - **What:** 5-minute video on contribution workflow
-    - **Status:** ⬜ Not started
+    - **Status:** ⏸ ON HOLD — requires user screen recording
 
 ---
 
 ## Priority 7 Summary
 
-**Status:** 🟡 24/27 items complete (89%) — In Progress
-**Date Started:** 2026-02-17
+**Status:** ✅ Complete (25/27 active items — 5 media items on hold pending user recording/design)
+**Date Started:** 2026-02-17 | **Completed:** 2026-02-18
 **Implementation Plan:** `docs/planning/priority-7-implementation-plan.md` (v1.1); Batches 2–4 archived in `docs/planning/archive/`
 
 **Focus:** External impact, medical school application readiness, advanced capabilities
 
-**Completed (24 items):**
+**Completed (25 items):**
 - Coverage raised to 61.63% (+2.43%), 956 → 1106+ tests passing ✅
 - Scheduled CI workflow for daily data updates ✅
-- Conventional commits rewrite guide (user action needed) 🟡
+- Conventional commits applied to all 81 post-v1.0.0 commits via filter-branch ✅
 - Blog: "Why I Built Finbot" (`docs/blog/why-i-built-finbot.md`) ✅
 - Blog: "Backtesting Engines Compared" (`docs/blog/backtesting-engines-compared.md`) ✅
 - Blog: 3-part "Health Economics with Python" tutorial series ✅
@@ -304,10 +303,10 @@ New priority tier defined 2026-02-17 to maximize project impact and visibility w
 - Health economics clinical scenarios (cancer screening, hypertension, vaccine, 22 tests) ✅
 - Roadmap and planning docs kept current ✅
 
-**Remaining (3 groups — all require user action):**
-- Items 8-9: Overview video + project poster (requires user recording/design)
-- Item 20: Video tutorials (requires user recording)
-- Items 25, 27: Getting Started + Contributing Guide videos (requires user recording)
+**On Hold (5 items — require user recording/design):**
+- Items 8-9: Overview video + project poster
+- Item 20: Video tutorials (3 videos)
+- Items 25, 27: Getting Started + Contributing Guide videos
 
 **Deferred to Priority 8:**
 - Items 18-19 (options overlay, real-time data) — blocked on cost/data
