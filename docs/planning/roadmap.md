@@ -107,7 +107,7 @@ All 6 items complete. Added containerization, Streamlit web dashboard (6 pages),
 New priority tier defined 2026-02-17 to maximize project impact and visibility while adding advanced technical capabilities. Focus on external communication, application readiness, and strategic enhancements.
 
 **Status:** 🟡 In Progress (24/27 items complete, 89%)
-**Implementation Plan:** `docs/planning/priority-7-implementation-plan.md` (v1.1); Batch 3 complete — `docs/planning/priority-7-batch3-implementation-plan.md` (v1.0); Batch 4 complete — `docs/planning/priority-7-batch4-implementation-plan.md` (v1.0)
+**Implementation Plan:** `docs/planning/priority-7-implementation-plan.md` (v1.1); Batches 2–4 archived in `docs/planning/archive/`
 **Quick Reference:** `docs/planning/priority-7-quick-reference.md`
 
 ### 7.1 Completion & Polish (4 items)
@@ -237,7 +237,7 @@ New priority tier defined 2026-02-17 to maximize project impact and visibility w
 21. **Expand health economics to 3 new scenarios** (M: 4-6 days)
     - **CanMEDS:** Health Advocate, Scholar
     - **What:** Cancer screening, hypertension, vaccine
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-18) — `services/health_economics/scenarios/` (3 scenario modules, `ScenarioResult` dataclass, 22 tests, dashboard tab 4)
 
 22. **Add hypothesis testing for strategy comparison** (M: 3-5 days)
     - **CanMEDS:** Scholar (statistical methodology), Professional
@@ -277,14 +277,14 @@ New priority tier defined 2026-02-17 to maximize project impact and visibility w
 
 ## Priority 7 Summary
 
-**Status:** 🟡 23/27 items complete (85%) — In Progress
+**Status:** 🟡 24/27 items complete (89%) — In Progress
 **Date Started:** 2026-02-17
-**Implementation Plan:** `docs/planning/priority-7-implementation-plan.md` (v1.1); Batch 3 — `docs/planning/priority-7-batch3-implementation-plan.md` (v1.0)
+**Implementation Plan:** `docs/planning/priority-7-implementation-plan.md` (v1.1); Batches 2–4 archived in `docs/planning/archive/`
 
 **Focus:** External impact, medical school application readiness, advanced capabilities
 
-**Completed (23 items):**
-- Coverage raised to 61.63% (+2.43%), 956 → 1063+ tests passing ✅
+**Completed (24 items):**
+- Coverage raised to 61.63% (+2.43%), 956 → 1106+ tests passing ✅
 - Scheduled CI workflow for daily data updates ✅
 - Conventional commits rewrite guide (user action needed) 🟡
 - Blog: "Why I Built Finbot" (`docs/blog/why-i-built-finbot.md`) ✅
@@ -300,22 +300,17 @@ New priority tier defined 2026-02-17 to maximize project impact and visibility w
 - Statistical hypothesis testing (`hypothesis_testing.py`, 6 functions) ✅
 - Deferred unit tests (39 new tests; backtest_batch, rebalance_optimizer, bond_ladder) ✅
 - Mypy Phase 1 audit (`docs/planning/mypy-phase1-audit-report.md`, phased roadmap) ✅
+- Mypy Phases 4–5: Backtesting core + strategies/costs/indicators all annotated ✅
+- Health economics clinical scenarios (cancer screening, hypertension, vaccine, 22 tests) ✅
 - Roadmap and planning docs kept current ✅
 
-**Remaining (3 items):**
+**Remaining (3 groups — all require user action):**
 - Items 8-9: Overview video + project poster (requires user recording/design)
 - Item 20: Video tutorials (requires user recording)
-- Items 25, 27: Getting Started video, Contributing Guide video
-
-**Completed in Batch 4 (2026-02-18):**
-- Item 21: New health economics scenarios (cancer screening, hypertension, vaccine) ✅
-- Mypy Phase 4: Backtesting core annotations (analyzers, runners, brokers) ✅
-- Mypy Phase 5: Strategies, costs, and indicators annotations ✅
+- Items 25, 27: Getting Started + Contributing Guide videos (requires user recording)
 
 **Deferred to Priority 8:**
 - Items 18-19 (options overlay, real-time data) — blocked on cost/data
-
-**See:** `docs/planning/priority-7-batch4-implementation-plan.md` for detailed plan
 
 ---
 
@@ -384,3 +379,5 @@ New priority tier defined 2026-02-17 to maximize project impact and visibility w
 | Missing data policies (6.61) | 2026-02-16 | 5 policies (FORWARD_FILL/DROP/ERROR/INTERPOLATE/BACKFILL), 11 comprehensive tests, 467 total tests |
 | Corporate actions documentation (6.62) | 2026-02-16 | User guide + Jupyter notebook demonstrating adjusted prices and missing data policies |
 | Walk-forward + regime analysis (6.63) | 2026-02-16 | Walk-forward testing (rolling/anchored), regime detection (4 regimes), 20 tests, 489 total tests |
+| Health economics scenarios (P7.21) | 2026-02-18 | Cancer screening, hypertension, vaccine scenarios; ScenarioResult dataclass; 22 tests; dashboard tab 4 |
+| Mypy Phases 4–5 (P7.1 cont.) | 2026-02-18 | disallow_untyped_defs enforced for all finbot.services.backtesting.* modules; 0 errors in 39 files |

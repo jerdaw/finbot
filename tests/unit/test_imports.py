@@ -173,6 +173,20 @@ def test_import_health_economics():
     assert callable(optimize_treatment)
 
 
+def test_import_health_economics_scenarios():
+    from finbot.services.health_economics import (
+        ScenarioResult,
+        run_cancer_screening_scenario,
+        run_hypertension_scenario,
+        run_vaccine_scenario,
+    )
+
+    assert ScenarioResult is not None
+    assert callable(run_cancer_screening_scenario)
+    assert callable(run_hypertension_scenario)
+    assert callable(run_vaccine_scenario)
+
+
 def test_import_core_contracts():
     from finbot.core.contracts import BacktestEngine, BacktestRunResult, MarketDataProvider
 

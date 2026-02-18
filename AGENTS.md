@@ -418,6 +418,11 @@ Entry point: `BacktestRunner` in `backtest_runner.py`
 - **`qaly_simulator.py`**: Monte Carlo QALY simulation with stochastic cost/utility/mortality
 - **`cost_effectiveness.py`**: ICER, NMB, CEAC, cost-effectiveness plane (probabilistic sensitivity analysis)
 - **`treatment_optimizer.py`**: Grid-search treatment schedule optimization (dose frequency x duration)
+- **`scenarios/`**: Real-world clinical scenario analyses composed from the above modules
+  - `models.py`: `ScenarioResult` frozen dataclass (ICER, NMB, QALY gain, cost difference)
+  - `cancer_screening.py`: Annual mammography vs. no screening (10-year horizon)
+  - `hypertension.py`: ACE inhibitor vs. lifestyle modification for Stage 1 HTN (5-year)
+  - `vaccine.py`: Influenza vaccination vs. no vaccination for elderly ≥65 (1-year, societal)
 
 ##### `finbot/services/data_quality/` — Data Quality and Observability
 - **`data_source_registry.py`**: Registry of 7 data sources with staleness thresholds
@@ -524,6 +529,7 @@ Create `.env` file in `finbot/config/` (excluded by `.gitignore`).
 | **Other Services** | |
 | `finbot/services/health_economics/qaly_simulator.py` | QALY Monte Carlo simulation |
 | `finbot/services/health_economics/cost_effectiveness.py` | Cost-effectiveness analysis (ICER/NMB/CEAC) |
+| `finbot/services/health_economics/scenarios/` | Clinical scenarios: cancer screening, hypertension, vaccine |
 | `finbot/services/data_quality/check_data_freshness.py` | Data freshness monitoring |
 
 ## Code Style
@@ -558,6 +564,7 @@ uv run pytest --cov=finbot tests/
   - `test_finance_utils.py`: Finance calculation tests
   - `test_strategies.py`, `test_strategies_parametrized.py`: All 12 backtesting strategies
   - `test_health_economics.py`: QALY simulator, CEA, treatment optimizer
+  - `test_health_economics_scenarios.py`: Clinical scenarios (cancer screening, hypertension, vaccine, 22 tests)
   - `test_order_lifecycle.py`: Order tracking and execution (20 tests)
   - `test_latency_simulation.py`: Latency hooks and pending actions (17 tests)
   - `test_risk_controls.py`: Risk management (14 tests)
