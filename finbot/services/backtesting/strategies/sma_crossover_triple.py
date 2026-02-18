@@ -1,23 +1,27 @@
+from __future__ import annotations
+
+from typing import Any
+
 import backtrader as bt
 
 
 class SMACrossoverTriple(bt.Strategy):
     """Three equities SMA crossover — allocates based on fast/med/slow SMA ordering."""
 
-    def __init__(self, fast_ma, med_ma, slow_ma):
+    def __init__(self, fast_ma: int, med_ma: int, slow_ma: int) -> None:
         self.fast_ma = fast_ma
         self.med_ma = med_ma
         self.slow_ma = slow_ma
         self.dataclose = self.datas[0].close
-        self.order = None
+        self.order: Any = None
         self.fast_sma = bt.indicators.SimpleMovingAverage(self.datas[0], period=self.fast_ma)
         self.med_sma = bt.indicators.SimpleMovingAverage(self.datas[0], period=self.med_ma)
         self.slow_sma = bt.indicators.SimpleMovingAverage(self.datas[0], period=self.slow_ma)
 
-    def notify_order(self, order):
+    def notify_order(self, order: bt.Order) -> None:
         self.order = None
 
-    def next(self):
+    def next(self) -> None:
         if self.order:
             return
 

@@ -1,8 +1,8 @@
 # Finbot Roadmap
 
 **Created:** 2026-02-10
-**Last Updated:** 2026-02-17
-**Status:** Priority 0-6 substantially complete (P5: 93.3%, P6: 100%). Production-ready. Priority 7 in progress (23/27 items, 85%). Batch 3 complete — see `docs/planning/priority-7-batch3-implementation-plan.md` (v1.0).
+**Last Updated:** 2026-02-18
+**Status:** Priority 0-6 substantially complete (P5: 93.3%, P6: 100%). Production-ready. Priority 7 in progress (24/27 items, 89%). Batch 4 complete — see `docs/planning/priority-7-batch4-implementation-plan.md` (v1.0).
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
 
@@ -106,8 +106,8 @@ All 6 items complete. Added containerization, Streamlit web dashboard (6 pages),
 
 New priority tier defined 2026-02-17 to maximize project impact and visibility while adding advanced technical capabilities. Focus on external communication, application readiness, and strategic enhancements.
 
-**Status:** 🟡 In Progress (23/27 items complete, 85%)
-**Implementation Plan:** `docs/planning/priority-7-implementation-plan.md` (v1.1); Batch 3 complete — `docs/planning/priority-7-batch3-implementation-plan.md` (v1.0)
+**Status:** 🟡 In Progress (24/27 items complete, 89%)
+**Implementation Plan:** `docs/planning/priority-7-implementation-plan.md` (v1.1); Batch 3 complete — `docs/planning/priority-7-batch3-implementation-plan.md` (v1.0); Batch 4 complete — `docs/planning/priority-7-batch4-implementation-plan.md` (v1.0)
 **Quick Reference:** `docs/planning/priority-7-quick-reference.md`
 
 ### 7.1 Completion & Polish (4 items)
@@ -302,16 +302,20 @@ New priority tier defined 2026-02-17 to maximize project impact and visibility w
 - Mypy Phase 1 audit (`docs/planning/mypy-phase1-audit-report.md`, phased roadmap) ✅
 - Roadmap and planning docs kept current ✅
 
-**Remaining (4 items):**
+**Remaining (3 items):**
 - Items 8-9: Overview video + project poster (requires user recording/design)
 - Item 20: Video tutorials (requires user recording)
-- Item 21: New health economics scenarios (cancer screening, hypertension, vaccine)
 - Items 25, 27: Getting Started video, Contributing Guide video
+
+**Completed in Batch 4 (2026-02-18):**
+- Item 21: New health economics scenarios (cancer screening, hypertension, vaccine) ✅
+- Mypy Phase 4: Backtesting core annotations (analyzers, runners, brokers) ✅
+- Mypy Phase 5: Strategies, costs, and indicators annotations ✅
 
 **Deferred to Priority 8:**
 - Items 18-19 (options overlay, real-time data) — blocked on cost/data
 
-**See:** `docs/planning/priority-7-batch3-implementation-plan.md` for detailed plan
+**See:** `docs/planning/priority-7-batch4-implementation-plan.md` for detailed plan
 
 ---
 

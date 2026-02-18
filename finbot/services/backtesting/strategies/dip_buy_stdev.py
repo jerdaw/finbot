@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import Any
+
 import backtrader as bt
 from numpy import quantile
 
@@ -8,19 +12,19 @@ from finbot.services.backtesting.indicators.positive_returns import PositiveRetu
 class DipBuyStdev(bt.Strategy):
     """Dip-buying strategy using standard deviation quantiles."""
 
-    def __init__(self, buy_quantile, sell_quantile=1.0):
+    def __init__(self, buy_quantile: float, sell_quantile: float = 1.0) -> None:
         self.buy_quantile = buy_quantile
         self.sell_quantile = sell_quantile
         self.d_since_last_sale = 0
         self.dataclose = self.datas[0].close
-        self.order = None
+        self.order: Any = None
         self.pos_returns = PositiveReturns(self.datas[0], period=252)  # type: ignore[call-arg]
         self.neg_returns = NegativeReturns(self.datas[0], period=round(252 / 4))  # type: ignore[call-arg]
 
-    def notify_order(self, order):
+    def notify_order(self, order: bt.Order) -> None:
         self.order = None
 
-    def next(self):
+    def next(self) -> None:
         if self.order:
             return
 

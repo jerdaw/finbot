@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import backtrader as bt
 
 
@@ -8,5 +10,5 @@ class FixedCommissionScheme(bt.CommInfoBase):
         ("commtype", bt.CommInfoBase.COMM_FIXED),
     )
 
-    def _getcommission(self, size, price, pseudoexec):
+    def _getcommission(self, size: float, price: float, pseudoexec: bool) -> float:
         return self.p.commission

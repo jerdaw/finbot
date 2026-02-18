@@ -246,6 +246,29 @@ module = ["finbot.core.*", "finbot.services.execution.*"]
 disallow_untyped_defs = true
 disallow_incomplete_defs = true
 
+# Phase 4: Backtesting core annotations
+[[tool.mypy.overrides]]
+module = [
+    "finbot.services.backtesting.analyzers.*",
+    "finbot.services.backtesting.compute_stats",
+    "finbot.services.backtesting.run_backtest",
+    "finbot.services.backtesting.rebalance_optimizer",
+    "finbot.services.backtesting.backtest_batch",
+    "finbot.services.backtesting.gen_rebal_proportions",
+    "finbot.services.backtesting.print_and_save_backtest",
+    "finbot.services.backtesting.brokers.*",
+]
+disallow_untyped_defs = true
+
+# Phase 5: Strategies, costs, and indicators annotations
+[[tool.mypy.overrides]]
+module = [
+    "finbot.services.backtesting.strategies.*",
+    "finbot.services.backtesting.costs.*",
+    "finbot.services.backtesting.indicators.*",
+]
+disallow_untyped_defs = true
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-v --tb=short -m 'not slow'"

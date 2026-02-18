@@ -17,7 +17,7 @@ class ZeroCommission:
         quantity: float,
         price: float,
         timestamp: pd.Timestamp,
-        **kwargs,
+        **kwargs: object,
     ) -> float:
         """Calculate commission cost (always zero)."""
         return 0.0
@@ -53,7 +53,7 @@ class FlatCommission:
         quantity: float,
         price: float,
         timestamp: pd.Timestamp,
-        **kwargs,
+        **kwargs: object,
     ) -> float:
         """Calculate commission cost based on share quantity."""
         cost = abs(quantity) * self.per_share
@@ -98,7 +98,7 @@ class PercentageCommission:
         quantity: float,
         price: float,
         timestamp: pd.Timestamp,
-        **kwargs,
+        **kwargs: object,
     ) -> float:
         """Calculate commission cost as percentage of trade value."""
         trade_value = abs(quantity) * price
