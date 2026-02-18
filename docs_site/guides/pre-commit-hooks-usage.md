@@ -1,0 +1,1 @@
+../../docs/guides/pre-commit-hooks-usage.md
