@@ -12,13 +12,13 @@
         <meta name="author" content="Jeremy Dawson">
       
       
-        <link rel="canonical" href="https://jerdaw.github.io/finbot/user-guide/installation/">
+        <link rel="canonical" href="https://jerdaw.github.io/finbot/guides/release-process/">
       
       
-        <link rel="prev" href="../getting-started/">
+        <link rel="prev" href="../pre-commit-hooks-usage/">
       
       
-        <link rel="next" href="../quick-start/">
+        <link rel="next" href="../data-quality-guide/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>Installation - Finbot Documentation</title>
+        <title>Release Process - Finbot Documentation</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#installation" class="md-skip">
+        <a href="#release-process" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Installation
+              Release Process
             
           </span>
         </div>
@@ -246,13 +246,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../getting-started/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../user-guide/getting-started/" class="md-tabs__link">
           
   
   
@@ -308,11 +306,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../guides/docker-security-scanning/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../docker-security-scanning/" class="md-tabs__link">
           
   
   
@@ -438,31 +438,28 @@
       
   
   
-    
   
   
-  
     
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   
@@ -480,7 +477,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -498,7 +495,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../getting-started/" class="md-nav__link">
+      <a href="../../user-guide/getting-started/" class="md-nav__link">
         
   
   
@@ -523,37 +520,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Installation
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../user-guide/installation/" class="md-nav__link">
         
   
   
@@ -569,137 +539,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#system-requirements" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        System Requirements
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#installation-methods" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Installation Methods
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Installation Methods">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#method-1-uv-recommended" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Method 1: uv (Recommended)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#method-2-pip-with-venv" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Method 2: pip with venv
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#post-installation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Post-Installation
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Post-Installation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#configure-environment" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configure Environment
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#install-optional-dependencies" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Install Optional Dependencies
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#verify-installation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Verify Installation
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#troubleshooting" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Troubleshooting
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -712,7 +551,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../quick-start/" class="md-nav__link">
+      <a href="../../user-guide/quick-start/" class="md-nav__link">
         
   
   
@@ -740,7 +579,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../cli-reference/" class="md-nav__link">
+      <a href="../../user-guide/cli-reference/" class="md-nav__link">
         
   
   
@@ -768,7 +607,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../configuration/" class="md-nav__link">
+      <a href="../../user-guide/configuration/" class="md-nav__link">
         
   
   
@@ -796,7 +635,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../guides/choosing-backtest-engine.md" class="md-nav__link">
+      <a href="../choosing-backtest-engine.md" class="md-nav__link">
         
   
   
@@ -824,7 +663,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../data-quality-guide/" class="md-nav__link">
+      <a href="../../user-guide/data-quality-guide/" class="md-nav__link">
         
   
   
@@ -852,7 +691,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../health-economics-tutorial/" class="md-nav__link">
+      <a href="../../user-guide/health-economics-tutorial/" class="md-nav__link">
         
   
   
@@ -2184,28 +2023,31 @@
       
   
   
+    
   
   
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
             
   
   
@@ -2223,7 +2065,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -2241,7 +2083,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../guides/docker-security-scanning/" class="md-nav__link">
+      <a href="../docker-security-scanning/" class="md-nav__link">
         
   
   
@@ -2269,7 +2111,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../guides/pre-commit-hooks-usage/" class="md-nav__link">
+      <a href="../pre-commit-hooks-usage/" class="md-nav__link">
         
   
   
@@ -2294,10 +2136,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../guides/release-process/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release Process
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -2313,6 +2182,175 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-a-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creating a Release
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoring-the-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Monitoring the Release
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerelease-versions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerelease Versions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rollback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rollback
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#build-fails" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Build Fails
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changelog-extraction-fails" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Changelog Extraction Fails
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#release-creation-fails" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Release Creation Fails
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#version-numbering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Version Numbering
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-before-release-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing Before Release (Recommended)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#release-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Release Checklist
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2325,7 +2363,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../guides/data-quality-guide/" class="md-nav__link">
+      <a href="../data-quality-guide/" class="md-nav__link">
         
   
   
@@ -2353,7 +2391,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../guides/audit-trails/" class="md-nav__link">
+      <a href="../audit-trails/" class="md-nav__link">
         
   
   
@@ -2462,10 +2500,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#system-requirements" class="md-nav__link">
+  <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
       
-        System Requirements
+        Overview
       
     </span>
   </a>
@@ -2473,91 +2511,57 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#installation-methods" class="md-nav__link">
+  <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Installation Methods
+        Prerequisites
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Installation Methods">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#method-1-uv-recommended" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Method 1: uv (Recommended)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#method-2-pip-with-venv" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Method 2: pip with venv
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#post-installation" class="md-nav__link">
+  <a href="#creating-a-release" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Post-Installation
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Post-Installation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#configure-environment" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configure Environment
+        Creating a Release
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#install-optional-dependencies" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#monitoring-the-release" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Install Optional Dependencies
+        Monitoring the Release
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#verify-installation" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#prerelease-versions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Verify Installation
+        Prerelease Versions
       
     </span>
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#rollback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rollback
+      
+    </span>
+  </a>
   
 </li>
       
@@ -2566,6 +2570,78 @@
     <span class="md-ellipsis">
       
         Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#build-fails" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Build Fails
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changelog-extraction-fails" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Changelog Extraction Fails
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#release-creation-fails" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Release Creation Fails
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#version-numbering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Version Numbering
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-before-release-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing Before Release (Recommended)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#release-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Release Checklist
       
     </span>
   </a>
@@ -2592,79 +2668,159 @@
   
 
 
-<h1 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h1>
-<p>Detailed installation instructions for Finbot.</p>
-<h2 id="system-requirements">System Requirements<a class="headerlink" href="#system-requirements" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>Python</strong>: &gt;=3.11, &lt;3.15</li>
-<li><strong>Operating System</strong>: Linux, macOS, or Windows (WSL recommended)</li>
-<li><strong>Memory</strong>: 4GB RAM minimum, 8GB recommended</li>
-<li><strong>Disk Space</strong>: 2GB for installation + data storage</li>
-</ul>
-<h2 id="installation-methods">Installation Methods<a class="headerlink" href="#installation-methods" title="Permanent link">&para;</a></h2>
-<h3 id="method-1-uv-recommended">Method 1: uv (Recommended)<a class="headerlink" href="#method-1-uv-recommended" title="Permanent link">&para;</a></h3>
-<p>uv provides fast, reliable dependency management and environment isolation:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Install uv if not already installed</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>curl<span class="w"> </span>-LsSf<span class="w"> </span>https://astral.sh/uv/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sh
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Clone repository</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/jerdaw/finbot.git
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="nb">cd</span><span class="w"> </span>finbot
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># Install dependencies (creates .venv automatically)</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>uv<span class="w"> </span>sync
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1"># Activate environment (optional, but recommended)</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="nb">source</span><span class="w"> </span>.venv/bin/activate<span class="w">  </span><span class="c1"># On Linux/Mac</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>.venv<span class="se">\S</span>cripts<span class="se">\a</span>ctivate<span class="w">     </span><span class="c1"># On Windows</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="c1"># Verify installation</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>finbot<span class="w"> </span>--version
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import finbot; print(&#39;Success!&#39;)&quot;</span>
+<h1 id="release-process">Release Process<a class="headerlink" href="#release-process" title="Permanent link">&para;</a></h1>
+<p>This document describes how to create a new release of finbot.</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>The release process is automated via GitHub Actions. When you push a version tag (e.g., <code>v1.1.0</code>), the workflow will:</p>
+<ol>
+<li>Build the Python package (wheel + source distribution)</li>
+<li>Extract release notes from CHANGELOG.md</li>
+<li>Create a GitHub release</li>
+<li>Upload build artifacts to the release</li>
+</ol>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<p>Before creating a release:</p>
+<ol>
+<li>
+<p><strong>Update version number</strong> in <code>pyproject.toml</code>:
+   <div class="language-toml highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">[project]</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1.1.0&quot;</span>
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>Update CHANGELOG.md</strong>:</p>
+</li>
+<li>Add a new version section following <a href="https://keepachangelog.com/">Keep a Changelog</a> format</li>
+<li>Move unreleased changes to the new version section</li>
+<li>Add the release date</li>
+<li>
+<p>Example:
+     <div class="language-markdown highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="gu">## [1.1.0] - 2026-02-16</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="gu">### Added</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="k">-</span><span class="w"> </span>Automated release workflow
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="gu">### Changed</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="k">-</span><span class="w"> </span>Updated documentation
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="gu">### Fixed</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="k">-</span><span class="w"> </span>Bug fixes
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>Update version comparison links</strong> at the bottom of CHANGELOG.md:
+   <div class="language-markdown highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>[<span class="nl">Unreleased</span>]: <span class="na">https://github.com/jerdaw/finbot/compare/v1.1.0...HEAD</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>[<span class="nl">1.1.0</span>]: <span class="na">https://github.com/jerdaw/finbot/compare/v1.0.0...v1.1.0</span>
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>Commit changes</strong>:
+   <div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>git<span class="w"> </span>add<span class="w"> </span>pyproject.toml<span class="w"> </span>CHANGELOG.md
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Prepare release v1.1.0&quot;</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>main
+</span></code></pre></div></p>
+</li>
+</ol>
+<h2 id="creating-a-release">Creating a Release<a class="headerlink" href="#creating-a-release" title="Permanent link">&para;</a></h2>
+<p>Once all changes are committed and pushed to main:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Create and push a version tag</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>git<span class="w"> </span>tag<span class="w"> </span>v1.1.0
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>v1.1.0
 </span></code></pre></div>
-<h3 id="method-2-pip-with-venv">Method 2: pip with venv<a class="headerlink" href="#method-2-pip-with-venv" title="Permanent link">&para;</a></h3>
-<p>Standard Python virtual environment approach:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Clone repository</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/jerdaw/finbot.git
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nb">cd</span><span class="w"> </span>finbot
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1"># Create virtual environment</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="c1"># Activate (Linux/Mac)</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="c1"># Activate (Windows)</span>
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>venv<span class="se">\S</span>cripts<span class="se">\a</span>ctivate
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
-</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="c1"># Install package</span>
-</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
-</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
-</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="c1"># Verify</span>
-</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>finbot<span class="w"> </span>--version
+<p>The GitHub Actions workflow will automatically:
+- Build the package using <code>uv build</code>
+- Extract changelog notes for version 1.1.0 from CHANGELOG.md
+- Create a GitHub release with the tag name as the title
+- Upload <code>finbot-1.1.0-py3-none-any.whl</code> and <code>finbot-1.1.0.tar.gz</code>
+- Mark as prerelease if tag contains "alpha", "beta", or "rc"</p>
+<h2 id="monitoring-the-release">Monitoring the Release<a class="headerlink" href="#monitoring-the-release" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Navigate to the <a href="https://github.com/jerdaw/finbot/actions">Actions tab</a> on GitHub</li>
+<li>Click on the "Release" workflow run</li>
+<li>Monitor the build and release jobs</li>
+<li>Once complete, verify the release at https://github.com/jerdaw/finbot/releases</li>
+</ol>
+<h2 id="prerelease-versions">Prerelease Versions<a class="headerlink" href="#prerelease-versions" title="Permanent link">&para;</a></h2>
+<p>For alpha, beta, or release candidate versions, include the identifier in the tag:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>git<span class="w"> </span>tag<span class="w"> </span>v1.1.0-beta.1
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>v1.1.0-beta.1
 </span></code></pre></div>
-<h2 id="post-installation">Post-Installation<a class="headerlink" href="#post-installation" title="Permanent link">&para;</a></h2>
-<h3 id="configure-environment">Configure Environment<a class="headerlink" href="#configure-environment" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Set environment variable</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">DYNACONF_ENV</span><span class="o">=</span>development<span class="w">  </span><span class="c1"># or production</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Add to ~/.bashrc or ~/.zshrc for persistence</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;export DYNACONF_ENV=development&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
+<p>The workflow will automatically mark releases with <code>alpha</code>, <code>beta</code>, or <code>rc</code> in the tag as prereleases.</p>
+<h2 id="rollback">Rollback<a class="headerlink" href="#rollback" title="Permanent link">&para;</a></h2>
+<p>If you need to delete a release:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Delete the tag locally</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-d<span class="w"> </span>v1.1.0
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># Delete the tag remotely</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>:refs/tags/v1.1.0
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1"># Manually delete the GitHub release via the web UI</span>
 </span></code></pre></div>
-<h3 id="install-optional-dependencies">Install Optional Dependencies<a class="headerlink" href="#install-optional-dependencies" title="Permanent link">&para;</a></h3>
-<p>For development:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>uv<span class="w"> </span>sync
-</span></code></pre></div>
-<p>For documentation building:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>uv<span class="w"> </span>sync
-</span></code></pre></div>
-<h3 id="verify-installation">Verify Installation<a class="headerlink" href="#verify-installation" title="Permanent link">&para;</a></h3>
-<p>Run the test suite:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>-v
-</span></code></pre></div>
-<p>Expected: All 80 tests pass.</p>
+<p>Then you can re-tag and push again.</p>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
-<p>See <a href="../getting-started/#common-issues">Getting Started - Common Issues</a> for help with installation problems.</p>
+<h3 id="build-fails">Build Fails<a class="headerlink" href="#build-fails" title="Permanent link">&para;</a></h3>
+<p>If <code>uv build</code> fails:
+1. Check that <code>pyproject.toml</code> is valid
+2. Ensure all required files are committed
+3. Test locally: <code>uv build</code></p>
+<h3 id="changelog-extraction-fails">Changelog Extraction Fails<a class="headerlink" href="#changelog-extraction-fails" title="Permanent link">&para;</a></h3>
+<p>If no changelog entry is found:
+1. Verify CHANGELOG.md has a section like <code>## [1.1.0] - 2026-02-16</code>
+2. The version number must match the tag (without the 'v' prefix)
+3. The release will still be created, but notes will say "No changelog entry found"</p>
+<h3 id="release-creation-fails">Release Creation Fails<a class="headerlink" href="#release-creation-fails" title="Permanent link">&para;</a></h3>
+<p>Check the workflow logs for the specific error. Common issues:
+- Insufficient permissions (GITHUB_TOKEN should have <code>contents: write</code>)
+- Artifacts not found (build job must complete successfully)
+- Tag format doesn't match <code>v*.*.*</code> pattern</p>
+<h2 id="version-numbering">Version Numbering<a class="headerlink" href="#version-numbering" title="Permanent link">&para;</a></h2>
+<p>Follow <a href="https://semver.org/">Semantic Versioning</a>:</p>
+<ul>
+<li><strong>Major</strong> (v2.0.0): Incompatible API changes</li>
+<li><strong>Minor</strong> (v1.1.0): New functionality, backward compatible</li>
+<li><strong>Patch</strong> (v1.0.1): Backward compatible bug fixes</li>
+<li><strong>Prerelease</strong> (v1.1.0-beta.1): Testing/preview versions</li>
+</ul>
+<h2 id="testing-before-release-recommended">Testing Before Release (Recommended)<a class="headerlink" href="#testing-before-release-recommended" title="Permanent link">&para;</a></h2>
+<p>Before creating a production release, test the package on TestPyPI:</p>
+<ol>
+<li>
+<p><strong>Publish to TestPyPI</strong> (see <a href="publishing-to-testpypi.md">Publishing to TestPyPI</a> for detailed instructions):
+   <div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Trigger the TestPyPI workflow manually or push a test tag</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>git<span class="w"> </span>tag<span class="w"> </span>test-v1.1.0
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>test-v1.1.0
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>Test installation from TestPyPI</strong>:
+   <div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>pip<span class="w"> </span>install<span class="w"> </span>--index-url<span class="w"> </span>https://test.pypi.org/simple/<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">            </span>--extra-index-url<span class="w"> </span>https://pypi.org/simple/<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">            </span><span class="nv">finbot</span><span class="o">==</span><span class="m">1</span>.1.0
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>Verify package functionality</strong>:
+   <div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>finbot<span class="w"> </span>--version
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>finbot<span class="w"> </span>status
+</span></code></pre></div></p>
+</li>
+</ol>
+<p>See the <a href="testpypi-quick-reference.md">TestPyPI Quick Reference</a> for common commands.</p>
+<h2 id="release-checklist">Release Checklist<a class="headerlink" href="#release-checklist" title="Permanent link">&para;</a></h2>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Update <code>pyproject.toml</code> version</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Update CHANGELOG.md with version and date</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Update version comparison links in CHANGELOG.md</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Run full test suite: <code>uv run pytest tests/</code></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Run linter: <code>uv run ruff check .</code></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Run formatter: <code>uv run ruff format .</code></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <strong>(Recommended)</strong> Test on TestPyPI first</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Commit and push changes</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Create and push tag: <code>git tag v1.1.0 &amp;&amp; git push origin v1.1.0</code></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Monitor GitHub Actions workflow</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Verify release on GitHub</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Test installation from release artifacts (optional)</li>
+</ul>
 
 
 

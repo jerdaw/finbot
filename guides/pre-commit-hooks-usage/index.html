@@ -12,13 +12,13 @@
         <meta name="author" content="Jeremy Dawson">
       
       
-        <link rel="canonical" href="https://jerdaw.github.io/finbot/user-guide/installation/">
+        <link rel="canonical" href="https://jerdaw.github.io/finbot/guides/pre-commit-hooks-usage/">
       
       
-        <link rel="prev" href="../getting-started/">
+        <link rel="prev" href="../docker-security-scanning/">
       
       
-        <link rel="next" href="../quick-start/">
+        <link rel="next" href="../release-process/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>Installation - Finbot Documentation</title>
+        <title>Pre-commit Hooks - Finbot Documentation</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#installation" class="md-skip">
+        <a href="#pre-commit-hooks-usage-guide" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Installation
+              Pre-commit Hooks
             
           </span>
         </div>
@@ -246,13 +246,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../getting-started/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../user-guide/getting-started/" class="md-tabs__link">
           
   
   
@@ -308,11 +306,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../guides/docker-security-scanning/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../docker-security-scanning/" class="md-tabs__link">
           
   
   
@@ -438,31 +438,28 @@
       
   
   
-    
   
   
-  
     
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   
@@ -480,7 +477,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -498,7 +495,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../getting-started/" class="md-nav__link">
+      <a href="../../user-guide/getting-started/" class="md-nav__link">
         
   
   
@@ -523,37 +520,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Installation
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../user-guide/installation/" class="md-nav__link">
         
   
   
@@ -569,137 +539,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#system-requirements" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        System Requirements
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#installation-methods" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Installation Methods
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Installation Methods">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#method-1-uv-recommended" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Method 1: uv (Recommended)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#method-2-pip-with-venv" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Method 2: pip with venv
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#post-installation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Post-Installation
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Post-Installation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#configure-environment" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configure Environment
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#install-optional-dependencies" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Install Optional Dependencies
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#verify-installation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Verify Installation
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#troubleshooting" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Troubleshooting
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -712,7 +551,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../quick-start/" class="md-nav__link">
+      <a href="../../user-guide/quick-start/" class="md-nav__link">
         
   
   
@@ -740,7 +579,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../cli-reference/" class="md-nav__link">
+      <a href="../../user-guide/cli-reference/" class="md-nav__link">
         
   
   
@@ -768,7 +607,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../configuration/" class="md-nav__link">
+      <a href="../../user-guide/configuration/" class="md-nav__link">
         
   
   
@@ -796,7 +635,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../guides/choosing-backtest-engine.md" class="md-nav__link">
+      <a href="../choosing-backtest-engine.md" class="md-nav__link">
         
   
   
@@ -824,7 +663,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../data-quality-guide/" class="md-nav__link">
+      <a href="../../user-guide/data-quality-guide/" class="md-nav__link">
         
   
   
@@ -852,7 +691,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../health-economics-tutorial/" class="md-nav__link">
+      <a href="../../user-guide/health-economics-tutorial/" class="md-nav__link">
         
   
   
@@ -2184,28 +2023,31 @@
       
   
   
+    
   
   
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
             
   
   
@@ -2223,7 +2065,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -2241,7 +2083,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../guides/docker-security-scanning/" class="md-nav__link">
+      <a href="../docker-security-scanning/" class="md-nav__link">
         
   
   
@@ -2266,10 +2108,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../guides/pre-commit-hooks-usage/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pre-commit Hooks
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -2285,6 +2154,281 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#automatic-hooks-run-on-every-commit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatic Hooks (Run on Every Commit)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manual-hooks-run-on-demand" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manual Hooks (Run on Demand)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Manual Hooks (Run on Demand)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mypy-type-checking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        mypy - Type Checking
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bandit-security-scanning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        bandit - Security Scanning
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#daily-development-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Daily Development Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pre-pr-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pre-PR Checklist
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fixing-hook-failures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fixing Hook Failures
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bypass-hooks-use-sparingly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bypass Hooks (Use Sparingly)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hooks-are-slow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hooks are slow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hook-installation-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hook installation issues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mypybandit-dependencies-missing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mypy/bandit dependencies missing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ruff-version-mismatch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ruff version mismatch
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#updating-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Updating Hooks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Updating Hooks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#update-all-hooks-to-latest-versions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Update all hooks to latest versions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update-specific-hook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Update specific hook
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ci-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CI Integration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Files
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See Also
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2297,7 +2441,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../guides/release-process/" class="md-nav__link">
+      <a href="../release-process/" class="md-nav__link">
         
   
   
@@ -2325,7 +2469,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../guides/data-quality-guide/" class="md-nav__link">
+      <a href="../data-quality-guide/" class="md-nav__link">
         
   
   
@@ -2353,7 +2497,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../guides/audit-trails/" class="md-nav__link">
+      <a href="../audit-trails/" class="md-nav__link">
         
   
   
@@ -2462,10 +2606,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#system-requirements" class="md-nav__link">
+  <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
       
-        System Requirements
+        Overview
       
     </span>
   </a>
@@ -2473,22 +2617,33 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#installation-methods" class="md-nav__link">
+  <a href="#automatic-hooks-run-on-every-commit" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Installation Methods
+        Automatic Hooks (Run on Every Commit)
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Installation Methods">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manual-hooks-run-on-demand" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manual Hooks (Run on Demand)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Manual Hooks (Run on Demand)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#method-1-uv-recommended" class="md-nav__link">
+  <a href="#mypy-type-checking" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Method 1: uv (Recommended)
+        mypy - Type Checking
       
     </span>
   </a>
@@ -2496,10 +2651,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#method-2-pip-with-venv" class="md-nav__link">
+  <a href="#bandit-security-scanning" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Method 2: pip with venv
+        bandit - Security Scanning
       
     </span>
   </a>
@@ -2512,22 +2667,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#post-installation" class="md-nav__link">
+  <a href="#usage-examples" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Post-Installation
+        Usage Examples
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Post-Installation">
+    <nav class="md-nav" aria-label="Usage Examples">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#configure-environment" class="md-nav__link">
+  <a href="#daily-development-workflow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configure Environment
+        Daily Development Workflow
       
     </span>
   </a>
@@ -2535,10 +2690,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#install-optional-dependencies" class="md-nav__link">
+  <a href="#pre-pr-checklist" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Install Optional Dependencies
+        Pre-PR Checklist
       
     </span>
   </a>
@@ -2546,10 +2701,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#verify-installation" class="md-nav__link">
+  <a href="#fixing-hook-failures" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Verify Installation
+        Fixing Hook Failures
       
     </span>
   </a>
@@ -2558,6 +2713,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bypass-hooks-use-sparingly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bypass Hooks (Use Sparingly)
+      
+    </span>
+  </a>
   
 </li>
       
@@ -2566,6 +2732,128 @@
     <span class="md-ellipsis">
       
         Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hooks-are-slow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hooks are slow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hook-installation-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hook installation issues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mypybandit-dependencies-missing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mypy/bandit dependencies missing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ruff-version-mismatch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ruff version mismatch
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#updating-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Updating Hooks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Updating Hooks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#update-all-hooks-to-latest-versions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Update all hooks to latest versions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update-specific-hook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Update specific hook
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ci-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CI Integration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Files
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See Also
       
     </span>
   </a>
@@ -2592,79 +2880,324 @@
   
 
 
-<h1 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h1>
-<p>Detailed installation instructions for Finbot.</p>
-<h2 id="system-requirements">System Requirements<a class="headerlink" href="#system-requirements" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>Python</strong>: &gt;=3.11, &lt;3.15</li>
-<li><strong>Operating System</strong>: Linux, macOS, or Windows (WSL recommended)</li>
-<li><strong>Memory</strong>: 4GB RAM minimum, 8GB recommended</li>
-<li><strong>Disk Space</strong>: 2GB for installation + data storage</li>
-</ul>
-<h2 id="installation-methods">Installation Methods<a class="headerlink" href="#installation-methods" title="Permanent link">&para;</a></h2>
-<h3 id="method-1-uv-recommended">Method 1: uv (Recommended)<a class="headerlink" href="#method-1-uv-recommended" title="Permanent link">&para;</a></h3>
-<p>uv provides fast, reliable dependency management and environment isolation:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Install uv if not already installed</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>curl<span class="w"> </span>-LsSf<span class="w"> </span>https://astral.sh/uv/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sh
+<h1 id="pre-commit-hooks-usage-guide">Pre-commit Hooks Usage Guide<a class="headerlink" href="#pre-commit-hooks-usage-guide" title="Permanent link">&para;</a></h1>
+<p><strong>Created:</strong> 2026-02-10
+<strong>Status:</strong> Active</p>
+<hr />
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>This project uses pre-commit hooks to automatically check code quality before commits. Hooks are organized into two categories:</p>
+<ol>
+<li><strong>Automatic hooks</strong> - Run on every commit (fast, must pass)</li>
+<li><strong>Manual hooks</strong> - Run on demand (slower, informational)</li>
+</ol>
+<hr />
+<h2 id="automatic-hooks-run-on-every-commit">Automatic Hooks (Run on Every Commit)<a class="headerlink" href="#automatic-hooks-run-on-every-commit" title="Permanent link">&para;</a></h2>
+<p>These hooks run automatically when you commit and will block the commit if they fail:</p>
+<table>
+<thead>
+<tr>
+<th>Hook</th>
+<th>Purpose</th>
+<th>Auto-fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>trailing-whitespace</code></td>
+<td>Remove trailing whitespace</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td><code>end-of-file-fixer</code></td>
+<td>Ensure files end with newline</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td><code>check-yaml</code></td>
+<td>Validate YAML syntax</td>
+<td>❌ No</td>
+</tr>
+<tr>
+<td><code>check-added-large-files</code></td>
+<td>Block files &gt;50MB</td>
+<td>❌ No</td>
+</tr>
+<tr>
+<td><code>debug-statements</code></td>
+<td>Catch Python debugger statements</td>
+<td>❌ No</td>
+</tr>
+<tr>
+<td><code>check-case-conflict</code></td>
+<td>Prevent case-sensitive filename conflicts</td>
+<td>❌ No</td>
+</tr>
+<tr>
+<td><code>check-merge-conflict</code></td>
+<td>Catch unresolved merge markers</td>
+<td>❌ No</td>
+</tr>
+<tr>
+<td><code>check-ast</code></td>
+<td>Validate Python syntax</td>
+<td>❌ No</td>
+</tr>
+<tr>
+<td><code>check-json</code></td>
+<td>Validate JSON syntax</td>
+<td>❌ No</td>
+</tr>
+<tr>
+<td><code>check-toml</code></td>
+<td>Validate TOML syntax</td>
+<td>❌ No</td>
+</tr>
+<tr>
+<td><code>detect-private-key</code></td>
+<td>Prevent committing private keys</td>
+<td>❌ No</td>
+</tr>
+<tr>
+<td><code>mixed-line-ending</code></td>
+<td>Enforce LF line endings (critical for WSL)</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td><code>ruff</code></td>
+<td>Lint Python code</td>
+<td>✅ Yes (with --fix)</td>
+</tr>
+<tr>
+<td><code>ruff-format</code></td>
+<td>Format Python code</td>
+<td>✅ Yes</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Total:</strong> 14 automatic hooks (~1-2 seconds on typical commit)</p>
+<hr />
+<h2 id="manual-hooks-run-on-demand">Manual Hooks (Run on Demand)<a class="headerlink" href="#manual-hooks-run-on-demand" title="Permanent link">&para;</a></h2>
+<p>These hooks are available but don't run automatically. They're informational-only since:
+- CI already runs them comprehensively
+- Current codebase has known issues (125 mypy errors, 6 bandit warnings)
+- Running on every commit would be slow and noisy</p>
+<h3 id="mypy-type-checking">mypy - Type Checking<a class="headerlink" href="#mypy-type-checking" title="Permanent link">&para;</a></h3>
+<p><strong>Run manually with:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Check specific files</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>uv<span class="w"> </span>run<span class="w"> </span>pre-commit<span class="w"> </span>run<span class="w"> </span>--hook-stage<span class="w"> </span>manual<span class="w"> </span>mypy<span class="w"> </span>--files<span class="w"> </span>path/to/file.py
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Clone repository</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/jerdaw/finbot.git
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="nb">cd</span><span class="w"> </span>finbot
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># Install dependencies (creates .venv automatically)</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>uv<span class="w"> </span>sync
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1"># Activate environment (optional, but recommended)</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="nb">source</span><span class="w"> </span>.venv/bin/activate<span class="w">  </span><span class="c1"># On Linux/Mac</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>.venv<span class="se">\S</span>cripts<span class="se">\a</span>ctivate<span class="w">     </span><span class="c1"># On Windows</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="c1"># Verify installation</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>finbot<span class="w"> </span>--version
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import finbot; print(&#39;Success!&#39;)&quot;</span>
-</span></code></pre></div>
-<h3 id="method-2-pip-with-venv">Method 2: pip with venv<a class="headerlink" href="#method-2-pip-with-venv" title="Permanent link">&para;</a></h3>
-<p>Standard Python virtual environment approach:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Clone repository</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/jerdaw/finbot.git
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nb">cd</span><span class="w"> </span>finbot
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1"># Create virtual environment</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="c1"># Activate (Linux/Mac)</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="c1"># Activate (Windows)</span>
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>venv<span class="se">\S</span>cripts<span class="se">\a</span>ctivate
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
-</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="c1"># Install package</span>
-</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
-</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
-</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="c1"># Verify</span>
-</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>finbot<span class="w"> </span>--version
-</span></code></pre></div>
-<h2 id="post-installation">Post-Installation<a class="headerlink" href="#post-installation" title="Permanent link">&para;</a></h2>
-<h3 id="configure-environment">Configure Environment<a class="headerlink" href="#configure-environment" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Set environment variable</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">DYNACONF_ENV</span><span class="o">=</span>development<span class="w">  </span><span class="c1"># or production</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Check all files (slow - ~30 seconds)</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>uv<span class="w"> </span>run<span class="w"> </span>pre-commit<span class="w"> </span>run<span class="w"> </span>--hook-stage<span class="w"> </span>manual<span class="w"> </span>mypy<span class="w"> </span>--all-files
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># Or run mypy directly for more control</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="nv">DYNACONF_ENV</span><span class="o">=</span>development<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>mypy<span class="w"> </span>finbot/
+</span></code></pre></div></p>
+<p><strong>Current state:</strong> 125 type errors in 41 files (see <code>docs/guides/type-safety-improvement-guide.md</code>)</p>
+<p><strong>When to use:</strong>
+- Before opening a PR (check files you modified)
+- When adding type hints to a module
+- To verify type-related changes
+- As part of local testing workflow</p>
+<h3 id="bandit-security-scanning">bandit - Security Scanning<a class="headerlink" href="#bandit-security-scanning" title="Permanent link">&para;</a></h3>
+<p><strong>Run manually with:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Check specific files</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>uv<span class="w"> </span>run<span class="w"> </span>pre-commit<span class="w"> </span>run<span class="w"> </span>--hook-stage<span class="w"> </span>manual<span class="w"> </span>bandit<span class="w"> </span>--files<span class="w"> </span>path/to/file.py
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># Check all files (slow - ~15 seconds)</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>uv<span class="w"> </span>run<span class="w"> </span>pre-commit<span class="w"> </span>run<span class="w"> </span>--hook-stage<span class="w"> </span>manual<span class="w"> </span>bandit<span class="w"> </span>--all-files
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1"># Or run bandit directly for more control</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>uv<span class="w"> </span>run<span class="w"> </span>bandit<span class="w"> </span>-c<span class="w"> </span>pyproject.toml<span class="w"> </span>-r<span class="w"> </span>finbot/<span class="w"> </span>libs/
+</span></code></pre></div></p>
+<p><strong>Current state:</strong> 6 low-severity warnings (all known and acceptable)</p>
+<p><strong>When to use:</strong>
+- Before opening a PR (check files you modified)
+- When adding new file I/O or subprocess calls
+- When adding new data deserialization code
+- To verify security-related changes</p>
+<hr />
+<h2 id="usage-examples">Usage Examples<a class="headerlink" href="#usage-examples" title="Permanent link">&para;</a></h2>
+<h3 id="daily-development-workflow">Daily Development Workflow<a class="headerlink" href="#daily-development-workflow" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># 1. Make changes to files</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>vim<span class="w"> </span>finbot/services/simulation/fund_simulator.py
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Add to ~/.bashrc or ~/.zshrc for persistence</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;export DYNACONF_ENV=development&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># 2. Stage changes</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>git<span class="w"> </span>add<span class="w"> </span>finbot/services/simulation/fund_simulator.py
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1"># 3. Commit (automatic hooks run)</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add new fund simulator feature&quot;</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="c1"># ✅ Automatic hooks pass (1-2 seconds)</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="c1"># 4. (Optional) Run manual checks before pushing</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>uv<span class="w"> </span>run<span class="w"> </span>pre-commit<span class="w"> </span>run<span class="w"> </span>--hook-stage<span class="w"> </span>manual<span class="w"> </span>mypy<span class="w"> </span>--files<span class="w"> </span>finbot/services/simulation/fund_simulator.py
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>uv<span class="w"> </span>run<span class="w"> </span>pre-commit<span class="w"> </span>run<span class="w"> </span>--hook-stage<span class="w"> </span>manual<span class="w"> </span>bandit<span class="w"> </span>--files<span class="w"> </span>finbot/services/simulation/fund_simulator.py
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="c1"># 5. Push to remote</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>feature-branch
 </span></code></pre></div>
-<h3 id="install-optional-dependencies">Install Optional Dependencies<a class="headerlink" href="#install-optional-dependencies" title="Permanent link">&para;</a></h3>
-<p>For development:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>uv<span class="w"> </span>sync
+<h3 id="pre-pr-checklist">Pre-PR Checklist<a class="headerlink" href="#pre-pr-checklist" title="Permanent link">&para;</a></h3>
+<p>Before opening a pull request:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># 1. Run all automatic hooks on all files</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>uv<span class="w"> </span>run<span class="w"> </span>pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># 2. Run manual type checking on modified files</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>uv<span class="w"> </span>run<span class="w"> </span>pre-commit<span class="w"> </span>run<span class="w"> </span>--hook-stage<span class="w"> </span>manual<span class="w"> </span>mypy<span class="w"> </span>--files<span class="w"> </span>path/to/modified.py
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1"># 3. Run manual security scanning on modified files</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>uv<span class="w"> </span>run<span class="w"> </span>pre-commit<span class="w"> </span>run<span class="w"> </span>--hook-stage<span class="w"> </span>manual<span class="w"> </span>bandit<span class="w"> </span>--files<span class="w"> </span>path/to/modified.py
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="c1"># 4. Run tests</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="nv">DYNACONF_ENV</span><span class="o">=</span>development<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/<span class="w"> </span>-v
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="c1"># 5. Verify CI will pass</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>make<span class="w"> </span>check<span class="w">  </span><span class="c1"># Runs lint + format + type + security + tests</span>
 </span></code></pre></div>
-<p>For documentation building:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>uv<span class="w"> </span>sync
+<h3 id="fixing-hook-failures">Fixing Hook Failures<a class="headerlink" href="#fixing-hook-failures" title="Permanent link">&para;</a></h3>
+<p><strong>If automatic hook fails:</strong></p>
+<ol>
+<li>
+<p><strong>Auto-fixing hooks</strong> (trailing-whitespace, ruff, etc.) - Changes are staged automatically, just commit again:
+   <div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>git<span class="w"> </span>add<span class="w"> </span>-u<span class="w">  </span><span class="c1"># Stage the fixes</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Your message&quot;</span><span class="w">  </span><span class="c1"># Commit will succeed</span>
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>Non-fixing hooks</strong> (check-yaml, debug-statements, etc.) - Fix manually:
+   <div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Fix the issue in the file</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>vim<span class="w"> </span>path/to/file.py
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># Stage and commit</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>git<span class="w"> </span>add<span class="w"> </span>path/to/file.py
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Your message&quot;</span>
+</span></code></pre></div></p>
+</li>
+</ol>
+<p><strong>If manual hook reports issues:</strong></p>
+<p>These are informational only and don't block commits. CI will catch critical issues. Fix at your discretion:
+- Mypy errors: See <code>docs/guides/type-safety-improvement-guide.md</code>
+- Bandit warnings: Review for actual security concerns vs. false positives</p>
+<hr />
+<h2 id="bypass-hooks-use-sparingly">Bypass Hooks (Use Sparingly)<a class="headerlink" href="#bypass-hooks-use-sparingly" title="Permanent link">&para;</a></h2>
+<p>In rare cases where you need to bypass hooks:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Bypass all hooks (not recommended)</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>git<span class="w"> </span>commit<span class="w"> </span>--no-verify<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Emergency hotfix&quot;</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># Better: Fix specific hook issue or add exception in config</span>
 </span></code></pre></div>
-<h3 id="verify-installation">Verify Installation<a class="headerlink" href="#verify-installation" title="Permanent link">&para;</a></h3>
-<p>Run the test suite:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>-v
-</span></code></pre></div>
-<p>Expected: All 80 tests pass.</p>
+<p><strong>When bypassing is acceptable:</strong>
+- Emergency hotfixes to production
+- Committing known WIP changes to feature branch
+- Automated bot commits</p>
+<p><strong>When bypassing is NOT acceptable:</strong>
+- "I don't want to fix the linting errors"
+- "The hook is too slow" (file an issue instead)
+- Regular development workflow</p>
+<hr />
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
-<p>See <a href="../getting-started/#common-issues">Getting Started - Common Issues</a> for help with installation problems.</p>
+<h3 id="hooks-are-slow">Hooks are slow<a class="headerlink" href="#hooks-are-slow" title="Permanent link">&para;</a></h3>
+<p><strong>Problem:</strong> Pre-commit takes &gt;5 seconds
+<strong>Solution:</strong>
+- Make sure you're only running automatic hooks (manual hooks are opt-in)
+- Check if you have uncommitted changes in many files
+- Run <code>uv run pre-commit clean</code> to clear cache</p>
+<h3 id="hook-installation-issues">Hook installation issues<a class="headerlink" href="#hook-installation-issues" title="Permanent link">&para;</a></h3>
+<p><strong>Problem:</strong> <code>pre-commit install</code> fails with "core.hooksPath set"
+<strong>Solution:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Pre-commit hooks run via uv without needing installation</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>uv<span class="w"> </span>run<span class="w"> </span>pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># If you really need to install, unset the path first:</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>--unset<span class="w"> </span>core.hooksPath
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>uv<span class="w"> </span>run<span class="w"> </span>pre-commit<span class="w"> </span>install
+</span></code></pre></div></p>
+<h3 id="mypybandit-dependencies-missing">Mypy/bandit dependencies missing<a class="headerlink" href="#mypybandit-dependencies-missing" title="Permanent link">&para;</a></h3>
+<p><strong>Problem:</strong> Manual hooks fail with import errors
+<strong>Solution:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Reinstall pre-commit environments</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>uv<span class="w"> </span>run<span class="w"> </span>pre-commit<span class="w"> </span>clean
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>uv<span class="w"> </span>run<span class="w"> </span>pre-commit<span class="w"> </span>install-hooks
+</span></code></pre></div></p>
+<h3 id="ruff-version-mismatch">Ruff version mismatch<a class="headerlink" href="#ruff-version-mismatch" title="Permanent link">&para;</a></h3>
+<p><strong>Problem:</strong> Pre-commit ruff version differs from project ruff version
+<strong>Solution:</strong>
+- Check <code>.pre-commit-config.yaml</code> rev matches <code>pyproject.toml</code> ruff version
+- Both should be <code>^0.11.0</code> / <code>v0.11.13</code></p>
+<hr />
+<h2 id="updating-hooks">Updating Hooks<a class="headerlink" href="#updating-hooks" title="Permanent link">&para;</a></h2>
+<h3 id="update-all-hooks-to-latest-versions">Update all hooks to latest versions<a class="headerlink" href="#update-all-hooks-to-latest-versions" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>uv<span class="w"> </span>run<span class="w"> </span>pre-commit<span class="w"> </span>autoupdate
+</span></code></pre></div>
+<h3 id="update-specific-hook">Update specific hook<a class="headerlink" href="#update-specific-hook" title="Permanent link">&para;</a></h3>
+<p>Edit <code>.pre-commit-config.yaml</code> and change the <code>rev:</code> field:</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="p p-Indicator">-</span><span class="w">   </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/astral-sh/ruff-pre-commit</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">    </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v0.11.13</span><span class="w">  </span><span class="c1"># Update this version</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">    </span><span class="nt">hooks</span><span class="p">:</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w">   </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ruff</span>
+</span></code></pre></div>
+<p>Then run:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>uv<span class="w"> </span>run<span class="w"> </span>pre-commit<span class="w"> </span>clean
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>uv<span class="w"> </span>run<span class="w"> </span>pre-commit<span class="w"> </span>install-hooks
+</span></code></pre></div></p>
+<hr />
+<h2 id="ci-integration">CI Integration<a class="headerlink" href="#ci-integration" title="Permanent link">&para;</a></h2>
+<p>Pre-commit hooks are also run in CI (<code>.github/workflows/ci.yml</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Hook</th>
+<th>CI Stage</th>
+<th>Blocking</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ruff check</td>
+<td>Lint</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td>ruff format --check</td>
+<td>Format check</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td>mypy</td>
+<td>Type check</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td>bandit</td>
+<td>Security scan</td>
+<td>❌ No (informational)</td>
+</tr>
+<tr>
+<td>pytest</td>
+<td>Tests</td>
+<td>✅ Yes</td>
+</tr>
+</tbody>
+</table>
+<p><strong>CI runs more comprehensive checks than local hooks:</strong>
+- Mypy checks entire codebase (not just staged files)
+- Tests run across Python 3.11, 3.12, 3.13
+- Coverage reporting to Codecov
+- Dependency auditing with pip-audit</p>
+<hr />
+<h2 id="configuration-files">Configuration Files<a class="headerlink" href="#configuration-files" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong><code>.pre-commit-config.yaml</code></strong> - Hook definitions and versions</li>
+<li><strong><code>pyproject.toml</code></strong> - Tool configurations (ruff, mypy, bandit)</li>
+<li><strong><code>.coveragerc</code></strong> - Coverage exclusions</li>
+</ul>
+<hr />
+<h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="type-safety-improvement-guide.md">Type Safety Improvement Guide</a></li>
+<li><a href="https://pre-commit.com/">Pre-commit Documentation</a></li>
+<li><a href="https://docs.astral.sh/ruff/">Ruff Documentation</a></li>
+<li><a href="https://mypy.readthedocs.io/">Mypy Documentation</a></li>
+<li><a href="https://bandit.readthedocs.io/">Bandit Documentation</a></li>
+</ul>
 
 
 
