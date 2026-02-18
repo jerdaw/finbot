@@ -7,8 +7,14 @@ import streamlit as st
 
 from finbot.dashboard.components.charts import create_bar_chart, create_heatmap
 from finbot.dashboard.components.sidebar import asset_selector
+from finbot.dashboard.disclaimer import show_sidebar_accessibility, show_sidebar_disclaimer
 
 st.set_page_config(page_title="DCA Optimizer — Finbot", layout="wide")
+
+# Show disclaimer and accessibility info
+show_sidebar_disclaimer()
+show_sidebar_accessibility()
+
 st.title("DCA Optimizer")
 st.markdown(
     "Optimize dollar cost averaging parameters across ratios, durations, and purchase intervals. "

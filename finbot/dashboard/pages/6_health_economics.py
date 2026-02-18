@@ -5,10 +5,26 @@ from __future__ import annotations
 import plotly.graph_objects as go
 import streamlit as st
 
+from finbot.dashboard.disclaimer import show_sidebar_accessibility, show_sidebar_disclaimer
+
 st.set_page_config(page_title="Health Economics — Finbot", layout="wide")
+
+# Show disclaimer (includes medical disclaimer) and accessibility info
+show_sidebar_disclaimer()
+show_sidebar_accessibility()
+
 st.title("Health Economics Analysis")
 st.markdown(
     "Monte Carlo QALY simulation, cost-effectiveness analysis (ICER/NMB/CEAC), and treatment schedule optimization."
+)
+
+# Add specific health economics disclaimer
+st.warning(
+    """
+    **⚠️ MEDICAL DISCLAIMER**: The health economics tools are for EDUCATIONAL and RESEARCH purposes only.
+    This is NOT medical advice. Do not use these tools for actual clinical decisions, treatment planning, or
+    patient care. Always consult qualified healthcare professionals and follow established clinical guidelines.
+    """
 )
 
 tab_qaly, tab_cea, tab_opt = st.tabs(["QALY Simulation", "Cost-Effectiveness Analysis", "Treatment Optimizer"])

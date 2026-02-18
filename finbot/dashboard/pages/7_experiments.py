@@ -7,6 +7,7 @@ from datetime import datetime
 import pandas as pd
 import streamlit as st
 
+from finbot.dashboard.disclaimer import show_sidebar_accessibility, show_sidebar_disclaimer
 from finbot.dashboard.utils.experiment_comparison import (
     build_assumptions_comparison,
     build_metrics_comparison,
@@ -16,6 +17,11 @@ from finbot.dashboard.utils.experiment_comparison import (
 )
 
 st.set_page_config(page_title="Experiments — Finbot", layout="wide")
+
+# Show disclaimer and accessibility info
+show_sidebar_disclaimer()
+show_sidebar_accessibility()
+
 st.title("Experiment Comparison")
 st.markdown("Compare backtest experiments side-by-side to analyze assumptions and results.")
 

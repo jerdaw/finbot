@@ -8,9 +8,15 @@ import streamlit as st
 
 from finbot.dashboard.components.charts import create_histogram_chart, create_time_series_chart
 from finbot.dashboard.components.sidebar import date_range_selector, fund_selector
+from finbot.dashboard.disclaimer import show_sidebar_accessibility, show_sidebar_disclaimer
 from finbot.services.simulation.sim_specific_funds import FUND_CONFIGS
 
 st.set_page_config(page_title="Simulations — Finbot", layout="wide")
+
+# Show disclaimer and accessibility info
+show_sidebar_disclaimer()
+show_sidebar_accessibility()
+
 st.title("Fund Simulation Explorer")
 st.markdown("Explore simulated leveraged and unleveraged fund price histories.")
 
