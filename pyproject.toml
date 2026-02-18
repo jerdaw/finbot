@@ -95,6 +95,9 @@ dev = [
     "mkdocstrings[python]>=0.27.0,<1",
     "types-psutil>=7.2.2.20260130,<8",
     "interrogate>=1.7.0",
+    "pip-licenses>=5.5.1,<6",
+    "git-changelog>=2.5.2,<3",
+    "hypothesis>=6.100.0,<7",
 ]
 
 [tool.ruff]
@@ -219,24 +222,16 @@ ignore_missing_imports = true
 module = "streamlit.*"
 ignore_missing_imports = true
 
-# WIP modules with complex type issues to be fixed incrementally
 [[tool.mypy.overrides]]
-module = "finbot.utils.data_collection_utils.fred.correlate_fred_to_price"
-ignore_errors = true
-
-# Modules importing not-yet-created files (rate_limiter, retry_strategy)
-[[tool.mypy.overrides]]
-module = [
-    "finbot.libs.api_manager._utils.api_resource_group",
-    "finbot.libs.api_manager._utils.api_manager",
-    "finbot.libs.api_manager._resource_groups.api_resource_groups",
-    "finbot.cli.commands.update",
-]
+module = "nautilus_trader.*"
+ignore_missing_imports = true
+follow_imports = "skip"
 ignore_errors = true
 
 [tool.mypy]
 python_version = "3.11"
 mypy_path = "/home/jer/localsync/finbot"
+exclude = [".venv", "build", "dist"]
 check_untyped_defs = true
 warn_redundant_casts = true
 warn_unused_ignores = true
@@ -253,6 +248,9 @@ addopts = "-v --tb=short"
 filterwarnings = [
     "ignore::DeprecationWarning:pandas_datareader",
     "ignore::SyntaxWarning:backtrader",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
 ]
 
 [tool.bandit]

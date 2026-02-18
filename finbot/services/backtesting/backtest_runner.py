@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 import backtrader as bt
@@ -52,21 +53,55 @@ class BacktestRunner:
         self.order: Any = None
 
     def run_backtest(self) -> pd.DataFrame:
-        cerebro = bt.Cerebro()
-        self._cerebro = cerebro
-        self._add_ph_to_cerebro()
-        cerebro.addstrategy(self.strat, **self.strat_kwargs)
-        self._add_broker_to_cerebro()
-        cerebro.addsizer(self.sizer, **self.sizer_kwargs)
-        cerebro.addanalyzer(CVTracker)
-        cerebro.addanalyzer(TradeTracker)
-        cerebro.addobserver(bt.observers.BuySell)
-        cerebro.addobserver(bt.observers.Value)
-        cerebro.addobserver(bt.observers.Cash)
-        self._cerebro_res = cerebro.run(stdstats=False)
-        if self.plot:
-            cerebro.plot(volume=False)
-        return self.get_test_stats()
+        # Lazy import to avoid circular dependency
+        from finbot.libs.audit.audit_logger import AuditLogger
+        from finbot.libs.audit.audit_schema import OperationType
+
+        # Audit logging for backtest operations
+        logger = logging.getLogger("finbot")
+        audit = AuditLogger(logger)
+        parameters = {
+            "symbols": list(self.stocks),
+            "strategy": self.strat.__name__,
+            "initial_cash": self.init_cash,
+            "start_date": str(self._latest_start_date) if hasattr(self, "_latest_start_date") else None,
+            "end_date": str(self._earliest_end_date) if hasattr(self, "_earliest_end_date") else None,
+        }
+
+        with audit.log_operation(
+            operation="run_backtest",
+            operation_type=OperationType.BACKTEST,
+            parameters=parameters,
+        ) as entry:
+            cerebro = bt.Cerebro()
+            self._cerebro = cerebro
+            self._add_ph_to_cerebro()
+            cerebro.addstrategy(self.strat, **self.strat_kwargs)
+            self._add_broker_to_cerebro()
+            cerebro.addsizer(self.sizer, **self.sizer_kwargs)
+            cerebro.addanalyzer(CVTracker)
+            cerebro.addanalyzer(TradeTracker)
+            cerebro.addobserver(bt.observers.BuySell)
+            cerebro.addobserver(bt.observers.Value)
+            cerebro.addobserver(bt.observers.Cash)
+            self._cerebro_res = cerebro.run(stdstats=False)
+            if self.plot:
+                cerebro.plot(volume=False)
+
+            stats = self.get_test_stats()
+
+            # Update audit entry with results (stats are columns, not rows)
+            if not stats.empty:
+                entry.update_result(
+                    {
+                        "cagr": float(stats["CAGR"].iloc[0]),
+                        "sharpe_ratio": float(stats["Sharpe"].iloc[0]),
+                        "max_drawdown": float(stats["Max Drawdown"].iloc[0]),
+                        "num_trades": len(self.get_trades()),
+                    }
+                )
+
+            return stats
 
     def _add_ph_to_cerebro(self) -> None:
         assert self._cerebro is not None

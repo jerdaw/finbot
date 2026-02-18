@@ -8,8 +8,14 @@ import streamlit as st
 
 from finbot.dashboard.components.charts import create_fan_chart
 from finbot.dashboard.components.sidebar import asset_selector
+from finbot.dashboard.disclaimer import show_sidebar_accessibility, show_sidebar_disclaimer
 
 st.set_page_config(page_title="Monte Carlo — Finbot", layout="wide")
+
+# Show disclaimer and accessibility info
+show_sidebar_disclaimer()
+show_sidebar_accessibility()
+
 st.title("Monte Carlo Simulator")
 st.markdown("Run Monte Carlo simulations to model possible future price paths.")
 
