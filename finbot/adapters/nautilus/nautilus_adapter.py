@@ -365,7 +365,8 @@ class NautilusAdapter(BacktestEngine):
         bars = []
         for timestamp, row in df.iterrows():
             # Convert timestamp to nanoseconds
-            ts_event = int(timestamp.value)  # pandas timestamp in ns
+            ts = pd.Timestamp(str(timestamp))
+            ts_event = int(ts.value)  # pandas timestamp in ns
             ts_init = ts_event
 
             # Create bar

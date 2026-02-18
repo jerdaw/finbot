@@ -17,6 +17,7 @@ from finbot.core.contracts.models import (
     OrderType,
     PortfolioSnapshot,
 )
+from finbot.core.contracts.optimization import ParetoPoint, ParetoResult
 from finbot.core.contracts.orders import Order, OrderExecution, OrderStatus, RejectionReason
 from finbot.core.contracts.regime import MarketRegime, RegimeConfig, RegimeDetector, RegimeMetrics, RegimePeriod
 from finbot.core.contracts.risk import (
@@ -91,6 +92,8 @@ __all__ = [
     "OrderSide",
     "OrderStatus",
     "OrderType",
+    "ParetoPoint",
+    "ParetoResult",
     "PortfolioSnapshot",
     "PortfolioStateStore",
     "PositionLimitRule",

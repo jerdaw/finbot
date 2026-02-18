@@ -8,11 +8,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 
 
-class OperationType(str, Enum):
+class OperationType(StrEnum):
     """Types of operations that can be audited."""
 
     BACKTEST = "backtest"
@@ -25,7 +25,7 @@ class OperationType(str, Enum):
     EXPERIMENT = "experiment"
 
 
-class OperationStatus(str, Enum):
+class OperationStatus(StrEnum):
     """Status of an operation."""
 
     SUCCESS = "success"
@@ -96,7 +96,7 @@ class AuditLogEntry:
             Sanitized dictionary with sensitive values masked
         """
         sensitive_keys = {"api_key", "password", "secret", "token", "credential", "auth"}
-        sanitized = {}
+        sanitized: dict[str, Any] = {}
 
         for key, value in data.items():
             key_lower = key.lower()
