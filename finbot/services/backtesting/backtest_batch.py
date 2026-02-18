@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 from itertools import product
+from typing import Any
 
 import pandas as pd
 from tqdm.contrib.concurrent import process_map
@@ -6,8 +9,13 @@ from tqdm.contrib.concurrent import process_map
 from finbot.services.backtesting.run_backtest import run_backtest
 
 
-def _get_starts_from_steps(latest_start_date, earliest_end_date, start_step, duration):
-    starts = []
+def _get_starts_from_steps(
+    latest_start_date: Any,
+    earliest_end_date: Any,
+    start_step: Any,
+    duration: Any,
+) -> list[Any]:
+    starts: list[Any] = []
     cur_start = latest_start_date
     cur_end = cur_start + duration
     while cur_end < earliest_end_date:
@@ -17,7 +25,7 @@ def _get_starts_from_steps(latest_start_date, earliest_end_date, start_step, dur
     return starts
 
 
-def backtest_batch(**kwargs):  # noqa: C901 - Complex parameter validation logic
+def backtest_batch(**kwargs: Any) -> pd.DataFrame:  # noqa: C901 - Complex parameter validation logic
     kwargs["plot"] = False
     for kw in kwargs:
         if not isinstance(kwargs[kw], tuple | list):

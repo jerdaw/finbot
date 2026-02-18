@@ -30,11 +30,11 @@ class TradeTracker(bt.Analyzer):
     price, and commission for cost model calculations.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.trades: list[TradeInfo] = []
 
-    def notify_trade(self, trade):
+    def notify_trade(self, trade: bt.Trade) -> None:
         """Called by backtrader when a trade is closed.
 
         Note: This captures closed trades only. For open positions,
@@ -42,7 +42,7 @@ class TradeTracker(bt.Analyzer):
         """
         pass  # We use notify_order instead for more granular tracking
 
-    def notify_order(self, order):
+    def notify_order(self, order: bt.Order) -> None:
         """Called when an order is executed, partially filled, or completed."""
         if order.status in [order.Completed] and order.executed.size != 0:
             # Order was fully executed (ignore zero-size orders)
@@ -59,6 +59,6 @@ class TradeTracker(bt.Analyzer):
             )
             self.trades.append(trade_info)
 
-    def get_analysis(self):
+    def get_analysis(self) -> dict[str, list[TradeInfo] | int]:
         """Return collected trade information."""
         return {"trades": self.trades, "trade_count": len(self.trades)}

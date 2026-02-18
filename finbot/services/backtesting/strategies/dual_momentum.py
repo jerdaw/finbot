@@ -32,10 +32,10 @@ class DualMomentum(bt.Strategy):
         self.periods_elapsed = 0
         self.order = None
 
-    def notify_order(self, order):
+    def notify_order(self, order: bt.Order) -> None:
         self.order = None
 
-    def _momentum(self, data) -> float:
+    def _momentum(self, data: bt.feeds.PandasData) -> float:
         """Return the return over the lookback period for a data feed."""
         if len(data) <= self.lookback:
             return 0.0
@@ -64,7 +64,7 @@ class DualMomentum(bt.Strategy):
             elif i != target_idx and pos > 0:
                 self.sell(data=d, size=pos)
 
-    def next(self):
+    def next(self) -> None:
         if self.order:
             return  # type: ignore[unreachable]
         if len(self.datas[0]) <= self.lookback:

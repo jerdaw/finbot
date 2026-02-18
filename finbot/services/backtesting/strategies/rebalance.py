@@ -1,20 +1,24 @@
+from __future__ import annotations
+
+from typing import Any
+
 import backtrader as bt
 
 
 class Rebalance(bt.Strategy):
     """Rebalance multiple stocks with configurable proportions and interval."""
 
-    def __init__(self, rebal_proportions, rebal_interval):
+    def __init__(self, rebal_proportions: list[float], rebal_interval: int) -> None:
         self.rebal_proportions = rebal_proportions
         self.rebal_interval = rebal_interval
         self.periods_since_last_rebal = rebal_interval
         self.dataclose = self.datas[0].close
+        self.order: Any = None
+
+    def notify_order(self, order: bt.Order) -> None:
         self.order = None
 
-    def notify_order(self, order):
-        self.order = None
-
-    def next(self):
+    def next(self) -> None:
         if self.order:
             return
 

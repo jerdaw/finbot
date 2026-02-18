@@ -33,9 +33,9 @@ uv run pytest
 uv run python scripts/update_daily.py
 ```
 
-## Current Delivery Status (2026-02-17)
+## Current Delivery Status (2026-02-18)
 
-**Status:** Production-ready. Priority 0-6 substantially complete (P5: 93.3%, P6: 100%). Priority 7 in progress (23/27 items, 85%).
+**Status:** Production-ready. Priority 0-6 substantially complete (P5: 93.3%, P6: 100%). Priority 7 in progress (24/27 items, 89%).
 
 ### Priority 5: OMSAS/CanMEDS Improvements (93.3% Complete)
 
@@ -75,9 +75,9 @@ uv run python scripts/update_daily.py
 - `docs/planning/backtesting-live-readiness-backlog.md` (Epic tracking)
 - `docs/planning/archive/` (20+ completed implementation plans)
 
-### Priority 7: External Impact & Advanced Capabilities (85% Complete)
+### Priority 7: External Impact & Advanced Capabilities (89% Complete)
 
-**In Progress:** 23/27 items complete
+**In Progress:** 24/27 items complete
 - ✅ **P7.1**: Stricter mypy Phase 1 audit — 355 errors catalogued, phased roadmap published
 - ✅ **P7.2**: Test coverage raised to 61.63% (1063+ tests)
 - ✅ **P7.3**: Scheduled CI for daily data updates
@@ -96,14 +96,16 @@ uv run python scripts/update_daily.py
 - ✅ **P7.22**: Hypothesis testing module — `hypothesis_testing.py` (6 functions, 24 tests)
 - ✅ **P7.23**: Deferred unit tests — 39 new tests (bond_ladder, backtest_batch, rebalance_optimizer)
 - ✅ **P7.24**: Roadmap updates (ongoing)
+- ✅ **P7.21**: Health economics clinical scenarios — cancer screening, hypertension, vaccine (3 scenarios, 22 tests, dashboard tab 4)
 - ✅ **P7.26**: FAQ document (30+ Q&A pairs)
 
 **Remaining notable items:**
 - ⬜ P7.8/P7.9: Video/poster (requires user recording/design)
 - ⬜ P7.20: Video tutorials (requires user recording)
-- ⬜ P7.21: Health economics scenarios — cancer screening, hypertension, vaccine
 
-**Implementation plan:** `docs/planning/priority-7-batch3-implementation-plan.md` (v1.0)
+**Mypy hardening:** Phase 4 (backtesting core) and Phase 5 (strategies/costs/indicators) complete — `disallow_untyped_defs = true` enforced for all `finbot.services.backtesting.*` modules.
+
+**Implementation plan:** `docs/planning/priority-7-batch4-implementation-plan.md` (v1.0)
 
 ## Common Commands
 

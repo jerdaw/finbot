@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 from itertools import product
+from typing import Any
 
 import pandas as pd
 from tqdm.contrib.concurrent import process_map
@@ -7,7 +10,7 @@ from finbot.services.backtesting.avg_stepped_results import avg_stepped_results
 from finbot.services.backtesting.run_backtest import run_backtest
 
 
-def rebalance_optimizer(**kwargs):
+def rebalance_optimizer(**kwargs: Any) -> pd.DataFrame:
     for kw in kwargs:
         if not isinstance(kwargs[kw], tuple | list):
             kwargs[kw] = (kwargs[kw],)
