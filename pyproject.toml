@@ -75,7 +75,7 @@ finbot = "finbot.cli.main:cli"
 
 [dependency-groups]
 dev = [
-    "pre-commit>=3.6.0,<4",
+    "pre-commit>=3.6.0,<5",
     "mypy>=1.7.1,<2",
     "ruff>=0.15.0,<0.16",
     "pytest>=9.0.2,<10",
