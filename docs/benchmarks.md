@@ -320,6 +320,135 @@ For consistent results:
 
 ---
 
+## Performance Regression Testing
+
+**Added:** 2026-02-17 (Priority 5 Item 33)
+
+### Overview
+
+Automated performance regression testing runs on every PR to detect performance degradations before they reach production. The system compares current performance against a baseline and fails if regressions exceed 20%.
+
+### CI Integration
+
+The `performance-regression` job in `.github/workflows/ci.yml` runs on all PRs:
+
+```yaml
+- name: Run performance benchmarks
+  env:
+    DYNACONF_ENV: development
+  run: |
+    uv run python tests/performance/benchmark_runner.py --threshold 0.20
+```
+
+**Regression Threshold:** 20% slower than baseline fails the CI check.
+
+### Baseline Metrics
+
+Current baseline (as of 2026-02-17):
+
+| Benchmark | Duration (mean) | Throughput | Memory (mean) |
+|-----------|-----------------|------------|---------------|
+| **fund_simulator** | 1434 ms | 1,757 days/sec | 0.05 MB |
+| **backtest_adapter** | 1524 ms | 496 days/sec | 0.28 MB |
+
+**Test Configuration:**
+- `fund_simulator`: 10 years (2,520 trading days), 5 runs
+- `backtest_adapter`: 3 years (756 trading days), 3 runs with NoRebalance strategy
+
+### Running Benchmarks Locally
+
+```bash
+# Run benchmarks and compare to baseline
+uv run python tests/performance/benchmark_runner.py
+
+# Run specific benchmark only
+uv run python tests/performance/benchmark_runner.py --benchmark fund_simulator
+
+# Update baseline (when intentional changes are made)
+uv run python tests/performance/benchmark_runner.py --update-baseline
+
+# Use custom regression threshold
+uv run python tests/performance/benchmark_runner.py --threshold 0.30  # 30% slower
+```
+
+### Updating the Baseline
+
+**When to update:**
+- After intentional performance optimizations
+- After architectural changes that affect performance
+- When upgrading dependencies that change performance characteristics
+
+**How to update:**
+
+1. Run benchmarks and verify results:
+   ```bash
+   uv run python tests/performance/benchmark_runner.py
+   ```
+
+2. If changes are expected and acceptable, update baseline:
+   ```bash
+   uv run python tests/performance/benchmark_runner.py --update-baseline
+   ```
+
+3. Commit the updated `tests/performance/baseline.json`:
+   ```bash
+   git add tests/performance/baseline.json
+   git commit -m "Update performance baseline after [reason]"
+   ```
+
+**Important:** Always include justification when updating the baseline. Performance regressions should be rare and well-documented.
+
+### Interpreting Results
+
+The benchmark runner reports:
+
+- **Duration metrics:** Mean, std dev, min, max (in milliseconds)
+- **Throughput:** Processing rate (trading days/second)
+- **Memory usage:** Mean and peak memory (in MB)
+- **Regression status:** ✅ PASSED or ❌ REGRESSION for each benchmark
+
+Example output:
+```
+📊 fund_simulator:
+   Duration: 1434.05 ms (baseline: 1434.05 ms)
+   Change:   +0.0%
+   Memory:   0.05 MB (baseline: 0.05 MB)
+   Change:   +0.0%
+   ✅ PASSED (within 20% threshold)
+```
+
+### Benchmark Implementation
+
+All benchmark code is in `tests/performance/`:
+- `benchmark_runner.py`: Main benchmark runner with regression detection
+- `baseline.json`: Baseline performance metrics
+
+Key features:
+- **Memory tracking:** Uses `tracemalloc` to measure memory usage
+- **Warm-up runs:** First run is discarded to exclude cold start effects
+- **Multiple runs:** Averages across 3-5 runs to reduce variance
+- **Synthetic data:** Uses reproducible synthetic price data (seed=42)
+
+### Troubleshooting
+
+**Benchmark fails with "No baseline found":**
+```bash
+# Create baseline
+uv run python tests/performance/benchmark_runner.py --update-baseline
+```
+
+**Regression detected but change seems correct:**
+- Review the performance change and ensure it's expected
+- If acceptable, update baseline with justification
+- Consider if the regression can be mitigated
+
+**High variance between runs:**
+- Close other applications to reduce system load
+- Ensure consistent Python/NumPy versions
+- Run multiple times and check for outliers
+
+---
+
 ## Future Improvements
 
 ### Potential Optimizations
@@ -342,12 +471,17 @@ For consistent results:
    - Could use Numba for GPU acceleration (advanced)
    - Current performance adequate
 
-### Monitoring
+### Performance Monitoring
 
-Consider adding:
-- Performance regression tests in CI
-- Automated benchmarking on PRs
-- Performance tracking over time
+✅ **Implemented:**
+- Performance regression tests in CI (Priority 5 Item 33)
+- Automated benchmarking on PRs with 20% threshold
+- Baseline tracking in `tests/performance/baseline.json`
+
+**Future enhancements:**
+- Historical performance tracking over time
+- Performance trend visualization
+- Automated performance reports on releases
 
 ---
 

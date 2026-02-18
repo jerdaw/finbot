@@ -35,7 +35,7 @@ uv run python scripts/update_daily.py
 
 ## Current Delivery Status (2026-02-17)
 
-**Status:** Production-ready. Priority 0-6 substantially complete (P5: 93.3%, P6: 100%).
+**Status:** Production-ready. Priority 0-6 substantially complete (P5: 93.3%, P6: 100%). Priority 7 in progress (17/27 items, 63%).
 
 ### Priority 5: OMSAS/CanMEDS Improvements (93.3% Complete)
 
@@ -62,8 +62,8 @@ uv run python scripts/update_daily.py
 - ✅ **E6**: NautilusTrader pilot and decision gate (Hybrid approach adopted)
 
 **Key Metrics:**
-- 866 total tests (all passing)
-- 59.20% test coverage (98.83% of 60% target)
+- 956 total tests (all passing, 11 skipped)
+- 61.63% test coverage (exceeds 60% target)
 - 100% parity maintained on all golden strategies
 - CI parity gate prevents regressions
 - 7 CI jobs (lint, type-check, security, test, docs, parity, performance)
@@ -74,6 +74,31 @@ uv run python scripts/update_daily.py
 - `docs/planning/priority-5-6-completion-status.md` (detailed summary)
 - `docs/planning/backtesting-live-readiness-backlog.md` (Epic tracking)
 - `docs/planning/archive/` (20+ completed implementation plans)
+
+### Priority 7: External Impact & Advanced Capabilities (63% Complete)
+
+**In Progress:** 17/27 items complete
+- ✅ **P7.2**: Test coverage raised to 61.63% (956 tests)
+- ✅ **P7.3**: Scheduled CI for daily data updates
+- 🟡 **P7.4**: Conventional commits guide created (user action required)
+- ✅ **P7.5**: Blog post — "Why I Built Finbot"
+- ✅ **P7.6**: Blog post — "Backtesting Engines Compared"
+- ✅ **P7.7**: Tutorial series — "Health Economics with Python" (3 parts)
+- ✅ **P7.10**: CanMEDS Competency Reflection essay
+- ✅ **P7.11**: Finbot Portfolio Summary (1-pager)
+- ✅ **P7.12**: Lessons Learned document (15 lessons)
+- ✅ **P7.13**: Impact Statement
+- ✅ **P7.14**: Nautilus strategy migration guide
+- ✅ **P7.24**: Roadmap updates (ongoing)
+- ✅ **P7.26**: FAQ document (30+ Q&A pairs)
+
+**Remaining notable items:**
+- ⬜ P7.1: Stricter mypy Phase 1 audit
+- ⬜ P7.8/P7.9: Video/poster (requires user recording/design)
+- ⬜ P7.15-P7.17: Advanced technical features (walk-forward viz, regime-adaptive strategy, multi-objective optimization)
+- ⬜ P7.20-P7.23: Deferred items (video tutorials, health economics scenarios, hypothesis testing, unit tests)
+
+**Implementation plan:** `docs/planning/priority-7-implementation-plan.md` (v1.1)
 
 ## Common Commands
 
@@ -665,8 +690,9 @@ See `docs/adr/` for architectural decision records:
 **IMPORTANT:** All commits must list only human authors, co-authors, and contributors.
 
 - ✅ **Do:** Attribute commits to human developers
-- ❌ **Don't:** Include AI assistants (Claude, ChatGPT, etc.) in author, co-author, or contributor fields
-- **Rationale:** Commits represent human accountability and decision-making
+- ❌ **Don't:** Include AI assistants in author, co-author, or contributor fields. This includes Claude, Gemini, Codex, ChatGPT, Copilot, or any other AI tool.
+- ❌ **Don't:** Add "AI-generated" or "Created with AI" notices in code, docs, or commit messages.
+- **Rationale:** Commits represent human accountability and decision-making. AI tools are instruments, not authors.
 
 **Examples:**
 

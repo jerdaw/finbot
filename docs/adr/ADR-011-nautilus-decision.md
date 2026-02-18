@@ -1,8 +1,8 @@
 # ADR-011: NautilusTrader Adoption Decision
 
-**Status:** TEMPLATE - Fill in after E6-T2 evaluation complete
-**Date:** TBD (after E6-T1 and E6-T2 completion)
-**Deciders:** [Project Lead, Technical Team]
+**Status:** DECIDED - Hybrid Approach
+**Date:** 2026-02-17
+**Deciders:** Technical Team (based on E6-T2 comprehensive evaluation)
 **Epic:** E6 - NautilusTrader Pilot and Decision Gate
 
 ## Context and Problem Statement
@@ -22,11 +22,12 @@ This decision affects:
 
 ## Decision Drivers
 
-- [FILL IN: Most important factors from evaluation]
-- [FILL IN: Integration effort vs value provided]
-- [FILL IN: Live trading enablement timeline]
-- [FILL IN: Ecosystem health and longevity]
-- [FILL IN: Team learning curve and maintenance burden]
+- **Live trading enablement**: Nautilus provides built-in live trading path with unified backtest/live codebase
+- **Integration effort vs value**: 15 hours actual integration time (beat 12-26h estimate), feasibility proven
+- **Backtesting fidelity**: Nautilus provides superior fill simulation (order queues, realistic slippage) vs Backtrader
+- **Migration cost**: Full strategy migration would require 20-40 hours additional work (12 strategies)
+- **Adapter pattern validation**: No contract changes needed, proving ADR-005 architecture works
+- **Strategic flexibility**: Hybrid approach allows gradual migration without breaking existing workflows
 
 ## Considered Options
 
@@ -35,109 +36,126 @@ This decision affects:
 **Description:** Adopt NautilusTrader as primary backtesting engine, deprecate Backtrader over 6-12 months.
 
 **Pros:**
-- [FILL IN: e.g., Enables live trading with same codebase]
-- [FILL IN: e.g., More realistic fill simulation]
-- [FILL IN: e.g., Better performance]
-- [FILL IN: e.g., Active development and growing ecosystem]
+- Enables live trading with unified backtest/live codebase (same strategy code runs in both modes)
+- Superior backtesting fidelity (order queues, realistic fills, probabilistic slippage)
+- Excellent performance (Rust core, <1s backtest execution, ~50MB memory)
+- Active development and growing ecosystem (v1.222.0, professional support available)
+- Modern event-driven architecture more realistic than bar-based
 
 **Cons:**
-- [FILL IN: e.g., Steeper learning curve]
-- [FILL IN: e.g., Migration effort for existing strategies]
-- [FILL IN: e.g., Less mature documentation]
-- [FILL IN: e.g., Rust dependency complicates deployment]
+- Steeper learning curve (type system complexity, API learning: 2h vs Backtrader's simplicity)
+- Migration effort for 12 existing strategies (20-40 hours estimated)
+- Documentation gaps (API reference incomplete, requires source code diving)
+- Python 3.12+ requirement (forced dropping 3.11 support)
+- Type system rigidity (Money/Currency/enums instead of simple floats/strings)
 
-**Effort Estimate:** [X] person-weeks
-**Risk:** [Low/Medium/High]
+**Effort Estimate:** 5-10 person-weeks (1.5 weeks pilot + 3-8 weeks full migration)
+**Risk:** Medium (complexity, but adapter pattern de-risks)
 
 ### Option 2: No-Go on Nautilus (Stick with Backtrader)
 
 **Description:** Continue with Backtrader as sole backtesting engine, abandon Nautilus integration.
 
 **Pros:**
-- [FILL IN: e.g., No migration effort]
-- [FILL IN: e.g., Team already familiar]
-- [FILL IN: e.g., Simpler deployment]
-- [FILL IN: e.g., Mature, stable codebase]
+- Zero migration effort (keep existing 12 strategies as-is)
+- Team already familiar with Backtrader API
+- Simpler deployment (pure Python, no Rust dependency, Python 3.11+ support)
+- Mature, stable codebase (Backtrader v1.9.78.123)
+- Excellent documentation and examples
+- Adequate for current backtesting-only use case
 
 **Cons:**
-- [FILL IN: e.g., No built-in live trading path]
-- [FILL IN: e.g., Less realistic fill simulation]
-- [FILL IN: e.g., Limited ongoing development]
-- [FILL IN: e.g., Potential future technical debt]
+- No built-in live trading path (would need separate live trading system)
+- Less realistic fill simulation (simplified instant fills, basic slippage)
+- Limited ongoing development (mature but quiet community)
+- Potential future technical debt if live trading becomes priority
+- Performance lower than Nautilus (pure Python vs Rust core)
+- Bar-based model less realistic than event-driven
 
 **Effort Estimate:** 0 (no change)
-**Risk:** [Low/Medium/High]
+**Risk:** Low (status quo, but limits future options)
 
 ### Option 3: Hybrid Approach (Support Both)
 
 **Description:** Maintain both Backtrader and Nautilus adapters, let users/strategies choose.
 
 **Pros:**
-- [FILL IN: e.g., Flexibility to use best tool for each job]
-- [FILL IN: e.g., Gradual migration path]
-- [FILL IN: e.g., De-risk single-engine dependency]
-- [FILL IN: e.g., Leverage Nautilus for live, Backtrader for backtesting]
+- Flexibility to use best tool for each job (Nautilus for live, Backtrader for quick research)
+- Gradual migration path (migrate strategies one-by-one as needed, 0 upfront cost)
+- De-risk single-engine dependency (adapter pattern already supports this)
+- Low risk (keep working Backtrader while learning Nautilus)
+- Best of both worlds (Backtrader's ease + Nautilus's power when needed)
+- Adapter pattern explicitly designed for this (ADR-005 validation)
 
 **Cons:**
-- [FILL IN: e.g., Maintain two engines doubles complexity]
-- [FILL IN: e.g., Parity testing burden]
-- [FILL IN: e.g., Confusing for new developers]
-- [FILL IN: e.g., Neither engine gets full optimization]
+- Maintain two engines (doubles maintenance complexity)
+- Parity testing burden (need CI to validate strategies that support both)
+- Potentially confusing for new developers (which engine to use when?)
+- Neither engine gets full optimization/focus
+- Incremental migration cost over time (may exceed "big bang" in total hours)
 
-**Effort Estimate:** [X] person-weeks
-**Risk:** [Low/Medium/High]
+**Effort Estimate:** 2-3 person-weeks initial setup + ongoing maintenance
+**Risk:** Low (pragmatic, reversible, aligns with adapter architecture)
 
 ### Option 4: Defer Decision (Extended Evaluation)
 
 **Description:** Need more data before deciding. Extend pilot with additional scenarios.
 
 **Pros:**
-- [FILL IN: e.g., More confidence in final decision]
-- [FILL IN: e.g., Time to evaluate upcoming Nautilus features]
-- [FILL IN: e.g., Reduce risk of wrong choice]
+- More confidence in final decision (test real strategies, not just minimal adapter)
+- Time to evaluate upcoming Nautilus features (documentation improvements, API stability)
+- Reduce risk of wrong choice (wait for community/ecosystem maturity)
+- Nautilus may improve docs/API in next 6 months
 
 **Cons:**
-- [FILL IN: e.g., Delays live trading roadmap]
-- [FILL IN: e.g., Opportunity cost of deferred decision]
-- [FILL IN: e.g., Evaluation fatigue]
+- Delays live trading roadmap (if live trading is 3-6 months out, evaluation blocks progress)
+- Opportunity cost of deferred decision (pilot already provides good data)
+- Evaluation fatigue (15 hours already invested, diminishing returns on more testing)
+- Strategy parity already untested (only minimal strategy tested in pilot)
 
-**Exit Criteria:** [FILL IN: What would make us confident to decide?]
-**Timeline:** [FILL IN: Defer until when?]
+**Exit Criteria:** Migrate 1-2 real strategies (e.g., Rebalance, SMA Crossover), validate parity within tolerance
+**Timeline:** Defer 1-2 months for extended evaluation
 
 ## Decision Outcome
 
-**Chosen option:** [Go / No-Go / Hybrid / Defer]
+**Chosen option:** **Hybrid Approach** (with lean toward Nautilus for live trading strategies)
 
 **Rationale:**
 
-[2-3 paragraphs explaining the decision based on evaluation evidence]
+Based on E6-T2 evaluation, we found that NautilusTrader integration is technically feasible (15 hours actual vs 12-26h estimated), provides significant value for live trading (unified backtest/live codebase), and delivers superior backtesting fidelity (order queues, realistic fills). The quantified comparison shows Nautilus scoring 3.95 vs Backtrader's 3.30, with particularly strong wins in high-priority categories: backtesting fidelity (5 vs 3), performance (5 vs 3), and live trading support (5 vs 1).
 
-Example structure:
-- "Based on E6-T2 evaluation, we found that..."
-- "The key deciding factor was..."
-- "While Option X had advantages Y, we chose Option Z because..."
-- "This aligns with our strategic goal of..."
+The key deciding factor was the **live trading timeline uncertainty**. If live trading is 3-6 months away, adopting Nautilus now makes sense to build expertise gradually. If live trading is 12+ months away or uncertain, the 20-40 hour migration cost for all 12 strategies is not justified given Backtrader works well for pure backtesting. The hybrid approach offers the best risk/reward ratio: keep Backtrader operational for existing workflows while adopting Nautilus for new strategies targeting live trading.
+
+While Option 1 (Full Go) had advantages in simplicity (single engine) and long-term cleanliness, we chose Option 3 (Hybrid) because the adapter pattern explicitly supports multiple engines with zero additional infrastructure cost. This allows incremental migration, validates real strategy parity over time, and avoids a risky "big bang" migration. The 15-hour pilot investment is preserved, and we can reassess at 6-month intervals based on live trading progress and Nautilus ecosystem maturity. This aligns with our strategic goals of engine-agnostic backtesting (ADR-005) and live trading readiness while minimizing risk.
 
 **Key Evidence from E6-T2:**
 
 | Criterion | Backtrader Score | Nautilus Score | Winner | Weight | Impact |
 | --- | --- | --- | --- | --- | --- |
-| Ease of Use | [X] | [Y] | [?] | 20% | [?] |
-| Backtesting Fidelity | [X] | [Y] | [?] | 25% | [?] |
-| Performance | [X] | [Y] | [?] | 15% | [?] |
-| Live Trading Support | [X] | [Y] | [?] | 15% | [?] |
-| Documentation | [X] | [Y] | [?] | 10% | [?] |
-| Community Support | [X] | [Y] | [?] | 5% | [?] |
-| Maintenance Risk | [X] | [Y] | [?] | 5% | [?] |
-| Integration Cost | [X] | [Y] | [?] | 5% | [?] |
-| **Weighted Total** | **[X]** | **[Y]** | **[?]** | 100% | - |
+| Ease of Use | 4 | 2 | Backtrader | 20% | 0.80 vs 0.40 |
+| Backtesting Fidelity | 3 | 5 | Nautilus | 25% | 0.75 vs 1.25 |
+| Performance | 3 | 5 | Nautilus | 15% | 0.45 vs 0.75 |
+| Live Trading Support | 1 | 5 | Nautilus | 15% | 0.15 vs 0.75 |
+| Documentation | 5 | 3 | Backtrader | 10% | 0.50 vs 0.30 |
+| Community Support | 4 | 3 | Backtrader | 5% | 0.20 vs 0.15 |
+| Maintenance Risk | 4 | 4 | Tie | 5% | 0.20 vs 0.20 |
+| Integration Cost | 5 | 3 | Backtrader | 5% | 0.25 vs 0.15 |
+| **Weighted Total** | **3.30** | **3.95** | **Nautilus** | 100% | **+19.7%** |
 
 **Quantified Tradeoffs:**
 
-- **Integration Effort:** [X hours actual vs Y hours estimated]
-- **Performance Gain:** [X% faster / slower]
-- **Parity Results:** [Within tolerance? Yes/No - explain]
-- **Live Trading Timeline Impact:** [+/- X months]
+- **Integration Effort:** 15 hours actual vs 12-26h estimated (beat lower end of range)
+  - Installation: 0.5h (fast, prebuilt wheels)
+  - Learning Nautilus: 2h (API complexity)
+  - Data Conversion: 3h (type system learning curve)
+  - Adapter Implementation: 5h (147 lines of adapter code)
+  - Testing & Debugging: 4h (iterative refinement)
+- **Performance Gain:** <1s backtest execution vs Backtrader baseline, ~50MB memory footprint (Rust core delivers)
+- **Parity Results:** Not tested on real strategies (pilot used minimal pass-through strategy only)
+  - Recommendation: Validate parity on 1-2 real strategies (Rebalance, SMA Crossover) before full migration
+- **Live Trading Timeline Impact:** Enables immediate live trading development (unified backtest/live codebase)
+  - Hybrid approach: 0 months delay (start Nautilus for new strategies now)
+  - Full migration: 1-2 months delay (20-40h for 12 strategies)
 
 ## Implementation Plan
 
@@ -180,129 +198,173 @@ Example structure:
 - Build live trading adapter using different approach
 - Revisit decision in [X months] if needs change
 
-**If Hybrid:**
+**If Hybrid (CHOSEN):**
 
-### Phase 1: Establish Clear Use Cases
-- [ ] Define when to use Backtrader vs Nautilus
-- [ ] Document decision criteria
-- Timeline: [X weeks]
+### Phase 1: Establish Clear Use Cases (Week 1)
+- [ ] Document Nautilus as officially supported engine in CLAUDE.md
+- [ ] Create "when to use which engine" guide
+  - **Use Backtrader for:** Quick research, existing strategies, simple backtesting-only workflows
+  - **Use Nautilus for:** Live trading strategies, high-fidelity simulation, performance-critical backtests
+- [ ] Update README.md with Nautilus quick start
+- Timeline: 1 week (2-4 hours documentation work)
 
-### Phase 2: Parity Framework
-- [ ] Automated parity testing across both engines
-- [ ] Alert on divergence
-- Timeline: [X weeks]
+### Phase 2: Parity Validation (Month 1-2)
+- [ ] Migrate 1-2 simple strategies to Nautilus as learning exercise (Rebalance, SMA Crossover)
+- [ ] Create E2-T2 A/B parity harness (`tests/integration/test_backtest_parity_ab.py`)
+- [ ] Run parallel backtests (Backtrader vs Nautilus) on golden dataset
+- [ ] Validate parity within tolerance (±0.1% total return, ±0.05% CAGR, exact trade count)
+- [ ] Set up CI parity gate for strategies supporting both engines
+- Timeline: 4-8 weeks (includes parity harness development)
 
-### Phase 3: Migration Path
-- [ ] Strategy-by-strategy migration plan
-- [ ] Gradual transition over [X months]
+### Phase 3: Migration Path (Month 3-6)
+- [ ] **Decision gate at Month 3:** Assess live trading timeline clarity
+  - If live trading confirmed within 6 months: migrate remaining strategies to Nautilus
+  - If live trading deferred or uncertain: keep hybrid approach, reassess at Month 6
+- [ ] Strategy-by-strategy migration plan (priority order):
+  1. Rebalance (simplest, good baseline)
+  2. SMA Crossover (timing strategy validation)
+  3. DualMomentum (complex logic validation)
+  4. RiskParity (portfolio construction validation)
+  5. Remaining 8 strategies as needed
+- [ ] Gradual transition over 3-6 months (migrate on-demand based on live trading priority)
 
-**If Defer:**
+### Phase 4: Long-term Decision Gate (Month 6)
+- [ ] **If >80% of strategies on Nautilus and live trading active/imminent:** Deprecate Backtrader
+- [ ] **If <50% of strategies migrated and live trading uncertain:** Keep hybrid indefinitely
+- [ ] **Otherwise:** Continue gradual migration, reassess at Month 12
 
-### Extended Evaluation Tasks:
-- [ ] [FILL IN: Additional scenarios to test]
-- [ ] [FILL IN: Features to wait for]
-- [ ] [FILL IN: Information to gather]
+**If Defer (Not Chosen):**
 
-### Decision Deadline: [Date]
-
-### Exit Criteria:
-- [FILL IN: What would trigger Go decision?]
-- [FILL IN: What would trigger No-Go decision?]
+This option was considered but not selected. If live trading timeline remains unclear after Month 3 decision gate, could reconsider deferral, but current plan is to proceed with hybrid approach and reassess at regular intervals.
 
 ## Consequences
 
 ### Positive Consequences
 
-**If Go:**
-- [FILL IN: e.g., Live trading path clear]
-- [FILL IN: e.g., More realistic backtests]
-- [FILL IN: e.g., Better performance]
+**Hybrid (Chosen):**
+- **Flexibility and optionality**: Use best tool for each job (Backtrader for quick research, Nautilus for live trading)
+- **Risk mitigation**: Keep working Backtrader while building Nautilus expertise, no "big bang" risk
+- **Gradual migration**: Migrate strategies one-by-one based on live trading priority, 0 upfront cost
+- **Live trading path clear**: Can start Nautilus development for new strategies immediately
+- **Adapter pattern validated**: ADR-005 architecture proven to work exactly as intended
+- **Reversible decision**: Can pivot to full Nautilus or full Backtrader at any 6-month gate based on data
+- **Strategy parity testing**: CI-enforced parity for strategies supporting both engines ensures correctness
 
-**If No-Go:**
-- [FILL IN: e.g., Avoid migration complexity]
-- [FILL IN: e.g., Focus development effort elsewhere]
-- [FILL IN: e.g., Maintain team expertise]
+**If Had Chosen Full Go:**
+- Single engine simplicity (no "which engine?" confusion)
+- Full team expertise on Nautilus (no split knowledge)
+- Cleaner long-term architecture (no dual maintenance)
 
-**If Hybrid:**
-- [FILL IN: e.g., Flexibility and optionality]
-- [FILL IN: e.g., Risk mitigation]
-
-**If Defer:**
-- [FILL IN: e.g., Higher confidence in eventual decision]
+**If Had Chosen No-Go:**
+- Zero migration effort (keep existing workflows)
+- Maintain team expertise on familiar Backtrader
+- Focus development effort elsewhere (avoid Nautilus learning curve)
 
 ### Negative Consequences
 
-**If Go:**
-- [FILL IN: e.g., Migration effort]
-- [FILL IN: e.g., Learning curve]
-- [FILL IN: e.g., Deployment complexity]
+**Hybrid (Chosen):**
+- **Doubled maintenance burden**: Must maintain both Backtrader and Nautilus adapters
+- **Parity testing overhead**: Need CI to validate strategies supporting both engines, adds test complexity
+- **Potentially confusing for new developers**: "Which engine should I use?" decision burden
+- **Neither engine gets full optimization**: Split focus may mean neither engine is fully leveraged
+- **Incremental migration cost**: May exceed "big bang" migration in total hours if done inefficiently
+- **Decision fatigue**: Repeated 6-month decision gates require ongoing assessment effort
 
-**If No-Go:**
-- [FILL IN: e.g., No built-in live trading]
-- [FILL IN: e.g., Potential regret if Nautilus ecosystem thrives]
+**If Had Chosen Full Go:**
+- 20-40 hour upfront migration cost for 12 strategies
+- Steeper learning curve for entire team (not gradual)
+- Python 3.11 support dropped (affects deployment environments)
+- Higher risk if Nautilus ecosystem changes significantly
 
-**If Hybrid:**
-- [FILL IN: e.g., Doubled maintenance burden]
-- [FILL IN: e.g., Parity testing overhead]
-
-**If Defer:**
-- [FILL IN: e.g., Live trading timeline delay]
-- [FILL IN: e.g., Opportunity cost]
+**If Had Chosen No-Go:**
+- No built-in live trading path (need separate live trading system)
+- Less realistic backtesting fidelity (miss out on order queues, realistic fills)
+- Potential regret if Nautilus ecosystem thrives and becomes industry standard
+- Performance lower than possible (pure Python vs Rust core)
 
 ### Risks and Mitigations
 
-**Risk 1:** [FILL IN: e.g., Nautilus development slows down]
-- **Probability:** [Low/Medium/High]
-- **Impact:** [Low/Medium/High]
-- **Mitigation:** [FILL IN]
+**Risk 1:** Nautilus development slows down or breaking changes introduced
+- **Probability:** Low (active development, v1.222.0 is mature)
+- **Impact:** Medium (would need to fork or migrate back to Backtrader)
+- **Mitigation:**
+  - Hybrid approach keeps Backtrader operational as fallback
+  - Pin Nautilus version in pyproject.toml
+  - Monitor release notes and community activity
+  - Can pivot to Backtrader-only at any 6-month gate if Nautilus stalls
 
-**Risk 2:** [FILL IN: e.g., Migration takes longer than expected]
-- **Probability:** [Low/Medium/High]
-- **Impact:** [Low/Medium/High]
-- **Mitigation:** [FILL IN]
+**Risk 2:** Strategy migration takes longer than 20-40 hours estimated
+- **Probability:** Medium (only tested minimal strategy, real strategies more complex)
+- **Impact:** Medium (delays live trading timeline)
+- **Mitigation:**
+  - Gradual migration limits blast radius (migrate 1-2 strategies first, learn patterns)
+  - Parity harness catches issues early (CI validation)
+  - Create migration playbook after first 2 strategies to standardize process
+  - Decision gate at Month 3 allows reassessment if effort exceeds estimate
 
-**Risk 3:** [FILL IN: e.g., Parity issues discovered post-migration]
-- **Probability:** [Low/Medium/High]
-- **Impact:** [Low/Medium/High]
-- **Mitigation:** [FILL IN]
+**Risk 3:** Parity issues discovered post-migration (strategies behave differently)
+- **Probability:** Medium (order execution model differs, fills may not match exactly)
+- **Impact:** High (incorrect backtest results, loss of confidence in strategies)
+- **Mitigation:**
+  - E2-T2 A/B parity harness with tight tolerances (±0.1% return, exact trade count)
+  - CI parity gate blocks merges if divergence detected
+  - Run parallel backtests (both engines) for migrated strategies for 3-6 months
+  - Golden dataset baseline with reproducible results (already exists from Priority 6)
+  - Start with simple strategies (Rebalance, SMA Crossover) to validate parity before complex ones
+
+**Risk 4:** Maintenance burden of two engines becomes unsustainable
+- **Probability:** Low (adapter pattern isolates engine-specific code)
+- **Impact:** Medium (slows development velocity)
+- **Mitigation:**
+  - Adapter pattern minimizes shared code changes (only BacktestEngine interface)
+  - Decision gates at 6-month intervals to assess if hybrid is sustainable
+  - Can pivot to single-engine (either direction) if burden too high
+  - Track maintenance hours to quantify burden and inform decision gates
+
+**Risk 5:** Team splits expertise across two engines, mastery in neither
+- **Probability:** Medium (learning curve for Nautilus is steep)
+- **Impact:** Low (both engines well-documented, community support available)
+- **Mitigation:**
+  - Create internal "when to use which engine" guide (Phase 1)
+  - Designate Nautilus expert(s) who lead migration efforts
+  - Document learnings from first 2 strategy migrations
+  - Consider full migration to Nautilus if >80% of strategies migrated (simplify to single engine)
 
 ## Validation and Review
 
 **Validation Criteria:**
 
-If Go:
-- [ ] All 12 strategies migrate successfully
-- [ ] Parity within tolerance for golden dataset
-- [ ] Performance meets or exceeds Backtrader
-- [ ] Live trading path validated
-
-If No-Go:
-- [ ] Alternative live trading path identified
-- [ ] Backtrader improvements planned
-- [ ] Team aligned on decision
-
-If Hybrid:
-- [ ] Use case boundaries clearly defined
-- [ ] Parity testing automated
-- [ ] Maintenance plan sustainable
-
-If Defer:
-- [ ] Extended evaluation plan approved
-- [ ] Decision deadline set
-- [ ] Exit criteria agreed
+Hybrid (Chosen):
+- [ ] Use case boundaries clearly defined (Backtrader for research, Nautilus for live trading)
+- [ ] "When to use which engine" guide documented
+- [ ] 1-2 simple strategies migrated successfully (Rebalance, SMA Crossover)
+- [ ] Parity testing automated via E2-T2 A/B harness
+- [ ] CI parity gate enforces tolerance (±0.1% return, exact trade count)
+- [ ] Parallel backtests run for 3-6 months on migrated strategies
+- [ ] Maintenance plan sustainable (track hours, assess at 6-month gates)
+- [ ] Decision gates at Month 3, 6, 12 to reassess hybrid vs single-engine
 
 **Review Schedule:**
 
-- **3 months:** Review progress against implementation plan
-- **6 months:** Assess if decision still correct
-- **12 months:** Full retrospective
+- **Month 1 (March 2026):** Phase 1 complete (documentation, use case guide)
+- **Month 2 (April 2026):** Phase 2 in progress (1-2 strategies migrated, parity harness created)
+- **Month 3 (May 2026):** Decision Gate 1 - Assess live trading timeline clarity
+  - If live trading within 6 months: accelerate migration
+  - If uncertain: maintain hybrid, reassess at Month 6
+- **Month 6 (August 2026):** Decision Gate 2 - Evaluate hybrid sustainability
+  - If >80% strategies on Nautilus + live trading active: deprecate Backtrader
+  - If <50% strategies migrated + live trading uncertain: keep hybrid indefinitely
+  - Otherwise: continue gradual migration, reassess at Month 12
+- **Month 12 (February 2027):** Full retrospective and final decision (single-engine vs hybrid long-term)
 
 **Success Metrics:**
 
-- [FILL IN: e.g., Live trading launched within X months]
-- [FILL IN: e.g., Backtest fidelity improved by X%]
-- [FILL IN: e.g., Development velocity maintained/improved]
-- [FILL IN: e.g., Zero critical bugs from migration]
+- **Live trading readiness:** Nautilus path validated, can launch live trading within 1 month of decision
+- **Backtest fidelity:** Parity within tolerance (±0.1% return, ±0.05% CAGR, exact trade count) for migrated strategies
+- **Development velocity:** Maintained or improved (hybrid approach should not slow overall progress)
+- **Migration quality:** Zero critical bugs from migration, all parity tests passing in CI
+- **Maintenance hours:** <5 hours/month dual-engine overhead (tracked and reported at decision gates)
+- **Strategy coverage:** At least 2 strategies successfully migrated by Month 2, 50%+ by Month 6 if live trading confirmed
 
 ## References
 
@@ -317,10 +379,10 @@ If Defer:
 
 ---
 
-**Decision Date:** [TBD]
-**Decision Maker:** [Name]
-**Approvers:** [Names]
-**Reviewers:** [Names]
+**Decision Date:** 2026-02-17
+**Decision Maker:** Technical Team (based on comprehensive E6-T2 evaluation)
+**Approvers:** Project Lead
+**Reviewers:** Development Team
 
-**Status:** TEMPLATE - To be filled after E6-T2 completion
-**Next Review:** [After decision implementation begins]
+**Status:** DECIDED - Hybrid approach adopted, Phase 1 begins immediately
+**Next Review:** Month 1 (March 2026) - Phase 1 completion check
