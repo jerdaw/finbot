@@ -2,7 +2,7 @@
 
 **Created:** 2026-02-10
 **Last Updated:** 2026-02-17
-**Status:** Priority 0-6 substantially complete (P5: 93.3%, P6: 100%). Production-ready. Priority 7 in progress (17/27 items, 63%).
+**Status:** Priority 0-6 substantially complete (P5: 93.3%, P6: 100%). Production-ready. Priority 7 in progress (23/27 items, 85%). Batch 3 complete — see `docs/planning/priority-7-batch3-implementation-plan.md` (v1.0).
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
 
@@ -19,9 +19,9 @@ All 6 items complete. Fixed logger duplication, import-time side effects, danger
 All 3 items complete. Expanded test coverage (18 → 262 tests, 34.57% coverage), created 5 example notebooks with findings, and produced 3 research summaries.
 
 **Remaining (Deferred — Not Blocking):**
-- [ ] Add tests for `bond_ladder_simulator` end-to-end (requires yield data from FRED)
-- [ ] Add tests for `backtest_batch`: parallel execution, result aggregation
-- [ ] Add tests for `rebalance_optimizer`
+- [x] Add tests for `bond_ladder_simulator` end-to-end — P7.23 complete (23 tests, synthetic yield data)
+- [x] Add tests for `backtest_batch`: parallel execution, result aggregation — P7.23 complete (11 tests)
+- [x] Add tests for `rebalance_optimizer` — P7.23 complete (5 tests)
 - [ ] Add tests for `approximate_overnight_libor` (requires FRED data)
 - [ ] Add tests for data collection utilities: `get_history`, `get_fred_data` (requires mock API responses)
 
@@ -41,7 +41,7 @@ All 6 items complete. Added CLI interface (4 commands), fixed code smells, refac
 All 7 items complete. Improved documentation (160 module docstrings, MkDocs site, ADRs), strengthened type safety (146 → 0 mypy errors), added performance benchmarks, improved CI/CD pipeline, improved pre-commit hooks, modernized pyproject.toml metadata, consolidated package layout.
 
 **Remaining (Deferred — Not Blocking):**
-- [ ] Enable stricter mypy settings (`disallow_untyped_defs`, etc.) — P7.1, in progress
+- [x] Enable stricter mypy settings (`disallow_untyped_defs`, etc.) — P7.1 audit complete; phased roadmap in `docs/planning/mypy-phase1-audit-report.md`
 
 *Completed deferred items:* py.typed marker (P5.2.11), SHA pinning for CI (2026-02-17), scheduled CI (P7.3).
 
@@ -106,8 +106,8 @@ All 6 items complete. Added containerization, Streamlit web dashboard (6 pages),
 
 New priority tier defined 2026-02-17 to maximize project impact and visibility while adding advanced technical capabilities. Focus on external communication, application readiness, and strategic enhancements.
 
-**Status:** 🟡 In Progress (17/27 items complete, 63%)
-**Implementation Plan:** `docs/planning/priority-7-implementation-plan.md` (v1.0, 11-week timeline)
+**Status:** 🟡 In Progress (23/27 items complete, 85%)
+**Implementation Plan:** `docs/planning/priority-7-implementation-plan.md` (v1.1); Batch 3 complete — `docs/planning/priority-7-batch3-implementation-plan.md` (v1.0)
 **Quick Reference:** `docs/planning/priority-7-quick-reference.md`
 
 ### 7.1 Completion & Polish (4 items)
@@ -117,7 +117,7 @@ New priority tier defined 2026-02-17 to maximize project impact and visibility w
 1. **Complete Item 5.12 - Stricter mypy Phase 1** (M: 1 week)
    - **CanMEDS:** Professional (quality standards)
    - **What:** Annotation audit only (Phases 3-7 deferred)
-   - **Status:** ⬜ Not started
+   - **Status:** ✅ Complete (2026-02-17) — 355 Mode A errors catalogued; phased roadmap published in `docs/planning/mypy-phase1-audit-report.md`
 
 2. **Increase test coverage to 60%+** (S: 3-5 days)
    - **CanMEDS:** Scholar (rigor, completeness)
@@ -201,18 +201,17 @@ New priority tier defined 2026-02-17 to maximize project impact and visibility w
 15. **Expand walk-forward analysis with visualization** (M: 3-5 days)
     - **CanMEDS:** Scholar (advanced analysis), Communicator
     - **What:** Heatmaps, rolling metrics charts, degradation plots
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-17) — `walkforward_viz.py` (5 chart functions) + `pages/8_walkforward.py` + 23 tests
 
 16. **Add regime-adaptive strategy** (M: 4-6 days)
     - **CanMEDS:** Scholar (advanced methodology), Professional
     - **What:** Strategy that adjusts parameters by detected regime
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-17) — `strategies/regime_adaptive.py` + `segment_by_regime()` upgraded + 19 tests
 
 17. **Add multi-objective optimization** (L: 1-2 weeks)
     - **CanMEDS:** Scholar (advanced optimization), Professional
     - **What:** Pareto frontier optimization (partial delivery)
-    - **Status:** ⬜ Not started
-    - **Note:** Skeleton in Phase 5, full implementation deferred to P8
+    - **Status:** ✅ Complete (2026-02-18) — `pareto_optimizer.py` (Pareto frontier, NSGA-II-style ranking, dashboard integration) + tests
 
 18. **Add options overlay strategy** (L: 2-3 weeks)
     - **CanMEDS:** Scholar (derivatives knowledge), Professional
@@ -243,12 +242,12 @@ New priority tier defined 2026-02-17 to maximize project impact and visibility w
 22. **Add hypothesis testing for strategy comparison** (M: 3-5 days)
     - **CanMEDS:** Scholar (statistical methodology), Professional
     - **What:** T-tests, bootstrap confidence intervals
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-17) — `hypothesis_testing.py` (6 functions, paired t-test, Mann-Whitney, permutation, bootstrap CI) + 24 tests
 
 23. **Clean up deferred unit tests from Priority 1** (M: 4-6 days)
     - **CanMEDS:** Professional (completion), Scholar
     - **What:** Tests for bond_ladder, backtest_batch, rebalance_optimizer
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-17) — 39 new tests across 3 modules; `tests/conftest.py` added for ENV setup
 
 ### 7.6 Documentation & Maintenance (4 items)
 
@@ -278,14 +277,14 @@ New priority tier defined 2026-02-17 to maximize project impact and visibility w
 
 ## Priority 7 Summary
 
-**Status:** 🟡 17/27 items complete (63%) — In Progress
+**Status:** 🟡 23/27 items complete (85%) — In Progress
 **Date Started:** 2026-02-17
-**Implementation Plan:** `docs/planning/priority-7-implementation-plan.md` (v1.1)
+**Implementation Plan:** `docs/planning/priority-7-implementation-plan.md` (v1.1); Batch 3 — `docs/planning/priority-7-batch3-implementation-plan.md` (v1.0)
 
 **Focus:** External impact, medical school application readiness, advanced capabilities
 
-**Completed (17 items):**
-- Coverage raised to 61.63% (+2.43%), 956 tests passing ✅
+**Completed (23 items):**
+- Coverage raised to 61.63% (+2.43%), 956 → 1063+ tests passing ✅
 - Scheduled CI workflow for daily data updates ✅
 - Conventional commits rewrite guide (user action needed) 🟡
 - Blog: "Why I Built Finbot" (`docs/blog/why-i-built-finbot.md`) ✅
@@ -295,21 +294,24 @@ New priority tier defined 2026-02-17 to maximize project impact and visibility w
 - Portfolio summary, lessons learned, impact statement (`docs/applications/`) ✅
 - Nautilus strategy migration guide (`docs/guides/nautilus-migration-guide.md`) ✅
 - FAQ document (`docs/guides/faq.md`, 30+ Q&A pairs) ✅
+- Walk-forward visualization (`walkforward_viz.py`, 5 charts, dashboard page 8) ✅
+- Regime-adaptive strategy (`strategies/regime_adaptive.py`, registered in adapter) ✅
+- Multi-objective Pareto optimizer (`pareto_optimizer.py`, Pareto frontier + dashboard) ✅
+- Statistical hypothesis testing (`hypothesis_testing.py`, 6 functions) ✅
+- Deferred unit tests (39 new tests; backtest_batch, rebalance_optimizer, bond_ladder) ✅
+- Mypy Phase 1 audit (`docs/planning/mypy-phase1-audit-report.md`, phased roadmap) ✅
 - Roadmap and planning docs kept current ✅
 
-**Remaining (10 items):**
-- Item 1: Stricter mypy Phase 1 annotation audit (not started)
+**Remaining (4 items):**
 - Items 8-9: Overview video + project poster (requires user recording/design)
-- Items 15-17: Walk-forward visualization, regime-adaptive strategy, multi-objective optimization
-- Items 18-19: Options overlay, real-time data (deferred to P8)
-- Items 20-23: Video tutorials, new health economics scenarios, statistical hypothesis testing, deferred unit tests
+- Item 20: Video tutorials (requires user recording)
+- Item 21: New health economics scenarios (cancer screening, hypertension, vaccine)
 - Items 25, 27: Getting Started video, Contributing Guide video
 
 **Deferred to Priority 8:**
 - Items 18-19 (options overlay, real-time data) — blocked on cost/data
-- Item 17 completion (multi-objective optimization) — partial delivery in P7
 
-**See:** `docs/planning/priority-7-implementation-plan.md` for detailed plan
+**See:** `docs/planning/priority-7-batch3-implementation-plan.md` for detailed plan
 
 ---
 

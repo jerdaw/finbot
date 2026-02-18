@@ -19,6 +19,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import statistics
 import sys
 import time
 import tracemalloc
@@ -84,7 +85,7 @@ def generate_synthetic_price_data(n_days: int, start_price: float = 100.0) -> pd
     return df
 
 
-def benchmark_fund_simulator(n_days: int = 2520, n_runs: int = 5) -> dict[str, Any]:
+def benchmark_fund_simulator(n_days: int = 2520, n_runs: int = 10) -> dict[str, Any]:
     """Benchmark fund_simulator performance.
 
     Args:
@@ -133,6 +134,7 @@ def benchmark_fund_simulator(n_days: int = 2520, n_runs: int = 5) -> dict[str, A
         "n_days": n_days,
         "n_runs": n_runs,
         "duration_mean_ms": np.mean(times) * 1000,
+        "duration_median_ms": statistics.median(times) * 1000,
         "duration_std_ms": np.std(times) * 1000,
         "duration_min_ms": np.min(times) * 1000,
         "duration_max_ms": np.max(times) * 1000,
@@ -143,7 +145,7 @@ def benchmark_fund_simulator(n_days: int = 2520, n_runs: int = 5) -> dict[str, A
     }
 
 
-def benchmark_backtest_adapter(n_days: int = 756, n_runs: int = 3) -> dict[str, Any]:
+def benchmark_backtest_adapter(n_days: int = 756, n_runs: int = 7) -> dict[str, Any]:
     """Benchmark BacktraderAdapter performance with NoRebalance strategy.
 
     This is a lightweight benchmark using the simplest strategy to measure
@@ -205,6 +207,7 @@ def benchmark_backtest_adapter(n_days: int = 756, n_runs: int = 3) -> dict[str, 
             "n_days": n_days,
             "n_runs": n_runs,
             "duration_mean_ms": np.mean(times) * 1000,
+            "duration_median_ms": statistics.median(times) * 1000,
             "duration_std_ms": np.std(times) * 1000,
             "duration_min_ms": np.min(times) * 1000,
             "duration_max_ms": np.max(times) * 1000,
@@ -236,28 +239,30 @@ def run_all_benchmarks() -> dict[str, Any]:
     # Benchmark 1: Fund Simulator (10 years)
     print("Running: fund_simulator (10 years / 2520 days)")
     print("-" * 80)
-    fund_result = benchmark_fund_simulator(n_days=2520, n_runs=5)
+    fund_result = benchmark_fund_simulator(n_days=2520, n_runs=10)
     results["fund_simulator"] = fund_result
 
-    print(f"  Duration (mean): {fund_result['duration_mean_ms']:.2f} ms")
-    print(f"  Duration (std):  {fund_result['duration_std_ms']:.2f} ms")
-    print(f"  Throughput:      {fund_result['throughput_days_per_sec']:,.0f} days/sec")
-    print(f"  Memory (mean):   {fund_result['memory_mean_mb']:.2f} MB")
+    print(f"  Duration (mean):   {fund_result['duration_mean_ms']:.2f} ms")
+    print(f"  Duration (median): {fund_result['duration_median_ms']:.2f} ms")
+    print(f"  Duration (std):    {fund_result['duration_std_ms']:.2f} ms")
+    print(f"  Throughput:        {fund_result['throughput_days_per_sec']:,.0f} days/sec")
+    print(f"  Memory (mean):     {fund_result['memory_mean_mb']:.2f} MB")
     print()
 
     # Benchmark 2: Backtest Adapter (3 years)
     print("Running: backtest_adapter (3 years / 756 days)")
     print("-" * 80)
-    backtest_result = benchmark_backtest_adapter(n_days=756, n_runs=3)
+    backtest_result = benchmark_backtest_adapter(n_days=756, n_runs=7)
     results["backtest_adapter"] = backtest_result
 
     if "skipped" in backtest_result:
         print(f"  SKIPPED: {backtest_result.get('error', 'Unknown error')}")
     else:
-        print(f"  Duration (mean): {backtest_result['duration_mean_ms']:.2f} ms")
-        print(f"  Duration (std):  {backtest_result['duration_std_ms']:.2f} ms")
-        print(f"  Throughput:      {backtest_result['throughput_days_per_sec']:,.0f} days/sec")
-        print(f"  Memory (mean):   {backtest_result['memory_mean_mb']:.2f} MB")
+        print(f"  Duration (mean):   {backtest_result['duration_mean_ms']:.2f} ms")
+        print(f"  Duration (median): {backtest_result['duration_median_ms']:.2f} ms")
+        print(f"  Duration (std):    {backtest_result['duration_std_ms']:.2f} ms")
+        print(f"  Throughput:        {backtest_result['throughput_days_per_sec']:,.0f} days/sec")
+        print(f"  Memory (mean):     {backtest_result['memory_mean_mb']:.2f} MB")
     print()
 
     return results
@@ -331,9 +336,12 @@ def compare_to_baseline(
             print(f"⚠️  {name}: Baseline was skipped, cannot compare")
             continue
 
-        # Compare duration
-        current_duration = current_result["duration_mean_ms"]
-        baseline_duration = baseline_result["duration_mean_ms"]
+        # Compare duration — prefer median for robustness; fall back to mean for old baselines
+        current_duration = current_result.get("duration_median_ms", current_result["duration_mean_ms"])
+        baseline_duration = baseline_result.get("duration_median_ms", baseline_result["duration_mean_ms"])
+        metric_label = (
+            "median" if "duration_median_ms" in current_result and "duration_median_ms" in baseline_result else "mean"
+        )
         duration_ratio = current_duration / baseline_duration
         duration_change_pct = (duration_ratio - 1.0) * 100
 
@@ -344,7 +352,7 @@ def compare_to_baseline(
         memory_change_pct = (memory_ratio - 1.0) * 100
 
         print(f"📊 {name}:")
-        print(f"   Duration: {current_duration:.2f} ms (baseline: {baseline_duration:.2f} ms)")
+        print(f"   Duration ({metric_label}): {current_duration:.2f} ms (baseline: {baseline_duration:.2f} ms)")
         print(f"   Change:   {duration_change_pct:+.1f}%")
         print(f"   Memory:   {current_memory:.2f} MB (baseline: {baseline_memory:.2f} MB)")
         print(f"   Change:   {memory_change_pct:+.1f}%")

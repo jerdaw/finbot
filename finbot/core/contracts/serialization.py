@@ -85,7 +85,7 @@ def _deserialize_costs(costs_payload: dict[str, Any] | None) -> CostSummary | No
 def backtest_result_to_payload(result: BacktestRunResult) -> dict[str, Any]:
     """Serialize a result dataclass to a JSON-like dictionary payload."""
 
-    payload = {
+    payload: dict[str, Any] = {
         "schema_version": result.schema_version,
         "metadata": {
             "run_id": result.metadata.run_id,

@@ -23,7 +23,7 @@ class DateParamType(click.ParamType):
         value: Any,
         param: click.Parameter | None,
         ctx: click.Context | None,
-    ) -> str:
+    ) -> str | None:
         """Convert and validate date string.
 
         Args:
@@ -74,7 +74,7 @@ class TickerParamType(click.ParamType):
         value: Any,
         param: click.Parameter | None,
         ctx: click.Context | None,
-    ) -> str:
+    ) -> str | None:
         """Convert and validate ticker symbol.
 
         Args:
@@ -98,8 +98,7 @@ class TickerParamType(click.ParamType):
             # Validate format: 1-5 letters, optional numbers
             if not re.match(r"^[A-Z]{1,5}[0-9]?$", ticker):
                 self.fail(
-                    f"'{value}' is not a valid ticker symbol. "
-                    f"Expected 1-5 letters (e.g., SPY, TQQQ, BND)",
+                    f"'{value}' is not a valid ticker symbol. Expected 1-5 letters (e.g., SPY, TQQQ, BND)",
                     param,
                     ctx,
                 )
@@ -127,7 +126,7 @@ class PositiveFloatParamType(click.ParamType):
         value: Any,
         param: click.Parameter | None,
         ctx: click.Context | None,
-    ) -> float:
+    ) -> float | None:
         """Convert and validate positive float.
 
         Args:
@@ -178,7 +177,7 @@ class PositiveIntParamType(click.ParamType):
         value: Any,
         param: click.Parameter | None,
         ctx: click.Context | None,
-    ) -> int:
+    ) -> int | None:
         """Convert and validate positive integer.
 
         Args:

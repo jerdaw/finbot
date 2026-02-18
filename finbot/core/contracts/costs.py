@@ -53,7 +53,7 @@ class CostModel(Protocol):
         quantity: float,
         price: float,
         timestamp: pd.Timestamp,
-        **kwargs,
+        **kwargs: object,
     ) -> float:
         """Calculate cost for a trade.
 

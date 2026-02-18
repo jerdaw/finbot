@@ -35,7 +35,7 @@ uv run python scripts/update_daily.py
 
 ## Current Delivery Status (2026-02-17)
 
-**Status:** Production-ready. Priority 0-6 substantially complete (P5: 93.3%, P6: 100%). Priority 7 in progress (17/27 items, 63%).
+**Status:** Production-ready. Priority 0-6 substantially complete (P5: 93.3%, P6: 100%). Priority 7 in progress (23/27 items, 85%).
 
 ### Priority 5: OMSAS/CanMEDS Improvements (93.3% Complete)
 
@@ -62,7 +62,7 @@ uv run python scripts/update_daily.py
 - ✅ **E6**: NautilusTrader pilot and decision gate (Hybrid approach adopted)
 
 **Key Metrics:**
-- 956 total tests (all passing, 11 skipped)
+- 1063+ total tests (all passing)
 - 61.63% test coverage (exceeds 60% target)
 - 100% parity maintained on all golden strategies
 - CI parity gate prevents regressions
@@ -75,10 +75,11 @@ uv run python scripts/update_daily.py
 - `docs/planning/backtesting-live-readiness-backlog.md` (Epic tracking)
 - `docs/planning/archive/` (20+ completed implementation plans)
 
-### Priority 7: External Impact & Advanced Capabilities (63% Complete)
+### Priority 7: External Impact & Advanced Capabilities (85% Complete)
 
-**In Progress:** 17/27 items complete
-- ✅ **P7.2**: Test coverage raised to 61.63% (956 tests)
+**In Progress:** 23/27 items complete
+- ✅ **P7.1**: Stricter mypy Phase 1 audit — 355 errors catalogued, phased roadmap published
+- ✅ **P7.2**: Test coverage raised to 61.63% (1063+ tests)
 - ✅ **P7.3**: Scheduled CI for daily data updates
 - 🟡 **P7.4**: Conventional commits guide created (user action required)
 - ✅ **P7.5**: Blog post — "Why I Built Finbot"
@@ -89,16 +90,20 @@ uv run python scripts/update_daily.py
 - ✅ **P7.12**: Lessons Learned document (15 lessons)
 - ✅ **P7.13**: Impact Statement
 - ✅ **P7.14**: Nautilus strategy migration guide
+- ✅ **P7.15**: Walk-forward visualization — `walkforward_viz.py` (5 chart functions, dashboard page 8, 23 tests)
+- ✅ **P7.16**: Regime-adaptive strategy — `strategies/regime_adaptive.py` + 19 tests
+- ✅ **P7.17**: Multi-objective Pareto optimizer — `pareto_optimizer.py` + dashboard integration
+- ✅ **P7.22**: Hypothesis testing module — `hypothesis_testing.py` (6 functions, 24 tests)
+- ✅ **P7.23**: Deferred unit tests — 39 new tests (bond_ladder, backtest_batch, rebalance_optimizer)
 - ✅ **P7.24**: Roadmap updates (ongoing)
 - ✅ **P7.26**: FAQ document (30+ Q&A pairs)
 
 **Remaining notable items:**
-- ⬜ P7.1: Stricter mypy Phase 1 audit
 - ⬜ P7.8/P7.9: Video/poster (requires user recording/design)
-- ⬜ P7.15-P7.17: Advanced technical features (walk-forward viz, regime-adaptive strategy, multi-objective optimization)
-- ⬜ P7.20-P7.23: Deferred items (video tutorials, health economics scenarios, hypothesis testing, unit tests)
+- ⬜ P7.20: Video tutorials (requires user recording)
+- ⬜ P7.21: Health economics scenarios — cancer screening, hypertension, vaccine
 
-**Implementation plan:** `docs/planning/priority-7-implementation-plan.md` (v1.1)
+**Implementation plan:** `docs/planning/priority-7-batch3-implementation-plan.md` (v1.0)
 
 ## Common Commands
 

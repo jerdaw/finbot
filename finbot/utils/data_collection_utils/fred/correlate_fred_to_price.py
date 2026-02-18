@@ -18,7 +18,7 @@ Note: This module is work-in-progress and needs refactoring.
 
 # TODO: This module is still very much a WIP. It needs to be refactored and cleaned up.
 
-from typing import Any
+from typing import Any, Literal, cast
 
 import numpy as np
 import pandas as pd
@@ -50,7 +50,7 @@ def _load_popular_databases(max_pages: int | None) -> DataFrame:
     try:
         popular_symbols = get_popular_fred_symbols(max_pages_to_scrape=max_pages)
         popular_dbs = (
-            get_fred_data(symbols=popular_symbols, check_update=False).dropna(axis=1, how="all").sort_index(axis=1)
+            get_fred_data(symbols=popular_symbols, check_update=False).dropna(axis=1, how="all").sort_index(axis=1)  # type: ignore[call-overload]
         )
         return popular_dbs
     except Exception as e:
@@ -86,15 +86,19 @@ def _compute_correlation(trunc_gspc: DataFrame, trunc_serie: Series, corr_method
     Returns:
         dict[str, float]: A dictionary containing correlation values for each method.
     """
-    correlations = {}
+    correlations: dict[str, float] = {}
     for method in corr_methods:
         try:
-            correlation = get_correlation([trunc_gspc, trunc_serie], method=method).iloc[0, 1]
-            correlations[method] = float(correlation) if not np.isnan(correlation) else np.nan
+            correlation = get_correlation(
+                [trunc_gspc, trunc_serie],
+                method=cast(Literal["pearson", "kendall", "spearman"], method),
+            ).iloc[0, 1]
+            corr_val = float(np.float64(correlation))  # type: ignore[arg-type]
+            correlations[method] = corr_val if not np.isnan(corr_val) else float("nan")
         except Exception as e:
             logger.warning(f"Error in computing correlation using {method}: {e}")
-            correlations[method] = np.nan
-    correlations["avg"] = np.nanmean(list(correlations.values()))
+            correlations[method] = float("nan")
+    correlations["avg"] = float(np.nanmean(list(correlations.values())))
     return correlations
 
 
@@ -116,7 +120,7 @@ def _compute_period_correlation(
     Returns:
         dict[str, float]: A dictionary containing average correlation values for each method across specified periods.
     """
-    period_corrs = {method: [] for method in corr_methods}
+    period_corrs: dict[str, list[float]] = {method: [] for method in corr_methods}
     for start_dt, end_dt in periods:
         trunc_serie = serie.truncate(before=start_dt, after=end_dt)
         trunc_gspc = merge_data_on_closest_date(
@@ -124,12 +128,15 @@ def _compute_period_correlation(
             value_df=pd.DataFrame(gspc_close.truncate(before=start_dt, after=end_dt)),
         )
         for method in corr_methods:
-            corr = get_correlation([trunc_gspc, trunc_serie], method=method).iloc[0, 1]
+            corr = get_correlation(
+                [trunc_gspc, trunc_serie],
+                method=cast(Literal["pearson", "kendall", "spearman"], method),
+            ).iloc[0, 1]
             if isinstance(corr, float | int) and not np.isnan(corr):
                 period_corrs[method].append(corr)
 
-    averaged_corrs = {method: np.nanmean(period_corrs[method]) for method in corr_methods}
-    averaged_corrs["avg"] = np.nanmean(list(averaged_corrs.values()))
+    averaged_corrs: dict[str, float] = {method: float(np.nanmean(period_corrs[method])) for method in corr_methods}
+    averaged_corrs["avg"] = float(np.nanmean(list(averaged_corrs.values())))
     return averaged_corrs
 
 
@@ -152,7 +159,7 @@ def _aggregate_average_correlation(
     all_avg_corrs = [
         abs(corr["avg"]) for corr in [full_data_corrs, rec_corrs, non_rec_corrs] if not np.isnan(corr["avg"])
     ]
-    overall_avg = np.nanmean(all_avg_corrs) if all_avg_corrs else np.nan
+    overall_avg: float = float(np.nanmean(all_avg_corrs)) if all_avg_corrs else float(np.nan)
     return overall_avg
 
 
@@ -212,7 +219,7 @@ def _calculate_correlations(
             "abs_avg": overall_avg,
         }
 
-    return correlations
+    return correlations  # type: ignore[return-value]
 
 
 def correlate_fred_to_price(
@@ -260,7 +267,7 @@ def correlate_fred_to_price(
     )
 
     # Sorting correlations
-    sorted_correlations = dict(sorted(correlations.items(), key=lambda x: x[1]["abs_avg"], reverse=True))
+    sorted_correlations = dict(sorted(correlations.items(), key=lambda x: cast(float, x[1]["abs_avg"]), reverse=True))
 
     return sorted_correlations
 

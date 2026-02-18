@@ -60,7 +60,8 @@ def _migrate_v0_to_v1_payload(payload: dict[str, Any]) -> dict[str, Any]:
         "Mean Cash Utilization": "mean_cash_utilization",
     }
 
-    legacy_metrics_source = payload.get("metrics") if isinstance(payload.get("metrics"), dict) else payload
+    metrics_raw = payload.get("metrics")
+    legacy_metrics_source: dict[str, Any] = metrics_raw if isinstance(metrics_raw, dict) else payload
     metrics: dict[str, float] = {}
     for legacy_key, canonical_key in legacy_metric_mapping.items():
         if legacy_key in legacy_metrics_source:

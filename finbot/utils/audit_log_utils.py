@@ -222,7 +222,7 @@ class AuditLogReader:
 
         for entry in entries:
             # Count by status
-            status = entry.get("status")
+            status: str = entry.get("status") or "unknown"
             if status == "success":
                 summary.successful_operations += 1
             elif status == "failure":
