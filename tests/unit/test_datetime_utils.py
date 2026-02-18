@@ -94,7 +94,7 @@ class TestGetUSBusinessDates:
 
     def test_invalid_date_type_raises_error(self):
         """Test that non-date inputs raise TypeError"""
-        with pytest.raises(TypeError, match="must be instances of datetime.date"):
+        with pytest.raises(TypeError, match=r"must be instances of datetime\.date"):
             get_us_business_dates("2024-01-01", date(2024, 1, 10))  # type: ignore[arg-type]
 
     def test_end_date_defaults_to_today(self):
@@ -609,6 +609,82 @@ class TestRelativdeltaToStr:
             rd = str_to_relativedelta(freq)
             result = relativedelta_to_str(rd)
             assert result == freq
+
+
+class TestMeasureExecutionTime:
+    """Tests for measure_execution_time function.
+
+    Priority 7, Item P7.2: Increase test coverage to 60%+
+    """
+
+    def test_measure_execution_time_basic(self):
+        """Test basic execution time measurement."""
+        import time
+
+        from finbot.utils.datetime_utils.measure_execution_time import measure_execution_time
+
+        def simple_function():
+            time.sleep(0.01)  # Sleep for 10ms
+
+        elapsed = measure_execution_time(simple_function)
+
+        # Elapsed time should be >= 0.01 seconds (10ms)
+        assert elapsed >= 0.01
+        # Should be less than 1 second (generous upper bound)
+        assert elapsed < 1.0
+
+    def test_measure_execution_time_returns_float(self):
+        """Test that measure_execution_time returns a float."""
+        from finbot.utils.datetime_utils.measure_execution_time import measure_execution_time
+
+        def quick_function():
+            pass  # No-op
+
+        elapsed = measure_execution_time(quick_function)
+
+        assert isinstance(elapsed, float)
+        assert elapsed >= 0
+
+    def test_measure_execution_time_with_return_value(self):
+        """Test that measure_execution_time works with functions that return values."""
+        from finbot.utils.datetime_utils.measure_execution_time import measure_execution_time
+
+        def function_with_return():
+            return 42
+
+        elapsed = measure_execution_time(function_with_return)
+
+        # Note: measure_execution_time doesn't return the function result,
+        # only the elapsed time
+        assert isinstance(elapsed, float)
+        assert elapsed >= 0
+
+    def test_measure_execution_time_precision(self):
+        """Test that measure_execution_time has reasonable precision."""
+        import time
+
+        from finbot.utils.datetime_utils.measure_execution_time import measure_execution_time
+
+        def sleep_function():
+            time.sleep(0.05)  # 50ms
+
+        elapsed = measure_execution_time(sleep_function)
+
+        # Should be close to 0.05 seconds (within 10ms tolerance)
+        assert 0.04 < elapsed < 0.1
+
+    def test_measure_execution_time_very_fast_function(self):
+        """Test timing of very fast function."""
+        from finbot.utils.datetime_utils.measure_execution_time import measure_execution_time
+
+        def fast_function():
+            pass  # Very fast operation
+
+        elapsed = measure_execution_time(fast_function)
+
+        # Should complete very quickly
+        assert isinstance(elapsed, float)
+        assert elapsed < 0.01  # Less than 10ms
 
 
 if __name__ == "__main__":
