@@ -4,7 +4,7 @@ from finbot.constants.path_constants import BACKTESTS_DATA_DIR
 from finbot.services.backtesting.avg_stepped_results import avg_stepped_results
 
 
-def print_and_save_backtest(file_name: str, results: pd.DataFrame, print_res: bool = True, save: bool = True):
+def print_and_save_backtest(file_name: str, results: pd.DataFrame, print_res: bool = True, save: bool = True) -> None:
     res = results.copy()
     res["File Name"] = [file_name for _ in range(len(res))]
     strat_col_idx = res.columns.to_list().index("Strategy")

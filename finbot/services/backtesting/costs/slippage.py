@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 import pandas as pd
 
 
@@ -18,7 +20,7 @@ class ZeroSlippage:
         quantity: float,
         price: float,
         timestamp: pd.Timestamp,
-        **kwargs,
+        **kwargs: object,
     ) -> float:
         """Calculate slippage cost (always zero)."""
         return 0.0
@@ -50,7 +52,7 @@ class FixedSlippage:
         quantity: float,
         price: float,
         timestamp: pd.Timestamp,
-        **kwargs,
+        **kwargs: object,
     ) -> float:
         """Calculate slippage cost based on trade value."""
         trade_value = abs(quantity) * price
@@ -93,7 +95,7 @@ class SqrtSlippage:
         quantity: float,
         price: float,
         timestamp: pd.Timestamp,
-        **kwargs,
+        **kwargs: Any,
     ) -> float:
         """Calculate market impact using square-root model.
 

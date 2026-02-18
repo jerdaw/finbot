@@ -29,7 +29,7 @@ class RiskParity(bt.Strategy):
         self.returns: dict[int, list[float]] = {i: [] for i in range(len(self.datas))}
         self.prev_close: dict[int, float | None] = dict.fromkeys(range(len(self.datas)))
 
-    def notify_order(self, order):
+    def notify_order(self, order: bt.Order) -> None:
         self.order = None
 
     def _compute_weights(self) -> list[float]:
@@ -51,7 +51,7 @@ class RiskParity(bt.Strategy):
             return [1.0 / n] * n
         return [v / total for v in inv_vols]
 
-    def next(self):
+    def next(self) -> None:
         if self.order:
             return  # type: ignore[unreachable]
 

@@ -27,7 +27,9 @@ st.warning(
     """
 )
 
-tab_qaly, tab_cea, tab_opt = st.tabs(["QALY Simulation", "Cost-Effectiveness Analysis", "Treatment Optimizer"])
+tab_qaly, tab_cea, tab_opt, tab_scenarios = st.tabs(
+    ["QALY Simulation", "Cost-Effectiveness Analysis", "Treatment Optimizer", "Clinical Scenarios"]
+)
 
 # ==========================================================================
 # Tab 1 — QALY Monte Carlo Simulation
@@ -372,3 +374,103 @@ with tab_opt:
             use_container_width=True,
             hide_index=True,
         )
+
+
+# ==========================================================================
+# Tab 4 — Clinical Scenarios
+# ==========================================================================
+with tab_scenarios:
+    st.header("Clinical Scenarios")
+    st.markdown(
+        "Pre-built real-world clinical scenarios using the health economics modules above. "
+        "Each scenario models a published health intervention against a comparator using "
+        "Monte Carlo QALY simulation and cost-effectiveness analysis."
+    )
+
+    wtp_input = st.number_input(
+        "Willingness-to-pay threshold ($/QALY)",
+        value=100_000.0,
+        step=10_000.0,
+        min_value=10_000.0,
+        max_value=500_000.0,
+        key="scen_wtp",
+    )
+    n_sims_scen = st.number_input(
+        "Simulations per scenario",
+        value=2_000,
+        min_value=100,
+        max_value=20_000,
+        step=500,
+        key="scen_nsim",
+    )
+
+    if st.button("Run All Scenarios", type="primary", key="scen_run"):
+        with st.spinner("Running 3 clinical scenarios..."):
+            try:
+                from finbot.services.health_economics.scenarios.cancer_screening import (
+                    run_cancer_screening_scenario,
+                )
+                from finbot.services.health_economics.scenarios.hypertension import (
+                    run_hypertension_scenario,
+                )
+                from finbot.services.health_economics.scenarios.vaccine import (
+                    run_vaccine_scenario,
+                )
+
+                results = {
+                    "cancer": run_cancer_screening_scenario(
+                        n_sims=int(n_sims_scen), wtp_threshold=float(wtp_input), seed=42
+                    ),
+                    "hypertension": run_hypertension_scenario(
+                        n_sims=int(n_sims_scen), wtp_threshold=float(wtp_input), seed=42
+                    ),
+                    "vaccine": run_vaccine_scenario(n_sims=int(n_sims_scen), wtp_threshold=float(wtp_input), seed=42),
+                }
+                st.session_state["scen_results"] = results
+            except Exception as e:
+                st.error(f"Scenario run failed: {e}")
+
+    if "scen_results" in st.session_state:
+        scenarios = st.session_state["scen_results"]
+
+        # Summary metrics table
+        st.markdown("### Summary")
+        summary_rows = []
+        for res in scenarios.values():
+            icer_str = f"${res.icer:,.0f}" if res.icer is not None else "Dominated / Dominant"
+            summary_rows.append(
+                {
+                    "Scenario": res.scenario_name,
+                    "Intervention": res.intervention_name,
+                    "vs.": res.comparator_name,
+                    "ICER ($/QALY)": icer_str,
+                    "NMB ($)": f"${res.nmb:,.0f}",
+                    "Cost-Effective?": "✅ Yes" if res.is_cost_effective else "❌ No",
+                    "QALY Gain": f"{res.qaly_gain:.4f}",
+                    "Cost Difference": f"${res.cost_difference:,.0f}",
+                }
+            )
+        import pandas as pd
+
+        st.dataframe(pd.DataFrame(summary_rows), use_container_width=True, hide_index=True)
+
+        # Detailed expandable cards per scenario
+        st.markdown("### Scenario Details")
+        for res in scenarios.values():
+            with st.expander(res.scenario_name, expanded=False):
+                st.markdown(f"**Description:** {res.description}")
+                st.markdown(f"**Simulations:** {res.n_simulations:,}")
+
+                c1, c2, c3, c4 = st.columns(4)
+                c1.metric("QALY Gain", f"{res.qaly_gain:.4f}")
+                c2.metric("Cost Difference", f"${res.cost_difference:,.0f}")
+                c3.metric("NMB", f"${res.nmb:,.0f}")
+                c4.metric(
+                    "ICER",
+                    f"${res.icer:,.0f}" if res.icer is not None else "N/A",
+                )
+
+                if res.summary_stats:
+                    st.markdown("**Additional Statistics**")
+                    stats_df = pd.DataFrame([{"Metric": k, "Value": f"{v:,.4f}"} for k, v in res.summary_stats.items()])
+                    st.dataframe(stats_df, use_container_width=True, hide_index=True)

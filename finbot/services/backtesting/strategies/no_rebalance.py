@@ -1,18 +1,22 @@
+from __future__ import annotations
+
+from typing import Any
+
 import backtrader as bt
 
 
 class NoRebalance(bt.Strategy):
     """Basic buy and hold strategy with no rebalancing."""
 
-    def __init__(self, equity_proportions):
+    def __init__(self, equity_proportions: list[float]) -> None:
         self.equity_proportions = equity_proportions
         self.dataclose = self.datas[0].close
+        self.order: Any = None
+
+    def notify_order(self, order: bt.Order) -> None:
         self.order = None
 
-    def notify_order(self, order):
-        self.order = None
-
-    def next(self):
+    def next(self) -> None:
         if self.order:
             return
         if not self.getposition():
