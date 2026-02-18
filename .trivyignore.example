@@ -1,0 +1,25 @@
+# Trivy Ignore File
+# This file allows you to ignore specific CVEs from security scans
+# Copy to .trivyignore and customize as needed
+#
+# Format: One CVE ID per line, with optional comments
+# Lines starting with # are comments
+
+# Example: Ignore a false positive
+# CVE-2024-12345
+
+# Example: Ignore while waiting for upstream fix
+# CVE-2024-67890
+# Rationale: Waiting for Python base image update, low exploitability
+# Tracked in: https://github.com/docker-library/python/issues/XXXX
+
+# Example: Ignore low-severity issue in build-only dependency
+# CVE-2024-11111
+# Rationale: Only affects build stage, not runtime image
+
+# Guidelines for adding ignores:
+# 1. Always include a rationale comment
+# 2. Link to upstream tracking issue if available
+# 3. Include severity level and affected package
+# 4. Set reminder to review (e.g., "Review by: 2026-03-01")
+# 5. Remove when fixed version is available

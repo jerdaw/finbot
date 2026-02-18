@@ -1,4 +1,4 @@
-.PHONY: help install update lint format type docstring security test test-cov test-quick clean run-update check all pre-commit docs docs-serve docs-build dashboard dashboard-dev docker-build docker-run docker-status docker-update docker-test docker-clean
+.PHONY: help install update lint format type docstring security test test-cov test-quick clean run-update check all pre-commit docs docs-serve docs-build dashboard dashboard-dev docker-build docker-run docker-status docker-update docker-test docker-clean docker-security-scan test-release changelog
 
 # Default target - show help
 help:
@@ -35,12 +35,17 @@ help:
 	@echo "  make docs-build     Build documentation site"
 	@echo ""
 	@echo "Docker:"
-	@echo "  make docker-build   Build Docker image"
-	@echo "  make docker-run     Run interactive finbot CLI in Docker"
-	@echo "  make docker-status  Show data freshness via Docker"
-	@echo "  make docker-update  Run daily update pipeline in Docker"
-	@echo "  make docker-test    Run tests in Docker"
-	@echo "  make docker-clean   Remove Docker image and volumes"
+	@echo "  make docker-build          Build Docker image"
+	@echo "  make docker-run            Run interactive finbot CLI in Docker"
+	@echo "  make docker-status         Show data freshness via Docker"
+	@echo "  make docker-update         Run daily update pipeline in Docker"
+	@echo "  make docker-test           Run tests in Docker"
+	@echo "  make docker-security-scan  Run Trivy security scan on Docker image"
+	@echo "  make docker-clean          Remove Docker image and volumes"
+	@echo ""
+	@echo "Release:"
+	@echo "  make test-release   Validate release workflow and files"
+	@echo "  make changelog      Generate changelog from git history"
 	@echo ""
 	@echo "Maintenance:"
 	@echo "  make clean          Remove cache files and build artifacts"
@@ -140,6 +145,20 @@ clean:
 pre-commit:
 	@echo "Running pre-commit hooks on all files..."
 	uv run pre-commit run --all-files
+
+# Release
+test-release:
+	@echo "Validating release workflow..."
+	@./scripts/test_release_workflow.sh
+
+changelog:
+	@echo "Generating changelog from git history..."
+	@uv run git-changelog --output CHANGELOG_GENERATED.md --config-file .git-changelog.toml
+	@echo "✓ Changelog generated to CHANGELOG_GENERATED.md"
+	@echo ""
+	@echo "Review the generated changelog and manually merge into CHANGELOG.md"
+	@echo "Note: git-changelog generates from git history only."
+	@echo "      The current CHANGELOG.md has manual formatting that should be preserved."
 
 # Docker
 docker-build:
