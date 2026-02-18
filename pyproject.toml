@@ -230,7 +230,6 @@ ignore_errors = true
 
 [tool.mypy]
 python_version = "3.11"
-mypy_path = "/home/jer/localsync/finbot"
 exclude = [".venv", "build", "dist"]
 check_untyped_defs = true
 warn_redundant_casts = true
@@ -242,9 +241,14 @@ disallow_untyped_defs = false  # Gradual adoption
 disallow_any_generics = false  # Too strict for current codebase
 strict_optional = true
 
+[[tool.mypy.overrides]]
+module = ["finbot.core.*", "finbot.services.execution.*"]
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-v --tb=short"
+addopts = "-v --tb=short -m 'not slow'"
 filterwarnings = [
     "ignore::DeprecationWarning:pandas_datareader",
     "ignore::SyntaxWarning:backtrader",

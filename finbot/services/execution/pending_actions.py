@@ -40,7 +40,7 @@ class PendingActionQueue:
     processing of due actions.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize empty action queue."""
         self.actions: list[PendingAction] = []
 

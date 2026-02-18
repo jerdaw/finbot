@@ -975,6 +975,8 @@ Finbot may never be truly "done" (open-source projects evolve continuously), but
 | Version | Date | Changes |
 |---------|------|---------|
 | 1.0 | 2026-02-17 | Initial draft - 27 items across 6 phases, 11-week timeline |
+| 1.1 | 2026-02-17 | Updated status after Batch 1 completion (17/27 items) |
+| 1.2 | 2026-02-17 | Batch 2 plan created: P7.15, P7.22, P7.16, P7.23, P7.1 — see `priority-7-batch2-implementation-plan.md` |
 
 ---
 
