@@ -79,7 +79,7 @@ jobs:
       - name: Run tests with coverage
         env:
           DYNACONF_ENV: development
-        run: uv run pytest tests/ -v --cov=finbot --cov-report=term-missing --cov-fail-under=30
+        run: uv run pytest tests/ -v --cov=finbot --cov-report=term-missing --cov-fail-under=60
 
   parity-gate:
     name: Backtest Parity Gate

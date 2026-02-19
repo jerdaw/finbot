@@ -85,6 +85,26 @@ jobs:
       - name: Verify licenses report is committed
         run: git diff --exit-code THIRD_PARTY_LICENSES.md
 
+  docker-security-scan:
+    name: Docker Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Build Docker image
+        run: docker build -t finbot:ci .
+
+      - name: Run Trivy scan
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          image-ref: "finbot:ci"
+          format: "table"
+          ignore-unfixed: true
+          vuln-type: "os,library"
+          severity: "CRITICAL,HIGH"
+
   test-matrix:
     name: Test (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
@@ -109,7 +129,7 @@ jobs:
       - name: Run tests with coverage
         env:
           DYNACONF_ENV: development
-        run: uv run pytest tests/ -v --cov=finbot --cov-report=term-missing --cov-fail-under=30
+        run: uv run pytest tests/ -v --cov=finbot --cov-report=term-missing --cov-fail-under=60
 
       - name: Upload coverage reports
         if: matrix.python-version == '3.13'

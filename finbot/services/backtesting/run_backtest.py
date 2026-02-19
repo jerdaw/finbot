@@ -1,7 +1,13 @@
+from __future__ import annotations
+
+from typing import Any
+
+import pandas as pd
+
 from finbot.services.backtesting.backtest_runner import BacktestRunner
 
 
-def run_backtest(*args, **kwargs):
+def run_backtest(*args: Any, **kwargs: Any) -> pd.DataFrame:
     # Adjust args/kwargs for tqdm process_map batch runner
     if not kwargs and len(args) == 1:
         kw_list = (

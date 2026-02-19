@@ -18,7 +18,7 @@ class ZeroSpread:
         quantity: float,
         price: float,
         timestamp: pd.Timestamp,
-        **kwargs,
+        **kwargs: object,
     ) -> float:
         """Calculate spread cost (always zero)."""
         return 0.0
@@ -56,7 +56,7 @@ class FixedSpread:
         quantity: float,
         price: float,
         timestamp: pd.Timestamp,
-        **kwargs,
+        **kwargs: object,
     ) -> float:
         """Calculate spread cost based on trade value.
 

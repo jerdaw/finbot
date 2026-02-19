@@ -6,6 +6,7 @@ import click
 
 from finbot.cli.commands import backtest, dashboard, optimize, simulate, status, update
 from finbot.config import logger
+from finbot.libs.logger.audit import generate_trace_id, set_trace_id
 
 
 @click.group()
@@ -16,8 +17,14 @@ from finbot.config import logger
     is_flag=True,
     help="Enable verbose logging output",
 )
+@click.option(
+    "--trace-id",
+    type=str,
+    default=None,
+    help="Optional trace ID for structured audit logs (auto-generated when omitted)",
+)
 @click.pass_context
-def cli(ctx: click.Context, verbose: bool) -> None:
+def cli(ctx: click.Context, verbose: bool, trace_id: str | None) -> None:
     """Finbot - Financial simulation and backtesting platform.
 
     Disclaimer: Research/education use only. See DISCLAIMER.md.
@@ -42,9 +49,11 @@ def cli(ctx: click.Context, verbose: bool) -> None:
     # Store verbose flag in context for subcommands
     ctx.ensure_object(dict)
     ctx.obj["verbose"] = verbose
+    ctx.obj["trace_id"] = trace_id or generate_trace_id()
+    set_trace_id(ctx.obj["trace_id"])
 
     if verbose:
-        logger.info("Verbose mode enabled")
+        logger.info("Verbose mode enabled", extra={"trace_id": ctx.obj["trace_id"]})
 
 
 # Register commands

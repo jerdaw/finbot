@@ -1,0 +1,64 @@
+name: Scheduled Data Update
+
+on:
+  schedule:
+    # Run daily at 6:00 AM UTC (after markets close and data updates)
+    - cron: '0 6 * * *'
+  workflow_dispatch:  # Allow manual triggering
+
+permissions:
+  contents: read
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871  # v4.2.1
+
+      - name: Set up Python
+        uses: actions/setup-python@f677139bbe7f9c59b41e40162b753cc15f5a9928  # v5.1.0
+        with:
+          python-version: '3.12'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e  # v7
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Run daily data update
+        env:
+          DYNACONF_ENV: production
+          ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
+          NASDAQ_DATA_LINK_API_KEY: ${{ secrets.NASDAQ_DATA_LINK_API_KEY }}
+          US_BUREAU_OF_LABOR_STATISTICS_API_KEY: ${{ secrets.US_BUREAU_OF_LABOR_STATISTICS_API_KEY }}
+          GOOGLE_FINANCE_SERVICE_ACCOUNT_CREDENTIALS_PATH: ${{ secrets.GOOGLE_FINANCE_SERVICE_ACCOUNT_CREDENTIALS_PATH }}
+        run: |
+          uv run python scripts/update_daily.py
+
+      - name: Check for data freshness issues
+        run: |
+          uv run python -c "from finbot.cli.commands.status import status_command; status_command()"
+
+      - name: Create issue on failure
+        if: failure()
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea  # v7.0.1
+        with:
+          script: |
+            const title = '⚠️ Scheduled data update failed';
+            const body = `The scheduled data update job failed on ${new Date().toISOString()}.
+
+            Please check the workflow logs for details: ${context.payload.repository.html_url}/actions/runs/${context.runId}`;
+
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['automated', 'data-quality']
+            });

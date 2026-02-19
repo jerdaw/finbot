@@ -8,6 +8,7 @@ from pathlib import Path
 
 from finbot.core.contracts.checkpoint import CHECKPOINT_VERSION, ExecutionCheckpoint
 from finbot.core.contracts.latency import LATENCY_FAST, LATENCY_INSTANT, LATENCY_NORMAL, LATENCY_SLOW
+from finbot.core.contracts.risk import RiskConfig
 from finbot.services.execution.checkpoint_serialization import deserialize_checkpoint, serialize_checkpoint
 from finbot.services.execution.execution_simulator import ExecutionSimulator
 
@@ -266,7 +267,7 @@ class CheckpointManager:
 
         return checkpoints
 
-    def _serialize_risk_config(self, risk_config) -> dict:
+    def _serialize_risk_config(self, risk_config: RiskConfig) -> dict:
         """Serialize risk config to dict.
 
         Args:
@@ -308,7 +309,7 @@ class CheckpointManager:
 
         return data
 
-    def _deserialize_risk_config(self, data: dict):
+    def _deserialize_risk_config(self, data: dict) -> RiskConfig:
         """Deserialize risk config from dict.
 
         Args:

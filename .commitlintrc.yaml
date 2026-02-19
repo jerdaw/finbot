@@ -1,0 +1,46 @@
+# Commitlint configuration for conventional commits
+# See: https://www.conventionalcommits.org/
+# Tool: conventional-pre-commit (https://github.com/compilerla/conventional-pre-commit)
+
+# Conventional Commit Format:
+# <type>(<scope>): <subject>
+#
+# [optional body]
+#
+# [optional footer(s)]
+
+# Allowed commit types
+types:
+  - feat      # New feature
+  - fix       # Bug fix
+  - docs      # Documentation changes
+  - style     # Code style changes (formatting, missing semicolons, etc.)
+  - refactor  # Code refactoring (no feature changes or bug fixes)
+  - test      # Adding or updating tests
+  - chore     # Maintenance tasks (deps, build, CI, etc.)
+  - perf      # Performance improvements
+  - ci        # CI/CD changes
+  - build     # Build system or external dependency changes
+  - revert    # Revert a previous commit
+
+# Subject line constraints
+subject:
+  max_length: 72  # Maximum characters in subject line
+
+# Scope (optional but recommended)
+# Examples: api, cli, dashboard, backtesting, simulation, config, docs
+# Use --force-scope flag in pre-commit to make scope mandatory
+
+# Example commit messages:
+# - feat(backtesting): add dual momentum strategy
+# - fix(api): handle rate limit errors in FRED client
+# - docs(readme): update installation instructions
+# - test(simulation): add fund simulator edge cases
+# - chore(deps): update pandas to 2.2.0
+# - refactor(config): migrate to dynaconf settings
+# - perf(backtesting): optimize backtest batch processing
+# - ci: add conventional commit linting
+# - build: update python version to 3.12
+
+# Note: The conventional-pre-commit hook enforces these rules automatically
+# during git commit operations (commit-msg stage)

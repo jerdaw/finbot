@@ -31,7 +31,7 @@ oanda_api_resource_group = APIResourceGroup(
 nasdaq_quandl_api_resource_group = APIResourceGroup(
     identifier="nasdaq_quandl_api_resource_group",
     rate_limit=RateLimiter(
-        rate_limits=[RateLimitItemPerSecond(300, 10), RateLimitItemPerMinute(2000, 10), RateLimitItemPerDay(50000)],
+        rate_limits=[RateLimitItemPerSecond(300, 10), RateLimitItemPerMinute(2000, 10), RateLimitItemPerDay(50000)],  # type: ignore[arg-type]
     ),
     retry_strategy_kwargs=DEFAULT_HTTPX_RETRY_KWARGS,
     concurrency_limit=1,
@@ -39,6 +39,6 @@ nasdaq_quandl_api_resource_group = APIResourceGroup(
 
 bureau_of_labour_statistics_api_2_resource_group = APIResourceGroup(
     identifier="bureau_of_labour_statistics_api_2_resource_group",
-    rate_limit=RateLimiter(rate_limits=[RateLimitItemPerSecond(50, 10), RateLimitItemPerDay(500)]),
+    rate_limit=RateLimiter(rate_limits=[RateLimitItemPerSecond(50, 10), RateLimitItemPerDay(500)]),  # type: ignore[arg-type]
     retry_strategy_kwargs=DEFAULT_HTTPX_RETRY_KWARGS,
 )

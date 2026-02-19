@@ -79,6 +79,7 @@ dev = [
     "mypy>=1.7.1,<2",
     "ruff>=0.15.0,<0.16",
     "pytest>=9.0.2,<10",
+    "hypothesis>=6.148.2,<7",
     "bandit>=1.7.6,<2",
     "ssort>=0.16.0,<0.17",
     "pyupgrade>=3.15.0,<4",
@@ -103,13 +104,12 @@ exclude = [
     ".bzr", ".direnv", ".eggs", ".git", ".git-rewrite", ".hg",
     ".mypy_cache", ".nox", ".pants.d", ".pytype", ".ruff_cache",
     ".svn", ".tox", ".venv", "__pypackages__", "_build", "buck-out",
-    "build", "dist", "node_modules", "venv", ".venv", "*.egg-info",
+    "build", "dist", "node_modules", "notebooks", "venv", ".venv", "*.egg-info",
     "__pycache__",
 ]
 line-length = 120
 indent-width = 4
 target-version = "py311"
-extend-include = ["*.ipynb"]
 
 [tool.ruff.lint]
 # Rule categories:
@@ -222,21 +222,6 @@ ignore_missing_imports = true
 [[tool.mypy.overrides]]
 module = "nautilus_trader.*"
 ignore_missing_imports = true
-
-# WIP modules with complex type issues to be fixed incrementally
-[[tool.mypy.overrides]]
-module = "finbot.utils.data_collection_utils.fred.correlate_fred_to_price"
-ignore_errors = true
-
-# Modules importing not-yet-created files (rate_limiter, retry_strategy)
-[[tool.mypy.overrides]]
-module = [
-    "finbot.libs.api_manager._utils.api_resource_group",
-    "finbot.libs.api_manager._utils.api_manager",
-    "finbot.libs.api_manager._resource_groups.api_resource_groups",
-    "finbot.cli.commands.update",
-]
-ignore_errors = true
 
 [tool.mypy]
 python_version = "3.12"

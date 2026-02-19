@@ -12,10 +12,12 @@ Finbot consolidates three key areas of quantitative finance:
 
 ## Key Features
 
-### 📊 Comprehensive Backtesting Engine
-- **10 built-in strategies**: Rebalance, NoRebalance, SMA Crossovers, MACD, Dip Buying, Hybrid strategies
-- **Performance metrics**: CAGR, Sharpe ratio, Sortino ratio, Max drawdown, Win rate, Kelly criterion
-- **Powered by Backtrader**: Industry-standard backtesting framework with custom analyzers
+### 📊 Production-Ready Backtesting Engine
+- **12 built-in strategies**: Rebalance, NoRebalance, SMA Crossovers, MACD, Dip Buying, Dual Momentum, Risk Parity, and more
+- **Performance metrics**: CAGR, Sharpe ratio, Sortino ratio, Calmar ratio, Max drawdown, Win rate, Kelly criterion
+- **Engine-agnostic contracts**: Swap Backtrader for NautilusTrader without code changes
+- **100% parity testing**: CI gate prevents regressions on golden strategies
+- **Advanced features**: Cost models, corporate actions, walk-forward analysis, regime detection
 
 ### 🎯 Advanced Simulation Systems
 - **Fund Simulator**: Simulate leveraged ETFs with fees, borrowing costs, and tracking error
@@ -28,15 +30,26 @@ Finbot consolidates three key areas of quantitative finance:
 - **Rebalance Optimizer**: Gradient descent for optimal portfolio rebalancing
 - **Multi-metric optimization**: CAGR, Sharpe, Sortino, Max drawdown
 
+### 🏥 Health Economics Analysis
+- **QALY Simulator**: Monte Carlo simulation with stochastic cost/utility/mortality
+- **Cost-Effectiveness Analysis**: ICER, NMB, CEAC with probabilistic sensitivity analysis
+- **Treatment Optimizer**: Grid-search optimization for dose frequency and duration
+- **Clinical scenarios**: Type 2 diabetes, cancer screening with NICE/CADTH/WHO thresholds
+- **Publication-grade research**: 3 research documents with 22+ academic citations
+
 ### 📈 Data Collection Infrastructure
 - **Multiple data sources**: Yahoo Finance, FRED, Alpha Vantage, Google Finance, BLS, MSCI
 - **Automatic caching**: Zstandard-compressed parquet files for performance
 - **Daily update pipeline**: Automated data refresh with retry logic and error handling
 
-### 🛠️ Modern Infrastructure
-- **CLI interface**: `finbot simulate`, `finbot backtest`, `finbot optimize`, `finbot update`
+### 🛠️ Production-Ready Infrastructure
+- **CLI interface**: `finbot simulate`, `finbot backtest`, `finbot optimize`, `finbot update`, `finbot dashboard`
+- **Web Dashboard**: Interactive Streamlit app with 8 pages (simulations, backtesting, experiments, etc.)
+- **Comprehensive CI/CD**: 7 CI jobs across Python 3.11/3.12/3.13 (lint, type-check, security, test, docs, parity, performance)
+- **Queue-based logging**: Non-blocking async logging with JSON output and audit trails
+- **Security scanning**: bandit, pip-audit, trivy container scanning, OpenSSF Scorecard
+- **Test coverage**: 866 tests (59.20% coverage) with property-based testing
 - **Dynaconf configuration**: Environment-aware YAML config (development, production)
-- **Queue-based logging**: Non-blocking async logging with JSON output
 - **Comprehensive utilities**: 160+ utility functions across 15 categories
 
 ## Quick Start

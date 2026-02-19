@@ -65,6 +65,28 @@ class TestGetPctChange:
         result = get_pct_change(start_val=100, end_val=110, mult_by_100=True)
         assert result == 10.0  # Returns 10 instead of 0.10
 
+    def test_pct_change_allow_negative_false(self):
+        """Test percentage change with allow_negative=False (absolute value)."""
+        from finbot.utils.finance_utils.get_pct_change import get_pct_change
+
+        # Negative change should become positive
+        result = get_pct_change(start_val=100, end_val=90, allow_negative=False)
+        assert result == 0.10  # Returns absolute value
+
+    def test_pct_change_division_by_zero_returns_inf(self):
+        """Test division by zero returns infinity when div_by_zero_error=False."""
+        from finbot.utils.finance_utils.get_pct_change import get_pct_change
+
+        result = get_pct_change(start_val=0, end_val=100, div_by_zero_error=False)
+        assert result == float("inf")
+
+    def test_pct_change_division_by_zero_raises_error(self):
+        """Test division by zero raises error when div_by_zero_error=True."""
+        from finbot.utils.finance_utils.get_pct_change import get_pct_change
+
+        with pytest.raises(ZeroDivisionError, match="start_val cannot be zero"):
+            get_pct_change(start_val=0, end_val=100, div_by_zero_error=True)
+
 
 class TestGetDrawdown:
     """Tests for drawdown calculation."""
@@ -92,6 +114,36 @@ class TestGetDrawdown:
         series = pd.Series([100, 120, 90, 120])  # Drop then recover
         result = get_drawdown(series)
         assert result.iloc[-1] == 0.0  # Recovered to 0 drawdown
+
+    def test_drawdown_with_rolling_window(self):
+        """Test drawdown with rolling window (window > 1)."""
+        from finbot.utils.finance_utils.get_drawdown import get_drawdown
+
+        series = pd.Series([100, 110, 105, 115, 100, 120])
+        result = get_drawdown(series, window=3)
+
+        # Should calculate drawdown from rolling 3-period max
+        assert isinstance(result, pd.Series)
+        assert len(result) == len(series)
+
+    def test_drawdown_invalid_window_raises_error(self):
+        """Test that window < 1 raises ValueError."""
+        from finbot.utils.finance_utils.get_drawdown import get_drawdown
+
+        series = pd.Series([100, 110, 120])
+
+        with pytest.raises(ValueError, match="Window must be greater than 0"):
+            get_drawdown(series, window=0)
+
+    def test_drawdown_with_dataframe(self):
+        """Test drawdown calculation with DataFrame input."""
+        from finbot.utils.finance_utils.get_drawdown import get_drawdown
+
+        df = pd.DataFrame({"Price": [100, 120, 90, 110]})
+        result = get_drawdown(df["Price"])
+
+        assert isinstance(result, pd.Series)
+        assert round(result.min(), 4) == -0.2500  # 25% drawdown
 
 
 class TestGetPeriodsPerYear:

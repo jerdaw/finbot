@@ -8,6 +8,7 @@ import pandas as pd
 from finbot.cli.utils.output import save_output
 from finbot.cli.validators import POSITIVE_FLOAT, TICKER
 from finbot.config import logger
+from finbot.libs.logger.audit import audit_operation
 
 
 @click.command()
@@ -70,96 +71,111 @@ def optimize(  # noqa: C901 - CLI command handlers are inherently complex
       finbot optimize --method dca --asset UPRO --output results.csv
     """
     verbose = ctx.obj.get("verbose", False)
+    parameters = {
+        "method": method,
+        "asset": asset,
+        "cash": cash,
+        "output": output,
+        "plot": plot,
+        "verbose": verbose,
+        "trace_id": ctx.obj.get("trace_id"),
+    }
 
-    if verbose:
-        logger.info(f"Starting {method.upper()} optimization for {asset}")
+    with audit_operation(
+        logger,
+        operation="optimize",
+        component="cli.optimize",
+        parameters=parameters,
+    ):
+        if verbose:
+            logger.info(f"Starting {method.upper()} optimization for {asset}")
 
-    if method.lower() == "dca":
-        # Load price data
-        try:
-            from finbot.utils.data_collection_utils.yfinance.get_history import (
-                get_history,
-            )
-
-            click.echo(f"Loading price data for {asset}...")
-            price_df = get_history(asset, adjust_price=True)
-
-            if len(price_df) == 0:
-                click.echo("Error: Could not load price data", err=True)
-                raise click.Abort from None
-
-            # Extract Close prices as a Series for the optimizer
-            price_series = price_df["Close"]
-
-            if verbose:
-                logger.info(f"Loaded {len(price_series)} data points for {asset}")
-
-        except Exception as e:
-            logger.error(f"Failed to load price data: {e}")
-            click.echo(f"Error: Could not load price data: {e}", err=True)
-            raise click.Abort from e
-
-        # Run DCA optimization
-        try:
-            from finbot.services.optimization.dca_optimizer import (
-                analyze_results_helper,
-                dca_optimizer,
-            )
-
-            click.echo("Running DCA optimization...")
-            click.echo(f"  Asset: {asset}")
-            click.echo(f"  Starting cash: ${cash:,.2f}")
-            click.echo("  This may take a while for large datasets...")
-
-            # Get raw results (don't auto-analyze so we control plotting)
-            raw_result = dca_optimizer(
-                price_history=price_series,
-                ticker=asset,
-                starting_cash=cash,
-                save_df=False,
-                analyze_results=False,
-            )
-            assert isinstance(raw_result, pd.DataFrame)
-            raw_df = raw_result
-
-            if verbose:
-                logger.info(f"Optimization complete: {len(raw_df)} trial results")
-
-            # Analyze results
-            ratio_df, duration_df = analyze_results_helper(raw_df, plot=plot)
-
-            # Display ratio analysis
-            click.echo("\nOptimization Results by DCA Ratio (front-loading):")
-            for ratio_val in ratio_df.index:
-                row = ratio_df.loc[ratio_val]
-                click.echo(
-                    f"  Ratio {ratio_val:.1f}x: "
-                    f"Sharpe={row.iloc[0]:.4f}, "
-                    f"CAGR={row.iloc[1]:.2f}%, "
-                    f"Max DD={row.iloc[3]:.2f}%"
+        if method.lower() == "dca":
+            # Load price data
+            try:
+                from finbot.utils.data_collection_utils.yfinance.get_history import (
+                    get_history,
                 )
 
-            # Display duration analysis
-            click.echo("\nOptimization Results by DCA Duration (trading days):")
-            for dur_val in duration_df.index:
-                row = duration_df.loc[dur_val]
-                click.echo(
-                    f"  {dur_val:>5} days: Sharpe={row.iloc[0]:.4f}, CAGR={row.iloc[1]:.2f}%, Max DD={row.iloc[3]:.2f}%"
+                click.echo(f"Loading price data for {asset}...")
+                price_df = get_history(asset, adjust_price=True)
+
+                if len(price_df) == 0:
+                    click.echo("Error: Could not load price data", err=True)
+                    raise click.Abort from None
+
+                # Extract Close prices as a Series for the optimizer
+                price_series = price_df["Close"]
+
+                if verbose:
+                    logger.info(f"Loaded {len(price_series)} data points for {asset}")
+
+            except Exception as e:
+                logger.error(f"Failed to load price data: {e}")
+                click.echo(f"Error: Could not load price data: {e}", err=True)
+                raise click.Abort from e
+
+            # Run DCA optimization
+            try:
+                from finbot.services.optimization.dca_optimizer import (
+                    analyze_results_helper,
+                    dca_optimizer,
                 )
 
-            # Save output if requested
-            if output:
-                save_output(raw_df, output, verbose=verbose)
+                click.echo("Running DCA optimization...")
+                click.echo(f"  Asset: {asset}")
+                click.echo(f"  Starting cash: ${cash:,.2f}")
+                click.echo("  This may take a while for large datasets...")
 
-        except Exception as e:
-            logger.error(f"Optimization failed: {e}")
-            click.echo(f"Error: Optimization failed: {e}", err=True)
-            if verbose:
-                import traceback
+                # Get raw results (don't auto-analyze so we control plotting)
+                raw_result = dca_optimizer(
+                    price_history=price_series,
+                    ticker=asset,
+                    starting_cash=cash,
+                    save_df=False,
+                    analyze_results=False,
+                )
+                assert isinstance(raw_result, pd.DataFrame)
+                raw_df = raw_result
 
-                traceback.print_exc()
-            raise click.Abort from e
+                if verbose:
+                    logger.info(f"Optimization complete: {len(raw_df)} trial results")
 
-    else:
-        click.echo(f"Error: Unknown optimization method '{method}'", err=True)
-        raise click.Abort from None
+                # Analyze results
+                ratio_df, duration_df = analyze_results_helper(raw_df, plot=plot)
+
+                # Display ratio analysis
+                click.echo("\nOptimization Results by DCA Ratio (front-loading):")
+                for ratio_val in ratio_df.index:
+                    row = ratio_df.loc[ratio_val]
+                    click.echo(
+                        f"  Ratio {ratio_val:.1f}x: "
+                        f"Sharpe={row.iloc[0]:.4f}, "
+                        f"CAGR={row.iloc[1]:.2f}%, "
+                        f"Max DD={row.iloc[3]:.2f}%"
+                    )
+
+                # Display duration analysis
+                click.echo("\nOptimization Results by DCA Duration (trading days):")
+                for dur_val in duration_df.index:
+                    row = duration_df.loc[dur_val]
+                    click.echo(
+                        f"  {dur_val:>5} days: Sharpe={row.iloc[0]:.4f}, CAGR={row.iloc[1]:.2f}%, Max DD={row.iloc[3]:.2f}%"
+                    )
+
+                # Save output if requested
+                if output:
+                    save_output(raw_df, output, verbose=verbose)
+
+            except Exception as e:
+                logger.error(f"Optimization failed: {e}")
+                click.echo(f"Error: Optimization failed: {e}", err=True)
+                if verbose:
+                    import traceback
+
+                    traceback.print_exc()
+                raise click.Abort from e
+
+        else:
+            click.echo(f"Error: Unknown optimization method '{method}'", err=True)
+            raise click.Abort from None

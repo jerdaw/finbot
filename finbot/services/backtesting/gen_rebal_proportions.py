@@ -1,10 +1,18 @@
+from __future__ import annotations
+
 from itertools import product
 
 import numpy as np
 from tqdm.contrib.concurrent import process_map
 
 
-def gen_rebal_proportions(definition, n_stocks, n_groupings, custom_mins=None, custom_maxs=None):
+def gen_rebal_proportions(
+    definition: float,
+    n_stocks: int,
+    n_groupings: int,
+    custom_mins: list[float] | None = None,
+    custom_maxs: list[float] | None = None,
+) -> tuple[tuple[float, ...], ...]:
     if custom_mins is None:
         custom_mins = [0 for _ in range(round(n_stocks // n_groupings))]
     if custom_maxs is None:
@@ -46,6 +54,7 @@ def gen_rebal_proportions(definition, n_stocks, n_groupings, custom_mins=None, c
     return results
 
 
-def _parse_prods(prod):
+def _parse_prods(prod: tuple[tuple[float, ...], tuple[float, ...]]) -> tuple[float, ...] | None:
     if round(sum(prod[0]) + sum(prod[1]), 2) == 1:
         return prod[0] + prod[1]
+    return None
