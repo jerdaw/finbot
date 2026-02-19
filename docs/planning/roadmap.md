@@ -1,8 +1,8 @@
 # Finbot Roadmap
 
 **Created:** 2026-02-10
-**Last Updated:** 2026-02-16
-**Status:** Priority 0-5 baseline complete/progressing; Priority 6 adapter-first backtesting/live-readiness in progress (Epic E2: ✅ COMPLETE, Epic E3: ✅ COMPLETE)
+**Last Updated:** 2026-02-19
+**Status:** Priority 0-5 baseline complete/progressing; Priority 6 adapter-first backtesting/live-readiness in progress (E0-E5 complete, E6 pilot hardening in progress)
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
 
@@ -500,8 +500,23 @@ Priority 6 execution documents:
 - `docs/planning/backtesting-live-readiness-handoff-2026-02-14.md`
 - `docs/planning/e3-t3-walkforward-regime-implementation-plan.md`
 
-**Current Phase:** Epic E4 (Reproducibility and Observability) - next
-- Epic E3: ✅ Complete (all 3 tasks: cost models, corporate actions + data quality, walk-forward + regime analysis)
+64. **Backtrader snapshot integration for reproducibility mode** (S: 1-2 days)
+    - **What:** Wire optional snapshot creation to adapter run path and attach deterministic snapshot IDs to run metadata.
+    - **Evidence:** `finbot/services/backtesting/adapters/backtrader_adapter.py`, `tests/unit/test_backtrader_adapter.py`
+    - **Status:** ✅ Complete (2026-02-19)
+
+65. **Batch observability integration in backtest_batch** (S: 1-2 days)
+    - **What:** Add opt-in lifecycle/error tracking using `BatchRegistry` without changing default batch behavior.
+    - **Evidence:** `finbot/services/backtesting/backtest_batch.py`, `tests/unit/test_backtest_batch_observability.py`
+    - **Status:** ✅ Complete (2026-02-19)
+
+66. **E6 pilot adapter contract hardening** (S: 1-2 days)
+    - **What:** Align Nautilus adapter to `BacktestEngine.run`, canonical metadata/result contracts, and explicit pilot fallback semantics.
+    - **Evidence:** `finbot/adapters/nautilus/nautilus_adapter.py`, `tests/unit/test_nautilus_adapter.py`
+    - **Status:** ✅ Complete (2026-02-19)
+
+**Current Phase:** Epic E6 (Nautilus pilot evaluation and decision gate)
+- E4 reproducibility/observability deferred integration items have been partially closed.
 
 ---
 

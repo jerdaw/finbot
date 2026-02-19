@@ -185,3 +185,9 @@ def test_import_backtrader_adapter():
     from finbot.services.backtesting.adapters import BacktraderAdapter
 
     assert BacktraderAdapter is not None
+
+
+def test_import_nautilus_adapter():
+    from finbot.adapters.nautilus import NautilusAdapter
+
+    assert NautilusAdapter is not None

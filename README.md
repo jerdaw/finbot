@@ -5,7 +5,7 @@
 [![CI](https://github.com/jerdaw/finbot/actions/workflows/ci.yml/badge.svg)](https://github.com/jerdaw/finbot/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/jerdaw/finbot/branch/main/graph/badge.svg)](https://codecov.io/gh/jerdaw/finbot)
 [![Docstring Coverage](https://img.shields.io/badge/docstring%20coverage-58.2%25-brightgreen.svg)](https://github.com/jerdaw/finbot)
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![uv](https://img.shields.io/badge/uv-0.9+-blue.svg)](https://docs.astral.sh/uv/)
 
 ## Overview
@@ -72,7 +72,7 @@ make run-update
 - `make clean` - Remove cache files and build artifacts
 - `make all` - Run full CI pipeline (check + test)
 
-## Current Implementation Status (2026-02-16)
+## Current Implementation Status (2026-02-19)
 
 Engine-agnostic backtesting system with live-readiness execution simulator complete.
 
@@ -83,7 +83,7 @@ Engine-agnostic backtesting system with live-readiness execution simulator compl
   - ✅ E3: Cost models, corporate actions, walk-forward analysis, regime detection
   - ✅ E4: Experiment tracking with reproducible snapshots
   - ✅ E5: Execution simulator with latency, risk controls, state checkpoints
-- **Next**: E6 (NautilusTrader pilot integration)
+- **E6 Status**: Pilot adapter contract hardening complete; native Nautilus execution and final adoption decision deferred pending additional evidence
 
 Key deliverables:
 - Engine-agnostic contracts (`finbot/core/contracts/`)
@@ -101,7 +101,7 @@ Planning and handoff docs:
 
 | Requirement | Minimum Version |
 | --- | --- |
-| **Python** | 3.11+ |
+| **Python** | 3.12+ |
 | **uv** | 0.6+ |
 
 ### Docker (Alternative)
