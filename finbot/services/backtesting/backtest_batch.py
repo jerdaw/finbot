@@ -1,8 +1,12 @@
+import time
 from itertools import product
 
 import pandas as pd
 from tqdm.contrib.concurrent import process_map
 
+from finbot.core.contracts.batch import BatchItemResult, BatchStatus
+from finbot.services.backtesting.batch_registry import BatchRegistry
+from finbot.services.backtesting.error_categorizer import categorize_error
 from finbot.services.backtesting.run_backtest import run_backtest
 
 
@@ -17,7 +21,38 @@ def _get_starts_from_steps(latest_start_date, earliest_end_date, start_step, dur
     return starts
 
 
+def _run_backtest_safely(task: tuple[int, tuple]) -> dict:
+    """Run one batch task and capture success/error metadata."""
+    item_id, comb = task
+    start_time = time.perf_counter()
+
+    try:
+        result_df = run_backtest(comb)
+        return {
+            "item_id": item_id,
+            "success": True,
+            "result": result_df,
+            "duration_seconds": time.perf_counter() - start_time,
+        }
+    except Exception as exc:  # pragma: no cover - covered via monkeypatched tests
+        return {
+            "item_id": item_id,
+            "success": False,
+            "error_message": str(exc),
+            "error_category": categorize_error(exc),
+            "duration_seconds": time.perf_counter() - start_time,
+        }
+
+
 def backtest_batch(**kwargs):  # noqa: C901 - Complex parameter validation logic
+    track_batch = kwargs.pop("track_batch", False)
+    batch_registry = kwargs.pop("batch_registry", None)
+
+    if track_batch and batch_registry is None:
+        raise ValueError("track_batch=True requires batch_registry")
+    if batch_registry is not None and not isinstance(batch_registry, BatchRegistry):
+        raise TypeError("batch_registry must be a BatchRegistry instance")
+
     kwargs["plot"] = False
     for kw in kwargs:
         if not isinstance(kwargs[kw], tuple | list):
@@ -62,6 +97,48 @@ def backtest_batch(**kwargs):  # noqa: C901 - Complex parameter validation logic
     n_combs = len(combs)
     print(f"Running {n_combs} backtests...")
 
-    results = process_map(run_backtest, combs, total=n_combs, desc="Performing backtests", chunksize=1, smoothing=0.1)
-    results = pd.concat(results, axis=0).reset_index(drop=True)
-    return results
+    if not track_batch:
+        results = process_map(
+            run_backtest, combs, total=n_combs, desc="Performing backtests", chunksize=1, smoothing=0.1
+        )
+        results = pd.concat(results, axis=0).reset_index(drop=True)
+        return results
+
+    assert batch_registry is not None
+    configuration = {key: [str(value) for value in values] for key, values in kwargs.items()}
+    batch = batch_registry.create_batch(total_items=n_combs, configuration=configuration)
+    batch_registry.update_status(batch.batch_id, BatchStatus.RUNNING)
+
+    task_inputs = tuple(enumerate(combs))
+    execution_results = process_map(
+        _run_backtest_safely,
+        task_inputs,
+        total=n_combs,
+        desc="Performing backtests",
+        chunksize=1,
+        smoothing=0.1,
+    )
+
+    successful_results: list[pd.DataFrame] = []
+    for item in execution_results:
+        batch_registry.add_item_result(
+            batch.batch_id,
+            BatchItemResult(
+                item_id=item["item_id"],
+                success=item["success"],
+                run_id=None,
+                error_message=item.get("error_message"),
+                error_category=item.get("error_category"),
+                duration_seconds=item["duration_seconds"],
+            ),
+        )
+        if item["success"]:
+            successful_results.append(item["result"])
+
+    completed = batch_registry.complete_batch(batch.batch_id)
+    if not successful_results:
+        raise RuntimeError(
+            f"All batch items failed (batch_id={completed.batch_id}, failed={completed.failed_items}/{completed.total_items})"
+        )
+
+    return pd.concat(successful_results, axis=0).reset_index(drop=True)

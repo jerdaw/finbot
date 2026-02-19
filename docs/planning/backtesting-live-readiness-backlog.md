@@ -193,7 +193,7 @@
 
 ### E4-T2 (M) Snapshot-based reproducibility mode
 
-- Status: 🟡 Partially Complete (2026-02-16) - Core infrastructure done, adapter integration deferred
+- Status: 🟡 Partially Complete (2026-02-19) - Adapter integration delivered, replay/docs still deferred
 - Completed:
   - [x] DataSnapshot contract with content-addressable hashing
   - [x] DataSnapshotRegistry with create/load/list/delete operations
@@ -202,8 +202,10 @@
   - [x] 21 comprehensive unit tests (all passing)
   - [x] 530 tests passing total (up from 509)
   - [x] Implementation plan documented
+- Completed in follow-up:
+  - [x] BacktraderAdapter integration (`auto_snapshot`, `snapshot_registry`)
+  - [x] Unit test coverage for snapshot attachment
 - Deferred (Future work):
-  - [ ] BacktraderAdapter integration (auto_snapshot parameter)
   - [ ] Replay functionality using snapshots
   - [ ] Integration tests for replay reproducibility
   - [ ] User guide documentation
@@ -212,13 +214,12 @@
   - Can create/load/manage snapshots manually. ✅
   - Runs can be replayed from dataset snapshot reference. ⬜ (Deferred to avoid breaking parity)
 
-**Note:** Core snapshot infrastructure is complete and fully functional. BacktraderAdapter
-integration deferred to maintain 100% parity on golden strategies and enable focused testing
-in a separate task.
+**Note:** Snapshot infrastructure and adapter wiring are now complete; replay and
+end-to-end reproducibility workflows remain the next follow-up scope.
 
 ### E4-T3 (M) Batch observability instrumentation
 
-- Status: 🟡 Partially Complete (2026-02-16) - Core infrastructure done, integration deferred
+- Status: 🟡 Partially Complete (2026-02-19) - `backtest_batch` integration delivered, retries/docs deferred
 - Completed:
   - [x] Batch observability contracts (BatchRun, BatchStatus, ErrorCategory, BatchItemResult)
   - [x] BatchRegistry with create/update/list/query/complete operations
@@ -229,8 +230,10 @@ in a separate task.
   - [x] 39 comprehensive unit tests (23 registry + 16 categorizer, all passing)
   - [x] 569 tests passing total (up from 530)
   - [x] Implementation plan documented
+- Completed in follow-up:
+  - [x] Integration with `backtest_batch` via optional `track_batch` mode
+  - [x] Unit tests for partial-failure and all-failure lifecycle tracking
 - Deferred (Future work):
-  - [ ] Integration with backtest_batch function
   - [ ] Retry utilities for failed items
   - [ ] User guide documentation
 - Acceptance:
@@ -239,9 +242,8 @@ in a separate task.
   - Can track batches manually with full observability. ✅
   - Status/retry/failure taxonomy visible and queryable. ✅
 
-**Note:** Core batch observability infrastructure is complete and fully functional.
-Integration with existing batch runner deferred to maintain backward compatibility
-and enable focused testing in a separate task.
+**Note:** Batch observability infrastructure is complete and now integrated with
+`backtest_batch` behind an opt-in flag; retry ergonomics and user docs are pending.
 
 ### E4-T4 (S) Dashboard experiment comparison page
 
@@ -326,6 +328,15 @@ and enable focused testing in a separate task.
 
 ### E6-T1 (M) Single-strategy pilot adapter
 
+- Status: 🟡 Partially Complete (2026-02-19) - Contract-compliant pilot adapter implemented with explicit fallback mode
+- Completed:
+  - [x] Adapter method alignment (`run` contract + `run_backtest` alias)
+  - [x] Canonical metadata/result mapping
+  - [x] Rebalance-only pilot validation rules
+  - [x] Warning-tagged fallback execution path
+  - [x] Unit tests for pilot behavior
+- Remaining:
+  - [ ] Native Nautilus execution path (engine/data/strategy wiring)
 - Acceptance:
   - One strategy runs in paper mode via Nautilus path.
 
@@ -337,7 +348,7 @@ and enable focused testing in a separate task.
 
 ### E6-T3 (S) Go/No-Go recommendation memo
 
-- Output: `docs/adr/ADR-006-live-execution-engine-decision.md`
+- Output: `docs/adr/ADR-011-nautilus-decision.md`
 - Acceptance:
   - Decision and rationale recorded with quantified tradeoffs.
 
@@ -424,6 +435,6 @@ and enable focused testing in a separate task.
 - `E1`: ✅ Complete
 - `E2`: ✅ Complete (all tasks done: adapter, parity harness, golden tests, CI gate)
 - `E3`: ✅ Complete (All tasks: E3-T1 cost models, E3-T2 corporate actions + data quality, E3-T3 walk-forward + regime analysis)
-- `E4`: ✅ Complete (All tasks: E4-T1 experiment registry, E4-T2 snapshot infrastructure, E4-T3 batch observability, E4-T4 dashboard comparison)
+- `E4`: 🟡 Mostly complete (core infra complete; replay docs and retry ergonomics remain)
 - `E5`: ✅ Complete (All tasks: E5-T1 orders/executions, E5-T2 latency simulation, E5-T3 risk controls, E5-T4 state checkpoints)
-- `E6`: 🚧 In progress (E6-T1 Phase 1 complete, Phase 2 skeleton created, awaiting manual implementation)
+- `E6`: 🚧 In progress (contract-aligned pilot fallback complete; native Nautilus path pending decision gate follow-up)

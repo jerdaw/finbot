@@ -8,6 +8,7 @@ import pytest
 
 from finbot.core.contracts import BACKTEST_RESULT_SCHEMA_VERSION, BacktestRunRequest
 from finbot.services.backtesting.adapters import BacktraderAdapter
+from finbot.services.backtesting.snapshot_registry import DataSnapshotRegistry
 
 
 def _make_price_df(n_days: int = 320, start_price: float = 100.0, seed: int = 42) -> pd.DataFrame:
@@ -90,3 +91,25 @@ def test_backtrader_adapter_rejects_missing_symbol_history() -> None:
 
     with pytest.raises(ValueError, match="Missing price history"):
         adapter.run(request)
+
+
+def test_backtrader_adapter_auto_snapshot_sets_snapshot_id(tmp_path) -> None:
+    histories = {"SPY": _make_price_df(seed=1)}
+    snapshot_registry = DataSnapshotRegistry(tmp_path / "snapshots")
+    adapter = BacktraderAdapter(
+        histories,
+        snapshot_registry=snapshot_registry,
+        auto_snapshot=True,
+    )
+    request = BacktestRunRequest(
+        strategy_name="NoRebalance",
+        symbols=("SPY",),
+        start=pd.Timestamp("2019-01-01"),
+        end=pd.Timestamp("2019-12-31"),
+        initial_cash=100_000.0,
+        parameters={"equity_proportions": [1.0]},
+    )
+
+    result = adapter.run(request)
+    assert result.metadata.data_snapshot_id.startswith("snap-")
+    assert snapshot_registry.snapshot_exists(result.metadata.data_snapshot_id)

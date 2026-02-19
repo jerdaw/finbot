@@ -1,302 +1,165 @@
-"""NautilusTrader adapter implementing BacktestEngine interface.
-
-This adapter translates between our engine-agnostic contracts and NautilusTrader's
-event-driven backtesting system.
-
-Architecture:
-    BacktestRunRequest → NautilusAdapter → BacktestEngine → BacktestRunResult
-
-Status: PILOT - Minimal implementation for E6-T1 evaluation
-"""
+"""NautilusTrader pilot adapter implementing the BacktestEngine contract."""
 
 from __future__ import annotations
 
-from datetime import datetime
-from decimal import Decimal
+from copy import deepcopy
+from datetime import UTC, datetime
+from importlib.util import find_spec
+from uuid import uuid4
 
 import pandas as pd
 
 from finbot.core.contracts.interfaces import BacktestEngine
 from finbot.core.contracts.models import BacktestRunMetadata, BacktestRunRequest, BacktestRunResult
+from finbot.services.backtesting.adapters.backtrader_adapter import BacktraderAdapter
+from finbot.services.backtesting.strategies.rebalance import Rebalance
+from finbot.utils.dict_utils.hash_dictionary import hash_dictionary
 
 
 class NautilusAdapter(BacktestEngine):
-    """Adapter for running backtests via NautilusTrader.
-
-    This adapter provides a minimal implementation to evaluate NautilusTrader
-    as an alternative backtesting engine. It implements the BacktestEngine
-    interface to maintain compatibility with our contract-based system.
-
-    Example:
-        >>> adapter = NautilusAdapter()
-        >>> request = BacktestRunRequest(...)
-        >>> result = adapter.run_backtest(request)
+    """Pilot adapter for evaluating a Nautilus execution path.
 
     Notes:
-        - This is a PILOT implementation for evaluation (E6-T1)
-        - Not all BacktestEngine features are implemented
-        - Focus is on getting one strategy working
-        - Full parity with Backtrader is NOT the goal yet
+        - This adapter is intentionally scoped to E6 pilot work.
+        - It currently supports only the `Rebalance` strategy shape.
+        - When native Nautilus execution is unavailable, it falls back to the
+          Backtrader contract path and tags outputs accordingly.
     """
 
-    def __init__(self):
-        """Initialize Nautilus adapter.
-
-        Future parameters may include:
-        - engine_config: NautilusTrader engine configuration
-        - log_level: Logging verbosity
-        - cache_dir: Location for cached data
-        """
-        self.name = "nautilus"
+    def __init__(
+        self,
+        price_histories: dict[str, pd.DataFrame],
+        *,
+        data_snapshot_id: str = "nautilus-pilot-local",
+        random_seed: int | None = None,
+        enable_backtrader_fallback: bool = True,
+    ) -> None:
+        self.name = "nautilus-pilot"
         self.version = self._get_nautilus_version()
+        self._price_histories = price_histories
+        self._data_snapshot_id = data_snapshot_id
+        self._random_seed = random_seed
+        self._enable_backtrader_fallback = enable_backtrader_fallback
 
-    def run_backtest(self, request: BacktestRunRequest) -> BacktestRunResult:
-        """Run a backtest using NautilusTrader.
-
-        Translates BacktestRunRequest → Nautilus BacktestEngine → BacktestRunResult
-
-        Args:
-            request: Standardized backtest request with strategy, data, config
-
-        Returns:
-            BacktestRunResult containing performance metrics and metadata
-
-        Raises:
-            NotImplementedError: Pilot implementation - not all features supported
-            ValueError: Invalid request parameters
-            RuntimeError: Nautilus execution errors
-
-        Notes:
-            Current limitations (E6-T1 pilot):
-            - Single strategy only (no multi-strategy)
-            - Bar data only (no tick data)
-            - Cash account only (no margin)
-            - Simplified fill model
-            - Basic metrics only
-        """
-        # TODO: Validate request
+    def run(self, request: BacktestRunRequest) -> BacktestRunResult:
+        """Run pilot backtest through the contract interface."""
         self._validate_request(request)
 
-        # TODO: Create Nautilus engine
-        engine = self._create_engine(request)
+        native_available = self._supports_native_nautilus()
+        warnings: list[str] = []
 
-        # TODO: Configure venue
-        self._configure_venue(engine, request)
+        if native_available:
+            warnings.append(
+                "Native Nautilus execution path is not enabled yet; using backtrader fallback for E6 pilot."
+            )
+        else:
+            warnings.append("NautilusTrader package is unavailable; using backtrader fallback for E6 pilot.")
 
-        # TODO: Load and prepare data
-        self._load_data(engine, request)
+        if not self._enable_backtrader_fallback:
+            raise RuntimeError("Nautilus fallback is disabled and native execution path is not implemented.")
 
-        # TODO: Add strategy
-        self._add_strategy(engine, request)
+        fallback_result = self._run_via_backtrader(request)
 
-        # TODO: Run backtest
-        self._run_engine(engine)
-
-        # TODO: Extract results
-        result = self._extract_results(engine, request)
-
-        return result
-
-    def _validate_request(self, request: BacktestRunRequest) -> None:
-        """Validate backtest request parameters.
-
-        Args:
-            request: Backtest request to validate
-
-        Raises:
-            ValueError: Invalid request parameters
-        """
-        # TODO: Implement validation
-        # - Check data is provided
-        # - Check strategy is provided
-        # - Check date range is valid
-        # - Check symbols are provided
-        raise NotImplementedError("Request validation not implemented yet (E6-T1 pilot)")
-
-    def _create_engine(self, request: BacktestRunRequest):
-        """Create and configure NautilusTrader BacktestEngine.
-
-        Args:
-            request: Backtest request with configuration
-
-        Returns:
-            Configured BacktestEngine instance
-
-        Notes:
-            Uses low-level API (BacktestEngine) for simplicity in pilot.
-            High-level API (BacktestNode) deferred to full implementation.
-        """
-        # TODO: Import and create engine
-        # from nautilus_trader.backtest.engine import BacktestEngine
-        # engine = BacktestEngine()
-        # return engine
-        raise NotImplementedError("Engine creation not implemented yet (E6-T1 pilot)")
-
-    def _configure_venue(self, engine, request: BacktestRunRequest) -> None:
-        """Configure trading venue in Nautilus engine.
-
-        Args:
-            engine: NautilusTrader BacktestEngine
-            request: Backtest request with initial cash, etc.
-
-        Notes:
-            - Uses "SIM" venue for backtesting
-            - Cash account type for simplicity
-            - NETTING order management (not hedging)
-        """
-        # TODO: Configure venue
-        # engine.add_venue(
-        #     venue=Venue("SIM"),
-        #     oms_type="NETTING",
-        #     account_type="CASH",
-        #     base_currency="USD",
-        #     starting_balances={"USD": request.initial_cash},
-        # )
-        raise NotImplementedError("Venue configuration not implemented yet (E6-T1 pilot)")
-
-    def _load_data(self, engine, request: BacktestRunRequest) -> None:
-        """Load historical data into Nautilus engine.
-
-        Args:
-            engine: NautilusTrader BacktestEngine
-            request: Backtest request with data
-
-        Notes:
-            - Converts pandas DataFrame → Nautilus bars
-            - Handles multiple instruments
-            - Ensures timestamp compatibility (close time not open)
-        """
-        # TODO: Convert data format
-        # for symbol, df in request.data.items():
-        #     bars = self._convert_dataframe_to_bars(symbol, df)
-        #     engine.add_data(bars, sort=False)
-        # engine.sort_data()  # Sort once after all data loaded
-        raise NotImplementedError("Data loading not implemented yet (E6-T1 pilot)")
-
-    def _add_strategy(self, engine, request: BacktestRunRequest) -> None:
-        """Add trading strategy to Nautilus engine.
-
-        Args:
-            engine: NautilusTrader BacktestEngine
-            request: Backtest request with strategy
-
-        Notes:
-            - Adapts our strategy interface to Nautilus strategy interface
-            - May require strategy wrapper/adapter
-        """
-        # TODO: Adapt strategy
-        # strategy = self._create_nautilus_strategy(request)
-        # engine.add_strategy(strategy)
-        raise NotImplementedError("Strategy adaptation not implemented yet (E6-T1 pilot)")
-
-    def _run_engine(self, engine) -> None:
-        """Execute the backtest.
-
-        Args:
-            engine: Configured BacktestEngine
-
-        Raises:
-            RuntimeError: Execution errors
-        """
-        # TODO: Run engine
-        # engine.run()
-        raise NotImplementedError("Engine execution not implemented yet (E6-T1 pilot)")
-
-    def _extract_results(self, engine, request: BacktestRunRequest) -> BacktestRunResult:
-        """Extract results from Nautilus engine and convert to BacktestRunResult.
-
-        Args:
-            engine: Completed BacktestEngine
-            request: Original request for metadata
-
-        Returns:
-            BacktestRunResult with metrics and metadata
-
-        Notes:
-            - Maps Nautilus metrics to our canonical metrics
-            - Extracts portfolio state, orders, fills
-            - Calculates performance metrics (Sharpe, drawdown, etc.)
-        """
-        # TODO: Extract metrics from engine
-        # portfolio = engine.portfolio
-        # account = portfolio.account(...)
-        # performance = engine.get_performance_statistics()  # or similar
-
-        # For now, return minimal result
         metadata = BacktestRunMetadata(
-            engine=self.name,
+            run_id=f"nt-{uuid4()}",
+            engine_name=self.name,
             engine_version=self.version,
             strategy_name=request.strategy_name,
-            symbols=request.symbols,
-            start_date=request.start_date,
-            end_date=request.end_date,
-            initial_cash=request.initial_cash,
-            run_timestamp=datetime.now(),
+            created_at=datetime.now(UTC),
+            config_hash=self._build_config_hash(request),
+            data_snapshot_id=fallback_result.metadata.data_snapshot_id,
+            random_seed=self._random_seed,
         )
 
-        # TODO: Extract actual metrics
-        result = BacktestRunResult(
+        assumptions = dict(fallback_result.assumptions)
+        assumptions["adapter_mode"] = "backtrader_fallback"
+        assumptions["native_nautilus_available"] = native_available
+
+        artifacts = dict(fallback_result.artifacts)
+        artifacts["pilot_mode"] = "fallback"
+
+        return BacktestRunResult(
             metadata=metadata,
-            total_return=Decimal("0"),  # Placeholder
-            final_value=request.initial_cash,  # Placeholder
-            metrics={},  # TODO: Extract from Nautilus
-            data_snapshot=None,  # Optional
+            metrics=dict(fallback_result.metrics),
+            schema_version=fallback_result.schema_version,
+            assumptions=assumptions,
+            artifacts=artifacts,
+            warnings=tuple(warnings) + fallback_result.warnings,
+            costs=fallback_result.costs,
         )
 
-        return result
+    # Backward-compatible shim for older call sites/docs.
+    def run_backtest(self, request: BacktestRunRequest) -> BacktestRunResult:
+        """Backward-compatible alias to `run`."""
+        return self.run(request)
+
+    def _validate_request(self, request: BacktestRunRequest) -> None:
+        if not request.strategy_name:
+            raise ValueError("strategy_name is required")
+        if request.strategy_name.lower().replace("_", "") != "rebalance":
+            raise ValueError("Nautilus pilot currently supports only strategy_name='rebalance'")
+        if not request.symbols:
+            raise ValueError("At least one symbol is required")
+        if request.initial_cash <= 0:
+            raise ValueError("initial_cash must be positive")
+        if request.start and request.end and request.start >= request.end:
+            raise ValueError("start must be before end")
+        if "rebal_proportions" not in request.parameters:
+            raise ValueError("rebalance pilot requires 'rebal_proportions' parameter")
+        if "rebal_interval" not in request.parameters:
+            raise ValueError("rebalance pilot requires 'rebal_interval' parameter")
+        if len(request.parameters["rebal_proportions"]) != len(request.symbols):
+            raise ValueError("Length of rebal_proportions must match symbol count")
+
+    def _run_via_backtrader(self, request: BacktestRunRequest) -> BacktestRunResult:
+        adapter = BacktraderAdapter(
+            price_histories=self._price_histories,
+            strategy_registry={"rebalance": Rebalance},
+            data_snapshot_id=self._data_snapshot_id,
+            random_seed=self._random_seed,
+        )
+        return adapter.run(
+            BacktestRunRequest(
+                strategy_name=request.strategy_name,
+                symbols=request.symbols,
+                start=request.start,
+                end=request.end,
+                initial_cash=request.initial_cash,
+                parameters=deepcopy(request.parameters),
+            )
+        )
+
+    def _build_config_hash(self, request: BacktestRunRequest) -> str:
+        return hash_dictionary(
+            {
+                "adapter": self.name,
+                "strategy_name": request.strategy_name,
+                "symbols": list(request.symbols),
+                "start": str(request.start),
+                "end": str(request.end),
+                "initial_cash": request.initial_cash,
+                "parameters": request.parameters,
+                "data_snapshot_id": self._data_snapshot_id,
+                "random_seed": self._random_seed,
+                "fallback_enabled": self._enable_backtrader_fallback,
+                "nautilus_version": self.version,
+            }
+        )
+
+    def _supports_native_nautilus(self) -> bool:
+        return find_spec("nautilus_trader") is not None
 
     def _get_nautilus_version(self) -> str:
-        """Get NautilusTrader version.
-
-        Returns:
-            Version string (e.g., "1.222.0")
-        """
         try:
             import nautilus_trader
 
-            return nautilus_trader.__version__
+            return str(nautilus_trader.__version__)
         except ImportError:
             return "unknown (not installed)"
 
-    def _convert_dataframe_to_bars(self, symbol: str, df: pd.DataFrame):
-        """Convert pandas DataFrame to Nautilus bar objects.
-
-        Args:
-            symbol: Instrument symbol
-            df: OHLCV DataFrame
-
-        Returns:
-            List of Nautilus bar objects
-
-        Notes:
-            - DataFrame should have: Open, High, Low, Close, Volume
-            - Index should be datetime
-            - Timestamps represent close time (not open)
-        """
-        # TODO: Implement conversion
-        # from nautilus_trader.model.data import Bar, BarType
-        # bars = []
-        # for timestamp, row in df.iterrows():
-        #     bar = Bar(...)
-        #     bars.append(bar)
-        # return bars
-        raise NotImplementedError("DataFrame conversion not implemented yet (E6-T1 pilot)")
-
     def supports_feature(self, feature: str) -> bool:
-        """Check if adapter supports a specific feature.
-
-        Args:
-            feature: Feature name (e.g., "walk_forward", "regime_detection")
-
-        Returns:
-            True if supported, False otherwise
-
-        Notes:
-            Pilot implementation supports minimal features only.
-        """
-        # TODO: Define supported features
         supported = {
-            "basic_backtest",  # Minimal backtest
-            # Not yet: "walk_forward", "regime_detection", "cost_models", etc.
+            "basic_backtest",
+            "snapshot_reference",
         }
         return feature in supported
