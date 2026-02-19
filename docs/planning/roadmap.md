@@ -2,7 +2,7 @@
 
 **Created:** 2026-02-10
 **Last Updated:** 2026-02-19
-**Status:** Priority 0-5 baseline complete/progressing; Priority 6 adapter-first backtesting/live-readiness in progress (E0-E5 complete, E6 pilot hardening in progress)
+**Status:** Priority 0-5 baseline complete/progressing; Priority 6 adapter-first backtesting/live-readiness in progress (E0-E5 complete, E6-T1 complete, E6 decision gate in progress)
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
 
@@ -499,23 +499,22 @@ Priority 6 execution documents:
 - `docs/planning/backtesting-live-readiness-backlog.md`
 - `docs/planning/backtesting-live-readiness-handoff-2026-02-14.md`
 - `docs/planning/e3-t3-walkforward-regime-implementation-plan.md`
+- `docs/planning/archive/IMPLEMENTATION_PLAN_6.2_E6_EXECUTION_READY.md` (archived after completion)
 
-64. **Backtrader snapshot integration for reproducibility mode** (S: 1-2 days)
-    - **What:** Wire optional snapshot creation to adapter run path and attach deterministic snapshot IDs to run metadata.
-    - **Evidence:** `finbot/services/backtesting/adapters/backtrader_adapter.py`, `tests/unit/test_backtrader_adapter.py`
-    - **Status:** ✅ Complete (2026-02-19)
+64-66. **E4 follow-up + E6-T1 implementation batch** (S: 1-2 days each)
+    - **Status:** ✅ Complete (2026-02-19, trimmed; details recorded in Completed Items table)
 
-65. **Batch observability integration in backtest_batch** (S: 1-2 days)
-    - **What:** Add opt-in lifecycle/error tracking using `BatchRegistry` without changing default batch behavior.
-    - **Evidence:** `finbot/services/backtesting/backtest_batch.py`, `tests/unit/test_backtest_batch_observability.py`
-    - **Status:** ✅ Complete (2026-02-19)
+67. **E6-T2 comparative benchmark expansion** (M: 3-5 days)
+    - **What:** Publish side-by-side Backtrader vs native Nautilus deltas (returns/drawdown/trades/runtime/memory) on frozen datasets.
+    - **Evidence:** `docs/research/nautilus-pilot-evaluation.md` update with measured benchmark section + reproducible command log.
+    - **Status:** ⬜ Not started
 
-66. **E6 pilot adapter contract hardening** (S: 1-2 days)
-    - **What:** Align Nautilus adapter to `BacktestEngine.run`, canonical metadata/result contracts, and explicit pilot fallback semantics.
-    - **Evidence:** `finbot/adapters/nautilus/nautilus_adapter.py`, `tests/unit/test_nautilus_adapter.py`
-    - **Status:** ✅ Complete (2026-02-19)
+68. **E6-T3 final decision refresh** (S: 1-2 days)
+    - **What:** Revisit ADR-011 with measured E6-T2 evidence and record Go/No-Go/Hybrid outcome.
+    - **Evidence:** `docs/adr/ADR-011-nautilus-decision.md` revision with explicit tradeoff table.
+    - **Status:** ⬜ Not started
 
-**Current Phase:** Epic E6 (Nautilus pilot evaluation and decision gate)
+**Current Phase:** Epic E6 (comparative evaluation report + decision gate)
 - E4 reproducibility/observability deferred integration items have been partially closed.
 
 ---
@@ -585,3 +584,6 @@ Priority 6 execution documents:
 | Missing data policies (6.61) | 2026-02-16 | 5 policies (FORWARD_FILL/DROP/ERROR/INTERPOLATE/BACKFILL), 11 comprehensive tests, 467 total tests |
 | Corporate actions documentation (6.62) | 2026-02-16 | User guide + Jupyter notebook demonstrating adjusted prices and missing data policies |
 | Walk-forward + regime analysis (6.63) | 2026-02-16 | Walk-forward testing (rolling/anchored), regime detection (4 regimes), 20 tests, 489 total tests |
+| Backtrader snapshot integration (6.64) | 2026-02-19 | Wired `auto_snapshot`/`snapshot_registry` into adapter run path with unit coverage |
+| Batch observability integration (6.65) | 2026-02-19 | Added opt-in batch lifecycle/error tracking in `backtest_batch` with unit coverage |
+| E6 pilot adapter hardening + native wiring (6.66) | 2026-02-19 | Native Nautilus one-strategy pilot path implemented with contract-safe fallback and tests |

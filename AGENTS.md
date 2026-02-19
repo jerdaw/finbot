@@ -624,7 +624,7 @@ See `docs/adr/` for architectural decision records:
 **IMPORTANT:** All commits must list only human authors, co-authors, and contributors.
 
 - ✅ **Do:** Attribute commits to human developers
-- ❌ **Don't:** Include AI assistants (Claude, ChatGPT, etc.) in author, co-author, or contributor fields
+- ❌ **Don't:** Include any AI assistant in author, co-author, or contributor fields
 - **Rationale:** Commits represent human accountability and decision-making
 
 **Examples:**
@@ -642,15 +642,18 @@ Bad commit message (don't do this):
 ```
 Add performance benchmarks
 
-[changes...]
-
-Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
+[changes with any AI co-author footer]
 ```
 
 This policy applies to:
 - All past commits (if needed, amend history to comply)
 - All current commits
 - All future commits
+
+### Agent File Sync
+
+- `AGENTS.md` is canonical for agent instructions.
+- `CLAUDE.md` and `GEMINI.md` must be symlinks to `AGENTS.md`.
 
 ## See Also
 

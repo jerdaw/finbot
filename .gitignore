@@ -28,9 +28,8 @@ finbot/data/**
 backups/*
 !backups/.gitkeep
 
-# Ignore everything in the logs directory but not the directory itself
+# Ignore everything in the logs directory
 logs/*
-!logs/.gitkeep
 
 ## General
 # Ruff (formatter/linter) cache

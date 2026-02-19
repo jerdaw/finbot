@@ -30,7 +30,7 @@ def test_nautilus_adapter_runs_pilot_fallback() -> None:
         "SPY": _make_price_df(seed=1),
         "TLT": _make_price_df(start_price=80.0, seed=2),
     }
-    adapter = NautilusAdapter(histories)
+    adapter = NautilusAdapter(histories, enable_native_execution=False)
     request = BacktestRunRequest(
         strategy_name="Rebalance",
         symbols=("SPY", "TLT"),
@@ -50,7 +50,7 @@ def test_nautilus_adapter_runs_pilot_fallback() -> None:
 
 
 def test_nautilus_adapter_run_backtest_alias() -> None:
-    adapter = NautilusAdapter({"SPY": _make_price_df(seed=1)})
+    adapter = NautilusAdapter({"SPY": _make_price_df(seed=1)}, enable_native_execution=False)
     request = BacktestRunRequest(
         strategy_name="Rebalance",
         symbols=("SPY",),
@@ -64,7 +64,7 @@ def test_nautilus_adapter_run_backtest_alias() -> None:
 
 
 def test_nautilus_adapter_rejects_non_rebalance_strategy() -> None:
-    adapter = NautilusAdapter({"SPY": _make_price_df(seed=1)})
+    adapter = NautilusAdapter({"SPY": _make_price_df(seed=1)}, enable_native_execution=False)
     request = BacktestRunRequest(
         strategy_name="NoRebalance",
         symbols=("SPY",),
@@ -79,7 +79,7 @@ def test_nautilus_adapter_rejects_non_rebalance_strategy() -> None:
 
 
 def test_nautilus_adapter_requires_rebalance_parameters() -> None:
-    adapter = NautilusAdapter({"SPY": _make_price_df(seed=1)})
+    adapter = NautilusAdapter({"SPY": _make_price_df(seed=1)}, enable_native_execution=False)
     request = BacktestRunRequest(
         strategy_name="Rebalance",
         symbols=("SPY",),
@@ -91,3 +91,42 @@ def test_nautilus_adapter_requires_rebalance_parameters() -> None:
 
     with pytest.raises(ValueError, match="requires 'rebal_proportions'"):
         adapter.run(request)
+
+
+def test_nautilus_adapter_uses_native_path_when_available(monkeypatch: pytest.MonkeyPatch) -> None:
+    adapter = NautilusAdapter({"SPY": _make_price_df(seed=1)}, enable_backtrader_fallback=False)
+    request = BacktestRunRequest(
+        strategy_name="Rebalance",
+        symbols=("SPY",),
+        start=pd.Timestamp("2019-01-01"),
+        end=pd.Timestamp("2019-12-31"),
+        initial_cash=100_000.0,
+        parameters={"rebal_proportions": [1.0], "rebal_interval": 21},
+    )
+
+    monkeypatch.setattr(adapter, "_supports_native_nautilus", lambda: True)
+    monkeypatch.setattr(
+        adapter,
+        "_run_via_nautilus",
+        lambda _request: (
+            {
+                "starting_value": 100_000.0,
+                "ending_value": 101_000.0,
+                "roi": 0.01,
+                "cagr": 0.01,
+                "sharpe": 1.0,
+                "max_drawdown": -0.02,
+                "mean_cash_utilization": 0.9,
+            },
+            {"nautilus_strategy": "EMACross"},
+            {"nautilus_venue": "XNAS"},
+            ("native warning",),
+        ),
+    )
+
+    result = adapter.run(request)
+    assert result.metadata.engine_name == "nautilus-pilot"
+    assert result.assumptions["adapter_mode"] == "native_nautilus"
+    assert result.artifacts["pilot_mode"] == "native"
+    assert result.metrics["roi"] == pytest.approx(0.01)
+    assert "native warning" in result.warnings

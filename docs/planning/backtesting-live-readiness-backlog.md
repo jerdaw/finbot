@@ -328,17 +328,16 @@ end-to-end reproducibility workflows remain the next follow-up scope.
 
 ### E6-T1 (M) Single-strategy pilot adapter
 
-- Status: 🟡 Partially Complete (2026-02-19) - Contract-compliant pilot adapter implemented with explicit fallback mode
+- Status: ✅ Complete (2026-02-19) - Native Nautilus one-strategy pilot path implemented with contract-safe fallback
 - Completed:
   - [x] Adapter method alignment (`run` contract + `run_backtest` alias)
   - [x] Canonical metadata/result mapping
   - [x] Rebalance-only pilot validation rules
   - [x] Warning-tagged fallback execution path
   - [x] Unit tests for pilot behavior
-- Remaining:
-  - [ ] Native Nautilus execution path (engine/data/strategy wiring)
+  - [x] Native Nautilus execution path (engine/data/strategy wiring)
 - Acceptance:
-  - One strategy runs in paper mode via Nautilus path.
+  - One strategy runs in paper mode via Nautilus path. ✅
 
 ### E6-T2 (S) Comparative evaluation report
 
