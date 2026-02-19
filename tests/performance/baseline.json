@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-02-17T00:01:15.075131",
+  "benchmarks": {
+    "fund_simulator": {
+      "name": "fund_simulator",
+      "n_days": 2520,
+      "n_runs": 5,
+      "duration_mean_ms": 1434.0513504022965,
+      "duration_std_ms": 344.29481174046674,
+      "duration_min_ms": 1067.5775600102497,
+      "duration_max_ms": 1953.7789890018757,
+      "throughput_days_per_sec": 1757.259249672657,
+      "memory_mean_mb": 0.05289592742919922,
+      "memory_peak_mb": 0.05419158935546875,
+      "result_shape": [
+        2520,
+        2
+      ]
+    },
+    "backtest_adapter": {
+      "name": "backtest_adapter",
+      "n_days": 756,
+      "n_runs": 3,
+      "duration_mean_ms": 1524.4643879996147,
+      "duration_std_ms": 261.5160716716935,
+      "duration_min_ms": 1185.2384989906568,
+      "duration_max_ms": 1821.6717320028692,
+      "throughput_days_per_sec": 495.91187957628506,
+      "memory_mean_mb": 0.2818492253621419,
+      "memory_peak_mb": 0.28194427490234375
+    }
+  }
+}

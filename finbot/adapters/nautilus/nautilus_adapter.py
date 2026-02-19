@@ -550,8 +550,9 @@ class NautilusAdapter(BacktestEngine):
         for _, row in prices.iterrows():
             for symbol in request.symbols:
                 close = float(row[symbol])
-                if prev_close[symbol] is not None and prev_close[symbol] > 0:
-                    returns[symbol].append((close - prev_close[symbol]) / prev_close[symbol])
+                prev = prev_close[symbol]
+                if prev is not None and prev > 0:
+                    returns[symbol].append((close - prev) / prev)
                 prev_close[symbol] = close
 
             if len(returns[request.symbols[0]]) >= vol_window:

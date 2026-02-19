@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import backtrader as bt
 
 
@@ -36,5 +38,5 @@ class CommInfo_QuestTrade(bt.CommInfoBase):  # noqa: N801 - Backtrader naming co
         "commtype": bt.CommInfoBase.COMM_FIXED,
     }
 
-    def _getcommission(self, size, price, pseudoexec):
+    def _getcommission(self, size: float, price: float, pseudoexec: bool) -> float:
         return 0.01 if size > 0 else self.p.commission

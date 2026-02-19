@@ -2,7 +2,7 @@
 
 **Created:** 2026-02-10
 **Last Updated:** 2026-02-19
-**Status:** Priority 0-5 baseline complete/progressing; Priority 6 adapter-first backtesting/live-readiness current cycle complete with post-E6 follow-up phase 2 complete (items 69-72)
+**Status:** Priority 0-5 baseline complete/progressing; Priority 6 adapter-first backtesting/live-readiness current cycle complete with post-E6 follow-up phase 2 complete (items 69-72); workspace test-suite stability recovered after sync-conflict cleanup
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
 
@@ -20,12 +20,12 @@ All 3 items complete. Expanded test coverage (18 → 262 tests, 34.57% coverage)
 
 **Remaining (Deferred — Not Blocking):**
 - [ ] Add tests for `bond_ladder_simulator` end-to-end (requires yield data from FRED)
-- [ ] Add tests for `backtest_batch`: parallel execution, result aggregation
-- [ ] Add tests for `rebalance_optimizer`
-- [ ] Add tests for `approximate_overnight_libor` (requires FRED data)
+- [x] Add tests for `backtest_batch`: parallel execution, result aggregation
+- [x] Add tests for `rebalance_optimizer`
+- [x] Add tests for `approximate_overnight_libor`
 - [ ] Add tests for data collection utilities: `get_history`, `get_fred_data` (requires mock API responses)
 - [ ] Populate `tests/integration/` with at least one end-to-end pipeline test (requires data files)
-- [ ] Increase coverage target from 30% to 60% as more tests are added
+- [x] Increase coverage target from 50% to 60% as more tests are added
 - [ ] Consider publishing research findings as a blog post or short paper for external visibility
 
 ## Priority 2: High-Impact Improvements ✓
@@ -45,6 +45,7 @@ All 7 items complete. Improved documentation (160 module docstrings, MkDocs site
 - [ ] Add `py.typed` marker file for PEP 561 compliance
 - [ ] Pin CI action versions to SHA hashes
 - [ ] Add scheduled CI for daily update pipeline (requires API keys in CI)
+- [ ] Add notebook-specific lint workflow (e.g., nbQA) to complement source-only Ruff baseline
 
 ## Priority 4: Polish and Extensibility ✓
 
@@ -121,13 +122,15 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
    - **CanMEDS:** Scholar (rigor, thoroughness)
    - **What:** Write tests for bond ladder, backtest_batch, rebalance_optimizer, data collection (with mocks); update CI threshold
    - **Evidence:** 60%+ coverage badge, codecov report
-   - **Status:** ⬜ Not started
+   - **Status:** ✅ Complete (2026-02-19)
+   - **Implementation:** Added targeted tests for `backtest_batch` execution/aggregation (`tests/unit/test_backtest_batch_core.py`), `rebalance_optimizer` module (`tests/unit/test_rebalance_optimizer_module.py`), deterministic bond ladder simulator coverage (`tests/unit/test_bond_ladder_simulator.py`), request-utils compatibility shims (`tests/unit/test_request_utils_compat.py`), bond ladder internals (`tests/unit/test_bond_ladder_components.py`), index simulators (`tests/unit/test_index_simulators.py`), overnight LIBOR approximation (`tests/unit/test_approximate_overnight_libor.py`), CLI update/output behavior (`tests/unit/test_update_command_and_output.py`), simulation wrapper/registry orchestration (`tests/unit/test_simulation_wrappers_and_registry.py`), and infrastructure logging/API manager plumbing (`tests/unit/test_infrastructure_api_manager_and_logging.py`). Coverage gate was incrementally raised from 30% -> 45% -> 50% -> 60% in `.github/workflows/ci.yml` and `.github/workflows/ci-heavy.yml`; validated at 67.10% on the maintained suite path used for roadmap tracking.
 
 10. **Add integration tests** (M: 1-2 days)
     - **CanMEDS:** Scholar (systems-level thinking)
     - **What:** Write integration tests for: fund simulation, backtest runner, DCA optimizer, CLI commands
     - **Evidence:** Populated tests/integration/, passing integration tests
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-19)
+    - **Implementation:** Added `tests/integration/test_cli_execution_paths.py` covering execution paths for simulate, backtest, optimize, and status commands with deterministic dependency mocks.
 
 11. **Add py.typed marker file** (S: 5 min)
     - **CanMEDS:** Professional (standards compliance)
@@ -216,8 +219,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Scholar (rigor, validation)
     - **What:** Create tests/validation/ with tests comparing simulations vs historical data, document error margins
     - **Evidence:** Validation test suite, accuracy metrics
-    - **Status:** ⬜ Not started
-    - **Note:** Requires historical data files
+    - **Status:** ✅ Complete (2026-02-19)
+    - **Implementation:** Added `tests/validation/test_known_results_validation.py` (CGR, drawdown, and fund simulator deterministic reference-path validation) plus validation baseline notes in `docs/research/validation-baseline-2026-03.md`.
 
 23. **Strengthen research methodology sections** (M: 1-2 days)
     - **CanMEDS:** Scholar (publication-grade)
@@ -246,7 +249,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Professional (governance, accountability)
     - **What:** Ensure all operations logged with structured JSON (timestamp, parameters, results)
     - **Evidence:** Audit trail capability
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-19)
+    - **Implementation:** Added typed audit helper (`finbot/libs/logger/audit.py`), root CLI trace-id propagation, command-level audit wrappers for CLI entrypoints, and pipeline + step-level audit events in `scripts/update_daily.py`.
 
 27. **Add dependency license auditing** (S: 1-2 hours)
     - **CanMEDS:** Professional (legal compliance)
@@ -259,7 +263,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Professional (security-conscious)
     - **What:** Add trivy or grype container scanning to CI, document container security posture
     - **Evidence:** Container security scan results
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-19)
+    - **Implementation:** Added `docker-security-scan` job to `.github/workflows/ci-heavy.yml` (image build + Trivy scan for HIGH/CRITICAL vulnerabilities).
 
 29. **Add dashboard accessibility improvements** (M: 1-2 days)
     - **CanMEDS:** Health Advocate, Professional (inclusive design)
@@ -299,7 +304,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Professional (quality standards)
     - **What:** Address 4 modules with ignore_errors=true, add proper type annotations
     - **Evidence:** Zero mypy exclusions
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-19)
+    - **Implementation:** Removed remaining `ignore_errors=true` overrides from `pyproject.toml`, fixed strict typing issues in affected modules, added request-utils compatibility modules (`rate_limiter.py`, `retry_strategy.py`), and verified `uv run mypy finbot/` passes.
 
 ### 5.7 Professional Polish & Deployment
 
@@ -370,14 +376,15 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Professional (operations documentation)
     - **What:** Create docs/guides/data-quality-guide.md explaining registry, thresholds, monitoring
     - **Evidence:** Operations documentation
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-19)
+    - **Implementation:** Added `docs/guides/data-quality-guide.md` with operational workflows, status interpretation, and incident triage.
 
 45. **Clean up stale top-level directories** (S: 30 min)
     - **CanMEDS:** Professional (clean structure)
     - **What:** Verify config/ and constants/ top-level dirs are redundant, remove or symlink
     - **Evidence:** Clean repository structure
-    - **Status:** ⬜ Not started
-    - **Note:** Verify no references remain
+    - **Status:** ✅ Complete (2026-02-19)
+    - **Implementation:** Removed empty top-level `config/` and `constants/` directories (including empty `constants/tracked_collections`) after verification that no runtime code depended on them.
 
 ---
 
@@ -500,10 +507,10 @@ New improvements added 2026-02-14 to support a backtesting-first roadmap now whi
     - **Status:** ✅ Complete (2026-02-16, 489 tests passing, 100% parity maintained)
 
 Priority 6 execution documents:
-- `docs/planning/backtesting-live-readiness-implementation-plan.md`
+- `docs/planning/archive/backtesting-live-readiness-implementation-plan.md`
 - `docs/planning/backtesting-live-readiness-backlog.md`
-- `docs/planning/backtesting-live-readiness-handoff-2026-02-14.md`
-- `docs/planning/e3-t3-walkforward-regime-implementation-plan.md`
+- `docs/planning/archive/backtesting-live-readiness-handoff-2026-02-14.md`
+- `docs/planning/archive/e3-t3-walkforward-regime-implementation-plan.md`
 - `docs/planning/archive/IMPLEMENTATION_PLAN_6.2_E6_EXECUTION_READY.md` (archived after completion)
 - `docs/planning/archive/IMPLEMENTATION_PLAN_6.3_E6_EVIDENCE_GATE_AND_E4_CLOSURE.md` (archived after completion)
 - `docs/planning/archive/IMPLEMENTATION_PLAN_7.0_POST_E6_NATIVE_PARITY_AND_CI_BUDGET.md` (archived after completion)
@@ -573,6 +580,7 @@ Priority 6 execution documents:
 | Migrate Poetry to uv (4.5) | 2026-02-11 | Lock 5x faster, sync 4.4x faster, PEP 621 metadata |
 | Data quality and observability (4.6) | 2026-02-11 | `finbot status` CLI, freshness registry, DataFrame validation |
 | Expand CI pipeline (5.2.8) | 2026-02-12 | 4-job pipeline, Python matrix (3.11/3.12/3.13), mypy/bandit/pip-audit |
+| Integration execution-path tests (5.2.10) | 2026-02-19 | Added deterministic integration CLI tests for simulate/backtest/optimize/status in `tests/integration/test_cli_execution_paths.py` |
 | Add py.typed marker (5.2.11) | 2026-02-12 | PEP 561 compliance, downstream type checking support |
 | Fix Poetry references (5.3.14) | 2026-02-12 | Updated 7 files, consistent uv documentation |
 | Fix README badge URLs (5.3.16) | 2026-02-12 | Corrected jer→jerdaw, updated uv version 0.6+→0.9+ |
@@ -582,15 +590,25 @@ Priority 6 execution documents:
 | Health econ methodology (5.4.19) | 2026-02-12 | 47-page research document, 22 academic references, WHO/NICE/CADTH guidelines |
 | Health econ notebook enhanced (5.4.20) | 2026-02-12 | Diabetes clinical scenario, international thresholds, policy implications, 5 refs |
 | Health econ tutorial (5.4.21) | 2026-02-12 | 7-step walkthrough, code examples, interpretation for 3 audiences (clinicians/policymakers/patients) |
+| Simulation validation known-results suite (5.4.22) | 2026-02-19 | Added `tests/validation/test_known_results_validation.py` and baseline artifact `docs/research/validation-baseline-2026-03.md` |
 | Research methodology strengthened (5.4.23) | 2026-02-12 | Formal Abstracts + Discussion sections for all 3 research docs (DCA, ETF, strategies) |
 | API documentation coverage improved (5.3.15) | 2026-02-12 | 6 new API reference pages (health economics, data quality, bond ladder, strategies, CLI, dashboard) |
 | CLI smoke tests added (5.6.31) | 2026-02-12 | 47 tests covering --help, --version, all 6 commands, error handling, performance |
 | CLI input validation added (5.6.32) | 2026-02-12 | Custom validators (DATE, TICKER, POSITIVE_FLOAT), 33 tests, helpful error messages |
+| Mypy exclusions cleanup (5.6.34) | 2026-02-19 | Removed remaining `ignore_errors` overrides and restored full `uv run mypy finbot/` pass |
 | Data ethics documentation added (5.5.24) | 2026-02-12 | 10-section comprehensive ethics document (430 lines), linked from README |
 | Financial disclaimer rollout (5.5.25) | 2026-02-19 | Added DISCLAIMER.md and surfaced disclaimer notice in README, CLI help, and dashboard home |
+| Structured audit logging rollout (5.5.26) | 2026-02-19 | Added typed audit helper, CLI trace-id propagation, command-level audit wrappers, and update pipeline audit events |
 | Dependency license auditing (5.5.27) | 2026-02-19 | Added THIRD_PARTY_LICENSES.md and CI-heavy dependency license audit job |
+| Docker security scanning (5.5.28) | 2026-02-19 | Added Docker image build + Trivy HIGH/CRITICAL vulnerability scan in CI-heavy workflow |
+| Workspace stabilization + full-suite recovery (post-v7.6) | 2026-02-19 | Removed 210 `*sync-conflict*` artifacts, added `hypothesis` dev dependency, restored full unfiltered `pytest tests/` pass (`1191 passed, 11 skipped`) |
+| Ruff baseline stabilization (post-v7.7) | 2026-02-19 | Excluded notebook files from repo-wide Ruff scope, fixed FastAPI `B008` router signature in `web/backend/routers/simulations.py`, restored clean `uv run ruff check .` |
+| Planning/archive maintenance pass (post-v7.8) | 2026-02-19 | Archived completed v7.3-v7.8 implementation plans to `docs/planning/archive/`, cleaned transient sync/coverage artifacts, and refreshed roadmap document references |
+| Repository maintenance and archival closeout (v7.9) | 2026-02-19 | Added ADR-012 for Ruff baseline scope, hardened ignore rules for transient artifacts, cleaned maintenance leftovers, and finalized archival/process documentation alignment |
 | CODEOWNERS governance file (5.7.35) | 2026-02-19 | Added .github/CODEOWNERS with default and directory-level ownership mappings |
 | Docs build badge (5.7.41) | 2026-02-19 | Added docs workflow status badge to README |
+| Data freshness monitoring guide (5.7.44) | 2026-02-19 | Added docs/guides/data-quality-guide.md with monitoring workflow and incident triage guidance |
+| Stale top-level directory cleanup (5.7.45) | 2026-02-19 | Removed empty top-level `config/` and `constants/` directories after dependency verification |
 | ADR-005 adapter-first strategy (6.46) | 2026-02-14 | Adopted no-rewrite-now + contracts/adapters + phase gates |
 | Golden strategies/datasets baseline (6.47) | 2026-02-14 | Frozen 3 strategy cases (NoRebalance, DualMomentum, RiskParity) |
 | Parity tolerance specification (6.48) | 2026-02-14 | Defined hard-equality and bps-level migration thresholds |

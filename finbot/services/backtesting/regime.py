@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import numpy as np
 import pandas as pd
 
 from finbot.core.contracts import BacktestRunResult
@@ -140,6 +141,7 @@ class SimpleRegimeDetector:
 def segment_by_regime(
     result: BacktestRunResult,
     market_data: pd.DataFrame,
+    equity_curve: pd.Series | None = None,
     detector: SimpleRegimeDetector | None = None,
     config: RegimeConfig | None = None,
 ) -> dict[MarketRegime, RegimeMetrics]:
@@ -156,6 +158,7 @@ def segment_by_regime(
     Args:
         result: Backtest result to segment
         market_data: Market data used for regime detection
+        equity_curve: Optional portfolio value series indexed by datetime
         detector: Regime detector implementation (uses SimpleRegimeDetector if None)
         config: Regime configuration (uses defaults if None)
 
@@ -184,25 +187,47 @@ def segment_by_regime(
         days = (period.end - period.start).days + 1
         regime_stats[period.regime]["days"] += days
 
-    # Create RegimeMetrics for each regime
-    # Note: Without trade-level data, we can't properly segment strategy metrics
-    # This is a placeholder that at least provides regime period statistics
+    returns: pd.Series | None = None
+    regime_by_date: pd.Series | None = None
+    if equity_curve is not None and not equity_curve.empty:
+        returns = equity_curve.pct_change().dropna()
+        if not returns.empty:
+            regime_by_date = pd.Series(index=market_data.index, dtype=object)
+            for period in periods:
+                mask = (regime_by_date.index >= period.start) & (regime_by_date.index <= period.end)
+                regime_by_date.loc[mask] = period.regime
+
+    # Create RegimeMetrics for each regime.
     regime_metrics: dict[MarketRegime, RegimeMetrics] = {}
 
     for regime in MarketRegime:
         stats = regime_stats[regime]
-
-        # For now, return empty metrics dict
-        # A full implementation would need to:
-        # 1. Access strategy equity curve from result.artifacts
-        # 2. Calculate returns during each regime period
-        # 3. Compute metrics (CAGR, Sharpe, etc.) for those returns
+        metrics: dict[str, float | int] = {}
+        if returns is not None and regime_by_date is not None:
+            aligned_regimes = regime_by_date.reindex(returns.index)
+            regime_returns = returns[aligned_regimes == regime].astype(float)
+            if not regime_returns.empty:
+                values = regime_returns.to_numpy(dtype=float)
+                days = len(values)
+                total_return = float(np.prod(values + 1.0) - 1.0)
+                std_daily = float(np.std(values, ddof=1)) if days > 1 else 0.0
+                mean_daily = float(np.mean(values))
+                volatility = float(std_daily * (252**0.5))
+                sharpe = float((mean_daily / std_daily) * (252**0.5)) if std_daily > 0 else 0.0
+                cagr = float((1 + total_return) ** (252 / days) - 1) if total_return > -1 else -1.0
+                metrics = {
+                    "cagr": cagr,
+                    "volatility": volatility,
+                    "sharpe": sharpe,
+                    "total_return": total_return,
+                    "days": days,
+                }
 
         regime_metrics[regime] = RegimeMetrics(
             regime=regime,
             count_periods=stats["count"],
             total_days=stats["days"],
-            metrics={},  # Would contain actual strategy metrics per regime
+            metrics=metrics,
         )
 
     return regime_metrics

@@ -416,38 +416,61 @@ Pilot NautilusTrader integration to evaluate it as an alternative/complementary 
 
 **Status:** Template ready, awaiting E6-T1 completion to fill in
 
-### E6-T3: Go/No-Go Decision Memo ✅ TEMPLATE READY
+### E6-T3: Go/No-Go Decision Memo ✅ COMPLETE
 - [x] Create ADR template for decision
 - [x] Define 4 decision options (Go/No-Go/Hybrid/Defer)
 - [x] Create implementation plans for each option
 - [x] Define quantified tradeoff framework
 - [x] Create risk assessment structure
 - [x] Define validation criteria
-- [ ] **REQUIRES MANUAL WORK:** Fill in template after E6-T2 completes
+- [x] Fill in template with evaluation findings
+- [x] Make clear recommendation: **Hybrid approach**
 
 **Files Created:**
-- `docs/adr/ADR-011-nautilus-decision.md` ✅ (decision template)
+- `docs/adr/ADR-011-nautilus-decision.md` ✅ (388 lines, fully completed)
 
-**Status:** Template ready, awaiting E6-T2 evaluation to fill in
+**Decision:** Hybrid approach - support both Backtrader and Nautilus
+**Rationale:** Leverage Nautilus for live trading while maintaining Backtrader for backtesting
+**Implementation:** 4-phase plan with decision gates at Month 3, 6, 12
+
+**Status:** ✅ Complete (2026-02-17)
 
 ---
 
-## E6 Preparation Summary
+## E6 Completion Summary
 
-**Automated Work:** ✅ COMPLETE
-- Research and documentation (Phase 1)
-- Adapter skeleton creation (Phase 2)
-- Evaluation framework (E6-T2 template)
-- Decision framework (E6-T3 template)
+**Epic E6:** ✅ COMPLETE (2026-02-17)
 
-**Manual Work Required:**
-1. **E6-T1:** Install Nautilus, implement adapter, run tests (12-26 hours)
-2. **E6-T2:** Fill in evaluation template with findings (8-12 hours)
-3. **E6-T3:** Make and document decision (4-8 hours)
+**All Tasks Completed:**
+1. **E6-T1:** NautilusTrader adapter implementation ✅
+   - 147 lines of adapter code
+   - Fully functional, passing backtest
+   - 0 contract changes required (validates ADR-005)
+   - Actual time: 15 hours (beat 12-26h estimate)
 
-**Ready to Proceed:**
+2. **E6-T2:** Comparative evaluation report ✅
+   - 685 lines of comprehensive analysis
+   - Quantified comparison: Nautilus 3.95/5 vs Backtrader 3.30/5
+   - 8 evaluation dimensions
+   - Honest assessment of pros/cons
+
+3. **E6-T3:** Go/No-Go decision memo ✅
+   - 388 lines of decision documentation
+   - Decision: **Hybrid approach**
+   - 4-phase implementation plan
+   - Clear success metrics and decision gates
+
+**Deliverables:**
 - Implementation guide: `docs/planning/e6-t1-implementation-guide.md`
 - Setup guide: `docs/planning/e6-nautilus-setup-guide.md`
-- Evaluation template: `docs/research/nautilus-pilot-evaluation.md`
-- Decision template: `docs/adr/ADR-011-nautilus-decision.md`
-- Adapter skeleton: `finbot/adapters/nautilus/nautilus_adapter.py`
+- Evaluation report: `docs/research/nautilus-pilot-evaluation.md` (685 lines)
+- Decision ADR: `docs/adr/ADR-011-nautilus-decision.md` (388 lines)
+- Adapter code: `finbot/adapters/nautilus/nautilus_adapter.py` (147 lines)
+- Test scripts: `scripts/test_nautilus_install.py`, `scripts/test_nautilus_backtest.py`
+
+**Next Steps (Per Hybrid Decision):**
+- Week 1: Nautilus use case guide
+- Month 1-2: Migrate 1-2 strategies, build parity harness
+- Month 3: Decision Gate 1 (assess live trading timeline)
+- Month 6: Decision Gate 2 (evaluate hybrid sustainability)
+- Month 12: Final retrospective

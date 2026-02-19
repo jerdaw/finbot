@@ -32,6 +32,7 @@ from finbot.services.backtesting.snapshot_registry import DataSnapshotRegistry
 from finbot.services.backtesting.strategies.dual_momentum import DualMomentum
 from finbot.services.backtesting.strategies.no_rebalance import NoRebalance
 from finbot.services.backtesting.strategies.rebalance import Rebalance
+from finbot.services.backtesting.strategies.regime_adaptive import RegimeAdaptive
 from finbot.services.backtesting.strategies.risk_parity import RiskParity
 from finbot.utils.dict_utils.hash_dictionary import hash_dictionary
 
@@ -39,6 +40,7 @@ DEFAULT_STRATEGY_REGISTRY: dict[str, type[bt.Strategy]] = {
     "dualmomentum": DualMomentum,
     "norebalance": NoRebalance,
     "rebalance": Rebalance,
+    "regimeadaptive": RegimeAdaptive,
     "riskparity": RiskParity,
 }
 

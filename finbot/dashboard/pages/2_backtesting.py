@@ -10,6 +10,7 @@ import streamlit as st
 
 from finbot.dashboard.components.charts import create_drawdown_chart, create_time_series_chart
 from finbot.dashboard.components.sidebar import asset_selector, date_range_selector
+from finbot.dashboard.disclaimer import show_sidebar_accessibility, show_sidebar_disclaimer
 from finbot.services.backtesting.backtest_runner import BacktestRunner
 from finbot.services.backtesting.brokers.commission_schemes import CommInfo_NoCommission
 from finbot.services.backtesting.strategies.dip_buy_sma import DipBuySMA
@@ -26,6 +27,11 @@ from finbot.services.backtesting.strategies.sma_crossover_triple import SMACross
 from finbot.services.backtesting.strategies.sma_rebal_mix import SmaRebalMix
 
 st.set_page_config(page_title="Backtesting — Finbot", layout="wide")
+
+# Show disclaimer and accessibility info
+show_sidebar_disclaimer()
+show_sidebar_accessibility()
+
 st.title("Strategy Backtester")
 st.markdown("Run backtests with different strategies and parameters.")
 
