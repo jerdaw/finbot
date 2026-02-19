@@ -76,7 +76,7 @@ make run-update
 
 Engine-agnostic backtesting system with live-readiness execution simulator complete.
 
-- **Epics E0-E5 Complete** (645 tests passing)
+- **Epics E0-E5 Complete** (674 tests in latest local suite run; 672 passing, 2 skipped)
   - ✅ E0: Typed contracts for engine portability
   - ✅ E1: Backtrader adapter implementation
   - ✅ E2: A/B parity testing with CI gate
@@ -84,6 +84,8 @@ Engine-agnostic backtesting system with live-readiness execution simulator compl
   - ✅ E4: Experiment tracking with reproducible snapshots
   - ✅ E5: Execution simulator with latency, risk controls, state checkpoints
 - **E6 Status**: Pilot adapter hardening + native single-strategy execution path complete; final adoption decision deferred pending broader comparative evidence
+- **CI Status**: Tiered CI is active for free-tier budget control (`ci.yml` for PR/main core gates, `ci-heavy.yml` for scheduled/manual heavy checks)
+- **Next Priority 6 Focus**: GS-02 and GS-03 like-for-like native comparison + ADR-011 decision refresh
 
 Key deliverables:
 - Engine-agnostic contracts (`finbot/core/contracts/`)

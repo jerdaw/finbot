@@ -219,6 +219,10 @@ ignore_missing_imports = true
 module = "streamlit.*"
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+module = "nautilus_trader.*"
+ignore_missing_imports = true
+
 # WIP modules with complex type issues to be fixed incrementally
 [[tool.mypy.overrides]]
 module = "finbot.utils.data_collection_utils.fred.correlate_fred_to_price"
@@ -235,7 +239,7 @@ module = [
 ignore_errors = true
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.12"
 mypy_path = "/home/jer/localsync/finbot"
 check_untyped_defs = true
 warn_redundant_casts = true

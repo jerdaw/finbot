@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import random
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from decimal import Decimal
 
 from finbot.core.contracts.latency import LATENCY_INSTANT, LatencyConfig
@@ -90,8 +90,8 @@ class ExecutionSimulator:
         self.current_time = timestamp
 
         # Risk checks first (if enabled)
+        current_prices: dict[str, Decimal] = {}
         if self.risk_checker:
-            current_prices: dict[str, Decimal] = {}
             risk_check = self.risk_checker.check_order(order, self.positions, current_prices, self.cash)
             if risk_check:
                 rejection_reason, rejection_message = risk_check
@@ -103,7 +103,6 @@ class ExecutionSimulator:
                 return order
 
         # Validate order
-        current_prices: dict[str, Decimal] = {}
         validation = self.validator.validate(order, self.cash, self.positions, current_prices)
 
         if not validation.is_valid:
@@ -353,7 +352,7 @@ class ExecutionSimulator:
         del self.pending_orders[action.order_id]
         self.completed_orders[action.order_id] = order
 
-    def _get_fill_latency(self) -> datetime.timedelta:
+    def _get_fill_latency(self) -> timedelta:
         """Get fill latency (random between min and max).
 
         Returns:
@@ -363,8 +362,6 @@ class ExecutionSimulator:
         max_ms = self.latency_config.fill_latency_max.total_seconds() * 1000
 
         latency_ms = min_ms if min_ms == max_ms else random.uniform(min_ms, max_ms)
-
-        from datetime import timedelta
 
         return timedelta(milliseconds=latency_ms)
 

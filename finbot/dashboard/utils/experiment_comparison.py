@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 import pandas as pd
 import plotly.graph_objects as go
+from pandas.io.formats.style import Styler
 
 from finbot.core.contracts import BacktestRunResult
 
@@ -24,7 +27,7 @@ def build_assumptions_comparison(
         return pd.DataFrame()
 
     # Extract all assumptions
-    all_assumptions: dict[str, dict[str, any]] = {}
+    all_assumptions: dict[str, dict[str, Any]] = {}
 
     for exp in experiments:
         exp_id = f"{exp.metadata.run_id[:12]}..."
@@ -77,7 +80,7 @@ def build_metrics_comparison(
     return df
 
 
-def format_metric_value(value: any) -> str:
+def format_metric_value(value: Any) -> str:
     """Format metric value for display.
 
     Args:
@@ -98,7 +101,7 @@ def format_metric_value(value: any) -> str:
 def highlight_best_worst(
     df: pd.DataFrame,
     higher_is_better: dict[str, bool] | None = None,
-) -> pd.DataFrame:
+) -> Styler:
     """Apply styling to highlight best and worst values.
 
     Args:
