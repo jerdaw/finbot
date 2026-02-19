@@ -8,7 +8,6 @@ Tests cover:
 """
 
 import re
-import tempfile
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -304,7 +303,7 @@ class TestLoadText:
         text_file = tmp_path / "test.txt"
         text_file.write_text("content")
 
-        with pytest.raises(InvalidExtensionError, match="must be .zst"):
+        with pytest.raises(InvalidExtensionError, match=r"must be \.zst"):
             load_text(text_file, decompress=True)
 
     def test_nonexistent_file_raises_error(self, tmp_path):
@@ -346,12 +345,9 @@ class TestIsFileOutdated:
         # Set threshold to past date
         threshold = datetime.now() - timedelta(days=30)
 
-        # This test may fail due to business day logic - file needs to be older than last business day
-        # Let's adjust the test
-        result = is_file_outdated(new_file, threshold=threshold, file_not_found_error=False)
-
         # The file might be considered outdated due to business day logic
         # This is expected behavior - files updated after last business day return True
+        is_file_outdated(new_file, threshold=threshold, file_not_found_error=False)
 
     def test_time_period_mode_with_timedelta(self, tmp_path):
         """Test time period mode with timedelta"""
