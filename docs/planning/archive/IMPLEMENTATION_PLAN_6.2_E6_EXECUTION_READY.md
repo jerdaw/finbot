@@ -1,6 +1,7 @@
-# Implementation Plan v6.1.0: E6 Execution Readiness
+# Implementation Plan v6.2.0: E6 Execution Readiness
 
 **Created:** 2026-02-19
+**Updated:** 2026-02-19
 **Scope:** E6 pilot execution path hardening + deferred E4 integration closure
 
 ## Current State Summary
@@ -75,6 +76,25 @@
   - `docs/adr/ADR-011-nautilus-decision.md`
   - `README.md`
 
+## Phase 4: Native Nautilus Pilot Wiring (Complete in this batch)
+
+### Deliverables
+- `finbot/adapters/nautilus/nautilus_adapter.py`
+  - Execute native Nautilus `BacktestEngine` path before fallback.
+  - Add one-symbol pilot strategy wiring (EMACross via Nautilus examples).
+  - Add canonical metrics mapping into `BacktestRunResult.metrics`.
+  - Keep explicit fallback semantics when native path is unavailable or errors.
+  - Preserve backward compatibility via `run_backtest()` alias.
+- `tests/unit/test_nautilus_adapter.py`
+  - Keep deterministic fallback tests by disabling native mode where needed.
+  - Add native-path behavior test for contract-level adapter mode/metadata checks.
+
+### Validation
+- Focused contract tests:
+  - `uv run pytest tests/unit/test_nautilus_adapter.py -v`
+  - `uv run pytest tests/unit/test_backtrader_adapter.py tests/unit/test_backtest_batch_observability.py -v`
+- Native smoke execution validated locally with `enable_backtrader_fallback=False` and one-symbol request.
+
 ## Major Dependencies and Risks
 
 ### Dependencies
@@ -94,7 +114,8 @@
 1. Contract-correct Nautilus pilot adapter.
 2. Snapshot auto-capture integrated and tested.
 3. Batch observability integrated and tested.
-4. Decision and status docs synchronized.
+4. Native Nautilus one-strategy pilot wiring completed.
+5. Decision and status docs synchronized.
 
 ## Rollout / Rollback
 
@@ -114,10 +135,11 @@
 - `NautilusAdapter.run_backtest(request)` (compatibility shim).
 - `BacktraderAdapter(..., snapshot_registry=None, auto_snapshot=False)`.
 - `backtest_batch(..., track_batch=False, batch_registry=None)`.
+- `NautilusAdapter(..., enable_native_execution=True)`.
 
 ## Test Coverage Added
 
-- `tests/unit/test_nautilus_adapter.py`
+- `tests/unit/test_nautilus_adapter.py` (fallback + native-path contract behavior)
 - `tests/unit/test_backtest_batch_observability.py`
 - `tests/unit/test_backtrader_adapter.py` (snapshot integration case)
 - `tests/unit/test_imports.py` (Nautilus adapter import smoke)

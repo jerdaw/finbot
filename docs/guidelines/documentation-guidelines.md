@@ -81,7 +81,7 @@ Only list human authors and contributors. No AI attribution.
 
 ## AGENTS.md
 
-`AGENTS.md` is the canonical reference for AI coding agents. `CLAUDE.md` is a symlink to it. Keep it updated when:
+`AGENTS.md` is the canonical reference for AI coding agents. `CLAUDE.md` and `GEMINI.md` are symlinks to it. Keep it updated when:
 - Adding new modules, services, or entry points
 - Changing dependencies or environment requirements
 - Modifying the package structure

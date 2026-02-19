@@ -1,22 +1,23 @@
 # NautilusTrader Pilot Evaluation
 
 **Date:** 2026-02-19
-**Status:** Completed for current pilot scope (fallback-mode evidence)
+**Status:** Completed for current pilot scope (native pilot path implemented; comparative benchmarking pending)
 **Epic:** E6-T2 (Comparative Evaluation Report)
 
 ## Executive Summary
 
-This evaluation confirms that the pilot adapter path is now contract-compliant and test-covered, but it is still running through an explicit Backtrader fallback mode rather than native Nautilus execution.
+This evaluation confirms that the pilot adapter path is now contract-compliant and test-covered, and that native Nautilus execution is wired for a narrow pilot scenario with explicit fallback protection.
 
-**Recommendation:** **Defer** final adoption decision until native Nautilus execution is implemented and benchmarked.
+**Recommendation:** **Defer** final adoption decision until broader comparative benchmarking is completed.
 
-**Key Finding:** We eliminated contract and integration blockers (adapter interface drift, snapshot and batch observability gaps), but we do not yet have native Nautilus performance/fidelity evidence.
+**Key Finding:** We eliminated contract and integration blockers (adapter interface drift, snapshot and batch observability gaps) and implemented a native pilot path, but we do not yet have full comparative performance/fidelity evidence.
 
 ## 1. Scope Completed in This Pilot Slice
 
 - Implemented `NautilusAdapter.run(request)` to satisfy `BacktestEngine`.
 - Added canonical metadata/result mapping and pilot validation rules.
 - Added explicit warning-tagged fallback behavior instead of `NotImplementedError`.
+- Implemented native Nautilus runtime wiring for one pilot scenario (engine, bars, strategy, result mapping).
 - Added unit tests for adapter behavior.
 - Closed deferred E4 integrations relevant to pilot evidence quality:
   - Snapshot capture wiring in `BacktraderAdapter`.
@@ -38,7 +39,7 @@ This evaluation confirms that the pilot adapter path is now contract-compliant a
 
 - Most difficult issue: contract drift in pre-existing Nautilus skeleton (method and dataclass shape mismatches).
 - Snapshot/batch integrations were straightforward once exact registry paths were confirmed.
-- Native Nautilus integration remains the major complexity item.
+- Ongoing complexity is now comparative validation breadth (strategy coverage, parity benchmarking, and operations profiling).
 
 ## 3. Comparison Status: Backtrader vs Nautilus
 
@@ -48,13 +49,13 @@ This report is intentionally split by evidence strength.
 
 - **Backtrader path:** fully operational and parity-gated.
 - **Nautilus pilot adapter contract:** operational and test-covered.
+- **Nautilus native pilot path:** operational for a one-symbol pilot scenario.
 - **Reproducibility and batch tracking foundations:** now integrated for better future evaluation quality.
 
 ### 3.2 Evidence Not Yet Available (Blocking final decision)
 
-- Native Nautilus engine execution with project strategies and frozen datasets.
 - True performance/runtime/memory comparison with equivalent strategy logic.
-- Native fill/latency behavior comparison against current simulator + Backtrader baseline.
+- Native fill/latency behavior comparison against current simulator + Backtrader baseline at broader strategy scope.
 
 ## 4. Measured Pilot Output (Current State)
 
@@ -71,7 +72,7 @@ This report is intentionally split by evidence strength.
 
 ### 4.2 Quantitative Performance/Fidelity Metrics
 
-Not reported for native Nautilus in this cycle because execution path is fallback-based.
+Initial native pilot smoke output was validated, but full comparative benchmark reporting is not yet completed in this cycle.
 
 ## 5. Operational Readiness Assessment
 
@@ -89,11 +90,11 @@ Not reported for native Nautilus in this cycle because execution path is fallbac
 
 **Decision input to ADR-011:** **Defer**.
 
-Proceed with a narrow follow-up slice that implements native Nautilus execution for one frozen strategy/dataset pair, then rerun this report with true runtime/fidelity numbers.
+Proceed with a follow-up slice that expands strategy/dataset coverage and publishes repeatable runtime/fidelity comparisons.
 
 ## 7. Next Evidence Required for Go/No-Go
 
-1. Native Nautilus run success for one golden scenario.
+1. Repeatable native Nautilus run success beyond the initial pilot scenario.
 2. Side-by-side metric deltas against Backtrader on identical inputs.
 3. Runtime/memory benchmark under repeatable conditions.
 4. Documented operational complexity (install, debug, CI impact).

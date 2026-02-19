@@ -83,7 +83,7 @@ Engine-agnostic backtesting system with live-readiness execution simulator compl
   - ✅ E3: Cost models, corporate actions, walk-forward analysis, regime detection
   - ✅ E4: Experiment tracking with reproducible snapshots
   - ✅ E5: Execution simulator with latency, risk controls, state checkpoints
-- **E6 Status**: Pilot adapter contract hardening complete; native Nautilus execution and final adoption decision deferred pending additional evidence
+- **E6 Status**: Pilot adapter hardening + native single-strategy execution path complete; final adoption decision deferred pending broader comparative evidence
 
 Key deliverables:
 - Engine-agnostic contracts (`finbot/core/contracts/`)

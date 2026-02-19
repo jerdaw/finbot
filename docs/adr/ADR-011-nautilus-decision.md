@@ -13,9 +13,10 @@ This cycle implemented:
 
 - Contract-aligned Nautilus pilot adapter API (`run`) with canonical result mapping.
 - Explicit fallback execution mode to keep pilot path operable.
+- Native Nautilus pilot runtime path for one strategy/data shape.
 - Snapshot and batch observability integrations needed for stronger future evaluation.
 
-However, native Nautilus execution (data feed + strategy + result extraction through Nautilus runtime) is still not implemented.
+However, comparative evidence remains incomplete across broader strategy coverage, runtime benchmarking, and operational overhead.
 
 ## Decision
 
@@ -26,6 +27,7 @@ We will keep Backtrader as the default engine and treat Nautilus as an experimen
 ## Decision Drivers
 
 - Native Nautilus benchmark/fidelity data is not yet available.
+- Native pilot execution exists, but breadth of comparative evidence is still limited.
 - Backtrader path is currently stable, parity-gated, and sufficient for current roadmap goals.
 - Newly added snapshot and batch observability integrations reduce risk for a follow-up native Nautilus evaluation.
 
@@ -41,7 +43,7 @@ Rejected because architecture remains adapter-first and future live-readiness va
 
 ### Option C: Hybrid now (support both as peers)
 
-Rejected because native Nautilus path is incomplete and would create maintenance burden without validated benefit.
+Rejected because comparative evidence is still limited and full dual-engine support would add maintenance burden without validated net benefit.
 
 ### Option D: Defer (chosen)
 
@@ -52,7 +54,7 @@ Accepted as the lowest-risk, highest-information path.
 ### Positive
 
 - Preserves current delivery stability (Backtrader default unchanged).
-- Avoids premature migration based on fallback-only data.
+- Avoids premature migration based on limited pilot-only data.
 - Establishes stronger evaluation foundations (reproducibility + observability integrations).
 
 ### Negative
@@ -62,20 +64,21 @@ Accepted as the lowest-risk, highest-information path.
 
 ## Follow-up Actions
 
-1. Implement native Nautilus run path for one frozen strategy/dataset pair.
+1. Expand native Nautilus evaluation coverage across additional frozen strategy/dataset pairs.
 2. Re-run comparative evaluation with real runtime/fidelity metrics.
 3. Revisit ADR-011 with Go/No-Go/Hybrid decision based on measured evidence.
 
 ## Validation Criteria for Revisiting This ADR
 
 - Native Nautilus execution succeeds for pilot scenario.
+- Native Nautilus execution succeeds across at least one additional frozen strategy scenario.
 - Comparable metrics (return/drawdown/trades/runtime/memory) are published.
 - Operational overhead (install/debug/CI) is documented and acceptable.
 
 ## References
 
 - `docs/research/nautilus-pilot-evaluation.md`
-- `docs/planning/IMPLEMENTATION_PLAN_6.1_E6_EXECUTION_READY.md`
+- `docs/planning/archive/IMPLEMENTATION_PLAN_6.2_E6_EXECUTION_READY.md`
 - `finbot/adapters/nautilus/nautilus_adapter.py`
 - `finbot/services/backtesting/adapters/backtrader_adapter.py`
 - `finbot/services/backtesting/backtest_batch.py`

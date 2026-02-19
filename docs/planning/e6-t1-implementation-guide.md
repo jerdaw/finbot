@@ -438,4 +438,4 @@ If you get stuck:
 
 **Status:** Ready for manual implementation
 **Next:** Install Nautilus and start working through Step 1-8
-**Owner:** You (cannot be automated by Claude)
+**Owner:** You (manual execution required)
