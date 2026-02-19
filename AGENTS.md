@@ -53,7 +53,8 @@ Backtesting/live-readiness transition is **Epics E0-E6 current cycle complete** 
   - State checkpoint and recovery for disaster recovery
   - 674 total tests (latest local run: 672 passed, 2 skipped)
 
-- **Next Phase:** Post-E6 follow-up (like-for-like native strategy comparison + CI budget optimization)
+- **Post-E6 Follow-up:** Priority 6 items 69-72 complete; ADR-011 decision refreshed and remains **Defer**.
+- **Current Maintenance Focus:** Priority 5 governance/security quick wins and CI/process polish (item 40 remains partially complete pending GitHub Pages settings).
 
 Authoritative tracking docs:
 - `docs/planning/backtesting-live-readiness-backlog.md` (Epic tracking)
@@ -61,6 +62,8 @@ Authoritative tracking docs:
 - `docs/research/nautilus-pilot-evaluation.md`
 - `docs/adr/ADR-011-nautilus-decision.md`
 - `docs/planning/archive/IMPLEMENTATION_PLAN_6.3_E6_EVIDENCE_GATE_AND_E4_CLOSURE.md`
+- `docs/planning/archive/IMPLEMENTATION_PLAN_7.1_POST_E6_PHASE2_MULTI_SCENARIO_EVIDENCE.md`
+- `docs/planning/archive/IMPLEMENTATION_PLAN_7.2_PRIORITY5_GOVERNANCE_SECURITY_QUICK_WINS.md`
 
 ## Common Commands
 

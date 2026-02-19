@@ -3,6 +3,7 @@
 **Financial data collection, simulation, and backtesting platform for quantitative analysis**
 
 [![CI](https://github.com/jerdaw/finbot/actions/workflows/ci.yml/badge.svg)](https://github.com/jerdaw/finbot/actions/workflows/ci.yml)
+[![Docs](https://github.com/jerdaw/finbot/actions/workflows/docs.yml/badge.svg)](https://github.com/jerdaw/finbot/actions/workflows/docs.yml)
 [![codecov](https://codecov.io/gh/jerdaw/finbot/branch/main/graph/badge.svg)](https://codecov.io/gh/jerdaw/finbot)
 [![Docstring Coverage](https://img.shields.io/badge/docstring%20coverage-58.2%25-brightgreen.svg)](https://github.com/jerdaw/finbot)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
@@ -85,7 +86,8 @@ Engine-agnostic backtesting system with live-readiness execution simulator compl
   - ✅ E5: Execution simulator with latency, risk controls, state checkpoints
 - **E6 Status**: Pilot adapter hardening + native single-strategy execution path complete; final adoption decision deferred pending broader comparative evidence
 - **CI Status**: Tiered CI is active for free-tier budget control (`ci.yml` for PR/main core gates, `ci-heavy.yml` for scheduled/manual heavy checks)
-- **Next Priority 6 Focus**: GS-02 and GS-03 like-for-like native comparison + ADR-011 decision refresh
+- **Priority 6 Follow-up**: GS-01/GS-02/GS-03 evidence published; ADR-011 refreshed (decision remains Defer)
+- **Next Focus**: Priority 5 governance/security quick wins and CI/process polish
 
 Key deliverables:
 - Engine-agnostic contracts (`finbot/core/contracts/`)
@@ -456,6 +458,8 @@ See **[docs/limitations.md](docs/limitations.md)** for comprehensive documentati
 ## Ethics and Responsible Use
 
 **IMPORTANT:** This software is for educational and research purposes only.
+
+See **[DISCLAIMER.md](DISCLAIMER.md)** for concise financial/medical decision disclaimers and liability terms.
 
 See **[docs/ethics/responsible-use.md](docs/ethics/responsible-use.md)** for comprehensive ethical guidelines covering:
 - **Financial Advice Disclaimer:** Not a substitute for professional financial advisors

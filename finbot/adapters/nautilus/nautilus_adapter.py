@@ -15,7 +15,10 @@ from finbot.core.contracts.interfaces import BacktestEngine
 from finbot.core.contracts.models import BacktestRunMetadata, BacktestRunRequest, BacktestRunResult
 from finbot.core.contracts.schemas import validate_bar_dataframe
 from finbot.services.backtesting.adapters.backtrader_adapter import BacktraderAdapter
+from finbot.services.backtesting.strategies.dual_momentum import DualMomentum
+from finbot.services.backtesting.strategies.no_rebalance import NoRebalance
 from finbot.services.backtesting.strategies.rebalance import Rebalance
+from finbot.services.backtesting.strategies.risk_parity import RiskParity
 from finbot.utils.dict_utils.hash_dictionary import hash_dictionary
 
 
@@ -27,6 +30,8 @@ class NautilusAdapter(BacktestEngine):
         - Native mode supports:
           - `Rebalance` (mapped to Nautilus EMA-cross pilot path).
           - `NoRebalance` (single-symbol long-only buy-and-hold pilot path).
+          - `DualMomentum` (two-symbol deterministic parity proxy path).
+          - `RiskParity` (multi-symbol deterministic parity proxy path).
         - When native Nautilus execution is unavailable, it falls back to the
           Backtrader contract path and tags outputs accordingly.
     """
@@ -83,9 +88,10 @@ class NautilusAdapter(BacktestEngine):
                 data_snapshot_id=self._data_snapshot_id,
                 random_seed=self._random_seed,
             )
+            adapter_mode = str(native_assumptions.get("adapter_mode", "native_nautilus"))
             assumptions = {
                 **native_assumptions,
-                "adapter_mode": "native_nautilus",
+                "adapter_mode": adapter_mode,
                 "native_nautilus_available": native_available,
             }
             artifacts = {
@@ -139,8 +145,11 @@ class NautilusAdapter(BacktestEngine):
         if not request.strategy_name:
             raise ValueError("strategy_name is required")
         normalized_strategy = request.strategy_name.lower().replace("_", "")
-        if normalized_strategy not in {"rebalance", "norebalance"}:
-            raise ValueError("Nautilus pilot currently supports strategy_name in {'rebalance', 'NoRebalance'}")
+        if normalized_strategy not in {"rebalance", "norebalance", "dualmomentum", "riskparity"}:
+            raise ValueError(
+                "Nautilus pilot currently supports strategy_name in "
+                "{'rebalance', 'NoRebalance', 'DualMomentum', 'RiskParity'}"
+            )
         if not request.symbols:
             raise ValueError("At least one symbol is required")
         if request.initial_cash <= 0:
@@ -150,7 +159,13 @@ class NautilusAdapter(BacktestEngine):
         if normalized_strategy == "rebalance":
             self._validate_rebalance_request(request)
             return
-        self._validate_norebalance_request(request)
+        if normalized_strategy == "norebalance":
+            self._validate_norebalance_request(request)
+            return
+        if normalized_strategy == "dualmomentum":
+            self._validate_dual_momentum_request(request)
+            return
+        self._validate_risk_parity_request(request)
 
     def _validate_rebalance_request(self, request: BacktestRunRequest) -> None:
         if "rebal_proportions" not in request.parameters:
@@ -168,10 +183,35 @@ class NautilusAdapter(BacktestEngine):
         ):
             raise ValueError("Length of equity_proportions must match symbol count")
 
+    def _validate_dual_momentum_request(self, request: BacktestRunRequest) -> None:
+        if len(request.symbols) != 2:
+            raise ValueError("DualMomentum pilot currently requires exactly two symbols")
+        lookback = int(request.parameters.get("lookback", 252))
+        rebal_interval = int(request.parameters.get("rebal_interval", 21))
+        if lookback <= 0:
+            raise ValueError("lookback must be positive")
+        if rebal_interval <= 0:
+            raise ValueError("rebal_interval must be positive")
+
+    def _validate_risk_parity_request(self, request: BacktestRunRequest) -> None:
+        if len(request.symbols) < 2:
+            raise ValueError("RiskParity pilot currently requires at least two symbols")
+        vol_window = int(request.parameters.get("vol_window", 63))
+        rebal_interval = int(request.parameters.get("rebal_interval", 21))
+        if vol_window <= 0:
+            raise ValueError("vol_window must be positive")
+        if rebal_interval <= 0:
+            raise ValueError("rebal_interval must be positive")
+
     def _run_via_backtrader(self, request: BacktestRunRequest) -> BacktestRunResult:
         adapter = BacktraderAdapter(
             price_histories=self._price_histories,
-            strategy_registry={"rebalance": Rebalance},
+            strategy_registry={
+                "rebalance": Rebalance,
+                "norebalance": NoRebalance,
+                "dualmomentum": DualMomentum,
+                "riskparity": RiskParity,
+            },
             data_snapshot_id=self._data_snapshot_id,
             random_seed=self._random_seed,
         )
@@ -192,6 +232,10 @@ class NautilusAdapter(BacktestEngine):
         normalized_strategy = request.strategy_name.lower().replace("_", "")
         if normalized_strategy == "norebalance":
             return self._run_via_nautilus_buy_and_hold(request)
+        if normalized_strategy == "dualmomentum":
+            return self._run_via_nautilus_dual_momentum(request)
+        if normalized_strategy == "riskparity":
+            return self._run_via_nautilus_risk_parity(request)
         if normalized_strategy != "rebalance":
             raise ValueError(f"Unsupported native Nautilus strategy for pilot: {request.strategy_name}")
 
@@ -417,6 +461,192 @@ class NautilusAdapter(BacktestEngine):
         run_warnings: tuple[str, ...] = ()
         return metrics, assumptions, artifacts, run_warnings
 
+    def _run_via_nautilus_dual_momentum(
+        self, request: BacktestRunRequest
+    ) -> tuple[dict[str, float], dict[str, Any], dict[str, str], tuple[str, ...]]:
+        price_histories = self._select_native_price_histories(request.symbols, request.start, request.end)
+        prices = self._build_aligned_close_frame(price_histories)
+
+        lookback = int(request.parameters.get("lookback", 252))
+        rebal_interval = int(request.parameters.get("rebal_interval", 21))
+
+        primary_symbol = request.symbols[0]
+        alt_symbol = request.symbols[1]
+        cash = float(request.initial_cash)
+        shares: dict[str, int] = dict.fromkeys(request.symbols, 0)
+        periods_elapsed = 0
+        equity_values: list[float] = []
+
+        for idx in range(len(prices)):
+            row = prices.iloc[idx]
+
+            if idx >= lookback:
+                periods_elapsed += 1
+                if periods_elapsed >= rebal_interval:
+                    periods_elapsed = 0
+                    primary_base = float(prices.iloc[idx - lookback][primary_symbol])
+                    alt_base = float(prices.iloc[idx - lookback][alt_symbol])
+                    primary_mom = (float(row[primary_symbol]) - primary_base) / primary_base
+                    alt_mom = (float(row[alt_symbol]) - alt_base) / alt_base
+
+                    target_symbol: str | None = None
+                    if primary_mom > 0 and primary_mom >= alt_mom:
+                        target_symbol = primary_symbol
+                    elif alt_mom > 0:
+                        target_symbol = alt_symbol
+
+                    for symbol in request.symbols:
+                        if symbol != target_symbol and shares[symbol] > 0:
+                            cash += shares[symbol] * float(row[symbol])
+                            shares[symbol] = 0
+
+                    if target_symbol is not None and shares[target_symbol] == 0:
+                        price = float(row[target_symbol])
+                        buy_size = int(cash // price)
+                        if buy_size > 0:
+                            shares[target_symbol] += buy_size
+                            cash -= buy_size * price
+
+            portfolio_value = cash + sum(shares[symbol] * float(row[symbol]) for symbol in request.symbols)
+            equity_values.append(portfolio_value)
+
+        equity_curve = pd.Series(equity_values, index=prices.index)
+        metrics = self._build_metrics_from_equity_curve(equity_curve=equity_curve, initial_cash=request.initial_cash)
+        assumptions = {
+            "symbols": list(request.symbols),
+            "parameters": deepcopy(request.parameters),
+            "nautilus_strategy": "DualMomentumProxy",
+            "nautilus_strategy_mapping": "dualmomentum_request_mapped_to_deterministic_pilot_proxy",
+            "strategy_equivalent": True,
+            "equivalence_notes": (
+                "DualMomentum signal/rebalance logic mirrored from Backtrader strategy with deterministic close-price "
+                "fills and integer share sizing."
+            ),
+            "confidence": "medium",
+            "adapter_mode": "native_nautilus_proxy",
+        }
+        artifacts = {"nautilus_symbols": ",".join(request.symbols), "nautilus_proxy_type": "dual_momentum"}
+        run_warnings = (
+            "GS-02 currently uses deterministic pilot proxy execution rather than full Nautilus order lifecycle modeling.",
+        )
+        return metrics, assumptions, artifacts, run_warnings
+
+    def _run_via_nautilus_risk_parity(
+        self, request: BacktestRunRequest
+    ) -> tuple[dict[str, float], dict[str, Any], dict[str, str], tuple[str, ...]]:
+        price_histories = self._select_native_price_histories(request.symbols, request.start, request.end)
+        prices = self._build_aligned_close_frame(price_histories)
+
+        vol_window = int(request.parameters.get("vol_window", 63))
+        rebal_interval = int(request.parameters.get("rebal_interval", 21))
+
+        cash = float(request.initial_cash)
+        shares: dict[str, int] = dict.fromkeys(request.symbols, 0)
+        returns: dict[str, list[float]] = {symbol: [] for symbol in request.symbols}
+        prev_close: dict[str, float | None] = dict.fromkeys(request.symbols)
+        periods_elapsed = 0
+        equity_values: list[float] = []
+
+        for _, row in prices.iterrows():
+            for symbol in request.symbols:
+                close = float(row[symbol])
+                if prev_close[symbol] is not None and prev_close[symbol] > 0:
+                    returns[symbol].append((close - prev_close[symbol]) / prev_close[symbol])
+                prev_close[symbol] = close
+
+            if len(returns[request.symbols[0]]) >= vol_window:
+                periods_elapsed += 1
+                if periods_elapsed >= rebal_interval:
+                    periods_elapsed = 0
+                    target_weights = self._compute_risk_parity_target_weights(
+                        returns=returns,
+                        symbols=request.symbols,
+                        vol_window=vol_window,
+                    )
+                    cash = self._rebalance_risk_parity_positions(
+                        symbols=request.symbols,
+                        prices_row=row,
+                        shares=shares,
+                        cash=cash,
+                        target_weights=target_weights,
+                    )
+
+            portfolio_value = cash + sum(shares[symbol] * float(row[symbol]) for symbol in request.symbols)
+            equity_values.append(portfolio_value)
+
+        equity_curve = pd.Series(equity_values, index=prices.index)
+        metrics = self._build_metrics_from_equity_curve(equity_curve=equity_curve, initial_cash=request.initial_cash)
+        assumptions = {
+            "symbols": list(request.symbols),
+            "parameters": deepcopy(request.parameters),
+            "nautilus_strategy": "RiskParityProxy",
+            "nautilus_strategy_mapping": "riskparity_request_mapped_to_deterministic_pilot_proxy",
+            "strategy_equivalent": True,
+            "equivalence_notes": (
+                "RiskParity rebalance and inverse-volatility weighting mirrored from Backtrader strategy with "
+                "deterministic close-price fills and integer share sizing."
+            ),
+            "confidence": "medium",
+            "adapter_mode": "native_nautilus_proxy",
+        }
+        artifacts = {"nautilus_symbols": ",".join(request.symbols), "nautilus_proxy_type": "risk_parity"}
+        run_warnings = (
+            "GS-03 currently uses deterministic pilot proxy execution rather than full Nautilus order lifecycle modeling.",
+        )
+        return metrics, assumptions, artifacts, run_warnings
+
+    def _compute_risk_parity_target_weights(
+        self,
+        *,
+        returns: dict[str, list[float]],
+        symbols: tuple[str, ...],
+        vol_window: int,
+    ) -> dict[str, float]:
+        inv_vols: dict[str, float] = {}
+        for symbol in symbols:
+            window = returns[symbol][-vol_window:]
+            vol = float(pd.Series(window).std())
+            inv_vols[symbol] = 1.0 / vol if vol > 0 else 0.0
+
+        total_inv = sum(inv_vols.values())
+        if total_inv <= 0:
+            return {symbol: 1.0 / len(symbols) for symbol in symbols}
+        return {symbol: inv_vols[symbol] / total_inv for symbol in symbols}
+
+    def _rebalance_risk_parity_positions(
+        self,
+        *,
+        symbols: tuple[str, ...],
+        prices_row: pd.Series,
+        shares: dict[str, int],
+        cash: float,
+        target_weights: dict[str, float],
+    ) -> float:
+        total_value = cash + sum(shares[symbol] * float(prices_row[symbol]) for symbol in symbols)
+
+        for symbol in symbols:
+            price = float(prices_row[symbol])
+            current_value = shares[symbol] * price
+            target_value = target_weights[symbol] * total_value
+            sell_shares = int((current_value - target_value) // price)
+            sell_shares = min(max(sell_shares, 0), shares[symbol])
+            if sell_shares > 0:
+                shares[symbol] -= sell_shares
+                cash += sell_shares * price
+
+        for symbol in symbols:
+            price = float(prices_row[symbol])
+            current_value = shares[symbol] * price
+            target_value = target_weights[symbol] * total_value
+            buy_shares = int((target_value - current_value) // price)
+            max_affordable = int(cash // price)
+            buy_shares = min(max(buy_shares, 0), max_affordable)
+            if buy_shares > 0:
+                shares[symbol] += buy_shares
+                cash -= buy_shares * price
+
+        return cash
+
     def _build_config_hash(self, request: BacktestRunRequest) -> str:
         return hash_dictionary(
             {
@@ -457,6 +687,53 @@ class NautilusAdapter(BacktestEngine):
         if len(df) < 40:
             raise ValueError("Nautilus pilot requires at least 40 bars in the selected window")
         return df
+
+    def _select_native_price_histories(
+        self,
+        symbols: tuple[str, ...],
+        start: pd.Timestamp | None,
+        end: pd.Timestamp | None,
+    ) -> dict[str, pd.DataFrame]:
+        histories: dict[str, pd.DataFrame] = {}
+        for symbol in symbols:
+            histories[symbol] = self._select_native_price_history(symbol=symbol, start=start, end=end)
+        return histories
+
+    def _build_aligned_close_frame(self, price_histories: dict[str, pd.DataFrame]) -> pd.DataFrame:
+        closes = [df["Close"].rename(symbol) for symbol, df in price_histories.items()]
+        aligned = pd.concat(closes, axis=1, join="inner").dropna()
+        if len(aligned) < 40:
+            raise ValueError("Nautilus pilot requires at least 40 aligned bars across selected symbols")
+        return aligned
+
+    def _build_metrics_from_equity_curve(self, *, equity_curve: pd.Series, initial_cash: float) -> dict[str, float]:
+        ending_value = float(equity_curve.iloc[-1])
+        roi = (ending_value / initial_cash) - 1.0 if initial_cash > 0 else 0.0
+
+        days = max((equity_curve.index[-1] - equity_curve.index[0]).days, 1)
+        years = max(days / 365.25, 1 / 365.25)
+        cagr = (ending_value / initial_cash) ** (1 / years) - 1 if initial_cash > 0 else 0.0
+
+        running_peak = equity_curve.cummax()
+        drawdown_series = (equity_curve / running_peak) - 1.0
+        max_drawdown = float(drawdown_series.min())
+
+        returns = equity_curve.pct_change().dropna()
+        sharpe = 0.0
+        if not returns.empty:
+            std = float(returns.std())
+            if std > 0:
+                sharpe = float((returns.mean() / std) * (252**0.5))
+
+        return {
+            "starting_value": self._finite_or_default(initial_cash, 0.0),
+            "ending_value": self._finite_or_default(ending_value, initial_cash),
+            "roi": self._finite_or_default(roi, 0.0),
+            "cagr": self._finite_or_default(cagr, 0.0),
+            "sharpe": self._finite_or_default(sharpe, 0.0),
+            "max_drawdown": self._finite_or_default(max_drawdown, 0.0),
+            "mean_cash_utilization": self._finite_or_default(0.0, 0.0),
+        }
 
     def _to_nautilus_dataframe(self, price_df: pd.DataFrame) -> pd.DataFrame:
         bars = price_df.loc[:, ["Open", "High", "Low", "Close", "Volume"]].copy()

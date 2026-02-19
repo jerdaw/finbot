@@ -12,6 +12,7 @@ st.set_page_config(
 
 st.title("Finbot Dashboard")
 st.markdown("Financial simulation, backtesting, and optimization platform. Use the sidebar to navigate between pages.")
+st.warning("Research/education use only. This dashboard does not provide financial or medical advice.")
 
 # Quick links
 st.markdown("### Pages")

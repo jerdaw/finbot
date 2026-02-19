@@ -63,10 +63,10 @@ def test_nautilus_adapter_run_backtest_alias() -> None:
     assert result.metadata.engine_name == "nautilus-pilot"
 
 
-def test_nautilus_adapter_rejects_non_rebalance_strategy() -> None:
+def test_nautilus_adapter_rejects_unknown_strategy() -> None:
     adapter = NautilusAdapter({"SPY": _make_price_df(seed=1)}, enable_native_execution=False)
     request = BacktestRunRequest(
-        strategy_name="DualMomentum",
+        strategy_name="SmaCrossover",
         symbols=("SPY",),
         start=None,
         end=None,
@@ -118,7 +118,7 @@ def test_nautilus_adapter_uses_native_path_when_available(monkeypatch: pytest.Mo
                 "max_drawdown": -0.02,
                 "mean_cash_utilization": 0.9,
             },
-            {"nautilus_strategy": "EMACross"},
+            {"nautilus_strategy": "EMACross", "adapter_mode": "native_nautilus_proxy"},
             {"nautilus_venue": "XNAS"},
             ("native warning",),
         ),
@@ -126,7 +126,7 @@ def test_nautilus_adapter_uses_native_path_when_available(monkeypatch: pytest.Mo
 
     result = adapter.run(request)
     assert result.metadata.engine_name == "nautilus-pilot"
-    assert result.assumptions["adapter_mode"] == "native_nautilus"
+    assert result.assumptions["adapter_mode"] == "native_nautilus_proxy"
     assert result.artifacts["pilot_mode"] == "native"
     assert result.metrics["roi"] == pytest.approx(0.01)
     assert "native warning" in result.warnings
@@ -190,3 +190,83 @@ def test_nautilus_adapter_rejects_norebalance_multi_symbol_request() -> None:
 
     with pytest.raises(ValueError, match="exactly one symbol"):
         adapter.run(request)
+
+
+def test_nautilus_adapter_rejects_dualmomentum_single_symbol() -> None:
+    adapter = NautilusAdapter({"SPY": _make_price_df(seed=1)}, enable_native_execution=False)
+    request = BacktestRunRequest(
+        strategy_name="DualMomentum",
+        symbols=("SPY",),
+        start=pd.Timestamp("2019-01-01"),
+        end=pd.Timestamp("2019-12-31"),
+        initial_cash=100_000.0,
+        parameters={"lookback": 252, "rebal_interval": 21},
+    )
+
+    with pytest.raises(ValueError, match="exactly two symbols"):
+        adapter.run(request)
+
+
+def test_nautilus_adapter_rejects_riskparity_single_symbol() -> None:
+    adapter = NautilusAdapter({"SPY": _make_price_df(seed=1)}, enable_native_execution=False)
+    request = BacktestRunRequest(
+        strategy_name="RiskParity",
+        symbols=("SPY",),
+        start=pd.Timestamp("2019-01-01"),
+        end=pd.Timestamp("2019-12-31"),
+        initial_cash=100_000.0,
+        parameters={"vol_window": 63, "rebal_interval": 21},
+    )
+
+    with pytest.raises(ValueError, match="at least two symbols"):
+        adapter.run(request)
+
+
+def test_nautilus_adapter_runs_dualmomentum_proxy_native(monkeypatch: pytest.MonkeyPatch) -> None:
+    adapter = NautilusAdapter(
+        {"SPY": _make_price_df(seed=1), "TLT": _make_price_df(start_price=80.0, seed=2)},
+        enable_backtrader_fallback=False,
+    )
+    request = BacktestRunRequest(
+        strategy_name="DualMomentum",
+        symbols=("SPY", "TLT"),
+        start=pd.Timestamp("2019-01-01"),
+        end=pd.Timestamp("2019-12-31"),
+        initial_cash=100_000.0,
+        parameters={"lookback": 63, "rebal_interval": 21},
+    )
+
+    monkeypatch.setattr(adapter, "_supports_native_nautilus", lambda: True)
+    result = adapter.run(request)
+
+    assert result.assumptions["adapter_mode"] == "native_nautilus_proxy"
+    assert result.assumptions["strategy_equivalent"] is True
+    assert result.assumptions["confidence"] == "medium"
+    assert result.metrics["ending_value"] > 0
+
+
+def test_nautilus_adapter_runs_riskparity_proxy_native(monkeypatch: pytest.MonkeyPatch) -> None:
+    adapter = NautilusAdapter(
+        {
+            "SPY": _make_price_df(seed=1),
+            "QQQ": _make_price_df(start_price=120.0, seed=3),
+            "TLT": _make_price_df(start_price=80.0, seed=2),
+        },
+        enable_backtrader_fallback=False,
+    )
+    request = BacktestRunRequest(
+        strategy_name="RiskParity",
+        symbols=("SPY", "QQQ", "TLT"),
+        start=pd.Timestamp("2019-01-01"),
+        end=pd.Timestamp("2019-12-31"),
+        initial_cash=100_000.0,
+        parameters={"vol_window": 63, "rebal_interval": 21},
+    )
+
+    monkeypatch.setattr(adapter, "_supports_native_nautilus", lambda: True)
+    result = adapter.run(request)
+
+    assert result.assumptions["adapter_mode"] == "native_nautilus_proxy"
+    assert result.assumptions["strategy_equivalent"] is True
+    assert result.assumptions["confidence"] == "medium"
+    assert result.metrics["ending_value"] > 0

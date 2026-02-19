@@ -1,130 +1,96 @@
 # NautilusTrader Pilot Evaluation
 
 **Date:** 2026-02-19
-**Status:** Updated with post-E6 follow-up GS-01 like-for-like benchmark evidence
+**Status:** Updated with GS-01/GS-02/GS-03 multi-scenario benchmark evidence
 **Epic:** E6-T2 (Comparative Evaluation Report)
 
 ## Executive Summary
 
-This evaluation confirms that the pilot adapter path is now contract-compliant and test-covered, and that native Nautilus execution is wired for a narrow pilot scenario with explicit fallback protection.
+The pilot adapter is contract-compliant and test-covered, with broadened benchmark evidence across GS-01, GS-02, and GS-03.
 
-**Recommendation:** **Defer** final adoption decision until broader like-for-like strategy benchmarking is completed.
+**Recommendation:** **Defer** final adoption decision.
 
-**Key Finding:** We eliminated contract and integration blockers and now have one like-for-like native GS-01 comparison. Evidence quality improved, but coverage breadth is still insufficient for final engine adoption.
+**Key Finding:** GS-01 has high-confidence native evidence. GS-02/GS-03 now have medium-confidence proxy-native comparability evidence, which improves breadth but is still not sufficient for a full Go decision.
 
-## 1. Scope Completed in This Pilot Slice
+## 1. Scope Completed in This Slice
 
-- Implemented `NautilusAdapter.run(request)` to satisfy `BacktestEngine`.
-- Added canonical metadata/result mapping and pilot validation rules.
-- Added explicit warning-tagged fallback behavior instead of `NotImplementedError`.
-- Implemented native Nautilus runtime wiring for one pilot scenario (engine, bars, strategy, result mapping).
-- Added unit tests for adapter behavior.
-- Closed deferred E4 integrations relevant to pilot evidence quality:
-  - Snapshot capture wiring in `BacktraderAdapter`.
-  - Batch observability wiring in `backtest_batch` (opt-in mode).
+- Maintained `NautilusAdapter.run(request)` contract compliance.
+- Expanded strategy coverage for evaluation scenarios:
+  - `NoRebalance` native buy-and-hold path.
+  - `DualMomentum` and `RiskParity` deterministic proxy-native pilot paths.
+- Added explicit metadata for confidence/equivalence and adapter mode tagging.
+- Expanded benchmark harness to run `gs01`, `gs02`, `gs03`, and `all` scenario bundles.
+- Added unit coverage for new adapter validations and benchmark scenario wiring.
 
-## 2. Integration Effort and Complexity
+## 2. Comparison Status: Backtrader vs Nautilus
 
-### 2.1 Time Breakdown (current batch)
+### 2.1 Evidence Available
 
-| Phase | Actual |
-| --- | --- |
-| Contract alignment + adapter hardening | ~2.5h |
-| Snapshot integration + tests | ~1.0h |
-| Batch observability integration + tests | ~1.5h |
-| Documentation and decision artifacts | ~1.0h |
-| **Total** | **~6.0h** |
+- **Backtrader path:** fully operational, parity-gated, and baseline-stable.
+- **Nautilus GS-01:** native path with high-confidence equivalence labeling.
+- **Nautilus GS-02/GS-03:** proxy-native paths with medium-confidence equivalence labeling.
+- **Artifacts:** single multi-scenario JSON/Markdown output containing all three golden scenarios.
 
-### 2.2 Complexity Notes
+### 2.2 Evidence Gaps Remaining (for final adoption)
 
-- Most difficult issue: contract drift in pre-existing Nautilus skeleton (method and dataclass shape mismatches).
-- Snapshot/batch integrations were straightforward once exact registry paths were confirmed.
-- Ongoing complexity is now comparative validation breadth (strategy coverage, parity benchmarking, and operations profiling).
+- Full native Nautilus order-lifecycle parity for GS-02/GS-03 (current mode is proxy-native, not full exchange/order-flow modeling).
+- Broader operational data for sustained CI/debug burden at larger strategy coverage.
 
-## 3. Comparison Status: Backtrader vs Nautilus
-
-This report is intentionally split by evidence strength.
-
-### 3.1 Evidence Available (High confidence)
-
-- **Backtrader path:** fully operational and parity-gated.
-- **Nautilus pilot adapter contract:** operational and test-covered.
-- **Nautilus native pilot path:** operational for a one-symbol pilot scenario.
-- **Like-for-like GS-01 comparison:** available via native `NoRebalance` buy-and-hold mapping with confidence-tagged artifact output.
-- **Reproducibility and batch tracking foundations:** now integrated for better future evaluation quality.
-
-### 3.2 Evidence Not Yet Available (Blocking final decision)
-
-- Equivalent native comparisons for GS-02 and GS-03.
-- Native fill/latency behavior comparison against current simulator + Backtrader baseline at broader strategy scope.
-
-## 4. Measured Pilot Output (Current State)
-
-### 4.1 Contract/Integration Metrics
-
-| Metric | Result |
-| --- | --- |
-| Adapter method compliance (`run`) | ✅ |
-| Canonical metadata/result construction | ✅ |
-| Rebalance-only pilot validation | ✅ |
-| Fallback warnings/artifact tagging | ✅ |
-| Snapshot auto-attachment support | ✅ |
-| Batch lifecycle/error tracking in `backtest_batch` | ✅ |
-
-### 4.2 Quantitative Performance/Fidelity Metrics
+## 3. Measured Output (Current State)
 
 Benchmarks were generated with:
 
 ```bash
-uv run python scripts/benchmark/e6_compare_backtrader_vs_nautilus.py --samples 3 --scenario gs01
+uv run python scripts/benchmark/e6_compare_backtrader_vs_nautilus.py --samples 3 --scenario all
 ```
 
 Artifact outputs:
 - `docs/research/artifacts/e6-benchmark-2026-02-19.json`
 - `docs/research/artifacts/e6-benchmark-2026-02-19.md`
 
-| Engine | Scenario | Scenario ID | Samples | Mode | Equivalent | Median Runtime (s) | Median Peak Memory (MB) | ROI | CAGR | Max Drawdown | Ending Value | Confidence |
-| --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| Backtrader | SPY 2019-2020 buy-and-hold | `gs01` | 3 | `native_backtrader` | Yes | 0.4689 | 1.22 | 0.5584 | 0.2478 | -0.3350 | 155840.34 | High |
-| Nautilus pilot | SPY 2019-2020 native run | `gs01` | 3 | `native_nautilus` | Yes | 0.2802 | 0.74 | 0.4936 | 0.2226 | -0.3406 | 149356.30 | High |
+| Engine | Scenario ID | Mode | Equivalent | Confidence | Median Runtime (s) | Median Peak Memory (MB) | ROI | CAGR | Max Drawdown | Ending Value |
+| --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Backtrader | `gs01` | `native_backtrader` | Yes | High | 0.4613 | 1.22 | 0.5584 | 0.2478 | -0.3350 | 155840.34 |
+| Nautilus pilot | `gs01` | `native_nautilus` | Yes | High | 0.2788 | 0.74 | 0.4936 | 0.2226 | -0.3406 | 149356.30 |
+| Backtrader | `gs02` | `native_backtrader` | Yes | High | 5.5421 | 3.60 | 1.0003 | 0.0441 | -0.2725 | 200027.71 |
+| Nautilus pilot | `gs02` | `native_nautilus_proxy` | Yes | Medium | 0.5451 | 1.24 | 0.8963 | 0.0405 | -0.3407 | 189627.72 |
+| Backtrader | `gs03` | `native_backtrader` | Yes | High | 8.7398 | 7.82 | 4.2750 | 0.1090 | -0.2932 | 527504.83 |
+| Nautilus pilot | `gs03` | `native_nautilus_proxy` | Yes | Medium | 0.9925 | 2.25 | 2.9933 | 0.0898 | -0.3130 | 399328.53 |
 
 Interpretation:
-- Runtime and memory numbers are measured and reproducible.
-- Scenario is now strategy-equivalent for GS-01 (single-symbol buy-and-hold), improving decision evidence quality.
-- Remaining metric deltas indicate implementation differences that still require wider scenario coverage before changing ADR-011.
+- Coverage breadth improved from one to three frozen scenarios.
+- GS-02/GS-03 deltas remain notable and confidence is medium due proxy-native execution assumptions.
+- Evidence is improved and decision-grade for “continue defer” posture, not for full migration.
 
-## 5. Operational Readiness Assessment
+## 4. Operational Readiness Assessment
 
 ### Ready now
 
 - Contract-level adapter API stability.
-- Reproducibility and observability primitives needed for a fair next evaluation pass.
+- Multi-scenario benchmark harness and confidence-labeled artifacts.
 
 ### Not ready
 
-- Native Nautilus production or parity claims.
-- Migration recommendation to replace Backtrader.
+- Production-native Nautilus parity claims for GS-02/GS-03.
+- Migration recommendation to replace Backtrader as default engine.
 
-## 6. Recommendation
+## 5. Recommendation
 
 **Decision input to ADR-011:** **Defer**.
 
-Proceed with a follow-up slice that expands strategy/dataset coverage and publishes repeatable runtime/fidelity comparisons.
+Rationale: multi-scenario evidence is now available, but GS-02/GS-03 are medium-confidence proxy-native rows and do not yet justify a full Go/Hybrid adoption state.
 
-## 7. Next Evidence Required for Go/No-Go
+## 6. Next Evidence Required for Go/No-Go Upgrade
 
-1. Repeatable native Nautilus run success for GS-02 and GS-03.
-2. Side-by-side metric deltas and tolerance interpretation across all golden scenarios.
-3. Runtime/memory benchmark under repeatable conditions for each golden scenario.
-4. Documented operational complexity (install, debug, CI impact) for expanded coverage.
+1. Full native (non-proxy) GS-02 and GS-03 strategy execution with documented order lifecycle behavior.
+2. Repeatable side-by-side deltas under the same execution semantics.
+3. Operational overhead assessment over sustained CI/debug cycles.
 
 ## References
 
 - `finbot/adapters/nautilus/nautilus_adapter.py`
-- `finbot/services/backtesting/adapters/backtrader_adapter.py`
-- `finbot/services/backtesting/backtest_batch.py`
+- `scripts/benchmark/e6_compare_backtrader_vs_nautilus.py`
 - `tests/unit/test_nautilus_adapter.py`
-- `tests/unit/test_backtrader_adapter.py`
-- `tests/unit/test_backtest_batch_observability.py`
+- `tests/unit/test_e6_benchmark_script.py`
 - `docs/research/artifacts/e6-benchmark-2026-02-19.json`
 - `docs/adr/ADR-011-nautilus-decision.md`
