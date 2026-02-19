@@ -2,114 +2,114 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://jerdaw.github.io/finbot/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/changelog/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/contributing/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/api/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/api/cli/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/api/dashboard/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/api/services/data-quality/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/api/services/health-economics/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/api/services/backtesting/backtest-runner/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/api/services/backtesting/strategies/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/api/services/optimization/dca-optimizer/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/api/services/simulation/bond-ladder/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/api/services/simulation/fund-simulator/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/api/services/simulation/monte-carlo/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/api/utils/finance-utils/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/guides/audit-trails/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/guides/data-quality-guide/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/guides/docker-security-scanning/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/guides/pre-commit-hooks-usage/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/guides/release-process/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/research/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/user-guide/cli-reference/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/user-guide/configuration/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/user-guide/data-quality-guide/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/user-guide/getting-started/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/user-guide/health-economics-tutorial/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/user-guide/installation/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
     <url>
          <loc>https://jerdaw.github.io/finbot/user-guide/quick-start/</loc>
-         <lastmod>2026-02-18</lastmod>
+         <lastmod>2026-02-19</lastmod>
     </url>
 </urlset>
