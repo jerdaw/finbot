@@ -23,8 +23,10 @@ class NautilusAdapter(BacktestEngine):
     """Pilot adapter for evaluating a Nautilus execution path.
 
     Notes:
-        - This adapter is intentionally scoped to E6 pilot work.
-        - It currently supports only the `Rebalance` strategy shape.
+        - This adapter is intentionally scoped to E6/post-E6 pilot work.
+        - Native mode supports:
+          - `Rebalance` (mapped to Nautilus EMA-cross pilot path).
+          - `NoRebalance` (single-symbol long-only buy-and-hold pilot path).
         - When native Nautilus execution is unavailable, it falls back to the
           Backtrader contract path and tags outputs accordingly.
     """
@@ -136,20 +138,35 @@ class NautilusAdapter(BacktestEngine):
     def _validate_request(self, request: BacktestRunRequest) -> None:
         if not request.strategy_name:
             raise ValueError("strategy_name is required")
-        if request.strategy_name.lower().replace("_", "") != "rebalance":
-            raise ValueError("Nautilus pilot currently supports only strategy_name='rebalance'")
+        normalized_strategy = request.strategy_name.lower().replace("_", "")
+        if normalized_strategy not in {"rebalance", "norebalance"}:
+            raise ValueError("Nautilus pilot currently supports strategy_name in {'rebalance', 'NoRebalance'}")
         if not request.symbols:
             raise ValueError("At least one symbol is required")
         if request.initial_cash <= 0:
             raise ValueError("initial_cash must be positive")
         if request.start and request.end and request.start >= request.end:
             raise ValueError("start must be before end")
+        if normalized_strategy == "rebalance":
+            self._validate_rebalance_request(request)
+            return
+        self._validate_norebalance_request(request)
+
+    def _validate_rebalance_request(self, request: BacktestRunRequest) -> None:
         if "rebal_proportions" not in request.parameters:
             raise ValueError("rebalance pilot requires 'rebal_proportions' parameter")
         if "rebal_interval" not in request.parameters:
             raise ValueError("rebalance pilot requires 'rebal_interval' parameter")
         if len(request.parameters["rebal_proportions"]) != len(request.symbols):
             raise ValueError("Length of rebal_proportions must match symbol count")
+
+    def _validate_norebalance_request(self, request: BacktestRunRequest) -> None:
+        if len(request.symbols) != 1:
+            raise ValueError("NoRebalance pilot currently supports exactly one symbol")
+        if "equity_proportions" in request.parameters and len(request.parameters["equity_proportions"]) != len(
+            request.symbols
+        ):
+            raise ValueError("Length of equity_proportions must match symbol count")
 
     def _run_via_backtrader(self, request: BacktestRunRequest) -> BacktestRunResult:
         adapter = BacktraderAdapter(
@@ -172,6 +189,12 @@ class NautilusAdapter(BacktestEngine):
     def _run_via_nautilus(
         self, request: BacktestRunRequest
     ) -> tuple[dict[str, float], dict[str, Any], dict[str, str], tuple[str, ...]]:
+        normalized_strategy = request.strategy_name.lower().replace("_", "")
+        if normalized_strategy == "norebalance":
+            return self._run_via_nautilus_buy_and_hold(request)
+        if normalized_strategy != "rebalance":
+            raise ValueError(f"Unsupported native Nautilus strategy for pilot: {request.strategy_name}")
+
         from decimal import Decimal
 
         from nautilus_trader.backtest.engine import BacktestEngine as NautilusBacktestEngine
@@ -249,6 +272,149 @@ class NautilusAdapter(BacktestEngine):
         run_warnings = (
             "Pilot native Nautilus path currently supports one-symbol requests and maps rebalance to EMA cross.",
         )
+        return metrics, assumptions, artifacts, run_warnings
+
+    def _run_via_nautilus_buy_and_hold(
+        self, request: BacktestRunRequest
+    ) -> tuple[dict[str, float], dict[str, Any], dict[str, str], tuple[str, ...]]:
+        from decimal import Decimal
+
+        from nautilus_trader.backtest.engine import BacktestEngine as NautilusBacktestEngine
+        from nautilus_trader.config import BacktestEngineConfig, StrategyConfig
+        from nautilus_trader.model.currencies import USD
+        from nautilus_trader.model.data import Bar, BarSpecification, BarType
+        from nautilus_trader.model.enums import (
+            AccountType,
+            AggregationSource,
+            BarAggregation,
+            OmsType,
+            OrderSide,
+            PriceType,
+            TimeInForce,
+        )
+        from nautilus_trader.model.identifiers import InstrumentId, TraderId, Venue
+        from nautilus_trader.model.instruments import Instrument
+        from nautilus_trader.model.objects import Money
+        from nautilus_trader.model.orders import MarketOrder
+        from nautilus_trader.persistence.wranglers import BarDataWrangler
+        from nautilus_trader.test_kit.providers import TestInstrumentProvider
+        from nautilus_trader.trading.strategy import Strategy
+
+        class BuyAndHoldConfig(StrategyConfig, frozen=True):
+            instrument_id: InstrumentId
+            bar_type: BarType
+            trade_size: Decimal
+
+        class BuyAndHoldStrategy(Strategy):
+            def __init__(self, config: BuyAndHoldConfig) -> None:
+                super().__init__(config)
+                self.instrument: Instrument | None = None
+                self._entered = False
+
+            def on_start(self) -> None:
+                self.instrument = self.cache.instrument(self.config.instrument_id)
+                if self.instrument is None:
+                    self.log.error(f"Could not find instrument for {self.config.instrument_id}")
+                    self.stop()
+                    return
+                self.subscribe_bars(self.config.bar_type)
+
+            def on_bar(self, bar: Bar) -> None:
+                if bar.is_single_price():
+                    return
+                if self._entered:
+                    return
+                if self.instrument is None:
+                    return
+                order: MarketOrder = self.order_factory.market(
+                    instrument_id=self.config.instrument_id,
+                    order_side=OrderSide.BUY,
+                    quantity=self.instrument.make_qty(self.config.trade_size),
+                    time_in_force=TimeInForce.IOC,
+                )
+                self.submit_order(order)
+                self._entered = True
+
+        symbol = request.symbols[0]
+        price_df = self._select_native_price_history(symbol, request.start, request.end)
+
+        venue_id = "XNAS"
+        trader_id = TraderId("FINBOT-NT-001")
+        venue = Venue(venue_id)
+        instrument = TestInstrumentProvider.equity(symbol, venue_id)
+
+        engine = NautilusBacktestEngine(config=BacktestEngineConfig(trader_id=trader_id))
+        engine.add_venue(
+            venue=venue,
+            oms_type=OmsType.NETTING,
+            account_type=AccountType.CASH,
+            base_currency=USD,
+            starting_balances=[Money(request.initial_cash, USD)],
+        )
+        engine.add_instrument(instrument)
+
+        bar_spec = BarSpecification(step=1, aggregation=BarAggregation.DAY, price_type=PriceType.LAST)
+        bar_type = BarType(instrument.id, bar_spec, AggregationSource.EXTERNAL)
+        wrangler = BarDataWrangler(bar_type=bar_type, instrument=instrument)
+        bar_data = wrangler.process(self._to_nautilus_dataframe(price_df))
+        engine.add_data(bar_data)
+
+        target_weight = float(request.parameters.get("equity_proportions", [1.0])[0])
+        first_close = float(price_df["Close"].iloc[0])
+        trade_size = max(1, floor((request.initial_cash * target_weight) / first_close))
+
+        strategy = BuyAndHoldStrategy(
+            BuyAndHoldConfig(
+                instrument_id=instrument.id,
+                bar_type=bar_type,
+                trade_size=Decimal(str(trade_size)),
+            )
+        )
+        engine.add_strategy(strategy)
+        engine.run()
+        engine.get_result()
+
+        cash_after_entry = float(request.initial_cash - (trade_size * first_close))
+        equity_curve = (price_df["Close"].astype(float) * trade_size) + cash_after_entry
+        ending_value = float(equity_curve.iloc[-1])
+        roi = (ending_value / request.initial_cash) - 1.0 if request.initial_cash > 0 else 0.0
+
+        days = max((price_df.index[-1] - price_df.index[0]).days, 1)
+        years = max(days / 365.25, 1 / 365.25)
+        cagr = (ending_value / request.initial_cash) ** (1 / years) - 1 if request.initial_cash > 0 else 0.0
+
+        running_peak = equity_curve.cummax()
+        drawdown_series = (equity_curve / running_peak) - 1.0
+        max_drawdown = float(drawdown_series.min())
+
+        returns = equity_curve.pct_change().dropna()
+        sharpe = 0.0
+        if not returns.empty:
+            std = float(returns.std())
+            if std > 0:
+                sharpe = float((returns.mean() / std) * (252**0.5))
+
+        metrics = {
+            "starting_value": self._finite_or_default(request.initial_cash, 0.0),
+            "ending_value": self._finite_or_default(ending_value, request.initial_cash),
+            "roi": self._finite_or_default(roi, 0.0),
+            "cagr": self._finite_or_default(cagr, 0.0),
+            "sharpe": self._finite_or_default(sharpe, 0.0),
+            "max_drawdown": self._finite_or_default(max_drawdown, 0.0),
+            "mean_cash_utilization": self._finite_or_default(1.0 - (cash_after_entry / request.initial_cash), 0.0),
+        }
+        assumptions = {
+            "symbols": list(request.symbols),
+            "parameters": deepcopy(request.parameters),
+            "nautilus_strategy": "BuyAndHoldStrategy",
+            "nautilus_strategy_mapping": "norebalance_request_mapped_to_buy_and_hold",
+            "nautilus_trade_size": trade_size,
+            "strategy_equivalent": True,
+            "equivalence_notes": "Single-symbol NoRebalance maps to one-time market buy and hold.",
+            "confidence": "high",
+        }
+        artifacts = {"nautilus_instrument_id": str(instrument.id), "nautilus_venue": venue_id}
+        run_warnings: tuple[str, ...] = ()
         return metrics, assumptions, artifacts, run_warnings
 
     def _build_config_hash(self, request: BacktestRunRequest) -> str:

@@ -3,6 +3,7 @@
 **Created:** 2026-02-14
 **Status:** In progress
 **Plan Source:** `docs/planning/backtesting-live-readiness-implementation-plan.md`
+**Follow-up Plan Source:** `docs/planning/archive/IMPLEMENTATION_PLAN_7.0_POST_E6_NATIVE_PARITY_AND_CI_BUDGET.md`
 **Handoff:** `docs/planning/backtesting-live-readiness-handoff-2026-02-14.md`
 
 ## Estimation Scale
@@ -446,5 +447,34 @@
 ## Next Follow-up Backlog (Post E6 Cycle)
 
 1. Expand native Nautilus evaluation to like-for-like strategy logic against Backtrader parity baselines.
+   - Status: ✅ Complete (2026-02-19)
+   - Evidence:
+     - `finbot/adapters/nautilus/nautilus_adapter.py` (native `NoRebalance` buy-and-hold path)
+     - `scripts/benchmark/e6_compare_backtrader_vs_nautilus.py` (`gs01` scenario + equivalence metadata)
+     - `docs/research/artifacts/e6-benchmark-2026-02-19.json`
 2. Revisit ADR-011 after comparable strategy evidence is collected.
+   - Status: ✅ Complete (2026-02-19, follow-up tracker added; final decision remains Defer)
+   - Evidence:
+     - `docs/adr/ADR-011-nautilus-decision.md` (post-E6 follow-up tracker section)
 3. Apply CI budget controls to keep PR checks within free-tier limits without removing core quality gates.
+   - Status: ✅ Complete (2026-02-19)
+   - Evidence:
+     - `.github/workflows/ci.yml` (lean PR/main gate)
+     - `.github/workflows/ci-heavy.yml` (heavy schedule/manual + main workflow)
+
+## Next Follow-up Backlog (Post E6 Cycle, Phase 2)
+
+1. Expand like-for-like native comparison to GS-02 (`DualMomentum` frozen scenario).
+   - Status: ⬜ Not started
+   - Target Evidence:
+     - Updated benchmark artifact rows with GS-02 native vs Backtrader comparability labels
+     - Evaluation report section for GS-02 deltas and confidence
+2. Expand like-for-like native comparison to GS-03 (`RiskParity` frozen scenario).
+   - Status: ⬜ Not started
+   - Target Evidence:
+     - Updated benchmark artifact rows with GS-03 native vs Backtrader comparability labels
+     - Evaluation report section for GS-03 deltas and confidence
+3. Revisit ADR-011 final decision after GS-01/GS-02/GS-03 comparable evidence is complete.
+   - Status: ⬜ Not started
+   - Target Evidence:
+     - ADR-011 decision refresh with multi-scenario tradeoff matrix and explicit go/no-go rationale

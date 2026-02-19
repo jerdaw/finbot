@@ -46,6 +46,10 @@ class BenchmarkSummary:
     max_drawdown: float
     ending_value: float
     adapter_mode: str
+    scenario_id: str
+    strategy_equivalent: bool
+    equivalence_notes: str
+    confidence: str
 
 
 def _load_history(path: Path) -> pd.DataFrame:
@@ -65,7 +69,9 @@ def _measure_run(fn) -> tuple[object, float, float]:
     return result, elapsed, peak / (1024 * 1024)
 
 
-def _run_backtrader(price_histories: dict[str, pd.DataFrame]) -> BacktestRunRequest:
+def _build_backtrader_request(scenario: str) -> BacktestRunRequest:
+    if scenario not in {"gs01", "legacy_pilot"}:
+        raise ValueError(f"Unsupported scenario: {scenario}")
     return BacktestRunRequest(
         strategy_name="NoRebalance",
         symbols=("SPY",),
@@ -76,7 +82,18 @@ def _run_backtrader(price_histories: dict[str, pd.DataFrame]) -> BacktestRunRequ
     )
 
 
-def _run_nautilus_native(price_histories: dict[str, pd.DataFrame]) -> BacktestRunRequest:
+def _build_nautilus_request(scenario: str) -> BacktestRunRequest:
+    if scenario == "gs01":
+        return BacktestRunRequest(
+            strategy_name="NoRebalance",
+            symbols=("SPY",),
+            start=pd.Timestamp("2019-01-01"),
+            end=pd.Timestamp("2020-12-31"),
+            initial_cash=100_000.0,
+            parameters={"equity_proportions": [1.0]},
+        )
+    if scenario != "legacy_pilot":
+        raise ValueError(f"Unsupported scenario: {scenario}")
     return BacktestRunRequest(
         strategy_name="Rebalance",
         symbols=("SPY",),
@@ -87,10 +104,14 @@ def _run_nautilus_native(price_histories: dict[str, pd.DataFrame]) -> BacktestRu
     )
 
 
-def _collect_samples(samples: int, engine: str, adapter, request: BacktestRunRequest) -> list[BenchmarkSample]:
+def _collect_samples(
+    samples: int, engine: str, adapter, request: BacktestRunRequest
+) -> tuple[list[BenchmarkSample], dict[str, object]]:
     rows: list[BenchmarkSample] = []
+    last_assumptions: dict[str, object] = {}
     for _ in range(samples):
         result, elapsed, peak_mb = _measure_run(lambda: adapter.run(request))
+        last_assumptions = dict(result.assumptions)
         default_mode = "native_backtrader" if engine == "backtrader" else "unknown"
         mode = str(result.assumptions.get("adapter_mode", default_mode))
         rows.append(
@@ -104,10 +125,18 @@ def _collect_samples(samples: int, engine: str, adapter, request: BacktestRunReq
                 ending_value=float(result.metrics.get("ending_value", 0.0)),
             )
         )
-    return rows
+    return rows, last_assumptions
 
 
-def _summarize(engine: str, scenario: str, rows: list[BenchmarkSample]) -> BenchmarkSummary:
+def _summarize(
+    engine: str,
+    scenario: str,
+    scenario_id: str,
+    rows: list[BenchmarkSample],
+    assumptions: dict[str, object],
+) -> BenchmarkSummary:
+    strategy_equivalent = bool(assumptions.get("strategy_equivalent", engine == "backtrader"))
+    confidence = str(assumptions.get("confidence", "high" if strategy_equivalent else "medium"))
     return BenchmarkSummary(
         engine=engine,
         scenario=scenario,
@@ -119,6 +148,10 @@ def _summarize(engine: str, scenario: str, rows: list[BenchmarkSample]) -> Bench
         max_drawdown=median(row.max_drawdown for row in rows),
         ending_value=median(row.ending_value for row in rows),
         adapter_mode=rows[-1].mode,
+        scenario_id=scenario_id,
+        strategy_equivalent=strategy_equivalent,
+        equivalence_notes=str(assumptions.get("equivalence_notes", "Backtrader baseline scenario.")),
+        confidence=confidence,
     )
 
 
@@ -146,16 +179,25 @@ def _write_artifacts(
         f"- Python: {environment['python_version']}",
         f"- Platform: {environment['platform']}",
         "",
-        "| Engine | Scenario | Samples | Mode | Median Runtime (s) | Median Peak Memory (MB) | ROI | CAGR | Max Drawdown | Ending Value |",
-        "| --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |",
+        "| Engine | Scenario | Scenario ID | Samples | Mode | Equivalent | Confidence | Median Runtime (s) | Median Peak Memory (MB) | ROI | CAGR | Max Drawdown | Ending Value |",
+        "| --- | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |",
     ]
     lines.extend(
         (
-            f"| {summary.engine} | {summary.scenario} | {summary.samples} | {summary.adapter_mode} | "
+            f"| {summary.engine} | {summary.scenario} | {summary.scenario_id} | {summary.samples} | {summary.adapter_mode} | "
+            f"{'yes' if summary.strategy_equivalent else 'no'} | {summary.confidence} | "
             f"{summary.median_run_seconds:.4f} | {summary.median_peak_memory_mb:.2f} | "
             f"{summary.roi:.6f} | {summary.cagr:.6f} | {summary.max_drawdown:.6f} | {summary.ending_value:.2f} |"
         )
         for summary in summaries
+    )
+    lines.extend(
+        [
+            "",
+            "## Equivalence Notes",
+            "",
+            *[f"- `{summary.engine}` `{summary.scenario_id}`: {summary.equivalence_notes}" for summary in summaries],
+        ]
     )
     md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return json_path, md_path
@@ -176,6 +218,12 @@ def main() -> int:
         default=Path("docs/research/artifacts"),
         help="Directory where JSON/Markdown artifacts are written.",
     )
+    parser.add_argument(
+        "--scenario",
+        choices=["gs01", "legacy_pilot"],
+        default="gs01",
+        help="Benchmark scenario: gs01 for like-for-like NoRebalance, legacy_pilot for prior rebalance->EMA mapping.",
+    )
     args = parser.parse_args()
 
     history_path = args.history_dir / "SPY_history_1d.parquet"
@@ -185,20 +233,50 @@ def main() -> int:
     price_histories = {"SPY": _load_history(history_path)}
 
     bt_adapter = BacktraderAdapter(price_histories)
-    bt_request = _run_backtrader(price_histories)
-    bt_rows = _collect_samples(samples=args.samples, engine="backtrader", adapter=bt_adapter, request=bt_request)
+    bt_request = _build_backtrader_request(args.scenario)
+    bt_rows, bt_assumptions = _collect_samples(
+        samples=args.samples, engine="backtrader", adapter=bt_adapter, request=bt_request
+    )
+    bt_assumptions.setdefault("strategy_equivalent", True)
+    bt_assumptions.setdefault("equivalence_notes", "Backtrader baseline for frozen GS-01 NoRebalance scenario.")
+    bt_assumptions.setdefault("confidence", "high")
 
     nt_adapter = NautilusAdapter(
         price_histories,
         enable_backtrader_fallback=False,
         enable_native_execution=True,
     )
-    nt_request = _run_nautilus_native(price_histories)
-    nt_rows = _collect_samples(samples=args.samples, engine="nautilus-pilot", adapter=nt_adapter, request=nt_request)
+    nt_request = _build_nautilus_request(args.scenario)
+    nt_rows, nt_assumptions = _collect_samples(
+        samples=args.samples, engine="nautilus-pilot", adapter=nt_adapter, request=nt_request
+    )
+    if args.scenario == "legacy_pilot":
+        nt_assumptions.setdefault("strategy_equivalent", False)
+        nt_assumptions.setdefault(
+            "equivalence_notes",
+            "Legacy E6 pilot mapping uses rebalance request mapped to EMA-cross strategy.",
+        )
+        nt_assumptions.setdefault("confidence", "medium")
+    else:
+        nt_assumptions.setdefault("strategy_equivalent", True)
+        nt_assumptions.setdefault("equivalence_notes", "NoRebalance mapped to native long-only buy-and-hold strategy.")
+        nt_assumptions.setdefault("confidence", "high")
 
     summaries = [
-        _summarize("backtrader", "SPY 2019-2020 buy-and-hold", bt_rows),
-        _summarize("nautilus-pilot", "SPY 2019-2020 rebalance->EMA pilot", nt_rows),
+        _summarize(
+            "backtrader",
+            "SPY 2019-2020 buy-and-hold",
+            args.scenario,
+            bt_rows,
+            bt_assumptions,
+        ),
+        _summarize(
+            "nautilus-pilot",
+            "SPY 2019-2020 native run",
+            args.scenario,
+            nt_rows,
+            nt_assumptions,
+        ),
     ]
 
     run_date = datetime.now(UTC).strftime("%Y-%m-%d")

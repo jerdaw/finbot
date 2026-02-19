@@ -94,7 +94,8 @@ class SimpleRegimeDetector:
         period_returns: list[float] = []
         period_vols: list[float] = []
 
-        for date, regime in regime_series.items():
+        for date in pd.DatetimeIndex(regime_series.index):
+            regime = regime_series.loc[date]
             if regime is None:
                 continue
 
@@ -114,12 +115,12 @@ class SimpleRegimeDetector:
                 # Start new period
                 current_regime = regime
                 period_start = date
-                period_returns = [rolling_returns.loc[date]]
-                period_vols = [rolling_vol.loc[date]]
+                period_returns = [float(rolling_returns.loc[date])]
+                period_vols = [float(rolling_vol.loc[date])]
             else:
                 # Continue current period
-                period_returns.append(rolling_returns.loc[date])
-                period_vols.append(rolling_vol.loc[date])
+                period_returns.append(float(rolling_returns.loc[date]))
+                period_vols.append(float(rolling_vol.loc[date]))
 
         # Don't forget the last period
         if current_regime is not None and period_start is not None:

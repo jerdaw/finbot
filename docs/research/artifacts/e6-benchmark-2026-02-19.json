@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-02-19T16:50:49.567635+00:00",
+  "generated_at": "2026-02-19T18:18:06.148620+00:00",
   "environment": {
     "python_version": "3.14.2",
     "platform": "Linux-6.12.68-1-MANJARO-x86_64-with-glibc2.42"
@@ -9,25 +9,33 @@
       "engine": "backtrader",
       "scenario": "SPY 2019-2020 buy-and-hold",
       "samples": 3,
-      "median_run_seconds": 0.45291804295266047,
+      "median_run_seconds": 0.48101951397256926,
       "median_peak_memory_mb": 1.217599868774414,
       "roi": 0.5584033641504159,
       "cagr": 0.24781202447804174,
       "max_drawdown": -0.33502913130744005,
       "ending_value": 155840.3364150416,
-      "adapter_mode": "native_backtrader"
+      "adapter_mode": "native_backtrader",
+      "scenario_id": "gs01",
+      "strategy_equivalent": true,
+      "equivalence_notes": "Backtrader baseline for frozen GS-01 NoRebalance scenario.",
+      "confidence": "high"
     },
     {
       "engine": "nautilus-pilot",
-      "scenario": "SPY 2019-2020 rebalance->EMA pilot",
+      "scenario": "SPY 2019-2020 native run",
       "samples": 3,
-      "median_run_seconds": 0.07267161400523037,
-      "median_peak_memory_mb": 0.7333135604858398,
-      "roi": 0.0,
-      "cagr": 0.0,
-      "max_drawdown": 0.0,
-      "ending_value": 100000.0,
-      "adapter_mode": "native_nautilus"
+      "median_run_seconds": 0.282528112991713,
+      "median_peak_memory_mb": 0.7389020919799805,
+      "roi": 0.4935630487060547,
+      "cagr": 0.2226186676983808,
+      "max_drawdown": -0.3405979149735212,
+      "ending_value": 149356.30487060547,
+      "adapter_mode": "native_nautilus",
+      "scenario_id": "gs01",
+      "strategy_equivalent": true,
+      "equivalence_notes": "Single-symbol NoRebalance maps to one-time market buy and hold.",
+      "confidence": "high"
     }
   ]
 }

@@ -1,0 +1,113 @@
+name: CI Heavy
+
+on:
+  schedule:
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-heavy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  docstring-coverage:
+    name: Docstring Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Set up Python
+        run: uv python install 3.13
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Check docstring coverage with interrogate
+        run: uv run interrogate finbot/
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Set up Python
+        run: uv python install 3.13
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Security scan with bandit
+        run: uv run bandit -r finbot/ -ll
+
+      - name: Vulnerability scan with pip-audit
+        run: |
+          uv pip install pip-audit
+          uv run pip-audit
+
+  test-matrix:
+    name: Test (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Set up Python ${{ matrix.python-version }}
+        run: uv python install ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Run tests with coverage
+        env:
+          DYNACONF_ENV: development
+        run: uv run pytest tests/ -v --cov=finbot --cov-report=term-missing --cov-fail-under=30
+
+      - name: Upload coverage reports
+        if: matrix.python-version == '3.13'
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+        continue-on-error: true
+
+  parity-gate-full:
+    name: Backtest Parity Gate (All Golden Strategies)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Set up Python
+        run: uv python install 3.13
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Run full parity suite
+        env:
+          DYNACONF_ENV: development
+        run: uv run pytest tests/integration/test_backtest_parity_ab.py -v

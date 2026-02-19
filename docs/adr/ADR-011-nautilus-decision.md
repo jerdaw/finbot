@@ -26,7 +26,7 @@ We will keep Backtrader as the default engine and treat Nautilus as an experimen
 
 ## Decision Drivers
 
-- Native Nautilus benchmark data is now available but not yet like-for-like on strategy logic.
+- Native Nautilus benchmark data now includes one like-for-like GS-01 row.
 - Native pilot execution exists, but breadth of comparative evidence is still limited.
 - Backtrader path is currently stable, parity-gated, and sufficient for current roadmap goals.
 - Newly added snapshot and batch observability integrations reduce risk for a follow-up native Nautilus evaluation.
@@ -37,10 +37,10 @@ From `docs/research/artifacts/e6-benchmark-2026-02-19.json`:
 
 | Engine | Scenario | Mode | Median Runtime (s) | Median Peak Memory (MB) | ROI |
 | --- | --- | --- | ---: | ---: | ---: |
-| Backtrader | SPY 2019-2020 buy-and-hold | `native_backtrader` | 0.4529 | 1.22 | 0.5584 |
-| Nautilus pilot | SPY 2019-2020 rebalance->EMA mapping | `native_nautilus` | 0.0727 | 0.73 | 0.0000 |
+| Backtrader | SPY 2019-2020 buy-and-hold (`gs01`) | `native_backtrader` | 0.4689 | 1.22 | 0.5584 |
+| Nautilus pilot | SPY 2019-2020 native run (`gs01`) | `native_nautilus` | 0.2802 | 0.74 | 0.4936 |
 
-The runtime/memory evidence is useful, but metric parity is not decision-grade because the strategy logic is not equivalent between rows.
+This is a meaningful evidence improvement because strategy logic is now equivalent for GS-01, but decision-grade breadth still requires GS-02/GS-03 comparable runs.
 
 ## Considered Options
 
@@ -85,9 +85,17 @@ Accepted as the lowest-risk, highest-information path.
 
 ## Follow-up Actions
 
-1. Expand native Nautilus evaluation coverage across additional frozen strategy/dataset pairs.
+1. Expand native Nautilus evaluation coverage across additional frozen strategy/dataset pairs (GS-02 and GS-03).
 2. Re-run comparative evaluation with real runtime/fidelity metrics.
 3. Revisit ADR-011 with Go/No-Go/Hybrid decision based on measured evidence.
+
+## Post-E6 Follow-up Tracker
+
+- [x] GS-01 like-for-like native benchmark row published (2026-02-19).
+- [ ] GS-02 like-for-like native benchmark row published.
+- [ ] GS-03 like-for-like native benchmark row published.
+- [x] CI budget tiering implemented for PR-vs-heavy quality gates (2026-02-19).
+- [ ] Final decision refresh after multi-scenario evidence review.
 
 ## Validation Criteria for Revisiting This ADR
 

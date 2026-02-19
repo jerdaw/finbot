@@ -51,7 +51,7 @@ Backtesting/live-readiness transition is **Epics E0-E6 current cycle complete** 
   - Latency simulation (submission, fill, cancellation delays)
   - Risk controls (position limits, exposure limits, drawdown protection, kill-switch)
   - State checkpoint and recovery for disaster recovery
-  - 645 total tests (16 new tests for E5)
+  - 674 total tests (latest local run: 672 passed, 2 skipped)
 
 - **Next Phase:** Post-E6 follow-up (like-for-like native strategy comparison + CI budget optimization)
 
@@ -494,7 +494,7 @@ uv run pytest --cov=finbot tests/
 ```
 
 **Test structure**:
-- `tests/unit/`: Unit tests (645 tests across 30+ files)
+- `tests/unit/`: Unit tests (674 tests across 30+ files)
   - `test_imports.py`: Smoke tests for all key module imports
   - `test_simulation_math.py`: Simulation math correctness
   - `test_finance_utils.py`: Finance calculation tests
@@ -627,6 +627,7 @@ See `docs/adr/` for architectural decision records:
 - ✅ **Do:** Attribute commits to human developers
 - ❌ **Don't:** Include any AI assistant in author, co-author, or contributor fields
 - **Rationale:** Commits represent human accountability and decision-making
+- Scope: This also applies to documentation attribution (README/ADRs/research/planning/changelogs/release notes).
 
 **Examples:**
 

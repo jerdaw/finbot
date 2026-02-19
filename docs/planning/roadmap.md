@@ -2,7 +2,7 @@
 
 **Created:** 2026-02-10
 **Last Updated:** 2026-02-19
-**Status:** Priority 0-5 baseline complete/progressing; Priority 6 adapter-first backtesting/live-readiness in progress (E0-E5 complete, E6-T1 complete, E6 decision gate in progress)
+**Status:** Priority 0-5 baseline complete/progressing; Priority 6 adapter-first backtesting/live-readiness current cycle complete with post-E6 follow-up batch complete (items 69-70)
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
 
@@ -501,6 +501,7 @@ Priority 6 execution documents:
 - `docs/planning/e3-t3-walkforward-regime-implementation-plan.md`
 - `docs/planning/archive/IMPLEMENTATION_PLAN_6.2_E6_EXECUTION_READY.md` (archived after completion)
 - `docs/planning/archive/IMPLEMENTATION_PLAN_6.3_E6_EVIDENCE_GATE_AND_E4_CLOSURE.md` (archived after completion)
+- `docs/planning/archive/IMPLEMENTATION_PLAN_7.0_POST_E6_NATIVE_PARITY_AND_CI_BUDGET.md` (archived after completion)
 
 64-66. **E4 follow-up + E6-T1 implementation batch** (S: 1-2 days each)
     - **Status:** ✅ Complete (2026-02-19, trimmed; details recorded in Completed Items table)
@@ -510,15 +511,25 @@ Priority 6 execution documents:
 
 69. **E6 follow-up: like-for-like native strategy comparison** (M: 3-5 days)
     - **What:** Run native Nautilus vs Backtrader on equivalent strategy logic and publish parity-grade deltas.
-    - **Evidence:** Updated `docs/research/nautilus-pilot-evaluation.md` with directly comparable strategy rows and confidence labeling.
-    - **Status:** ⬜ Not started
+    - **Evidence:** `finbot/adapters/nautilus/nautilus_adapter.py` (native `NoRebalance` buy-and-hold pilot path), `scripts/benchmark/e6_compare_backtrader_vs_nautilus.py` (`gs01` scenario and equivalence metadata), updated `docs/research/nautilus-pilot-evaluation.md`.
+    - **Status:** ✅ Complete (2026-02-19)
 
 70. **CI budget control for free tier while preserving quality gates** (S: 1-2 days)
     - **What:** Keep core quality checks on PRs while shifting heavier jobs to scheduled/manual workflows and preserving parity gate reliability.
-    - **Evidence:** Updated `.github/workflows/ci.yml` and documentation of tier-aware CI policy.
+    - **Evidence:** `.github/workflows/ci.yml` (lean PR/main gate), `.github/workflows/ci-heavy.yml` (scheduled/manual/main heavy checks).
+    - **Status:** ✅ Complete (2026-02-19)
+
+71. **E6 follow-up phase 2: GS-02/GS-03 like-for-like native comparison** (M: 3-5 days)
+    - **What:** Extend native Nautilus comparability to GS-02 and GS-03 frozen scenarios with confidence-labeled deltas.
+    - **Evidence:** Updated `docs/research/artifacts/e6-benchmark-YYYY-MM-DD.json` and `docs/research/nautilus-pilot-evaluation.md` sections for GS-02/GS-03.
     - **Status:** ⬜ Not started
 
-**Current Phase:** Post-E6 follow-up planning and CI budget optimization
+72. **ADR-011 final revisit after multi-scenario evidence** (S: 1-2 days)
+    - **What:** Revisit final go/no-go/hybrid decision after GS-01/02/03 comparable evidence is published.
+    - **Evidence:** Updated `docs/adr/ADR-011-nautilus-decision.md` decision section and tradeoff matrix.
+    - **Status:** ⬜ Not started
+
+**Current Phase:** Post-E6 follow-up phase 2 planning (GS-02/GS-03 comparability + ADR refresh)
 - E4 reproducibility/observability deferred integration items are fully closed.
 
 ---
@@ -593,3 +604,5 @@ Priority 6 execution documents:
 | E6 pilot adapter hardening + native wiring (6.66) | 2026-02-19 | Native Nautilus one-strategy pilot path implemented with contract-safe fallback and tests |
 | E6-T2 comparative benchmark expansion (6.67) | 2026-02-19 | Added benchmark harness + artifacts and updated evaluation report with measured runtime/memory/metrics |
 | E6-T3 final decision refresh (6.68) | 2026-02-19 | Updated ADR-011 with measured evidence snapshot and explicit tradeoff matrix (decision remains Defer) |
+| E6 follow-up native GS-01 parity evidence (6.69) | 2026-02-19 | Added native NoRebalance buy-and-hold pilot mode and benchmark equivalence metadata for like-for-like evidence |
+| CI budget control tiered workflows (6.70) | 2026-02-19 | Split PR/main core CI from heavy scheduled/manual checks while preserving parity gate coverage |
