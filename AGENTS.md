@@ -33,9 +33,9 @@ uv run pytest
 uv run python scripts/update_daily.py
 ```
 
-## Current Delivery Status (2026-02-16)
+## Current Delivery Status (2026-02-19)
 
-Backtesting/live-readiness transition is **Epics E0-E5 complete** (adapter-first path).
+Backtesting/live-readiness transition is **Epics E0-E6 current cycle complete** (adapter-first path).
 
 - **Completed Epics:**
   - ✅ **E0**: Foundational contracts (schemas, versioning, serialization, snapshots)
@@ -44,6 +44,7 @@ Backtesting/live-readiness transition is **Epics E0-E5 complete** (adapter-first
   - ✅ **E3**: Cost models, corporate actions, walk-forward analysis, regime detection
   - ✅ **E4**: Experiment tracking (registry, snapshots, batch observability, dashboard)
   - ✅ **E5**: Live-readiness execution system (orders, latency, risk controls, checkpoints)
+  - ✅ **E6 (current cycle)**: Nautilus pilot hardening, comparative benchmark artifact publication, and decision gate closure (**Defer** outcome)
 
 - **E5 Deliverables (Live-Readiness Without Production):**
   - Order lifecycle tracking with full execution history
@@ -52,14 +53,14 @@ Backtesting/live-readiness transition is **Epics E0-E5 complete** (adapter-first
   - State checkpoint and recovery for disaster recovery
   - 645 total tests (16 new tests for E5)
 
-- **Next Phase:** E6 (NautilusTrader Pilot and Decision Gate)
+- **Next Phase:** Post-E6 follow-up (like-for-like native strategy comparison + CI budget optimization)
 
 Authoritative tracking docs:
 - `docs/planning/backtesting-live-readiness-backlog.md` (Epic tracking)
-- `docs/planning/e5-t1-orders-executions-implementation-plan.md`
-- `docs/planning/e5-t2-latency-hooks-implementation-plan.md`
-- `docs/planning/e5-t3-risk-controls-implementation-plan.md`
-- `docs/planning/e5-t4-state-checkpoint-implementation-plan.md`
+- `docs/planning/roadmap.md`
+- `docs/research/nautilus-pilot-evaluation.md`
+- `docs/adr/ADR-011-nautilus-decision.md`
+- `docs/planning/archive/IMPLEMENTATION_PLAN_6.3_E6_EVIDENCE_GATE_AND_E4_CLOSURE.md`
 
 ## Common Commands
 

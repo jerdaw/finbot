@@ -1,0 +1,33 @@
+{
+  "generated_at": "2026-02-19T16:50:49.567635+00:00",
+  "environment": {
+    "python_version": "3.14.2",
+    "platform": "Linux-6.12.68-1-MANJARO-x86_64-with-glibc2.42"
+  },
+  "summaries": [
+    {
+      "engine": "backtrader",
+      "scenario": "SPY 2019-2020 buy-and-hold",
+      "samples": 3,
+      "median_run_seconds": 0.45291804295266047,
+      "median_peak_memory_mb": 1.217599868774414,
+      "roi": 0.5584033641504159,
+      "cagr": 0.24781202447804174,
+      "max_drawdown": -0.33502913130744005,
+      "ending_value": 155840.3364150416,
+      "adapter_mode": "native_backtrader"
+    },
+    {
+      "engine": "nautilus-pilot",
+      "scenario": "SPY 2019-2020 rebalance->EMA pilot",
+      "samples": 3,
+      "median_run_seconds": 0.07267161400523037,
+      "median_peak_memory_mb": 0.7333135604858398,
+      "roi": 0.0,
+      "cagr": 0.0,
+      "max_drawdown": 0.0,
+      "ending_value": 100000.0,
+      "adapter_mode": "native_nautilus"
+    }
+  ]
+}

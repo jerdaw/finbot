@@ -64,6 +64,7 @@ class BacktraderAdapter(BacktestEngine):
         missing_data_policy: MissingDataPolicy = DEFAULT_MISSING_DATA_POLICY,
         snapshot_registry: DataSnapshotRegistry | None = None,
         auto_snapshot: bool = False,
+        enable_snapshot_replay: bool = False,
     ):
         self._price_histories = price_histories
         self._strategy_registry = strategy_registry or DEFAULT_STRATEGY_REGISTRY
@@ -82,14 +83,18 @@ class BacktraderAdapter(BacktestEngine):
         self._missing_data_policy = missing_data_policy
         self._snapshot_registry = snapshot_registry
         self._auto_snapshot = auto_snapshot
+        self._enable_snapshot_replay = enable_snapshot_replay
 
     def run(self, request: BacktestRunRequest) -> BacktestRunResult:
         strategy_cls = self._resolve_strategy(request.strategy_name)
-        selected_histories = self._select_price_histories(request.symbols)
+        selected_histories, snapshot_id = self._resolve_run_histories(request)
         warnings: list[str] = []
-        snapshot_id = self._data_snapshot_id
 
-        if self._auto_snapshot and self._snapshot_registry is not None:
+        if (
+            self._auto_snapshot
+            and self._snapshot_registry is not None
+            and not (self._enable_snapshot_replay and request.data_snapshot_id is not None)
+        ):
             try:
                 snapshot_id = self._resolve_data_snapshot_id(selected_histories, request)
             except Exception as exc:  # pragma: no cover - defensive path
@@ -141,6 +146,8 @@ class BacktraderAdapter(BacktestEngine):
             "slippage_model": self._slippage_model.get_name(),
             "missing_data_policy": self._missing_data_policy.value,
             "auto_snapshot": self._auto_snapshot,
+            "enable_snapshot_replay": self._enable_snapshot_replay,
+            "request_data_snapshot_id": request.data_snapshot_id,
         }
 
         result = build_backtest_run_result_from_stats(
@@ -190,6 +197,18 @@ class BacktraderAdapter(BacktestEngine):
         )
         return snapshot.snapshot_id
 
+    def _resolve_run_histories(self, request: BacktestRunRequest) -> tuple[dict[str, pd.DataFrame], str]:
+        """Resolve input histories and snapshot ID for a run."""
+        if self._enable_snapshot_replay and request.data_snapshot_id is not None:
+            if self._snapshot_registry is None:
+                raise ValueError("Snapshot replay requires snapshot_registry")
+            snapshot_data = self._snapshot_registry.load_snapshot(request.data_snapshot_id)
+            selected_histories = self._select_price_histories(request.symbols, source_histories=snapshot_data)
+            return selected_histories, request.data_snapshot_id
+
+        selected_histories = self._select_price_histories(request.symbols)
+        return selected_histories, self._data_snapshot_id
+
     def _resolve_strategy(self, strategy_name: str) -> type[bt.Strategy]:
         strategy_key = strategy_name.lower().replace("_", "")
         if strategy_key not in self._strategy_registry:
@@ -197,15 +216,21 @@ class BacktraderAdapter(BacktestEngine):
             raise ValueError(f"Unknown strategy '{strategy_name}'. Available: {available}")
         return self._strategy_registry[strategy_key]
 
-    def _select_price_histories(self, symbols: tuple[str, ...]) -> dict[str, pd.DataFrame]:
+    def _select_price_histories(
+        self,
+        symbols: tuple[str, ...],
+        *,
+        source_histories: dict[str, pd.DataFrame] | None = None,
+    ) -> dict[str, pd.DataFrame]:
         if not symbols:
             raise ValueError("At least one symbol is required")
 
+        histories_source = source_histories if source_histories is not None else self._price_histories
         histories: dict[str, pd.DataFrame] = {}
         for symbol in symbols:
-            if symbol not in self._price_histories:
+            if symbol not in histories_source:
                 raise ValueError(f"Missing price history for symbol: {symbol}")
-            symbol_df = self._price_histories[symbol].copy()
+            symbol_df = histories_source[symbol].copy()
             # Apply missing data policy before validation
             symbol_df = self._apply_missing_data_policy(symbol_df, symbol)
             validate_bar_dataframe(symbol_df)
@@ -257,6 +282,9 @@ class BacktraderAdapter(BacktestEngine):
             "broker_commission": self._broker_commission.__name__,
             "sizer": self._sizer.__name__,
             "sizer_kwargs": self._sizer_kwargs,
+            "auto_snapshot": self._auto_snapshot,
+            "enable_snapshot_replay": self._enable_snapshot_replay,
+            "request_data_snapshot_id": request.data_snapshot_id,
         }
         return hash_dictionary(hash_input)
 

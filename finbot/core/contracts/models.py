@@ -95,6 +95,7 @@ class BacktestRunRequest:
     end: pd.Timestamp | None
     initial_cash: float
     parameters: dict[str, Any] = field(default_factory=dict)
+    data_snapshot_id: str | None = None
 
 
 @dataclass(frozen=True, slots=True)

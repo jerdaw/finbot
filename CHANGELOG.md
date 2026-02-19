@@ -7,13 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Planned
-- Improve documentation (API docs, architecture diagram, utility library overview)
-- Strengthen type safety (add type annotations, enable stricter mypy settings)
-- Add performance benchmarks for simulators
-- Improve pre-commit hooks (add mypy, bandit, line ending enforcement)
-- Modernize pyproject.toml metadata to PEP 621 format
-- Consolidate package layout (move config/, constants/, libs/ under finbot/)
+### Added
+- Snapshot replay support for contract runs via `BacktestRunRequest.data_snapshot_id` and `BacktraderAdapter(enable_snapshot_replay=True)`.
+- Batch retry ergonomics in `backtest_batch` with opt-in controls:
+  - `retry_failed`
+  - `max_retry_attempts`
+  - `retry_backoff_seconds`
+- Retry observability metadata in batch contracts/registry:
+  - `attempt_count`
+  - `final_attempt_success`
+- E6 benchmark harness: `scripts/benchmark/e6_compare_backtrader_vs_nautilus.py`.
+- Benchmark artifacts:
+  - `docs/research/artifacts/e6-benchmark-2026-02-19.json`
+  - `docs/research/artifacts/e6-benchmark-2026-02-19.md`
+- User guides:
+  - `docs/user-guides/snapshot-replay.md`
+  - `docs/user-guides/batch-observability-and-retries.md`
+
+### Changed
+- Updated `docs/research/nautilus-pilot-evaluation.md` with measured benchmark data.
+- Refreshed `docs/adr/ADR-011-nautilus-decision.md` with evidence snapshot and tradeoff matrix (decision remains Defer for this cycle).
+- Updated roadmap/backlog planning artifacts for E4 closure and E6 decision-gate completion.
 
 ## [1.0.0] - 2026-02-11
 

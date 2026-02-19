@@ -51,6 +51,8 @@ class BatchItemResult:
         error_message: Error description if failed
         error_category: Categorized error type if failed
         duration_seconds: Execution time for this item
+        attempt_count: Number of execution attempts for this item
+        final_attempt_success: Whether final attempt succeeded
     """
 
     item_id: int
@@ -59,6 +61,8 @@ class BatchItemResult:
     error_message: str | None = None
     error_category: ErrorCategory | None = None
     duration_seconds: float = 0.0
+    attempt_count: int = 1
+    final_attempt_success: bool | None = None
 
 
 @dataclass

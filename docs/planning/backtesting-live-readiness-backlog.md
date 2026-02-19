@@ -193,7 +193,7 @@
 
 ### E4-T2 (M) Snapshot-based reproducibility mode
 
-- Status: 🟡 Partially Complete (2026-02-19) - Adapter integration delivered, replay/docs still deferred
+- Status: ✅ Complete (2026-02-19)
 - Completed:
   - [x] DataSnapshot contract with content-addressable hashing
   - [x] DataSnapshotRegistry with create/load/list/delete operations
@@ -205,21 +205,18 @@
 - Completed in follow-up:
   - [x] BacktraderAdapter integration (`auto_snapshot`, `snapshot_registry`)
   - [x] Unit test coverage for snapshot attachment
-- Deferred (Future work):
-  - [ ] Replay functionality using snapshots
-  - [ ] Integration tests for replay reproducibility
-  - [ ] User guide documentation
+- Completed in closure pass:
+  - [x] Replay functionality using snapshots (`BacktestRunRequest.data_snapshot_id`)
+  - [x] Replay unit tests for reproducibility and failure modes
+  - [x] User guide documentation (`docs/user-guides/snapshot-replay.md`)
 - Acceptance:
   - Snapshot infrastructure complete and tested. ✅
   - Can create/load/manage snapshots manually. ✅
-  - Runs can be replayed from dataset snapshot reference. ⬜ (Deferred to avoid breaking parity)
-
-**Note:** Snapshot infrastructure and adapter wiring are now complete; replay and
-end-to-end reproducibility workflows remain the next follow-up scope.
+  - Runs can be replayed from dataset snapshot reference. ✅
 
 ### E4-T3 (M) Batch observability instrumentation
 
-- Status: 🟡 Partially Complete (2026-02-19) - `backtest_batch` integration delivered, retries/docs deferred
+- Status: ✅ Complete (2026-02-19)
 - Completed:
   - [x] Batch observability contracts (BatchRun, BatchStatus, ErrorCategory, BatchItemResult)
   - [x] BatchRegistry with create/update/list/query/complete operations
@@ -233,17 +230,15 @@ end-to-end reproducibility workflows remain the next follow-up scope.
 - Completed in follow-up:
   - [x] Integration with `backtest_batch` via optional `track_batch` mode
   - [x] Unit tests for partial-failure and all-failure lifecycle tracking
-- Deferred (Future work):
-  - [ ] Retry utilities for failed items
-  - [ ] User guide documentation
+- Completed in closure pass:
+  - [x] Retry utilities for failed items (`retry_failed`, `max_retry_attempts`, `retry_backoff_seconds`)
+  - [x] Retry metadata (`attempt_count`, `final_attempt_success`)
+  - [x] User guide documentation (`docs/user-guides/batch-observability-and-retries.md`)
 - Acceptance:
   - Status tracking infrastructure complete and tested. ✅
   - Error taxonomy and categorization functional. ✅
   - Can track batches manually with full observability. ✅
   - Status/retry/failure taxonomy visible and queryable. ✅
-
-**Note:** Batch observability infrastructure is complete and now integrated with
-`backtest_batch` behind an opt-in flag; retry ergonomics and user docs are pending.
 
 ### E4-T4 (S) Dashboard experiment comparison page
 
@@ -342,12 +337,22 @@ end-to-end reproducibility workflows remain the next follow-up scope.
 ### E6-T2 (S) Comparative evaluation report
 
 - Output: `docs/research/nautilus-pilot-evaluation.md`
+- Status: ✅ Complete (2026-02-19)
+- Completed:
+  - [x] Comparative benchmark script for reproducible runs
+  - [x] JSON + Markdown benchmark artifacts under `docs/research/artifacts/`
+  - [x] Evaluation report updated with measured runtime/memory/metric table
 - Acceptance:
   - Fill realism, latency fit, ops complexity, integration cost compared.
 
 ### E6-T3 (S) Go/No-Go recommendation memo
 
 - Output: `docs/adr/ADR-011-nautilus-decision.md`
+- Status: ✅ Complete (2026-02-19)
+- Completed:
+  - [x] ADR refreshed with measured evidence references
+  - [x] Explicit tradeoff matrix
+  - [x] Final decision for this cycle remains `Defer`
 - Acceptance:
   - Decision and rationale recorded with quantified tradeoffs.
 
@@ -434,6 +439,12 @@ end-to-end reproducibility workflows remain the next follow-up scope.
 - `E1`: ✅ Complete
 - `E2`: ✅ Complete (all tasks done: adapter, parity harness, golden tests, CI gate)
 - `E3`: ✅ Complete (All tasks: E3-T1 cost models, E3-T2 corporate actions + data quality, E3-T3 walk-forward + regime analysis)
-- `E4`: 🟡 Mostly complete (core infra complete; replay docs and retry ergonomics remain)
+- `E4`: ✅ Complete
 - `E5`: ✅ Complete (All tasks: E5-T1 orders/executions, E5-T2 latency simulation, E5-T3 risk controls, E5-T4 state checkpoints)
-- `E6`: 🚧 In progress (contract-aligned pilot fallback complete; native Nautilus path pending decision gate follow-up)
+- `E6`: ✅ Complete for current cycle (decision gate closed as Defer pending broader comparable evidence)
+
+## Next Follow-up Backlog (Post E6 Cycle)
+
+1. Expand native Nautilus evaluation to like-for-like strategy logic against Backtrader parity baselines.
+2. Revisit ADR-011 after comparable strategy evidence is collected.
+3. Apply CI budget controls to keep PR checks within free-tier limits without removing core quality gates.

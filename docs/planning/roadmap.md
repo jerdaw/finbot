@@ -500,26 +500,30 @@ Priority 6 execution documents:
 - `docs/planning/backtesting-live-readiness-handoff-2026-02-14.md`
 - `docs/planning/e3-t3-walkforward-regime-implementation-plan.md`
 - `docs/planning/archive/IMPLEMENTATION_PLAN_6.2_E6_EXECUTION_READY.md` (archived after completion)
+- `docs/planning/archive/IMPLEMENTATION_PLAN_6.3_E6_EVIDENCE_GATE_AND_E4_CLOSURE.md` (archived after completion)
 
 64-66. **E4 follow-up + E6-T1 implementation batch** (S: 1-2 days each)
     - **Status:** ✅ Complete (2026-02-19, trimmed; details recorded in Completed Items table)
 
-67. **E6-T2 comparative benchmark expansion** (M: 3-5 days)
-    - **What:** Publish side-by-side Backtrader vs native Nautilus deltas (returns/drawdown/trades/runtime/memory) on frozen datasets.
-    - **Evidence:** `docs/research/nautilus-pilot-evaluation.md` update with measured benchmark section + reproducible command log.
+67-68. **E6 decision-gate closure batch** (S: 1-2 days each)
+    - **Status:** ✅ Complete (2026-02-19, trimmed; details recorded in Completed Items table)
+
+69. **E6 follow-up: like-for-like native strategy comparison** (M: 3-5 days)
+    - **What:** Run native Nautilus vs Backtrader on equivalent strategy logic and publish parity-grade deltas.
+    - **Evidence:** Updated `docs/research/nautilus-pilot-evaluation.md` with directly comparable strategy rows and confidence labeling.
     - **Status:** ⬜ Not started
 
-68. **E6-T3 final decision refresh** (S: 1-2 days)
-    - **What:** Revisit ADR-011 with measured E6-T2 evidence and record Go/No-Go/Hybrid outcome.
-    - **Evidence:** `docs/adr/ADR-011-nautilus-decision.md` revision with explicit tradeoff table.
+70. **CI budget control for free tier while preserving quality gates** (S: 1-2 days)
+    - **What:** Keep core quality checks on PRs while shifting heavier jobs to scheduled/manual workflows and preserving parity gate reliability.
+    - **Evidence:** Updated `.github/workflows/ci.yml` and documentation of tier-aware CI policy.
     - **Status:** ⬜ Not started
 
-**Current Phase:** Epic E6 (comparative evaluation report + decision gate)
-- E4 reproducibility/observability deferred integration items have been partially closed.
+**Current Phase:** Post-E6 follow-up planning and CI budget optimization
+- E4 reproducibility/observability deferred integration items are fully closed.
 
 ---
 
-## Completed Items (Priority 0-4)
+## Completed Items (Priority 0-6)
 
 | Item | Completed | Notes |
 |------|-----------|-------|
@@ -587,3 +591,5 @@ Priority 6 execution documents:
 | Backtrader snapshot integration (6.64) | 2026-02-19 | Wired `auto_snapshot`/`snapshot_registry` into adapter run path with unit coverage |
 | Batch observability integration (6.65) | 2026-02-19 | Added opt-in batch lifecycle/error tracking in `backtest_batch` with unit coverage |
 | E6 pilot adapter hardening + native wiring (6.66) | 2026-02-19 | Native Nautilus one-strategy pilot path implemented with contract-safe fallback and tests |
+| E6-T2 comparative benchmark expansion (6.67) | 2026-02-19 | Added benchmark harness + artifacts and updated evaluation report with measured runtime/memory/metrics |
+| E6-T3 final decision refresh (6.68) | 2026-02-19 | Updated ADR-011 with measured evidence snapshot and explicit tradeoff matrix (decision remains Defer) |
