@@ -75,7 +75,7 @@ finbot = "finbot.cli.main:cli"
 
 [dependency-groups]
 dev = [
-    "pre-commit>=3.6.0,<4",
+    "pre-commit>=3.6.0,<5",
     "mypy>=1.7.1,<2",
     "ruff>=0.15.0,<0.16",
     "pytest>=9.0.2,<10",
@@ -92,12 +92,18 @@ dev = [
     "pytest-cov>=7.0.0,<8",
     "mkdocs>=1.6.1,<2",
     "mkdocs-material>=9.5.49,<10",
-    "mkdocstrings[python]>=0.27.0,<1",
+    "mkdocstrings[python]>=0.27.0,<2",
     "types-psutil>=7.2.2.20260130,<8",
     "interrogate>=1.7.0",
     "pip-licenses>=5.5.1,<6",
     "git-changelog>=2.5.2,<3",
     "hypothesis>=6.100.0,<7",
+]
+web = [
+    "fastapi>=0.115.0,<1",
+    "uvicorn[standard]>=0.34.0,<1",
+    "pydantic-settings>=2.7.0,<3",
+    "sse-starlette>=2.0.0,<3",
 ]
 
 [tool.ruff]
@@ -107,7 +113,7 @@ exclude = [
     ".mypy_cache", ".nox", ".pants.d", ".pytype", ".ruff_cache",
     ".svn", ".tox", ".venv", "__pypackages__", "_build", "buck-out",
     "build", "dist", "node_modules", "venv", ".venv", "*.egg-info",
-    "__pycache__",
+    "__pycache__", "web/frontend",
 ]
 line-length = 120
 indent-width = 4
@@ -138,6 +144,8 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 [tool.ruff.lint.per-file-ignores]
 # Streamlit requires numeric-prefixed filenames for page ordering
 "finbot/dashboard/pages/*.py" = ["N999"]
+# FastAPI uses Query/Depends in function defaults by design
+"web/backend/routers/*.py" = ["B008"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
