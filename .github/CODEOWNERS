@@ -1,0 +1,14 @@
+# Default owners
+* @jerdaw
+
+# Core platform
+/finbot/core/ @jerdaw
+/finbot/services/ @jerdaw
+/finbot/libs/ @jerdaw
+
+# Tooling and governance
+/.github/ @jerdaw
+/docs/ @jerdaw
+/docs_site/ @jerdaw
+/pyproject.toml @jerdaw
+/uv.lock @jerdaw

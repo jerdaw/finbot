@@ -20,6 +20,8 @@ from finbot.config import logger
 def cli(ctx: click.Context, verbose: bool) -> None:
     """Finbot - Financial simulation and backtesting platform.
 
+    Disclaimer: Research/education use only. See DISCLAIMER.md.
+
     \b
     Available commands:
       simulate   Run fund, bond, or Monte Carlo simulations

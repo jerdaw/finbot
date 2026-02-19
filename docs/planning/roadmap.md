@@ -2,7 +2,7 @@
 
 **Created:** 2026-02-10
 **Last Updated:** 2026-02-19
-**Status:** Priority 0-5 baseline complete/progressing; Priority 6 adapter-first backtesting/live-readiness current cycle complete with post-E6 follow-up batch complete (items 69-70)
+**Status:** Priority 0-5 baseline complete/progressing; Priority 6 adapter-first backtesting/live-readiness current cycle complete with post-E6 follow-up phase 2 complete (items 69-72)
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
 
@@ -239,7 +239,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Professional (regulatory awareness)
     - **What:** Add DISCLAIMER.md to repo root, add to README/CLI/dashboard
     - **Evidence:** Visible disclaimer in multiple locations
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-19)
+    - **Implementation:** Added `DISCLAIMER.md`, linked in README ethics section, added CLI help disclaimer line, and added dashboard home warning banner.
 
 26. **Add structured logging for audit trails** (M: 1 day)
     - **CanMEDS:** Professional (governance, accountability)
@@ -251,7 +252,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Professional (legal compliance)
     - **What:** Add pip-licenses to CI, create THIRD_PARTY_LICENSES.md or verify compatible licenses
     - **Evidence:** License audit report, compliance verification
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-19)
+    - **Implementation:** Generated `THIRD_PARTY_LICENSES.md` with `pip-licenses` and added `dependency-license-audit` job to `.github/workflows/ci-heavy.yml`.
 
 28. **Add Docker security scanning** (M: 2-4 hours)
     - **CanMEDS:** Professional (security-conscious)
@@ -305,7 +307,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Professional, Leader (governance)
     - **What:** Create .github/CODEOWNERS mapping directories
     - **Evidence:** Automatic review requests, governance artifact
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-19)
+    - **Implementation:** Added `.github/CODEOWNERS` with default and directory-level ownership mappings.
 
 36. **Add conventional commit linting** (S: 1-2 hours)
     - **CanMEDS:** Professional (governance maturity)
@@ -338,13 +341,15 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Professional (CI/CD maturity)
     - **What:** Create .github/workflows/docs.yml for auto-deploy to GitHub Pages
     - **Evidence:** Auto-deployed documentation
-    - **Status:** ⬜ Not started
+    - **Status:** 🔄 Partially Complete (2026-02-19)
+    - **Implementation:** Workflow present at `.github/workflows/docs.yml`; remaining manual step is enabling GitHub Pages in repository settings.
 
 41. **Add docs build status badge** (S: 10 min)
     - **CanMEDS:** Professional (project maturity signals)
     - **What:** Add documentation workflow badge to README
     - **Evidence:** Additional status badge
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-19)
+    - **Implementation:** Added docs workflow badge to `README.md`.
     - **Prereqs:** Item 40 (docs workflow)
 
 42. **Add project logo/branding** (S: 1-2 hours)
@@ -502,6 +507,7 @@ Priority 6 execution documents:
 - `docs/planning/archive/IMPLEMENTATION_PLAN_6.2_E6_EXECUTION_READY.md` (archived after completion)
 - `docs/planning/archive/IMPLEMENTATION_PLAN_6.3_E6_EVIDENCE_GATE_AND_E4_CLOSURE.md` (archived after completion)
 - `docs/planning/archive/IMPLEMENTATION_PLAN_7.0_POST_E6_NATIVE_PARITY_AND_CI_BUDGET.md` (archived after completion)
+- `docs/planning/archive/IMPLEMENTATION_PLAN_7.1_POST_E6_PHASE2_MULTI_SCENARIO_EVIDENCE.md` (archived after completion)
 
 64-66. **E4 follow-up + E6-T1 implementation batch** (S: 1-2 days each)
     - **Status:** ✅ Complete (2026-02-19, trimmed; details recorded in Completed Items table)
@@ -521,15 +527,15 @@ Priority 6 execution documents:
 
 71. **E6 follow-up phase 2: GS-02/GS-03 like-for-like native comparison** (M: 3-5 days)
     - **What:** Extend native Nautilus comparability to GS-02 and GS-03 frozen scenarios with confidence-labeled deltas.
-    - **Evidence:** Updated `docs/research/artifacts/e6-benchmark-YYYY-MM-DD.json` and `docs/research/nautilus-pilot-evaluation.md` sections for GS-02/GS-03.
-    - **Status:** ⬜ Not started
+    - **Evidence:** Updated `scripts/benchmark/e6_compare_backtrader_vs_nautilus.py` (gs02/gs03/all scenarios), `finbot/adapters/nautilus/nautilus_adapter.py` (DualMomentum/RiskParity pilot proxy-native paths), `docs/research/artifacts/e6-benchmark-2026-02-19.json`, and `docs/research/nautilus-pilot-evaluation.md`.
+    - **Status:** ✅ Complete (2026-02-19, medium-confidence proxy-native evidence for GS-02/GS-03)
 
 72. **ADR-011 final revisit after multi-scenario evidence** (S: 1-2 days)
     - **What:** Revisit final go/no-go/hybrid decision after GS-01/02/03 comparable evidence is published.
-    - **Evidence:** Updated `docs/adr/ADR-011-nautilus-decision.md` decision section and tradeoff matrix.
-    - **Status:** ⬜ Not started
+    - **Evidence:** Updated `docs/adr/ADR-011-nautilus-decision.md` with multi-scenario evidence snapshot, refreshed follow-up tracker, and explicit decision rationale.
+    - **Status:** ✅ Complete (2026-02-19, decision remains Defer)
 
-**Current Phase:** Post-E6 follow-up phase 2 planning (GS-02/GS-03 comparability + ADR refresh)
+**Current Phase:** Post-E6 follow-up phase 2 implemented (v7.1.0 complete; decision remains Defer with proxy-native medium-confidence GS-02/GS-03 evidence)
 - E4 reproducibility/observability deferred integration items are fully closed.
 
 ---
@@ -581,6 +587,10 @@ Priority 6 execution documents:
 | CLI smoke tests added (5.6.31) | 2026-02-12 | 47 tests covering --help, --version, all 6 commands, error handling, performance |
 | CLI input validation added (5.6.32) | 2026-02-12 | Custom validators (DATE, TICKER, POSITIVE_FLOAT), 33 tests, helpful error messages |
 | Data ethics documentation added (5.5.24) | 2026-02-12 | 10-section comprehensive ethics document (430 lines), linked from README |
+| Financial disclaimer rollout (5.5.25) | 2026-02-19 | Added DISCLAIMER.md and surfaced disclaimer notice in README, CLI help, and dashboard home |
+| Dependency license auditing (5.5.27) | 2026-02-19 | Added THIRD_PARTY_LICENSES.md and CI-heavy dependency license audit job |
+| CODEOWNERS governance file (5.7.35) | 2026-02-19 | Added .github/CODEOWNERS with default and directory-level ownership mappings |
+| Docs build badge (5.7.41) | 2026-02-19 | Added docs workflow status badge to README |
 | ADR-005 adapter-first strategy (6.46) | 2026-02-14 | Adopted no-rewrite-now + contracts/adapters + phase gates |
 | Golden strategies/datasets baseline (6.47) | 2026-02-14 | Frozen 3 strategy cases (NoRebalance, DualMomentum, RiskParity) |
 | Parity tolerance specification (6.48) | 2026-02-14 | Defined hard-equality and bps-level migration thresholds |
@@ -606,3 +616,5 @@ Priority 6 execution documents:
 | E6-T3 final decision refresh (6.68) | 2026-02-19 | Updated ADR-011 with measured evidence snapshot and explicit tradeoff matrix (decision remains Defer) |
 | E6 follow-up native GS-01 parity evidence (6.69) | 2026-02-19 | Added native NoRebalance buy-and-hold pilot mode and benchmark equivalence metadata for like-for-like evidence |
 | CI budget control tiered workflows (6.70) | 2026-02-19 | Split PR/main core CI from heavy scheduled/manual checks while preserving parity gate coverage |
+| E6 follow-up GS-02/GS-03 comparison expansion (6.71) | 2026-02-19 | Added GS-02/GS-03 benchmark scenarios with confidence-labeled proxy-native comparability evidence and updated evaluation artifacts |
+| ADR-011 multi-scenario decision revisit (6.72) | 2026-02-19 | Revisited decision after GS-01/02/03 evidence; decision remains Defer with explicit medium-confidence caveats for GS-02/GS-03 |

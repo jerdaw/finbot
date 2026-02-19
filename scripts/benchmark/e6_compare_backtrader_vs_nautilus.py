@@ -52,6 +52,83 @@ class BenchmarkSummary:
     confidence: str
 
 
+@dataclass(frozen=True)
+class ScenarioConfig:
+    """Frozen benchmark scenario configuration."""
+
+    scenario_id: str
+    description: str
+    symbols: tuple[str, ...]
+    start: pd.Timestamp
+    end: pd.Timestamp
+    strategy_name: str
+    parameters: dict[str, object]
+    backtrader_equivalence_note: str
+    nautilus_equivalence_note: str
+    nautilus_confidence: str
+    nautilus_strategy_equivalent: bool
+
+
+SCENARIOS: dict[str, ScenarioConfig] = {
+    "gs01": ScenarioConfig(
+        scenario_id="gs01",
+        description="SPY 2019-2020 buy-and-hold",
+        symbols=("SPY",),
+        start=pd.Timestamp("2019-01-01"),
+        end=pd.Timestamp("2020-12-31"),
+        strategy_name="NoRebalance",
+        parameters={"equity_proportions": [1.0]},
+        backtrader_equivalence_note="Backtrader baseline for frozen GS-01 NoRebalance scenario.",
+        nautilus_equivalence_note="NoRebalance mapped to native long-only buy-and-hold strategy.",
+        nautilus_confidence="high",
+        nautilus_strategy_equivalent=True,
+    ),
+    "gs02": ScenarioConfig(
+        scenario_id="gs02",
+        description="SPY/TLT 2010-2026 dual momentum",
+        symbols=("SPY", "TLT"),
+        start=pd.Timestamp("2010-01-04"),
+        end=pd.Timestamp("2026-02-09"),
+        strategy_name="DualMomentum",
+        parameters={"lookback": 252, "rebal_interval": 21},
+        backtrader_equivalence_note="Backtrader baseline for frozen GS-02 DualMomentum scenario.",
+        nautilus_equivalence_note=(
+            "DualMomentum mapped to deterministic pilot proxy mirroring strategy signal/rebalance logic."
+        ),
+        nautilus_confidence="medium",
+        nautilus_strategy_equivalent=True,
+    ),
+    "gs03": ScenarioConfig(
+        scenario_id="gs03",
+        description="SPY/QQQ/TLT 2010-2026 risk parity",
+        symbols=("SPY", "QQQ", "TLT"),
+        start=pd.Timestamp("2010-01-04"),
+        end=pd.Timestamp("2026-02-09"),
+        strategy_name="RiskParity",
+        parameters={"vol_window": 63, "rebal_interval": 21},
+        backtrader_equivalence_note="Backtrader baseline for frozen GS-03 RiskParity scenario.",
+        nautilus_equivalence_note=(
+            "RiskParity mapped to deterministic pilot proxy mirroring inverse-volatility rebalance logic."
+        ),
+        nautilus_confidence="medium",
+        nautilus_strategy_equivalent=True,
+    ),
+    "legacy_pilot": ScenarioConfig(
+        scenario_id="legacy_pilot",
+        description="SPY 2019-2020 native run",
+        symbols=("SPY",),
+        start=pd.Timestamp("2019-01-01"),
+        end=pd.Timestamp("2020-12-31"),
+        strategy_name="Rebalance",
+        parameters={"rebal_proportions": [1.0], "rebal_interval": 21},
+        backtrader_equivalence_note="Backtrader baseline for legacy pilot mapping scenario.",
+        nautilus_equivalence_note="Legacy E6 pilot mapping uses rebalance request mapped to EMA-cross strategy.",
+        nautilus_confidence="medium",
+        nautilus_strategy_equivalent=False,
+    ),
+}
+
+
 def _load_history(path: Path) -> pd.DataFrame:
     df = pd.read_parquet(path).copy()
     if not isinstance(df.index, pd.DatetimeIndex):
@@ -69,38 +146,25 @@ def _measure_run(fn) -> tuple[object, float, float]:
     return result, elapsed, peak / (1024 * 1024)
 
 
-def _build_backtrader_request(scenario: str) -> BacktestRunRequest:
-    if scenario not in {"gs01", "legacy_pilot"}:
-        raise ValueError(f"Unsupported scenario: {scenario}")
+def _build_backtrader_request(config: ScenarioConfig) -> BacktestRunRequest:
     return BacktestRunRequest(
-        strategy_name="NoRebalance",
-        symbols=("SPY",),
-        start=pd.Timestamp("2019-01-01"),
-        end=pd.Timestamp("2020-12-31"),
+        strategy_name=config.strategy_name,
+        symbols=config.symbols,
+        start=config.start,
+        end=config.end,
         initial_cash=100_000.0,
-        parameters={"equity_proportions": [1.0]},
+        parameters=dict(config.parameters),
     )
 
 
-def _build_nautilus_request(scenario: str) -> BacktestRunRequest:
-    if scenario == "gs01":
-        return BacktestRunRequest(
-            strategy_name="NoRebalance",
-            symbols=("SPY",),
-            start=pd.Timestamp("2019-01-01"),
-            end=pd.Timestamp("2020-12-31"),
-            initial_cash=100_000.0,
-            parameters={"equity_proportions": [1.0]},
-        )
-    if scenario != "legacy_pilot":
-        raise ValueError(f"Unsupported scenario: {scenario}")
+def _build_nautilus_request(config: ScenarioConfig) -> BacktestRunRequest:
     return BacktestRunRequest(
-        strategy_name="Rebalance",
-        symbols=("SPY",),
-        start=pd.Timestamp("2019-01-01"),
-        end=pd.Timestamp("2020-12-31"),
+        strategy_name=config.strategy_name,
+        symbols=config.symbols,
+        start=config.start,
+        end=config.end,
         initial_cash=100_000.0,
-        parameters={"rebal_proportions": [1.0], "rebal_interval": 21},
+        parameters=dict(config.parameters),
     )
 
 
@@ -220,64 +284,64 @@ def main() -> int:
     )
     parser.add_argument(
         "--scenario",
-        choices=["gs01", "legacy_pilot"],
+        choices=[*sorted(SCENARIOS.keys()), "all"],
         default="gs01",
-        help="Benchmark scenario: gs01 for like-for-like NoRebalance, legacy_pilot for prior rebalance->EMA mapping.",
+        help="Benchmark scenario ID or 'all' for gs01/gs02/gs03.",
     )
     args = parser.parse_args()
 
-    history_path = args.history_dir / "SPY_history_1d.parquet"
-    if not history_path.exists():
-        raise FileNotFoundError(f"History file not found: {history_path}")
+    scenario_ids = ["gs01", "gs02", "gs03"] if args.scenario == "all" else [args.scenario]
+    summaries: list[BenchmarkSummary] = []
 
-    price_histories = {"SPY": _load_history(history_path)}
+    for scenario_id in scenario_ids:
+        scenario_config = SCENARIOS[scenario_id]
+        price_histories: dict[str, pd.DataFrame] = {}
+        for symbol in scenario_config.symbols:
+            history_path = args.history_dir / f"{symbol}_history_1d.parquet"
+            if not history_path.exists():
+                raise FileNotFoundError(f"History file not found: {history_path}")
+            price_histories[symbol] = _load_history(history_path)
 
-    bt_adapter = BacktraderAdapter(price_histories)
-    bt_request = _build_backtrader_request(args.scenario)
-    bt_rows, bt_assumptions = _collect_samples(
-        samples=args.samples, engine="backtrader", adapter=bt_adapter, request=bt_request
-    )
-    bt_assumptions.setdefault("strategy_equivalent", True)
-    bt_assumptions.setdefault("equivalence_notes", "Backtrader baseline for frozen GS-01 NoRebalance scenario.")
-    bt_assumptions.setdefault("confidence", "high")
-
-    nt_adapter = NautilusAdapter(
-        price_histories,
-        enable_backtrader_fallback=False,
-        enable_native_execution=True,
-    )
-    nt_request = _build_nautilus_request(args.scenario)
-    nt_rows, nt_assumptions = _collect_samples(
-        samples=args.samples, engine="nautilus-pilot", adapter=nt_adapter, request=nt_request
-    )
-    if args.scenario == "legacy_pilot":
-        nt_assumptions.setdefault("strategy_equivalent", False)
-        nt_assumptions.setdefault(
-            "equivalence_notes",
-            "Legacy E6 pilot mapping uses rebalance request mapped to EMA-cross strategy.",
+        bt_adapter = BacktraderAdapter(price_histories)
+        bt_request = _build_backtrader_request(scenario_config)
+        bt_rows, bt_assumptions = _collect_samples(
+            samples=args.samples, engine="backtrader", adapter=bt_adapter, request=bt_request
         )
-        nt_assumptions.setdefault("confidence", "medium")
-    else:
-        nt_assumptions.setdefault("strategy_equivalent", True)
-        nt_assumptions.setdefault("equivalence_notes", "NoRebalance mapped to native long-only buy-and-hold strategy.")
-        nt_assumptions.setdefault("confidence", "high")
+        bt_assumptions.setdefault("strategy_equivalent", True)
+        bt_assumptions.setdefault("equivalence_notes", scenario_config.backtrader_equivalence_note)
+        bt_assumptions.setdefault("confidence", "high")
 
-    summaries = [
-        _summarize(
-            "backtrader",
-            "SPY 2019-2020 buy-and-hold",
-            args.scenario,
-            bt_rows,
-            bt_assumptions,
-        ),
-        _summarize(
-            "nautilus-pilot",
-            "SPY 2019-2020 native run",
-            args.scenario,
-            nt_rows,
-            nt_assumptions,
-        ),
-    ]
+        nt_adapter = NautilusAdapter(
+            price_histories,
+            enable_backtrader_fallback=False,
+            enable_native_execution=True,
+        )
+        nt_request = _build_nautilus_request(scenario_config)
+        nt_rows, nt_assumptions = _collect_samples(
+            samples=args.samples, engine="nautilus-pilot", adapter=nt_adapter, request=nt_request
+        )
+        nt_assumptions.setdefault("strategy_equivalent", scenario_config.nautilus_strategy_equivalent)
+        nt_assumptions.setdefault("equivalence_notes", scenario_config.nautilus_equivalence_note)
+        nt_assumptions.setdefault("confidence", scenario_config.nautilus_confidence)
+
+        summaries.extend(
+            [
+                _summarize(
+                    "backtrader",
+                    scenario_config.description,
+                    scenario_id,
+                    bt_rows,
+                    bt_assumptions,
+                ),
+                _summarize(
+                    "nautilus-pilot",
+                    scenario_config.description,
+                    scenario_id,
+                    nt_rows,
+                    nt_assumptions,
+                ),
+            ]
+        )
 
     run_date = datetime.now(UTC).strftime("%Y-%m-%d")
     environment = {
