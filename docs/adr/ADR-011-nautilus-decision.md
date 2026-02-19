@@ -26,10 +26,21 @@ We will keep Backtrader as the default engine and treat Nautilus as an experimen
 
 ## Decision Drivers
 
-- Native Nautilus benchmark/fidelity data is not yet available.
+- Native Nautilus benchmark data is now available but not yet like-for-like on strategy logic.
 - Native pilot execution exists, but breadth of comparative evidence is still limited.
 - Backtrader path is currently stable, parity-gated, and sufficient for current roadmap goals.
 - Newly added snapshot and batch observability integrations reduce risk for a follow-up native Nautilus evaluation.
+
+## Measured Evidence Snapshot
+
+From `docs/research/artifacts/e6-benchmark-2026-02-19.json`:
+
+| Engine | Scenario | Mode | Median Runtime (s) | Median Peak Memory (MB) | ROI |
+| --- | --- | --- | ---: | ---: | ---: |
+| Backtrader | SPY 2019-2020 buy-and-hold | `native_backtrader` | 0.4529 | 1.22 | 0.5584 |
+| Nautilus pilot | SPY 2019-2020 rebalance->EMA mapping | `native_nautilus` | 0.0727 | 0.73 | 0.0000 |
+
+The runtime/memory evidence is useful, but metric parity is not decision-grade because the strategy logic is not equivalent between rows.
 
 ## Considered Options
 
@@ -48,6 +59,16 @@ Rejected because comparative evidence is still limited and full dual-engine supp
 ### Option D: Defer (chosen)
 
 Accepted as the lowest-risk, highest-information path.
+
+## Tradeoff Matrix
+
+| Criterion | Go Now | No-Go Now | Hybrid Now | Defer (Chosen) |
+| --- | --- | --- | --- | --- |
+| Delivery risk | High | Low | High | Low |
+| Evidence quality | Low | Medium | Low | High (after follow-up) |
+| Maint. complexity | Medium | Low | High | Medium |
+| Strategic optionality | High | Low | High | High |
+| Fits current constraints | No | Partial | No | Yes |
 
 ## Consequences
 
@@ -78,7 +99,9 @@ Accepted as the lowest-risk, highest-information path.
 ## References
 
 - `docs/research/nautilus-pilot-evaluation.md`
+- `docs/research/artifacts/e6-benchmark-2026-02-19.json`
 - `docs/planning/archive/IMPLEMENTATION_PLAN_6.2_E6_EXECUTION_READY.md`
+- `docs/planning/archive/IMPLEMENTATION_PLAN_6.3_E6_EVIDENCE_GATE_AND_E4_CLOSURE.md`
 - `finbot/adapters/nautilus/nautilus_adapter.py`
 - `finbot/services/backtesting/adapters/backtrader_adapter.py`
 - `finbot/services/backtesting/backtest_batch.py`

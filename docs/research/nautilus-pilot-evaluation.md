@@ -1,14 +1,14 @@
 # NautilusTrader Pilot Evaluation
 
 **Date:** 2026-02-19
-**Status:** Completed for current pilot scope (native pilot path implemented; comparative benchmarking pending)
+**Status:** Completed for current pilot scope with measured benchmark artifacts
 **Epic:** E6-T2 (Comparative Evaluation Report)
 
 ## Executive Summary
 
 This evaluation confirms that the pilot adapter path is now contract-compliant and test-covered, and that native Nautilus execution is wired for a narrow pilot scenario with explicit fallback protection.
 
-**Recommendation:** **Defer** final adoption decision until broader comparative benchmarking is completed.
+**Recommendation:** **Defer** final adoption decision until broader like-for-like strategy benchmarking is completed.
 
 **Key Finding:** We eliminated contract and integration blockers (adapter interface drift, snapshot and batch observability gaps) and implemented a native pilot path, but we do not yet have full comparative performance/fidelity evidence.
 
@@ -72,7 +72,24 @@ This report is intentionally split by evidence strength.
 
 ### 4.2 Quantitative Performance/Fidelity Metrics
 
-Initial native pilot smoke output was validated, but full comparative benchmark reporting is not yet completed in this cycle.
+Benchmarks were generated with:
+
+```bash
+uv run python scripts/benchmark/e6_compare_backtrader_vs_nautilus.py --samples 3
+```
+
+Artifact outputs:
+- `docs/research/artifacts/e6-benchmark-2026-02-19.json`
+- `docs/research/artifacts/e6-benchmark-2026-02-19.md`
+
+| Engine | Scenario | Samples | Mode | Median Runtime (s) | Median Peak Memory (MB) | ROI | CAGR | Max Drawdown | Ending Value | Confidence |
+| --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| Backtrader | SPY 2019-2020 buy-and-hold | 3 | `native_backtrader` | 0.4529 | 1.22 | 0.5584 | 0.2478 | -0.3350 | 155840.34 | High |
+| Nautilus pilot | SPY 2019-2020 rebalance->EMA mapping | 3 | `native_nautilus` | 0.0727 | 0.73 | 0.0000 | 0.0000 | 0.0000 | 100000.00 | Medium |
+
+Interpretation:
+- Runtime and memory numbers are now measured and reproducible.
+- The strategy mapping is not equivalent (`NoRebalance` vs rebalance-request mapped to EMA), so performance metrics are **not** parity-comparable yet.
 
 ## 5. Operational Readiness Assessment
 
@@ -95,7 +112,7 @@ Proceed with a follow-up slice that expands strategy/dataset coverage and publis
 ## 7. Next Evidence Required for Go/No-Go
 
 1. Repeatable native Nautilus run success beyond the initial pilot scenario.
-2. Side-by-side metric deltas against Backtrader on identical inputs.
+2. Side-by-side metric deltas against Backtrader on identical strategy logic and identical inputs.
 3. Runtime/memory benchmark under repeatable conditions.
 4. Documented operational complexity (install, debug, CI impact).
 
@@ -107,4 +124,5 @@ Proceed with a follow-up slice that expands strategy/dataset coverage and publis
 - `tests/unit/test_nautilus_adapter.py`
 - `tests/unit/test_backtrader_adapter.py`
 - `tests/unit/test_backtest_batch_observability.py`
+- `docs/research/artifacts/e6-benchmark-2026-02-19.json`
 - `docs/adr/ADR-011-nautilus-decision.md`
