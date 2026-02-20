@@ -464,30 +464,192 @@ class NautilusAdapter(BacktestEngine):
     def _run_via_nautilus_dual_momentum(
         self, request: BacktestRunRequest
     ) -> tuple[dict[str, float], dict[str, Any], dict[str, str], tuple[str, ...]]:
-        price_histories = self._select_native_price_histories(request.symbols, request.start, request.end)
-        prices = self._build_aligned_close_frame(price_histories)
+        try:
+            return self._run_via_nautilus_dual_momentum_native(request)
+        except ImportError:
+            metrics, assumptions, artifacts, run_warnings = self._run_via_nautilus_dual_momentum_proxy(request)
+            return (
+                metrics,
+                assumptions,
+                artifacts,
+                (
+                    *run_warnings,
+                    "Full native GS-02 path unavailable (nautilus_trader import missing); using proxy-native mode.",
+                ),
+            )
+        except Exception as exc:
+            metrics, assumptions, artifacts, run_warnings = self._run_via_nautilus_dual_momentum_proxy(request)
+            return (
+                metrics,
+                assumptions,
+                artifacts,
+                (
+                    *run_warnings,
+                    f"Full native GS-02 path failed; fell back to proxy-native mode: {type(exc).__name__}:{exc}",
+                ),
+            )
 
-        lookback = int(request.parameters.get("lookback", 252))
-        rebal_interval = int(request.parameters.get("rebal_interval", 21))
+    def _run_via_nautilus_dual_momentum_native(  # noqa: C901
+        self, request: BacktestRunRequest
+    ) -> tuple[dict[str, float], dict[str, Any], dict[str, str], tuple[str, ...]]:
+        if len(request.symbols) != 2:
+            raise ValueError("DualMomentum native mode requires exactly 2 symbols.")
+        dual_symbols: tuple[str, str] = (request.symbols[0], request.symbols[1])
 
-        primary_symbol = request.symbols[0]
-        alt_symbol = request.symbols[1]
-        cash = float(request.initial_cash)
-        shares: dict[str, int] = dict.fromkeys(request.symbols, 0)
-        periods_elapsed = 0
-        equity_values: list[float] = []
+        from decimal import Decimal
 
-        for idx in range(len(prices)):
-            row = prices.iloc[idx]
+        from nautilus_trader.backtest.engine import BacktestEngine as NautilusBacktestEngine
+        from nautilus_trader.config import BacktestEngineConfig, StrategyConfig
+        from nautilus_trader.model.currencies import USD
+        from nautilus_trader.model.data import Bar, BarSpecification, BarType
+        from nautilus_trader.model.enums import (
+            AccountType,
+            AggregationSource,
+            BarAggregation,
+            OmsType,
+            OrderSide,
+            PriceType,
+            TimeInForce,
+        )
+        from nautilus_trader.model.identifiers import InstrumentId, TraderId, Venue
+        from nautilus_trader.model.instruments import Instrument
+        from nautilus_trader.model.objects import Money
+        from nautilus_trader.model.orders import MarketOrder
+        from nautilus_trader.persistence.wranglers import BarDataWrangler
+        from nautilus_trader.test_kit.providers import TestInstrumentProvider
+        from nautilus_trader.trading.strategy import Strategy
 
-            if idx >= lookback:
-                periods_elapsed += 1
-                if periods_elapsed >= rebal_interval:
-                    periods_elapsed = 0
-                    primary_base = float(prices.iloc[idx - lookback][primary_symbol])
-                    alt_base = float(prices.iloc[idx - lookback][alt_symbol])
-                    primary_mom = (float(row[primary_symbol]) - primary_base) / primary_base
-                    alt_mom = (float(row[alt_symbol]) - alt_base) / alt_base
+        class DualMomentumNativeConfig(StrategyConfig, frozen=True):
+            instrument_ids: tuple[InstrumentId, InstrumentId]
+            bar_types: tuple[BarType, BarType]
+            lookback: int
+            rebal_interval: int
+            initial_cash: float
+
+        class DualMomentumNativeStrategy(Strategy):
+            def __init__(self, config: DualMomentumNativeConfig) -> None:
+                super().__init__(config)
+                self._instruments: dict[InstrumentId, Instrument] = {}
+                self._symbol_lookup: dict[InstrumentId, str] = {}
+                self._closes: dict[str, list[float]] = {}
+                self._cash = float(config.initial_cash)
+                self._shares: dict[str, int] = {}
+                self._periods_elapsed = 0
+                self._active_symbol: str | None = None
+                self._equity_points: list[tuple[pd.Timestamp, float]] = []
+                self._cash_points: list[tuple[pd.Timestamp, float]] = []
+                self._venue = config.instrument_ids[0].venue
+                self._ordered_symbols: tuple[str, str] = ("", "")
+                self._pending_closes: dict[int, dict[str, float]] = {}
+
+            @staticmethod
+            def _price_as_float(price_obj: Any) -> float:
+                as_double = getattr(price_obj, "as_double", None)
+                if callable(as_double):
+                    return float(as_double())
+                return float(price_obj)
+
+            def on_start(self) -> None:
+                for instrument_id in self.config.instrument_ids:
+                    instrument = self.cache.instrument(instrument_id)
+                    if instrument is None:
+                        self.log.error(f"Could not find instrument for {instrument_id}")
+                        self.stop()
+                        return
+                    self._instruments[instrument_id] = instrument
+                    symbol = str(instrument_id).split(".")[0]
+                    self._symbol_lookup[instrument_id] = symbol
+                    self._closes[symbol] = []
+                    self._shares[symbol] = 0
+                self._ordered_symbols = (
+                    self._symbol_lookup[self.config.instrument_ids[0]],
+                    self._symbol_lookup[self.config.instrument_ids[1]],
+                )
+                for bar_type in self.config.bar_types:
+                    self.subscribe_bars(bar_type)
+
+            def _submit_market(self, instrument_id: InstrumentId, side: OrderSide, quantity: int) -> None:
+                if quantity <= 0:
+                    return
+                instrument = self._instruments[instrument_id]
+                order: MarketOrder = self.order_factory.market(
+                    instrument_id=instrument_id,
+                    order_side=side,
+                    quantity=instrument.make_qty(Decimal(str(quantity))),
+                    time_in_force=TimeInForce.IOC,
+                )
+                self.submit_order(order)
+
+            def _record_equity_point(self, *, timestamp: pd.Timestamp, symbols: tuple[str, str]) -> None:
+                native_equity: float | None = None
+                total_pnls = getattr(self.portfolio, "total_pnls", None)
+                if callable(total_pnls):
+                    try:
+                        pnl_payload = total_pnls(self._venue)
+                    except (RuntimeError, TypeError, ValueError):
+                        pnl_payload = None
+                    pnl_value = NautilusAdapter._coerce_nautilus_total_pnl(pnl_payload)
+                    if pnl_value is not None:
+                        native_equity = float(self.config.initial_cash) + pnl_value
+
+                if native_equity is None:
+                    native_equity = float(self._cash) + sum(
+                        float(self._shares[symbol]) * float(self._closes[symbol][-1])
+                        for symbol in symbols
+                        if self._closes[symbol]
+                    )
+
+                self._equity_points.append((timestamp, native_equity))
+                self._cash_points.append((timestamp, max(float(self._cash), 0.0)))
+
+            def native_curves(self) -> tuple[pd.Series, pd.Series]:
+                return (
+                    NautilusAdapter._series_from_points(self._equity_points),
+                    NautilusAdapter._series_from_points(self._cash_points),
+                )
+
+            def on_bar(self, bar: Bar) -> None:  # noqa: C901
+                if bar.is_single_price():
+                    return
+
+                instrument_id = bar.bar_type.instrument_id
+                symbol = self._symbol_lookup.get(instrument_id)
+                if symbol is None:
+                    return
+                close_value = self._price_as_float(bar.close)
+                bar_timestamp = NautilusAdapter._coerce_nautilus_timestamp(getattr(bar, "ts_event", None))
+                ts_ns = int(bar_timestamp.value)
+                pending_for_ts = self._pending_closes.setdefault(ts_ns, {})
+                pending_for_ts[symbol] = close_value
+                if len(pending_for_ts) < len(self.config.instrument_ids):
+                    return
+
+                primary_symbol, alt_symbol = self._ordered_symbols
+                snapshot = self._pending_closes.pop(ts_ns)
+                for synced_symbol in (primary_symbol, alt_symbol):
+                    synced_price = snapshot.get(synced_symbol)
+                    if synced_price is None:
+                        return
+                    self._closes[synced_symbol].append(float(synced_price))
+
+                can_rebalance = (
+                    len(self._closes[primary_symbol]) > self.config.lookback
+                    and len(self._closes[alt_symbol]) > self.config.lookback
+                )
+                if can_rebalance:
+                    self._periods_elapsed += 1
+                    if self._periods_elapsed < self.config.rebal_interval:
+                        self._record_equity_point(timestamp=bar_timestamp, symbols=(primary_symbol, alt_symbol))
+                        return
+                    self._periods_elapsed = 0
+
+                    primary_now = self._closes[primary_symbol][-1]
+                    primary_then = self._closes[primary_symbol][-1 - self.config.lookback]
+                    alt_now = self._closes[alt_symbol][-1]
+                    alt_then = self._closes[alt_symbol][-1 - self.config.lookback]
+
+                    primary_mom = (primary_now - primary_then) / primary_then if primary_then > 0 else -1.0
+                    alt_mom = (alt_now - alt_then) / alt_then if alt_then > 0 else -1.0
 
                     target_symbol: str | None = None
                     if primary_mom > 0 and primary_mom >= alt_mom:
@@ -495,23 +657,133 @@ class NautilusAdapter(BacktestEngine):
                     elif alt_mom > 0:
                         target_symbol = alt_symbol
 
-                    for symbol in request.symbols:
-                        if symbol != target_symbol and shares[symbol] > 0:
-                            cash += shares[symbol] * float(row[symbol])
-                            shares[symbol] = 0
+                    if target_symbol != self._active_symbol:
+                        for idx, held_symbol in enumerate((primary_symbol, alt_symbol)):
+                            held_qty = self._shares[held_symbol]
+                            if held_qty <= 0:
+                                continue
+                            held_id = self.config.instrument_ids[idx]
+                            held_price = self._closes[held_symbol][-1]
+                            self._submit_market(held_id, OrderSide.SELL, held_qty)
+                            self._shares[held_symbol] = 0
+                            self._cash += held_qty * held_price
 
-                    if target_symbol is not None and shares[target_symbol] == 0:
-                        price = float(row[target_symbol])
-                        buy_size = int(cash // price)
-                        if buy_size > 0:
-                            shares[target_symbol] += buy_size
-                            cash -= buy_size * price
+                        self._active_symbol = target_symbol
+                        if target_symbol is not None:
+                            target_idx = 0 if target_symbol == primary_symbol else 1
+                            target_id = self.config.instrument_ids[target_idx]
+                            target_price = self._closes[target_symbol][-1]
+                            buy_qty = int(self._cash // target_price) if target_price > 0 else 0
+                            if buy_qty > 0:
+                                self._submit_market(target_id, OrderSide.BUY, buy_qty)
+                                self._shares[target_symbol] = buy_qty
+                                self._cash -= buy_qty * target_price
 
-            portfolio_value = cash + sum(shares[symbol] * float(row[symbol]) for symbol in request.symbols)
-            equity_values.append(portfolio_value)
+                self._record_equity_point(timestamp=bar_timestamp, symbols=(primary_symbol, alt_symbol))
 
-        equity_curve = pd.Series(equity_values, index=prices.index)
-        metrics = self._build_metrics_from_equity_curve(equity_curve=equity_curve, initial_cash=request.initial_cash)
+        price_histories = self._select_native_price_histories(request.symbols, request.start, request.end)
+        lookback = int(request.parameters.get("lookback", 252))
+        rebal_interval = int(request.parameters.get("rebal_interval", 21))
+
+        venue_id = "XNAS"
+        trader_id = TraderId("FINBOT-NT-001")
+        venue = Venue(venue_id)
+        instruments = [TestInstrumentProvider.equity(symbol, venue_id) for symbol in dual_symbols]
+
+        engine = NautilusBacktestEngine(config=BacktestEngineConfig(trader_id=trader_id))
+        engine.add_venue(
+            venue=venue,
+            oms_type=OmsType.NETTING,
+            account_type=AccountType.CASH,
+            base_currency=USD,
+            starting_balances=[Money(request.initial_cash, USD)],
+        )
+        bar_types: list[BarType] = []
+        for symbol, instrument in zip(dual_symbols, instruments, strict=True):
+            engine.add_instrument(instrument)
+            bar_spec = BarSpecification(step=1, aggregation=BarAggregation.DAY, price_type=PriceType.LAST)
+            bar_type = BarType(instrument.id, bar_spec, AggregationSource.EXTERNAL)
+            bar_types.append(bar_type)
+            wrangler = BarDataWrangler(bar_type=bar_type, instrument=instrument)
+            bar_data = wrangler.process(self._to_nautilus_dataframe(price_histories[symbol]))
+            engine.add_data(bar_data)
+
+        strategy = DualMomentumNativeStrategy(
+            DualMomentumNativeConfig(
+                instrument_ids=(instruments[0].id, instruments[1].id),
+                bar_types=(bar_types[0], bar_types[1]),
+                lookback=lookback,
+                rebal_interval=rebal_interval,
+                initial_cash=request.initial_cash,
+            )
+        )
+        engine.add_strategy(strategy)
+        engine.run()
+        engine.get_result()
+
+        equity_curve, cash_curve = strategy.native_curves()
+        run_warnings: list[str] = []
+        if equity_curve.empty:
+            prices = self._build_aligned_close_frame(price_histories)
+            equity_curve, cash_curve = self._simulate_dual_momentum_portfolio(
+                prices=prices,
+                symbols=dual_symbols,
+                initial_cash=request.initial_cash,
+                lookback=lookback,
+                rebal_interval=rebal_interval,
+            )
+            run_warnings.append(
+                "Full-native GS-02 valuation samples unavailable; used deterministic mark-to-market valuation fallback."
+            )
+
+        metrics = self._build_metrics_from_equity_curve(
+            equity_curve=equity_curve,
+            cash_curve=cash_curve if not cash_curve.empty else None,
+            initial_cash=request.initial_cash,
+        )
+        assumptions = {
+            "symbols": list(request.symbols),
+            "parameters": deepcopy(request.parameters),
+            "nautilus_strategy": "DualMomentumNativeStrategy",
+            "nautilus_strategy_mapping": "dualmomentum_request_mapped_to_full_native_nautilus_strategy",
+            "strategy_equivalent": False,
+            "equivalence_notes": (
+                "DualMomentum executed with native Nautilus strategy hooks; benchmark metrics are derived from "
+                "native mark-to-market portfolio valuation sampled on synchronized multi-symbol daily bars."
+            ),
+            "confidence": "low",
+            "adapter_mode": "native_nautilus_full",
+            "execution_fidelity": "full_native",
+            "valuation_fidelity": "native_mark_to_market",
+            "metric_source": "nautilus_portfolio_total_pnl_primary_bar",
+        }
+        artifacts = {"nautilus_symbols": ",".join(dual_symbols), "nautilus_strategy_impl": "full_native"}
+        return metrics, assumptions, artifacts, tuple(run_warnings)
+
+    def _run_via_nautilus_dual_momentum_proxy(
+        self, request: BacktestRunRequest
+    ) -> tuple[dict[str, float], dict[str, Any], dict[str, str], tuple[str, ...]]:
+        if len(request.symbols) != 2:
+            raise ValueError("DualMomentum proxy mode requires exactly 2 symbols.")
+        dual_symbols: tuple[str, str] = (request.symbols[0], request.symbols[1])
+
+        price_histories = self._select_native_price_histories(request.symbols, request.start, request.end)
+        prices = self._build_aligned_close_frame(price_histories)
+
+        lookback = int(request.parameters.get("lookback", 252))
+        rebal_interval = int(request.parameters.get("rebal_interval", 21))
+        equity_curve, cash_curve = self._simulate_dual_momentum_portfolio(
+            prices=prices,
+            symbols=dual_symbols,
+            initial_cash=request.initial_cash,
+            lookback=lookback,
+            rebal_interval=rebal_interval,
+        )
+        metrics = self._build_metrics_from_equity_curve(
+            equity_curve=equity_curve,
+            cash_curve=cash_curve,
+            initial_cash=request.initial_cash,
+        )
         assumptions = {
             "symbols": list(request.symbols),
             "parameters": deepcopy(request.parameters),
@@ -524,8 +796,9 @@ class NautilusAdapter(BacktestEngine):
             ),
             "confidence": "medium",
             "adapter_mode": "native_nautilus_proxy",
+            "execution_fidelity": "proxy_native",
         }
-        artifacts = {"nautilus_symbols": ",".join(request.symbols), "nautilus_proxy_type": "dual_momentum"}
+        artifacts = {"nautilus_symbols": ",".join(dual_symbols), "nautilus_proxy_type": "dual_momentum"}
         run_warnings = (
             "GS-02 currently uses deterministic pilot proxy execution rather than full Nautilus order lifecycle modeling.",
         )
@@ -534,49 +807,330 @@ class NautilusAdapter(BacktestEngine):
     def _run_via_nautilus_risk_parity(
         self, request: BacktestRunRequest
     ) -> tuple[dict[str, float], dict[str, Any], dict[str, str], tuple[str, ...]]:
+        try:
+            return self._run_via_nautilus_risk_parity_native(request)
+        except ImportError:
+            metrics, assumptions, artifacts, run_warnings = self._run_via_nautilus_risk_parity_proxy(request)
+            return (
+                metrics,
+                assumptions,
+                artifacts,
+                (
+                    *run_warnings,
+                    "Full native GS-03 path unavailable (nautilus_trader import missing); using proxy-native mode.",
+                ),
+            )
+        except Exception as exc:
+            metrics, assumptions, artifacts, run_warnings = self._run_via_nautilus_risk_parity_proxy(request)
+            return (
+                metrics,
+                assumptions,
+                artifacts,
+                (
+                    *run_warnings,
+                    f"Full native GS-03 path failed; fell back to proxy-native mode: {type(exc).__name__}:{exc}",
+                ),
+            )
+
+    def _run_via_nautilus_risk_parity_native(  # noqa: C901
+        self, request: BacktestRunRequest
+    ) -> tuple[dict[str, float], dict[str, Any], dict[str, str], tuple[str, ...]]:
+        from decimal import Decimal
+
+        from nautilus_trader.backtest.engine import BacktestEngine as NautilusBacktestEngine
+        from nautilus_trader.config import BacktestEngineConfig, StrategyConfig
+        from nautilus_trader.model.currencies import USD
+        from nautilus_trader.model.data import Bar, BarSpecification, BarType
+        from nautilus_trader.model.enums import (
+            AccountType,
+            AggregationSource,
+            BarAggregation,
+            OmsType,
+            OrderSide,
+            PriceType,
+            TimeInForce,
+        )
+        from nautilus_trader.model.identifiers import InstrumentId, TraderId, Venue
+        from nautilus_trader.model.instruments import Instrument
+        from nautilus_trader.model.objects import Money
+        from nautilus_trader.model.orders import MarketOrder
+        from nautilus_trader.persistence.wranglers import BarDataWrangler
+        from nautilus_trader.test_kit.providers import TestInstrumentProvider
+        from nautilus_trader.trading.strategy import Strategy
+
+        class RiskParityNativeConfig(StrategyConfig, frozen=True):
+            instrument_ids: tuple[InstrumentId, ...]
+            bar_types: tuple[BarType, ...]
+            symbols: tuple[str, ...]
+            vol_window: int
+            rebal_interval: int
+            initial_cash: float
+
+        class RiskParityNativeStrategy(Strategy):
+            def __init__(self, config: RiskParityNativeConfig) -> None:
+                super().__init__(config)
+                self._instruments: dict[InstrumentId, Instrument] = {}
+                self._symbol_lookup: dict[InstrumentId, str] = {}
+                self._closes: dict[str, list[float]] = {symbol: [] for symbol in config.symbols}
+                self._returns: dict[str, list[float]] = {symbol: [] for symbol in config.symbols}
+                self._cash = float(config.initial_cash)
+                self._shares: dict[str, int] = dict.fromkeys(config.symbols, 0)
+                self._periods_elapsed = 0
+                self._equity_points: list[tuple[pd.Timestamp, float]] = []
+                self._cash_points: list[tuple[pd.Timestamp, float]] = []
+                self._venue = config.instrument_ids[0].venue
+                self._ordered_symbols: tuple[str, ...] = ()
+                self._pending_closes: dict[int, dict[str, float]] = {}
+
+            @staticmethod
+            def _price_as_float(price_obj: Any) -> float:
+                as_double = getattr(price_obj, "as_double", None)
+                if callable(as_double):
+                    return float(as_double())
+                return float(price_obj)
+
+            def on_start(self) -> None:
+                for instrument_id in self.config.instrument_ids:
+                    instrument = self.cache.instrument(instrument_id)
+                    if instrument is None:
+                        self.log.error(f"Could not find instrument for {instrument_id}")
+                        self.stop()
+                        return
+                    self._instruments[instrument_id] = instrument
+                    symbol = str(instrument_id).split(".")[0]
+                    self._symbol_lookup[instrument_id] = symbol
+                self._ordered_symbols = tuple(
+                    self._symbol_lookup[instrument_id] for instrument_id in self.config.instrument_ids
+                )
+                for bar_type in self.config.bar_types:
+                    self.subscribe_bars(bar_type)
+
+            def _submit_market(self, instrument_id: InstrumentId, side: OrderSide, quantity: int) -> None:
+                if quantity <= 0:
+                    return
+                instrument = self._instruments[instrument_id]
+                order: MarketOrder = self.order_factory.market(
+                    instrument_id=instrument_id,
+                    order_side=side,
+                    quantity=instrument.make_qty(Decimal(str(quantity))),
+                    time_in_force=TimeInForce.IOC,
+                )
+                self.submit_order(order)
+
+            def _record_equity_point(self, *, timestamp: pd.Timestamp) -> None:
+                native_equity: float | None = None
+                total_pnls = getattr(self.portfolio, "total_pnls", None)
+                if callable(total_pnls):
+                    try:
+                        pnl_payload = total_pnls(self._venue)
+                    except (RuntimeError, TypeError, ValueError):
+                        pnl_payload = None
+                    pnl_value = NautilusAdapter._coerce_nautilus_total_pnl(pnl_payload)
+                    if pnl_value is not None:
+                        native_equity = float(self.config.initial_cash) + pnl_value
+
+                if native_equity is None:
+                    native_equity = float(self._cash) + sum(
+                        float(self._shares[symbol]) * float(self._closes[symbol][-1])
+                        for symbol in self.config.symbols
+                        if self._closes[symbol]
+                    )
+
+                self._equity_points.append((timestamp, native_equity))
+                self._cash_points.append((timestamp, max(float(self._cash), 0.0)))
+
+            def native_curves(self) -> tuple[pd.Series, pd.Series]:
+                return (
+                    NautilusAdapter._series_from_points(self._equity_points),
+                    NautilusAdapter._series_from_points(self._cash_points),
+                )
+
+            def on_bar(self, bar: Bar) -> None:  # noqa: C901
+                if bar.is_single_price():
+                    return
+
+                instrument_id = bar.bar_type.instrument_id
+                symbol = self._symbol_lookup.get(instrument_id)
+                if symbol is None:
+                    return
+                close_value = float(self._price_as_float(bar.close))
+                bar_timestamp = NautilusAdapter._coerce_nautilus_timestamp(getattr(bar, "ts_event", None))
+                ts_ns = int(bar_timestamp.value)
+                pending_for_ts = self._pending_closes.setdefault(ts_ns, {})
+                pending_for_ts[symbol] = close_value
+                if len(pending_for_ts) < len(self.config.instrument_ids):
+                    return
+
+                snapshot = self._pending_closes.pop(ts_ns)
+                for synced_symbol in self._ordered_symbols:
+                    synced_price = snapshot.get(synced_symbol)
+                    if synced_price is None:
+                        return
+                    close_series = self._closes[synced_symbol]
+                    if close_series:
+                        prev_close = close_series[-1]
+                        if prev_close > 0:
+                            self._returns[synced_symbol].append((float(synced_price) - prev_close) / prev_close)
+                    close_series.append(float(synced_price))
+
+                can_rebalance = (
+                    min(len(self._returns[symbol]) for symbol in self.config.symbols) >= self.config.vol_window
+                )
+                if can_rebalance:
+                    self._periods_elapsed += 1
+                    if self._periods_elapsed < self.config.rebal_interval:
+                        self._record_equity_point(timestamp=bar_timestamp)
+                        return
+                    self._periods_elapsed = 0
+
+                    inv_vols: dict[str, float] = {}
+                    for loop_symbol in self.config.symbols:
+                        window = self._returns[loop_symbol][-self.config.vol_window :]
+                        vol = float(pd.Series(window).std(ddof=0))
+                        inv_vols[loop_symbol] = 1.0 / vol if vol > 0 else 0.0
+
+                    total_inv = sum(inv_vols.values())
+                    if total_inv <= 0:
+                        target_weights = {
+                            loop_symbol: 1.0 / len(self.config.symbols) for loop_symbol in self.config.symbols
+                        }
+                    else:
+                        target_weights = {
+                            loop_symbol: inv_vols[loop_symbol] / total_inv for loop_symbol in self.config.symbols
+                        }
+
+                    total_value = self._cash + sum(
+                        self._shares[loop_symbol] * self._closes[loop_symbol][-1] for loop_symbol in self.config.symbols
+                    )
+
+                    for loop_id in self.config.instrument_ids:
+                        loop_symbol = self._symbol_lookup[loop_id]
+                        price = self._closes[loop_symbol][-1]
+                        current_value = self._shares[loop_symbol] * price
+                        target_value = target_weights[loop_symbol] * total_value
+                        sell_qty = int((current_value - target_value) // price)
+                        sell_qty = min(max(sell_qty, 0), self._shares[loop_symbol])
+                        if sell_qty > 0:
+                            self._submit_market(loop_id, OrderSide.SELL, sell_qty)
+                            self._shares[loop_symbol] -= sell_qty
+                            self._cash += sell_qty * price
+
+                    for loop_id in self.config.instrument_ids:
+                        loop_symbol = self._symbol_lookup[loop_id]
+                        price = self._closes[loop_symbol][-1]
+                        current_value = self._shares[loop_symbol] * price
+                        target_value = target_weights[loop_symbol] * total_value
+                        buy_qty = int((target_value - current_value) // price)
+                        max_affordable = int(self._cash // price)
+                        buy_qty = min(max(buy_qty, 0), max_affordable)
+                        if buy_qty > 0:
+                            self._submit_market(loop_id, OrderSide.BUY, buy_qty)
+                            self._shares[loop_symbol] += buy_qty
+                            self._cash -= buy_qty * price
+
+                self._record_equity_point(timestamp=bar_timestamp)
+
+        price_histories = self._select_native_price_histories(request.symbols, request.start, request.end)
+        vol_window = int(request.parameters.get("vol_window", 63))
+        rebal_interval = int(request.parameters.get("rebal_interval", 21))
+
+        venue_id = "XNAS"
+        trader_id = TraderId("FINBOT-NT-001")
+        venue = Venue(venue_id)
+        instruments = [TestInstrumentProvider.equity(symbol, venue_id) for symbol in request.symbols]
+
+        engine = NautilusBacktestEngine(config=BacktestEngineConfig(trader_id=trader_id))
+        engine.add_venue(
+            venue=venue,
+            oms_type=OmsType.NETTING,
+            account_type=AccountType.CASH,
+            base_currency=USD,
+            starting_balances=[Money(request.initial_cash, USD)],
+        )
+
+        bar_types: list[BarType] = []
+        for symbol, instrument in zip(request.symbols, instruments, strict=True):
+            engine.add_instrument(instrument)
+            bar_spec = BarSpecification(step=1, aggregation=BarAggregation.DAY, price_type=PriceType.LAST)
+            bar_type = BarType(instrument.id, bar_spec, AggregationSource.EXTERNAL)
+            bar_types.append(bar_type)
+            wrangler = BarDataWrangler(bar_type=bar_type, instrument=instrument)
+            bar_data = wrangler.process(self._to_nautilus_dataframe(price_histories[symbol]))
+            engine.add_data(bar_data)
+
+        strategy = RiskParityNativeStrategy(
+            RiskParityNativeConfig(
+                instrument_ids=tuple(instrument.id for instrument in instruments),
+                bar_types=tuple(bar_types),
+                symbols=request.symbols,
+                vol_window=vol_window,
+                rebal_interval=rebal_interval,
+                initial_cash=request.initial_cash,
+            )
+        )
+        engine.add_strategy(strategy)
+        engine.run()
+        engine.get_result()
+
+        equity_curve, cash_curve = strategy.native_curves()
+        run_warnings: list[str] = []
+        if equity_curve.empty:
+            prices = self._build_aligned_close_frame(price_histories)
+            equity_curve, cash_curve = self._simulate_risk_parity_portfolio(
+                prices=prices,
+                symbols=request.symbols,
+                initial_cash=request.initial_cash,
+                vol_window=vol_window,
+                rebal_interval=rebal_interval,
+            )
+            run_warnings.append(
+                "Full-native GS-03 valuation samples unavailable; used deterministic mark-to-market valuation fallback."
+            )
+
+        metrics = self._build_metrics_from_equity_curve(
+            equity_curve=equity_curve,
+            cash_curve=cash_curve if not cash_curve.empty else None,
+            initial_cash=request.initial_cash,
+        )
+        assumptions = {
+            "symbols": list(request.symbols),
+            "parameters": deepcopy(request.parameters),
+            "nautilus_strategy": "RiskParityNativeStrategy",
+            "nautilus_strategy_mapping": "riskparity_request_mapped_to_full_native_nautilus_strategy",
+            "strategy_equivalent": False,
+            "equivalence_notes": (
+                "RiskParity executed with native Nautilus strategy hooks; benchmark metrics are derived from "
+                "native mark-to-market portfolio valuation sampled on synchronized multi-symbol daily bars."
+            ),
+            "confidence": "low",
+            "adapter_mode": "native_nautilus_full",
+            "execution_fidelity": "full_native",
+            "valuation_fidelity": "native_mark_to_market",
+            "metric_source": "nautilus_portfolio_total_pnl_primary_bar",
+        }
+        artifacts = {"nautilus_symbols": ",".join(request.symbols), "nautilus_strategy_impl": "full_native"}
+        return metrics, assumptions, artifacts, tuple(run_warnings)
+
+    def _run_via_nautilus_risk_parity_proxy(
+        self, request: BacktestRunRequest
+    ) -> tuple[dict[str, float], dict[str, Any], dict[str, str], tuple[str, ...]]:
         price_histories = self._select_native_price_histories(request.symbols, request.start, request.end)
         prices = self._build_aligned_close_frame(price_histories)
 
         vol_window = int(request.parameters.get("vol_window", 63))
         rebal_interval = int(request.parameters.get("rebal_interval", 21))
-
-        cash = float(request.initial_cash)
-        shares: dict[str, int] = dict.fromkeys(request.symbols, 0)
-        returns: dict[str, list[float]] = {symbol: [] for symbol in request.symbols}
-        prev_close: dict[str, float | None] = dict.fromkeys(request.symbols)
-        periods_elapsed = 0
-        equity_values: list[float] = []
-
-        for _, row in prices.iterrows():
-            for symbol in request.symbols:
-                close = float(row[symbol])
-                prev = prev_close[symbol]
-                if prev is not None and prev > 0:
-                    returns[symbol].append((close - prev) / prev)
-                prev_close[symbol] = close
-
-            if len(returns[request.symbols[0]]) >= vol_window:
-                periods_elapsed += 1
-                if periods_elapsed >= rebal_interval:
-                    periods_elapsed = 0
-                    target_weights = self._compute_risk_parity_target_weights(
-                        returns=returns,
-                        symbols=request.symbols,
-                        vol_window=vol_window,
-                    )
-                    cash = self._rebalance_risk_parity_positions(
-                        symbols=request.symbols,
-                        prices_row=row,
-                        shares=shares,
-                        cash=cash,
-                        target_weights=target_weights,
-                    )
-
-            portfolio_value = cash + sum(shares[symbol] * float(row[symbol]) for symbol in request.symbols)
-            equity_values.append(portfolio_value)
-
-        equity_curve = pd.Series(equity_values, index=prices.index)
-        metrics = self._build_metrics_from_equity_curve(equity_curve=equity_curve, initial_cash=request.initial_cash)
+        equity_curve, cash_curve = self._simulate_risk_parity_portfolio(
+            prices=prices,
+            symbols=request.symbols,
+            initial_cash=request.initial_cash,
+            vol_window=vol_window,
+            rebal_interval=rebal_interval,
+        )
+        metrics = self._build_metrics_from_equity_curve(
+            equity_curve=equity_curve,
+            cash_curve=cash_curve,
+            initial_cash=request.initial_cash,
+        )
         assumptions = {
             "symbols": list(request.symbols),
             "parameters": deepcopy(request.parameters),
@@ -589,6 +1143,7 @@ class NautilusAdapter(BacktestEngine):
             ),
             "confidence": "medium",
             "adapter_mode": "native_nautilus_proxy",
+            "execution_fidelity": "proxy_native",
         }
         artifacts = {"nautilus_symbols": ",".join(request.symbols), "nautilus_proxy_type": "risk_parity"}
         run_warnings = (
@@ -606,7 +1161,7 @@ class NautilusAdapter(BacktestEngine):
         inv_vols: dict[str, float] = {}
         for symbol in symbols:
             window = returns[symbol][-vol_window:]
-            vol = float(pd.Series(window).std())
+            vol = float(pd.Series(window).std(ddof=0))
             inv_vols[symbol] = 1.0 / vol if vol > 0 else 0.0
 
         total_inv = sum(inv_vols.values())
@@ -707,7 +1262,100 @@ class NautilusAdapter(BacktestEngine):
             raise ValueError("Nautilus pilot requires at least 40 aligned bars across selected symbols")
         return aligned
 
-    def _build_metrics_from_equity_curve(self, *, equity_curve: pd.Series, initial_cash: float) -> dict[str, float]:
+    @staticmethod
+    def _coerce_nautilus_timestamp(raw_ts: Any) -> pd.Timestamp:
+        if raw_ts is None:
+            return pd.Timestamp.now(tz=UTC).tz_convert(None)
+
+        candidate: Any = raw_ts
+        as_int = getattr(raw_ts, "as_int", None)
+        if callable(as_int):
+            try:
+                candidate = int(as_int())
+            except (TypeError, ValueError):
+                candidate = raw_ts
+
+        if isinstance(candidate, int | float):
+            timestamp = pd.to_datetime(int(candidate), unit="ns", utc=True, errors="coerce")
+            if pd.notna(timestamp):
+                return timestamp.tz_convert(None)
+
+        timestamp = pd.to_datetime(candidate, utc=True, errors="coerce")
+        if pd.notna(timestamp):
+            return timestamp.tz_convert(None)
+        return pd.Timestamp.now(tz=UTC).tz_convert(None)
+
+    @staticmethod
+    def _coerce_nautilus_money_value(value: Any) -> float | None:
+        if value is None:
+            return None
+        as_double = getattr(value, "as_double", None)
+        if callable(as_double):
+            try:
+                return float(as_double())
+            except (TypeError, ValueError):
+                return None
+        as_decimal = getattr(value, "as_decimal", None)
+        if callable(as_decimal):
+            try:
+                return float(as_decimal())
+            except (TypeError, ValueError):
+                return None
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return None
+
+    @classmethod
+    def _coerce_nautilus_total_pnl(cls, payload: Any) -> float | None:
+        if payload is None:
+            return None
+
+        if isinstance(payload, dict):
+            values = list(payload.values())
+        else:
+            payload_values = getattr(payload, "values", None)
+            if callable(payload_values):
+                try:
+                    values = list(payload_values())
+                except TypeError:
+                    values = []
+            else:
+                values = []
+
+        if values:
+            total = 0.0
+            found = False
+            for item in values:
+                value = cls._coerce_nautilus_money_value(item)
+                if value is None:
+                    continue
+                total += value
+                found = True
+            if found:
+                return total
+            return None
+
+        return cls._coerce_nautilus_money_value(payload)
+
+    @staticmethod
+    def _series_from_points(points: list[tuple[pd.Timestamp, float]]) -> pd.Series:
+        if not points:
+            return pd.Series(dtype=float)
+        index = pd.DatetimeIndex([point[0] for point in points])
+        values = [float(point[1]) for point in points]
+        series = pd.Series(values, index=index)
+        if series.index.has_duplicates:
+            series = series.groupby(level=0).last()
+        return series.sort_index()
+
+    def _build_metrics_from_equity_curve(
+        self,
+        *,
+        equity_curve: pd.Series,
+        initial_cash: float,
+        cash_curve: pd.Series | None = None,
+    ) -> dict[str, float]:
         ending_value = float(equity_curve.iloc[-1])
         roi = (ending_value / initial_cash) - 1.0 if initial_cash > 0 else 0.0
 
@@ -726,6 +1374,8 @@ class NautilusAdapter(BacktestEngine):
             if std > 0:
                 sharpe = float((returns.mean() / std) * (252**0.5))
 
+        mean_cash_utilization = self._compute_mean_cash_utilization(equity_curve=equity_curve, cash_curve=cash_curve)
+
         return {
             "starting_value": self._finite_or_default(initial_cash, 0.0),
             "ending_value": self._finite_or_default(ending_value, initial_cash),
@@ -733,8 +1383,125 @@ class NautilusAdapter(BacktestEngine):
             "cagr": self._finite_or_default(cagr, 0.0),
             "sharpe": self._finite_or_default(sharpe, 0.0),
             "max_drawdown": self._finite_or_default(max_drawdown, 0.0),
-            "mean_cash_utilization": self._finite_or_default(0.0, 0.0),
+            "mean_cash_utilization": self._finite_or_default(mean_cash_utilization, 0.0),
         }
+
+    def _compute_mean_cash_utilization(self, *, equity_curve: pd.Series, cash_curve: pd.Series | None) -> float:
+        if cash_curve is None or cash_curve.empty:
+            return 0.0
+        aligned = pd.concat([equity_curve.rename("equity"), cash_curve.rename("cash")], axis=1).dropna()
+        if aligned.empty:
+            return 0.0
+
+        valid = aligned["equity"] > 0
+        if not bool(valid.any()):
+            return 0.0
+
+        utilization = 1.0 - (aligned.loc[valid, "cash"] / aligned.loc[valid, "equity"])
+        utilization = utilization.clip(lower=0.0, upper=1.0)
+        if utilization.empty:
+            return 0.0
+        return float(utilization.mean())
+
+    def _simulate_dual_momentum_portfolio(
+        self,
+        *,
+        prices: pd.DataFrame,
+        symbols: tuple[str, str],
+        initial_cash: float,
+        lookback: int,
+        rebal_interval: int,
+    ) -> tuple[pd.Series, pd.Series]:
+        primary_symbol, alt_symbol = symbols
+        cash = float(initial_cash)
+        shares: dict[str, int] = {primary_symbol: 0, alt_symbol: 0}
+        periods_elapsed = 0
+        equity_values: list[float] = []
+        cash_values: list[float] = []
+
+        for idx in range(len(prices)):
+            row = prices.iloc[idx]
+
+            if idx >= lookback:
+                periods_elapsed += 1
+                if periods_elapsed >= rebal_interval:
+                    periods_elapsed = 0
+                    primary_base = float(prices.iloc[idx - lookback][primary_symbol])
+                    alt_base = float(prices.iloc[idx - lookback][alt_symbol])
+                    primary_mom = (float(row[primary_symbol]) - primary_base) / primary_base
+                    alt_mom = (float(row[alt_symbol]) - alt_base) / alt_base
+
+                    target_symbol: str | None = None
+                    if primary_mom > 0 and primary_mom >= alt_mom:
+                        target_symbol = primary_symbol
+                    elif alt_mom > 0:
+                        target_symbol = alt_symbol
+
+                    for symbol in symbols:
+                        if symbol != target_symbol and shares[symbol] > 0:
+                            cash += shares[symbol] * float(row[symbol])
+                            shares[symbol] = 0
+
+                    if target_symbol is not None and shares[target_symbol] == 0:
+                        price = float(row[target_symbol])
+                        buy_size = int(cash // price)
+                        if buy_size > 0:
+                            shares[target_symbol] += buy_size
+                            cash -= buy_size * price
+
+            portfolio_value = cash + sum(shares[symbol] * float(row[symbol]) for symbol in symbols)
+            equity_values.append(portfolio_value)
+            cash_values.append(cash)
+
+        return pd.Series(equity_values, index=prices.index), pd.Series(cash_values, index=prices.index)
+
+    def _simulate_risk_parity_portfolio(
+        self,
+        *,
+        prices: pd.DataFrame,
+        symbols: tuple[str, ...],
+        initial_cash: float,
+        vol_window: int,
+        rebal_interval: int,
+    ) -> tuple[pd.Series, pd.Series]:
+        cash = float(initial_cash)
+        shares: dict[str, int] = dict.fromkeys(symbols, 0)
+        returns: dict[str, list[float]] = {symbol: [] for symbol in symbols}
+        prev_close: dict[str, float | None] = dict.fromkeys(symbols)
+        periods_elapsed = 0
+        equity_values: list[float] = []
+        cash_values: list[float] = []
+
+        for _, row in prices.iterrows():
+            for symbol in symbols:
+                close = float(row[symbol])
+                prev = prev_close[symbol]
+                if prev is not None and prev > 0:
+                    returns[symbol].append((close - prev) / prev)
+                prev_close[symbol] = close
+
+            if len(returns[symbols[0]]) >= vol_window:
+                periods_elapsed += 1
+                if periods_elapsed >= rebal_interval:
+                    periods_elapsed = 0
+                    target_weights = self._compute_risk_parity_target_weights(
+                        returns=returns,
+                        symbols=symbols,
+                        vol_window=vol_window,
+                    )
+                    cash = self._rebalance_risk_parity_positions(
+                        symbols=symbols,
+                        prices_row=row,
+                        shares=shares,
+                        cash=cash,
+                        target_weights=target_weights,
+                    )
+
+            portfolio_value = cash + sum(shares[symbol] * float(row[symbol]) for symbol in symbols)
+            equity_values.append(portfolio_value)
+            cash_values.append(cash)
+
+        return pd.Series(equity_values, index=prices.index), pd.Series(cash_values, index=prices.index)
 
     def _to_nautilus_dataframe(self, price_df: pd.DataFrame) -> pd.DataFrame:
         bars = price_df.loc[:, ["Open", "High", "Low", "Close", "Volume"]].copy()

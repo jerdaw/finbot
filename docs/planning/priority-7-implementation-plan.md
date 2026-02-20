@@ -1,9 +1,9 @@
 # Priority 7 Implementation Plan: External Impact & Advanced Capabilities
 
-**Version:** 1.1
+**Version:** 1.3
 **Created:** 2026-02-17
-**Last Updated:** 2026-02-17
-**Status:** In Progress (16/27 items complete, 59%)
+**Last Updated:** 2026-02-20
+**Status:** In Progress (status reconciled; see `docs/planning/priority-7-status-refresh-2026-02-20.md`)
 **Estimated Duration:** 6-10 weeks (phased execution)
 **Dependencies:** Priority 5 (93.3% complete), Priority 6 (100% complete)
 
@@ -30,7 +30,7 @@ Priority 7 focuses on maximizing the impact and visibility of Finbot while addin
 
 ## Current State Assessment
 
-### Project Maturity (2026-02-17)
+### Project Maturity (2026-02-20)
 
 **Completion Status:**
 - Priority 0: ✅ 100% (6/6 items) - Bugs and architectural hazards
@@ -38,22 +38,21 @@ Priority 7 focuses on maximizing the impact and visibility of Finbot while addin
 - Priority 2: ✅ 100% (6/6 items) - High-impact improvements
 - Priority 3: ✅ 100% (7/7 items) - Moderate improvements
 - Priority 4: ✅ 100% (6/6 items) - Polish and extensibility
-- Priority 5: 🟡 93.3% (42/45 items) - OMSAS/CanMEDS improvements
+- Priority 5: 🟡 95.6% (43/45 items) - OMSAS/CanMEDS improvements (item 12 partial, item 42 deferred)
 - Priority 6: ✅ 100% (18/18 items) - Backtesting-to-live readiness
 
-**Key Metrics:**
-- **Tests:** 866 passing (all green)
-- **Coverage:** 59.20% (98.83% of 60% target)
-- **Documentation:** 113 markdown files, 8 Jupyter notebooks
-- **CI/CD:** 7 jobs (lint, type-check, security, test, docs, parity, performance)
+**Key Metrics (snapshot):**
+- **Tests:** Expanded and stable on latest maintained suite path.
+- **Coverage:** 60%+ gate achieved and maintained.
+- **Documentation:** Expanded with blogs, application artifacts, and operational guides.
+- **CI/CD:** Core + heavy workflow split remains active.
 - **Python Support:** 3.11, 3.12, 3.13
 - **Security:** bandit, pip-audit, trivy, OpenSSF Scorecard ready
 - **Governance:** Complete (LICENSE, SECURITY, CODE_OF_CONDUCT, CODEOWNERS, etc.)
 
-**Remaining Priority 5 Items:**
+**Remaining Priority 5 Items (refreshed):**
 1. **Item 12:** Stricter mypy settings (L: 3-5 weeks) - Phase 2 complete, Phases 1,3-7 deferred
-2. **Item 22:** Simulation validation against known results (M: 1-2 days) - Blocked on historical data
-3. **Item 42:** Project logo/branding (S: 1-2 hours) - Blocked on design approval
+2. **Item 42:** Project logo/branding (S: 1-2 hours) - Blocked on design approval
 
 **Deferred High-Value Items:**
 - Increase coverage target from 60% to 70%+ (currently 59.20%, 1.3% short)
@@ -977,6 +976,7 @@ Finbot may never be truly "done" (open-source projects evolve continuously), but
 | 1.0 | 2026-02-17 | Initial draft - 27 items across 6 phases, 11-week timeline |
 | 1.1 | 2026-02-17 | Updated status after Batch 1 completion (17/27 items) |
 | 1.2 | 2026-02-17 | Batch 2 plan created: P7.15, P7.22, P7.16, P7.23, P7.1 — see `priority-7-batch2-implementation-plan.md` |
+| 1.3 | 2026-02-20 | Reconciled status metadata and linked evidence refresh document |
 
 ---
 
@@ -990,8 +990,8 @@ Finbot may never be truly "done" (open-source projects evolve continuously), but
   - `docs/planning/priority-5-6-completion-status.md` (prior status)
   - `docs/planning/backtesting-live-readiness-backlog.md` (Priority 6 backlog)
   - `docs/planning/stricter-mypy-implementation-plan.md` (P7.1 reference)
-- **Approval Status:** Draft - awaiting user review
-- **Implementation Status:** Not Started
+- **Approval Status:** Active historical plan document (superseded in execution by v8.1 plan)
+- **Implementation Status:** Partially implemented; see `docs/planning/priority-7-status-refresh-2026-02-20.md`
 
 ---
 

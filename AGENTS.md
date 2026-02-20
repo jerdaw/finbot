@@ -53,17 +53,19 @@ Backtesting/live-readiness transition is **Epics E0-E6 current cycle complete** 
   - State checkpoint and recovery for disaster recovery
   - 674 total tests (latest local run: 672 passed, 2 skipped)
 
-- **Post-E6 Follow-up:** Priority 6 items 69-72 complete; ADR-011 decision refreshed and remains **Defer**.
+- **Post-E6 Follow-up:** Priority 6 items 69-75 complete; item 76 (native-only valuation parity closure) remains in progress; ADR-011 remains **Defer**.
 - **Current Maintenance Focus:** Priority 5 closeout/type-hardening.
   - Item 12 (stricter mypy): partially complete with expanded strict module scopes active across core/execution/backtesting/libs plus staged utility namespaces (canonical scope list in `docs/guides/mypy-strict-module-tracker.md`).
   - Item 39 (TestPyPI): complete (publish workflow run succeeded and package metadata/install verification documented).
   - Item 42 (logo/branding): deferred pending human-approved design direction.
+  - Active plan record: `docs/planning/IMPLEMENTATION_PLAN_8.5_E6_NATIVE_ONLY_VALUATION_PARITY_CLOSURE.md` (in progress).
 
 Authoritative tracking docs:
 - `docs/planning/backtesting-live-readiness-backlog.md` (Epic tracking)
 - `docs/planning/roadmap.md`
 - `docs/research/nautilus-pilot-evaluation.md`
 - `docs/adr/ADR-011-nautilus-decision.md`
+- `docs/planning/archive/IMPLEMENTATION_PLAN_8.4_E6_DELTA_CLOSURE_SHADOW_VALUATION.md`
 - `docs/planning/archive/IMPLEMENTATION_PLAN_6.3_E6_EVIDENCE_GATE_AND_E4_CLOSURE.md`
 - `docs/planning/archive/IMPLEMENTATION_PLAN_7.1_POST_E6_PHASE2_MULTI_SCENARIO_EVIDENCE.md`
 - `docs/planning/archive/IMPLEMENTATION_PLAN_7.2_PRIORITY5_GOVERNANCE_SECURITY_QUICK_WINS.md`

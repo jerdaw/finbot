@@ -45,7 +45,7 @@ from finbot.utils.pandas_utils.sort_dataframe_columns import sort_dataframe_mult
 MAX_THREADS = settings_accessors.MAX_THREADS
 
 
-def _get_yf_req_params(**kwargs) -> dict[str, str | bool | None]:
+def _get_yf_req_params(**kwargs: Any) -> dict[str, str | bool | None]:
     """
     Construct a dictionary of parameters for Yahoo Finance API requests,
     applying defaults where necessary.
@@ -285,7 +285,7 @@ def _save_updated_data(updated_data: pd.DataFrame, file_paths: dict[str, Path], 
         raise KeyError(f"Missing symbol data or path for: {e}") from e
 
 
-def _load_yfinance_data(symbols_to_load: Sequence[str], file_paths: dict[str, Path], request_type) -> pd.DataFrame:
+def _load_yfinance_data(symbols_to_load: Sequence[str], file_paths: dict[str, Path], request_type: str) -> pd.DataFrame:
     """
     Load Yahoo Finance data from local files, if available, for given symbols.
 
