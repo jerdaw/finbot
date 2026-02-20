@@ -23,7 +23,7 @@ def validate_start_end_dates(
     end_date: Any,
     prevent_future_dates: bool = True,
     permit_none: bool = False,
-):
+) -> None:
     """
     Validate start and end dates.
 

@@ -143,13 +143,18 @@ instead of vectorization).
 from __future__ import annotations
 
 import time
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
+from typing import Any
 
 import numpy as np
 import pandas as pd
 
 
-def profile_operation(data: pd.Series | pd.DataFrame, operation: Callable, vectorized_operation: Callable) -> bool:
+def profile_operation(
+    data: pd.Series | pd.DataFrame,
+    operation: Callable[[pd.Series | pd.DataFrame], object],
+    vectorized_operation: Callable[[pd.Series | pd.DataFrame], object],
+) -> bool:
     """
     Dynamically profile an operation on a sample of data to decide if vectorization is beneficial.
 
@@ -179,17 +184,18 @@ def profile_operation(data: pd.Series | pd.DataFrame, operation: Callable, vecto
 
 
 # Example usage
-def my_operation(data):
-    return [x * 2 for x in data]
+def my_operation(data: pd.Series | pd.DataFrame) -> list[object]:
+    iterable: Iterable[Any] = data.to_numpy().ravel() if isinstance(data, pd.DataFrame) else data
+    return [x * 2 for x in iterable]
 
 
-def my_vectorized_operation(data):
+def my_vectorized_operation(data: pd.Series | pd.DataFrame) -> pd.Series | pd.DataFrame:
     return data * 2
 
 
-data = pd.Series(np.random.randint(0, 100, size=10000))
-
-if profile_operation(data, my_operation, my_vectorized_operation):
-    print("Vectorized operation is more efficient.")
-else:
-    print("Non-vectorized operation is more efficient.")
+if __name__ == "__main__":
+    data = pd.Series(np.random.randint(0, 100, size=10000))
+    if profile_operation(data, my_operation, my_vectorized_operation):
+        print("Vectorized operation is more efficient.")
+    else:
+        print("Non-vectorized operation is more efficient.")

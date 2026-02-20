@@ -18,12 +18,14 @@ Typical usage:
     - Filter time series by economic conditions
 """
 
+from typing import cast
+
 import pandas as pd
 
 from finbot.utils.finance_utils.get_us_gdp_recessions_bools import get_us_gdp_recessions_bools
 
 
-def get_us_gdp_cycle_dates(df: pd.DataFrame | None = None):
+def get_us_gdp_cycle_dates(df: pd.DataFrame | None = None) -> dict[str, list[tuple[pd.Timestamp, pd.Timestamp]]]:
     """
     Identifies recession and non-recession periods from a DataFrame.
 
@@ -34,22 +36,26 @@ def get_us_gdp_cycle_dates(df: pd.DataFrame | None = None):
     if df is None:
         df = get_us_gdp_recessions_bools()
 
-    recession_periods = []
-    non_recession_periods = []
-    previous_state = None
-    period_start = df.index[0]
+    if not isinstance(df.index, pd.DatetimeIndex):
+        raise TypeError("df.index must be a DatetimeIndex")
+
+    recession_periods: list[tuple[pd.Timestamp, pd.Timestamp]] = []
+    non_recession_periods: list[tuple[pd.Timestamp, pd.Timestamp]] = []
+    previous_state: bool | None = None
+    period_start: pd.Timestamp = df.index[0]
 
     for date, row in df.iterrows():
+        current_date = cast(pd.Timestamp, date)
         current_state = row.iloc[0]
 
         # Check for state change
         if current_state != previous_state and previous_state is not None:
-            period_end = date
+            period_end = current_date
             if previous_state:  # End of recession
                 recession_periods.append((period_start, period_end))
             else:  # End of non-recession
                 non_recession_periods.append((period_start, period_end))
-            period_start = date
+            period_start = current_date
 
         previous_state = current_state
 

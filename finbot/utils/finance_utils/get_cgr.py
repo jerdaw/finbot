@@ -10,7 +10,7 @@ Typical usage:
 """
 
 
-def get_cgr(start_val, end_val, periods) -> float:
+def get_cgr(start_val: float, end_val: float, periods: int | float) -> float:
     return (end_val / start_val) ** (1 / periods) - 1
 
 

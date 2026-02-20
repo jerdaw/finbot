@@ -20,12 +20,13 @@ Typical usage:
 
 import numpy as np
 import pandas as pd
+import plotly.graph_objects as go
 
 from finbot.utils.data_science_utils.data_transformation.data_smoothing import DataSmoother
 from finbot.utils.plotting_utils.interactive.interactive_plotter import InteractivePlotter
 
 
-def classify_trends(relative_change: pd.Series, threshold: float | None = None):
+def classify_trends(relative_change: pd.Series, threshold: float | None = None) -> pd.Series:
     if threshold is None:
         threshold = relative_change.mean()  # Standard deviation as a threshold
 
@@ -38,7 +39,7 @@ def classify_trends(relative_change: pd.Series, threshold: float | None = None):
     return trend
 
 
-def _smooth_data(data: pd.Series, smoothing_wavelet: str = "db7", smoothing_level: int = 4):
+def _smooth_data(data: pd.Series, smoothing_wavelet: str = "db7", smoothing_level: int = 4) -> pd.Series:
     """
     Smooth the data using the specified wavelet and level.
     The default wavelet is Daubechies 7 and the default level is 4.
@@ -53,7 +54,11 @@ def _smooth_data(data: pd.Series, smoothing_wavelet: str = "db7", smoothing_leve
     return smoothed_data
 
 
-def get_price_trends_classifications(price_data: pd.Series, smoothing_wavelet: str = "db7", smoothing_level: int = 4):
+def get_price_trends_classifications(
+    price_data: pd.Series,
+    smoothing_wavelet: str = "db7",
+    smoothing_level: int = 4,
+) -> pd.Series:
     if not isinstance(price_data, pd.Series):
         raise ValueError("Data must be a pandas Series")
 
@@ -66,11 +71,11 @@ def get_price_trends_classifications(price_data: pd.Series, smoothing_wavelet: s
     return trend
 
 
-def plot_trends(trend_data: pd.DataFrame, original_data: pd.Series | None = None) -> None:
+def plot_trends(trend_data: pd.Series, original_data: pd.Series | None = None) -> None:
     """
     Plot the original time series with classified trends using Plotly for interactivity.
 
-    :param trend_data: pandas DataFrame containing the trend classification.
+    :param trend_data: pandas Series containing the trend classification.
     :param original_data: pandas Series containing the original time series data.
     :raises ValueError: If data validations fail.
     """
@@ -108,8 +113,6 @@ def plot_trends(trend_data: pd.DataFrame, original_data: pd.Series | None = None
 
 
 if __name__ == "__main__":
-    import plotly.graph_objects as go
-
     from finbot.constants.data_constants import DEMO_DATA
 
     close_serie = DEMO_DATA["Close"]

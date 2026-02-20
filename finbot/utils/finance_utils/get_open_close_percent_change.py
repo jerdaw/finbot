@@ -15,7 +15,11 @@ import pandas as pd
 from finbot.constants.data_constants import DEMO_DATA
 
 
-def calculate_open_close_percent_change(data: pd.DataFrame, open_col="Open", close_col="Close"):
+def calculate_open_close_percent_change(
+    data: pd.DataFrame,
+    open_col: str = "Open",
+    close_col: str = "Close",
+) -> pd.Series:
     """
     Calculate percent changes in a timeseries based on the 'open_col' and 'close_col' values.
 

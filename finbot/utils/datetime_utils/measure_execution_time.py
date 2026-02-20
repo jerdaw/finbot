@@ -13,9 +13,10 @@ Typical usage:
 """
 
 import time
+from collections.abc import Callable
 
 
-def measure_execution_time(func):
+def measure_execution_time(func: Callable[[], object]) -> float:
     start_time = time.perf_counter()
     func()
     end_time = time.perf_counter()

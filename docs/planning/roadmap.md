@@ -2,13 +2,13 @@
 
 **Created:** 2026-02-10
 **Last Updated:** 2026-02-20
-**Status:** Priority 0-5 baseline complete/progressing; Priority 6 adapter-first backtesting/live-readiness current cycle complete with post-E6 follow-up phase 2 complete (items 69-72); workspace test-suite stability recovered after sync-conflict cleanup; v8.0 planning cycle opened for Priority 5 closeout and type-hardening
+**Status:** Priority 0-4 complete; Priority 5 closeout at 43/45 complete (Item 12 active partial, Item 42 deferred); Priority 6 complete with post-E6 follow-up phase 2 complete (items 69-72); v8.0 closeout plan complete and archived.
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
 
 See Completed Items table below and git history for details on implemented features.
 
-**Active Next-Batch Plan:** `docs/planning/IMPLEMENTATION_PLAN_8.0_PRIORITY5_CLOSEOUT_AND_TYPE_HARDENING.md`
+**Current Plan Record:** `docs/planning/archive/IMPLEMENTATION_PLAN_8.0_PRIORITY5_CLOSEOUT_AND_TYPE_HARDENING.md` (completed 2026-02-20)
 
 ---
 
@@ -43,8 +43,7 @@ All 6 items complete. Added CLI interface (4 commands), fixed code smells, refac
 All 7 items complete. Improved documentation (160 module docstrings, MkDocs site, ADRs), strengthened type safety (146 → 0 mypy errors), added performance benchmarks, improved CI/CD pipeline, improved pre-commit hooks, modernized pyproject.toml metadata, consolidated package layout.
 
 **Remaining (Deferred — Not Blocking):**
-- [ ] Enable stricter mypy settings (`disallow_untyped_defs`, etc.)
-- [ ] Add `py.typed` marker file for PEP 561 compliance
+- [ ] Continue broader strict mypy rollout beyond current scoped enforcement (tracked under Priority 5 Item 12)
 - [ ] Pin CI action versions to SHA hashes
 - [ ] Add scheduled CI for daily update pipeline (requires API keys in CI)
 - [ ] Add notebook-specific lint workflow (e.g., nbQA) to complement source-only Ruff baseline
@@ -145,7 +144,7 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **What:** Gradually enable disallow_untyped_defs=true, add type annotations
     - **Evidence:** Stricter mypy config, type-safe codebase
     - **Status:** 🔄 Partially Complete (2026-02-20)
-    - **Implementation:** Added module-level strict mypy enforcement for `finbot.core.*`, `finbot.services.execution.*`, `finbot.services.backtesting.*`, `finbot.libs.api_manager.*`, `finbot.libs.logger.*`, `finbot.services.data_quality.*`, `finbot.services.health_economics.*`, `finbot.services.optimization.*`, `finbot.utils.request_utils.*`, and `finbot.utils.pandas_utils.*` in `pyproject.toml`; fixed surfaced typing gaps across backtesting/api-manager/logger/optimization/request-utils/pandas-utils modules; added strict-scope tracker (`docs/guides/mypy-strict-module-tracker.md`); validated with `uv run mypy finbot/` (clean).
+    - **Implementation:** Added staged module-level strict mypy enforcement across core/execution/backtesting/libs plus expanded utility namespaces (see canonical scope list in `docs/guides/mypy-strict-module-tracker.md` and overrides in `pyproject.toml`); fixed surfaced typing gaps in each rollout wave; validated with `uv run mypy finbot/` (clean), targeted utility regressions (`uv run pytest tests/unit/test_datetime_utils.py tests/unit/test_file_utils.py tests/unit/test_finance_utils.py tests/unit/test_json_utils.py tests/unit/test_dict_utils.py -q`, 203 passed), and `DYNACONF_ENV=development` import smoke for analysis/plotter paths.
 
 ### 5.3 Documentation & Communication
 
@@ -349,8 +348,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Leader (making tools available)
     - **What:** Add GitHub Actions workflow to publish to TestPyPI on release
     - **Evidence:** TestPyPI listing, installable package
-    - **Status:** 🔄 Partially Complete (2026-02-20)
-    - **Implementation:** Publishing workflow delivered in `.github/workflows/publish-testpypi.yml` plus setup/operations docs (`docs/guides/publishing-to-testpypi.md`, `docs/guides/TESTPYPI-SETUP.md`, `docs/guides/testpypi-quick-reference.md`), closure checklist (`docs/guides/testpypi-closure-checklist.md`), and verification script (`scripts/verify_testpypi_publication.py`); latest local verification (`uv run python scripts/verify_testpypi_publication.py`, 2026-02-20) reports package not yet published on TestPyPI. Remaining step is maintainer-owned token/account verification and confirmed package installability from TestPyPI.
+    - **Status:** ✅ Complete (2026-02-20)
+    - **Implementation:** Publishing workflow delivered in `.github/workflows/publish-testpypi.yml` plus setup/operations docs (`docs/guides/publishing-to-testpypi.md`, `docs/guides/TESTPYPI-SETUP.md`, `docs/guides/testpypi-quick-reference.md`), closure checklist (`docs/guides/testpypi-closure-checklist.md`), and verification script (`scripts/verify_testpypi_publication.py`). Maintainer-triggered publish run succeeded (`https://github.com/jerdaw/finbot/actions/runs/22208752403`, run #1, success); metadata verification confirms `finbot` version `1.0.0` on TestPyPI (`python scripts/verify_testpypi_publication.py`, `python scripts/verify_testpypi_publication.py --version 1.0.0`); resolver-safe install verification path validated with isolated environment guidance in checklist.
     - **Prereqs:** Items 2, 3 (version fix, releases)
 
 40. **Add docs deployment workflow** (S: 1-2 hours)
@@ -423,10 +422,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
 **High-impact medical relevance (items 19-23):** Health economics methodology, clinical scenarios, validation - demonstrates medical/clinical competency.
 
 **Current Open Priority 5 Items (2026-02-20):**
-- 12: Stricter mypy settings (partially complete; module-level strictness now active for core/execution/backtesting/libs/data-quality/health-economics/optimization/request-utils/pandas-utils, broader rollout pending).
-- 39: TestPyPI publishing (partially complete; workflow/docs complete, maintainer token+publish verification pending).
+- 12: Stricter mypy settings (partially complete; strict scopes expanded substantially, with full active scope tracked in `docs/guides/mypy-strict-module-tracker.md`; broader rollout still pending).
 - 42: Project logo/branding (deferred pending human design approval and brand direction).
-- v8.0 plan archival: pending external closure of item 39 verification (`docs/planning/IMPLEMENTATION_PLAN_8.0_PRIORITY5_CLOSEOUT_AND_TYPE_HARDENING.md` stays active until then).
 
 ---
 
@@ -562,7 +559,7 @@ Priority 6 execution documents:
 
 **Current Phase:** Post-E6 follow-up phase 2 implemented (v7.1.0 complete; decision remains Defer with proxy-native medium-confidence GS-02/GS-03 evidence)
 - E4 reproducibility/observability deferred integration items are fully closed.
-- Next execution batch is planned in `docs/planning/IMPLEMENTATION_PLAN_8.0_PRIORITY5_CLOSEOUT_AND_TYPE_HARDENING.md`.
+- Latest maintenance batch (v8.0) is archived at `docs/planning/archive/IMPLEMENTATION_PLAN_8.0_PRIORITY5_CLOSEOUT_AND_TYPE_HARDENING.md`; next execution plan is pending selection.
 
 ---
 
@@ -615,7 +612,7 @@ Priority 6 execution documents:
 | CLI smoke tests added (5.6.31) | 2026-02-12 | 47 tests covering --help, --version, all 6 commands, error handling, performance |
 | CLI input validation added (5.6.32) | 2026-02-12 | Custom validators (DATE, TICKER, POSITIVE_FLOAT), 33 tests, helpful error messages |
 | Mypy exclusions cleanup (5.6.34) | 2026-02-19 | Removed remaining `ignore_errors` overrides and restored full `uv run mypy finbot/` pass |
-| Stricter mypy rollout Wave 1+5 (5.2.12 partial) | 2026-02-20 | Enabled strict typed-def enforcement for core/execution/backtesting/libs(api_manager/logger)/data_quality/health_economics/optimization/request_utils/pandas_utils, fixed surfaced annotations (including yfinance follow-up from global mypy pass), and added strict-scope tracker guide |
+| Stricter mypy rollout Wave 1+9 (5.2.12 partial) | 2026-02-20 | Enabled strict typed-def enforcement across core/execution/backtesting/libs and expanded utility scopes (canonical list in `docs/guides/mypy-strict-module-tracker.md`), fixed surfaced annotations (including utility-signature hardening), and kept global mypy clean |
 | Data ethics documentation added (5.5.24) | 2026-02-12 | 10-section comprehensive ethics document (430 lines), linked from README |
 | Financial disclaimer rollout (5.5.25) | 2026-02-19 | Added DISCLAIMER.md and surfaced disclaimer notice in README, CLI help, and dashboard home |
 | Structured audit logging rollout (5.5.26) | 2026-02-19 | Added typed audit helper, CLI trace-id propagation, command-level audit wrappers, and update pipeline audit events |
@@ -632,6 +629,7 @@ Priority 6 execution documents:
 | Conventional commit linting (5.7.36) | 2026-02-16 | Added commit-msg conventional-commit hook and supporting commitlint guidance/docs |
 | Release automation workflow (5.7.37) | 2026-02-17 | Added `.github/workflows/release.yml` for tag-triggered build+GitHub release automation |
 | Automated changelog generation (5.7.38) | 2026-02-17 | Added `git-changelog` config/script/make target and changelog-generation guide |
+| TestPyPI publication closure (5.7.39) | 2026-02-20 | Successful publish run (`https://github.com/jerdaw/finbot/actions/runs/22208752403`), package metadata verified on TestPyPI (`1.0.0`), and resolver-safe install verification guidance finalized |
 | Docs deployment workflow closure (5.7.40) | 2026-02-20 | Confirmed deploy workflow + live Pages availability and documented operations runbook |
 | Docs build badge (5.7.41) | 2026-02-19 | Added docs workflow status badge to README |
 | OpenSSF Scorecard automation (5.7.43) | 2026-02-20 | Added scorecard workflow/docs and OpenSSF badge in README |
