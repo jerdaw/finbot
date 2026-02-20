@@ -1,12 +1,14 @@
 # Finbot Roadmap
 
 **Created:** 2026-02-10
-**Last Updated:** 2026-02-19
-**Status:** Priority 0-5 baseline complete/progressing; Priority 6 adapter-first backtesting/live-readiness current cycle complete with post-E6 follow-up phase 2 complete (items 69-72); workspace test-suite stability recovered after sync-conflict cleanup
+**Last Updated:** 2026-02-20
+**Status:** Priority 0-5 baseline complete/progressing; Priority 6 adapter-first backtesting/live-readiness current cycle complete with post-E6 follow-up phase 2 complete (items 69-72); workspace test-suite stability recovered after sync-conflict cleanup; v8.0 planning cycle opened for Priority 5 closeout and type-hardening
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
 
 See Completed Items table below and git history for details on implemented features.
+
+**Active Next-Batch Plan:** `docs/planning/IMPLEMENTATION_PLAN_8.0_PRIORITY5_CLOSEOUT_AND_TYPE_HARDENING.md`
 
 ---
 
@@ -142,7 +144,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Professional (quality standards)
     - **What:** Gradually enable disallow_untyped_defs=true, add type annotations
     - **Evidence:** Stricter mypy config, type-safe codebase
-    - **Status:** ⬜ Not started
+    - **Status:** 🔄 Partially Complete (2026-02-20)
+    - **Implementation:** Added module-level strict mypy enforcement for `finbot.core.*`, `finbot.services.execution.*`, `finbot.services.backtesting.*`, `finbot.libs.api_manager.*`, `finbot.libs.logger.*`, `finbot.services.data_quality.*`, `finbot.services.health_economics.*`, `finbot.services.optimization.*`, `finbot.utils.request_utils.*`, and `finbot.utils.pandas_utils.*` in `pyproject.toml`; fixed surfaced typing gaps across backtesting/api-manager/logger/optimization/request-utils/pandas-utils modules; added strict-scope tracker (`docs/guides/mypy-strict-module-tracker.md`); validated with `uv run mypy finbot/` (clean).
 
 ### 5.3 Documentation & Communication
 
@@ -150,8 +153,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Communicator (published resource)
     - **What:** Add GitHub Actions workflow for mkdocs gh-deploy, configure site_url, fix broken links
     - **Evidence:** Live documentation URL (https://jerdaw.github.io/finbot/)
-    - **Status:** 🔄 Partially Complete (2026-02-12) - Workflow created, user must enable GitHub Pages
-    - **Implementation:** Updated site_url, created .github/workflows/docs.yml, tested build (5.27s)
+    - **Status:** ✅ Complete (2026-02-20)
+    - **Implementation:** Docs deployment workflow present at `.github/workflows/docs.yml`; live site verified reachable (`https://jerdaw.github.io/finbot/`, HTTP 200 on 2026-02-20); operational runbook added in `docs/guides/github-pages-docs-deploy-runbook.md`.
     - **Prereqs:** Item 14 (fix Poetry references) ✅
 
 14. **Fix outdated Poetry references** (S: 30 min)
@@ -270,7 +273,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Health Advocate, Professional (inclusive design)
     - **What:** Add alt text, WCAG AA contrast, keyboard navigation, screen reader labels; document accessibility
     - **Evidence:** Accessible dashboard, accessibility documentation
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-17)
+    - **Implementation:** Added accessibility enhancements across chart components and dashboard pages (`finbot/dashboard/components/charts.py`, `finbot/dashboard/disclaimer.py`, page integrations), plus full accessibility statement `docs/accessibility.md`.
 
 ### 5.6 Additional Quality & Testing
 
@@ -278,7 +282,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Scholar (edge case rigor)
     - **What:** Add hypothesis to dev deps, write property tests for fund simulator, CGR, drawdown, etc.
     - **Evidence:** Advanced testing methodology, edge case coverage
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-17)
+    - **Implementation:** Added Hypothesis-based property test suite under `tests/property/` with shared strategies and finance/simulation properties; dependency included in `pyproject.toml`.
 
 31. **Add CLI smoke tests** (S: 2-4 hours)
     - **CanMEDS:** Professional (user interface testing)
@@ -298,7 +303,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Professional (engineering maturity)
     - **What:** Add CI step that runs benchmarks and fails on regression
     - **Evidence:** Performance monitoring in CI
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-17)
+    - **Implementation:** Added benchmark harness + baseline (`tests/performance/benchmark_runner.py`, `tests/performance/baseline.json`) and CI/test integration (`tests/performance/test_performance_regression.py`); documented in `tests/performance/README.md` and `docs/guides/updating-performance-baseline.md`.
 
 34. **Fix remaining mypy exclusions** (M: 1-2 days)
     - **CanMEDS:** Professional (quality standards)
@@ -320,35 +326,39 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Professional (governance maturity)
     - **What:** Add commitlint pre-commit hook validating conventional commits
     - **Evidence:** Consistent commit history
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-16)
+    - **Implementation:** Added `conventional-pre-commit` commit-msg hook in `.pre-commit-config.yaml` and documented rules in `.commitlintrc.yaml` and `docs/guides/conventional-commits-quick-reference.md`.
 
 37. **Add release automation workflow** (M: 2-4 hours)
     - **CanMEDS:** Professional (DevOps maturity)
     - **What:** Create .github/workflows/release.yml for tag-triggered releases
     - **Evidence:** Automated release pipeline
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-17)
+    - **Implementation:** Added tag-triggered release workflow in `.github/workflows/release.yml` with build artifact packaging and release-note extraction from `CHANGELOG.md`.
     - **Prereqs:** Item 3 (git tags)
 
 38. **Add automated changelog generation** (S: 2-4 hours)
     - **CanMEDS:** Professional (process automation)
     - **What:** Add git-cliff or similar, configure for conventional commits
     - **Evidence:** Auto-generated release notes
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-17)
+    - **Implementation:** Added `git-changelog` configuration (`.git-changelog.toml`), generation script (`scripts/generate_changelog.sh`), Make target (`make changelog`), and guide (`docs/guides/changelog-generation.md`).
     - **Prereqs:** Item 36 (conventional commits)
 
 39. **Publish package to TestPyPI** (M: 2-4 hours)
     - **CanMEDS:** Leader (making tools available)
     - **What:** Add GitHub Actions workflow to publish to TestPyPI on release
     - **Evidence:** TestPyPI listing, installable package
-    - **Status:** ⬜ Not started
+    - **Status:** 🔄 Partially Complete (2026-02-20)
+    - **Implementation:** Publishing workflow delivered in `.github/workflows/publish-testpypi.yml` plus setup/operations docs (`docs/guides/publishing-to-testpypi.md`, `docs/guides/TESTPYPI-SETUP.md`, `docs/guides/testpypi-quick-reference.md`), closure checklist (`docs/guides/testpypi-closure-checklist.md`), and verification script (`scripts/verify_testpypi_publication.py`); latest local verification (`uv run python scripts/verify_testpypi_publication.py`, 2026-02-20) reports package not yet published on TestPyPI. Remaining step is maintainer-owned token/account verification and confirmed package installability from TestPyPI.
     - **Prereqs:** Items 2, 3 (version fix, releases)
 
 40. **Add docs deployment workflow** (S: 1-2 hours)
     - **CanMEDS:** Professional (CI/CD maturity)
     - **What:** Create .github/workflows/docs.yml for auto-deploy to GitHub Pages
     - **Evidence:** Auto-deployed documentation
-    - **Status:** 🔄 Partially Complete (2026-02-19)
-    - **Implementation:** Workflow present at `.github/workflows/docs.yml`; remaining manual step is enabling GitHub Pages in repository settings.
+    - **Status:** ✅ Complete (2026-02-20)
+    - **Implementation:** Docs deploy workflow is present (`.github/workflows/docs.yml`) and live site is reachable (`https://jerdaw.github.io/finbot/`); verification/rollback runbook added at `docs/guides/github-pages-docs-deploy-runbook.md`.
 
 41. **Add docs build status badge** (S: 10 min)
     - **CanMEDS:** Professional (project maturity signals)
@@ -362,14 +372,16 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Communicator (visual identity)
     - **What:** Create simple SVG logo, add to README and docs site
     - **Evidence:** Visual branding, professional appearance
-    - **Status:** ⬜ Not started
-    - **Note:** Requires human approval of design
+    - **Status:** ⏸ Deferred (2026-02-20)
+    - **Rationale:** Human design approval and branding direction are not yet available.
+    - **Re-entry Criteria:** Resume when a maintainer-approved SVG concept (or brand guide) is provided.
 
 43. **Add OpenSSF Scorecard or REUSE compliance** (M: 1-2 days)
     - **CanMEDS:** Professional (best practice compliance)
     - **What:** Run OpenSSF Scorecard, address findings, add badge to README
     - **Evidence:** Third-party validation badge
-    - **Status:** ⬜ Not started
+    - **Status:** ✅ Complete (2026-02-20)
+    - **Implementation:** Added Scorecard workflow (`.github/workflows/scorecard.yml`), security documentation (`docs/security/openssf-scorecard.md`, `docs/security/scorecard-manual-setup.md`), and README badge integration.
     - **Prereqs:** Items 1, 4, 5, 6 (governance files)
 
 44. **Add data freshness monitoring documentation** (S: 2-4 hours)
@@ -409,6 +421,12 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
 **Immediate wins (items 1-7):** All Size S, ~2 hours total, immediately improves GitHub Community Standards and professional appearance.
 
 **High-impact medical relevance (items 19-23):** Health economics methodology, clinical scenarios, validation - demonstrates medical/clinical competency.
+
+**Current Open Priority 5 Items (2026-02-20):**
+- 12: Stricter mypy settings (partially complete; module-level strictness now active for core/execution/backtesting/libs/data-quality/health-economics/optimization/request-utils/pandas-utils, broader rollout pending).
+- 39: TestPyPI publishing (partially complete; workflow/docs complete, maintainer token+publish verification pending).
+- 42: Project logo/branding (deferred pending human design approval and brand direction).
+- v8.0 plan archival: pending external closure of item 39 verification (`docs/planning/IMPLEMENTATION_PLAN_8.0_PRIORITY5_CLOSEOUT_AND_TYPE_HARDENING.md` stays active until then).
 
 ---
 
@@ -544,6 +562,7 @@ Priority 6 execution documents:
 
 **Current Phase:** Post-E6 follow-up phase 2 implemented (v7.1.0 complete; decision remains Defer with proxy-native medium-confidence GS-02/GS-03 evidence)
 - E4 reproducibility/observability deferred integration items are fully closed.
+- Next execution batch is planned in `docs/planning/IMPLEMENTATION_PLAN_8.0_PRIORITY5_CLOSEOUT_AND_TYPE_HARDENING.md`.
 
 ---
 
@@ -585,7 +604,7 @@ Priority 6 execution documents:
 | Fix Poetry references (5.3.14) | 2026-02-12 | Updated 7 files, consistent uv documentation |
 | Fix README badge URLs (5.3.16) | 2026-02-12 | Corrected jer→jerdaw, updated uv version 0.6+→0.9+ |
 | Add Limitations document (5.3.18) | 2026-02-12 | 431-line comprehensive doc, 9 sections, intellectual honesty |
-| Deploy MkDocs to Pages (5.3.13) | 2026-02-12 | Workflow created, awaiting user to enable Pages |
+| Deploy MkDocs to Pages (5.3.13) | 2026-02-20 | Docs workflow active and live docs URL verified reachable; runbook added in `docs/guides/github-pages-docs-deploy-runbook.md` |
 | Add docstring coverage (5.3.17) | 2026-02-12 | Interrogate with 55% threshold, 58.2% current coverage, CI + Makefile + badge |
 | Health econ methodology (5.4.19) | 2026-02-12 | 47-page research document, 22 academic references, WHO/NICE/CADTH guidelines |
 | Health econ notebook enhanced (5.4.20) | 2026-02-12 | Diabetes clinical scenario, international thresholds, policy implications, 5 refs |
@@ -596,17 +615,26 @@ Priority 6 execution documents:
 | CLI smoke tests added (5.6.31) | 2026-02-12 | 47 tests covering --help, --version, all 6 commands, error handling, performance |
 | CLI input validation added (5.6.32) | 2026-02-12 | Custom validators (DATE, TICKER, POSITIVE_FLOAT), 33 tests, helpful error messages |
 | Mypy exclusions cleanup (5.6.34) | 2026-02-19 | Removed remaining `ignore_errors` overrides and restored full `uv run mypy finbot/` pass |
+| Stricter mypy rollout Wave 1+5 (5.2.12 partial) | 2026-02-20 | Enabled strict typed-def enforcement for core/execution/backtesting/libs(api_manager/logger)/data_quality/health_economics/optimization/request_utils/pandas_utils, fixed surfaced annotations (including yfinance follow-up from global mypy pass), and added strict-scope tracker guide |
 | Data ethics documentation added (5.5.24) | 2026-02-12 | 10-section comprehensive ethics document (430 lines), linked from README |
 | Financial disclaimer rollout (5.5.25) | 2026-02-19 | Added DISCLAIMER.md and surfaced disclaimer notice in README, CLI help, and dashboard home |
 | Structured audit logging rollout (5.5.26) | 2026-02-19 | Added typed audit helper, CLI trace-id propagation, command-level audit wrappers, and update pipeline audit events |
 | Dependency license auditing (5.5.27) | 2026-02-19 | Added THIRD_PARTY_LICENSES.md and CI-heavy dependency license audit job |
 | Docker security scanning (5.5.28) | 2026-02-19 | Added Docker image build + Trivy HIGH/CRITICAL vulnerability scan in CI-heavy workflow |
+| Dashboard accessibility improvements (5.5.29) | 2026-02-17 | Added chart/page accessibility enhancements and published accessibility statement in `docs/accessibility.md` |
+| Property-based testing with Hypothesis (5.6.30) | 2026-02-17 | Added property test suite under `tests/property/` with shared strategies and coverage for finance/simulation invariants |
+| Performance regression testing (5.6.33) | 2026-02-17 | Added benchmark regression harness/baseline and CI-aligned performance test coverage |
 | Workspace stabilization + full-suite recovery (post-v7.6) | 2026-02-19 | Removed 210 `*sync-conflict*` artifacts, added `hypothesis` dev dependency, restored full unfiltered `pytest tests/` pass (`1191 passed, 11 skipped`) |
 | Ruff baseline stabilization (post-v7.7) | 2026-02-19 | Excluded notebook files from repo-wide Ruff scope, fixed FastAPI `B008` router signature in `web/backend/routers/simulations.py`, restored clean `uv run ruff check .` |
 | Planning/archive maintenance pass (post-v7.8) | 2026-02-19 | Archived completed v7.3-v7.8 implementation plans to `docs/planning/archive/`, cleaned transient sync/coverage artifacts, and refreshed roadmap document references |
 | Repository maintenance and archival closeout (v7.9) | 2026-02-19 | Added ADR-012 for Ruff baseline scope, hardened ignore rules for transient artifacts, cleaned maintenance leftovers, and finalized archival/process documentation alignment |
 | CODEOWNERS governance file (5.7.35) | 2026-02-19 | Added .github/CODEOWNERS with default and directory-level ownership mappings |
+| Conventional commit linting (5.7.36) | 2026-02-16 | Added commit-msg conventional-commit hook and supporting commitlint guidance/docs |
+| Release automation workflow (5.7.37) | 2026-02-17 | Added `.github/workflows/release.yml` for tag-triggered build+GitHub release automation |
+| Automated changelog generation (5.7.38) | 2026-02-17 | Added `git-changelog` config/script/make target and changelog-generation guide |
+| Docs deployment workflow closure (5.7.40) | 2026-02-20 | Confirmed deploy workflow + live Pages availability and documented operations runbook |
 | Docs build badge (5.7.41) | 2026-02-19 | Added docs workflow status badge to README |
+| OpenSSF Scorecard automation (5.7.43) | 2026-02-20 | Added scorecard workflow/docs and OpenSSF badge in README |
 | Data freshness monitoring guide (5.7.44) | 2026-02-19 | Added docs/guides/data-quality-guide.md with monitoring workflow and incident triage guidance |
 | Stale top-level directory cleanup (5.7.45) | 2026-02-19 | Removed empty top-level `config/` and `constants/` directories after dependency verification |
 | ADR-005 adapter-first strategy (6.46) | 2026-02-14 | Adopted no-rewrite-now + contracts/adapters + phase gates |

@@ -30,6 +30,7 @@ backups/*
 
 # Ignore everything in the logs directory
 logs/*
+finbot/logs/*
 
 ## General
 # Ruff (formatter/linter) cache

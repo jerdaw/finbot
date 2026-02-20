@@ -18,6 +18,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from pathlib import Path
 
+import pandas as pd
 from tqdm.contrib.concurrent import thread_map
 
 from finbot.config import settings_accessors
@@ -26,7 +27,7 @@ from finbot.utils.pandas_utils.load_dataframe import load_dataframe
 MAX_THREADS = settings_accessors.MAX_THREADS
 
 
-def load_dataframes(file_paths: Sequence[Path | str]):
+def load_dataframes(file_paths: Sequence[Path | str]) -> list[pd.DataFrame | pd.Series]:
     """
     Load multiple DataFrames from Parquet files using multithreading.
 

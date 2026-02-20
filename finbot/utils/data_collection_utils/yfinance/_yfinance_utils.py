@@ -313,24 +313,31 @@ def _load_yfinance_data(symbols_to_load: Sequence[str], file_paths: dict[str, Pa
             raise ValueError("Loaded DataFrames do not match the order of the requested IDs.")
 
         # This avoids the info double header problems.
-        merged_dict = symbol_data
         if request_type != "info":
-            merged_dict = dict(
+            symbol_data_map = dict(
                 zip(
                     symbol_names,
                     symbol_data,
                     strict=False,
                 )
             )
-
-        merged_df = (
-            pd.concat(
-                merged_dict,
-                axis=1,
+            merged_df = (
+                pd.concat(
+                    symbol_data_map,
+                    axis=1,
+                )
+                if symbol_data_map
+                else pd.DataFrame()
             )
-            if merged_dict
-            else pd.DataFrame()
-        )
+        else:
+            merged_df = (
+                pd.concat(
+                    symbol_data,
+                    axis=1,
+                )
+                if symbol_data
+                else pd.DataFrame()
+            )
         if request_type != "info" and not isinstance(merged_df.columns, pd.MultiIndex):
             merged_df.columns = pd.MultiIndex.from_product(
                 [merged_df.columns, list(symbol_names)],
@@ -483,14 +490,14 @@ def get_yfinance_base(
     )
 
     # Sort the data, if it is a multiindex dataframe
-    sorted_df = (
-        sort_dataframe_multiindex(filtered_df)
-        if isinstance(
-            filtered_df.columns,
-            pd.MultiIndex,
-        )
-        else filtered_df
-    )
+    if isinstance(
+        filtered_df.columns,
+        pd.MultiIndex,
+    ):
+        sorted_df = sort_dataframe_multiindex(filtered_df)
+        assert sorted_df is not None
+    else:
+        sorted_df = filtered_df
 
     # Remove the outer level of columns if there is only one symbol
     final_df = sorted_df[symbols[0]] if len(symbols) == 1 else sorted_df

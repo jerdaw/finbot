@@ -1,13 +1,20 @@
+from __future__ import annotations
+
 from types import SimpleNamespace
+from typing import TYPE_CHECKING
 
 from finbot.config import logger
 from finbot.libs.api_manager._apis.get_all_apis import get_all_apis
 from finbot.libs.api_manager._resource_groups.get_all_resource_groups import get_all_resource_groups
 
+if TYPE_CHECKING:
+    from finbot.libs.api_manager._utils.api import API
+    from finbot.libs.api_manager._utils.api_resource_group import APIResourceGroup
+
 
 # class APIManager:
 class APIManager:
-    def __init__(self, auto_load_apis: bool = True, auto_load_resource_groups: bool = True):
+    def __init__(self, auto_load_apis: bool = True, auto_load_resource_groups: bool = True) -> None:
         self._apis = SimpleNamespace()
         self._api_resource_groups = SimpleNamespace()
 
@@ -19,10 +26,10 @@ class APIManager:
         if self.auto_load_resource_groups:
             self.load_all_resource_groups()
 
-    def add_api(self, identifier: str, api_instance) -> None:
+    def add_api(self, identifier: str, api_instance: API) -> None:
         setattr(self.apis, identifier, api_instance)
 
-    def get_api(self, identifier: str):
+    def get_api(self, identifier: str) -> API:
         # Validation has to be called in the getter rather than setter to give time for
         # both apis and api_resource_groups to be added
         try:
@@ -32,14 +39,15 @@ class APIManager:
         except AttributeError:
             logger.error(f"API '{identifier}' does not exist in API Manager instance.")
             raise
+        return api
 
-    def get_all_apis(self):
+    def get_all_apis(self) -> dict[str, API]:
         return dict(sorted(self.apis.__dict__.items()))
 
-    def add_api_resource_group(self, identifier: str, api_resource_group_instance) -> None:
+    def add_api_resource_group(self, identifier: str, api_resource_group_instance: APIResourceGroup) -> None:
         setattr(self.api_resource_groups, identifier, api_resource_group_instance)
 
-    def get_api_resource_group(self, identifier: str):
+    def get_api_resource_group(self, identifier: str) -> APIResourceGroup:
         # Validation has to be called in the getter rather than setter to give time for
         # both apis and api_resource_groups to be added
         try:
@@ -49,32 +57,33 @@ class APIManager:
         except AttributeError:
             logger.error(f"API resource group '{identifier}' does not exist in API Manager instance.")
             raise
+        return group
 
-    def get_all_api_resource_groups(self):
+    def get_all_api_resource_groups(self) -> dict[str, APIResourceGroup]:
         return dict(sorted(self.api_resource_groups.__dict__.items()))
 
     @property
-    def apis(self):
+    def apis(self) -> SimpleNamespace:
         return self._apis
 
     @apis.setter
-    def apis(self, value):
+    def apis(self, value: SimpleNamespace) -> None:
         self._apis = value
 
     @property
-    def api_resource_groups(self):
+    def api_resource_groups(self) -> SimpleNamespace:
         return self._api_resource_groups
 
     @api_resource_groups.setter
-    def api_resource_groups(self, value):
+    def api_resource_groups(self, value: SimpleNamespace) -> None:
         self._api_resource_groups = value
 
-    def load_all_apis(self):
+    def load_all_apis(self) -> None:
         apis = get_all_apis()
         for api in apis.values():
             self.add_api(identifier=api.identifier, api_instance=api)
 
-    def load_all_resource_groups(self):
+    def load_all_resource_groups(self) -> None:
         groups = get_all_resource_groups()
         for group in groups.values():
             self.add_api_resource_group(identifier=group.identifier, api_resource_group_instance=group)

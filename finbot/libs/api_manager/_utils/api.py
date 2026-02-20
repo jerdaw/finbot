@@ -1,12 +1,16 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 # TODO: Re-implement type hints. Makes sure they don't cause circular imports.
 
+if TYPE_CHECKING:
+    from finbot.libs.api_manager._utils.api_resource_group import APIResourceGroup
+
 
 class API:
-    def _add_api_resource_group(self):
+    def _add_api_resource_group(self) -> None:
         """Adds this API instance to its resource group."""
         if self.resource_group is not None:
             self.resource_group.add_api(api=self)
@@ -14,13 +18,13 @@ class API:
     def __init__(
         self,
         identifier: str,
-        resource_group,
+        resource_group: APIResourceGroup | None,
         response_save_dir: Path | None = None,  # TODO: Implement
         data_save_dir: Path | None = None,  # TODO: Implement
-        base_url: None | str = None,
-        headers: None | dict[str, str] = None,
-        endpoints: None | list[str] = None,
-    ):
+        base_url: str | None = None,
+        headers: dict[str, str] | None = None,
+        endpoints: list[str] | None = None,
+    ) -> None:
         """
         Initializes the API instance with necessary details.
 
@@ -43,31 +47,31 @@ class API:
         self._add_api_resource_group()
 
     @property
-    def identifier(self):
+    def identifier(self) -> str:
         return self._identifier
 
     @property
-    def base_url(self):
+    def base_url(self) -> str | None:
         return self._base_url
 
     @property
-    def resource_group(self):
+    def resource_group(self) -> APIResourceGroup | None:
         return self._resource_group
 
     @property
-    def response_save_dir(self):
+    def response_save_dir(self) -> Path | None:
         return self._response_save_dir
 
     @property
-    def data_save_dir(self):
+    def data_save_dir(self) -> Path | None:
         return self._data_save_dir
 
     @property
-    def headers(self):
+    def headers(self) -> dict[str, str] | None:
         return self._headers
 
     @property
-    def endpoints(self):
+    def endpoints(self) -> list[str]:
         return self._endpoints
 
 

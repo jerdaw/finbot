@@ -33,7 +33,7 @@ uv run pytest
 uv run python scripts/update_daily.py
 ```
 
-## Current Delivery Status (2026-02-19)
+## Current Delivery Status (2026-02-20)
 
 Backtesting/live-readiness transition is **Epics E0-E6 current cycle complete** (adapter-first path).
 
@@ -54,7 +54,10 @@ Backtesting/live-readiness transition is **Epics E0-E6 current cycle complete** 
   - 674 total tests (latest local run: 672 passed, 2 skipped)
 
 - **Post-E6 Follow-up:** Priority 6 items 69-72 complete; ADR-011 decision refreshed and remains **Defer**.
-- **Current Maintenance Focus:** Priority 5 governance/security quick wins and CI/process polish (item 40 remains partially complete pending GitHub Pages settings).
+- **Current Maintenance Focus:** Priority 5 closeout/type-hardening.
+  - Item 12 (stricter mypy): partially complete with strict module scopes active for core/execution/backtesting/libs/api-manager/logger/data-quality/health-economics/optimization/request-utils/pandas-utils.
+  - Item 39 (TestPyPI): partially complete pending maintainer token + publish/install verification.
+  - Item 42 (logo/branding): deferred pending human-approved design direction.
 
 Authoritative tracking docs:
 - `docs/planning/backtesting-live-readiness-backlog.md` (Epic tracking)
@@ -628,7 +631,7 @@ See `docs/adr/` for architectural decision records:
 **IMPORTANT:** All commits must list only human authors, co-authors, and contributors.
 
 - ✅ **Do:** Attribute commits to human developers
-- ❌ **Don't:** Include any AI assistant in author, co-author, or contributor fields
+- ❌ **Don't:** Include any AI assistant (Codex, Claude, Gemini, ChatGPT, etc.) in author, co-author, or contributor fields
 - **Rationale:** Commits represent human accountability and decision-making
 - Scope: This also applies to documentation attribution (README/ADRs/research/planning/changelogs/release notes).
 

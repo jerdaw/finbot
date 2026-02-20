@@ -223,6 +223,46 @@ ignore_missing_imports = true
 module = "nautilus_trader.*"
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+module = [
+    "finbot.core.*",
+    "finbot.services.execution.*",
+]
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+[[tool.mypy.overrides]]
+module = "finbot.services.backtesting.*"
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+[[tool.mypy.overrides]]
+module = [
+    "finbot.libs.api_manager.*",
+    "finbot.libs.logger.*",
+]
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+[[tool.mypy.overrides]]
+module = [
+    "finbot.services.data_quality.*",
+    "finbot.services.health_economics.*",
+    "finbot.services.optimization.*",
+]
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+[[tool.mypy.overrides]]
+module = "finbot.utils.request_utils.*"
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+[[tool.mypy.overrides]]
+module = "finbot.utils.pandas_utils.*"
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
 [tool.mypy]
 python_version = "3.12"
 mypy_path = "/home/jer/localsync/finbot"
