@@ -15,10 +15,17 @@ Typical usage:
 
 from __future__ import annotations
 
+from typing import Any
+
 import pandas as pd
 
 
-def sort_dataframe_multiindex(df, level=0, ascending=True, inplace=False):
+def sort_dataframe_multiindex(
+    df: pd.DataFrame,
+    level: int = 0,
+    ascending: bool = True,
+    inplace: bool = False,
+) -> pd.DataFrame | None:
     """
     Sorts the columns of a pandas DataFrame with MultiIndex columns, but only sorts the specified level.
     Other levels maintain their original order within each group of the sorted level.
@@ -38,14 +45,14 @@ def sort_dataframe_multiindex(df, level=0, ascending=True, inplace=False):
         )
 
     # Creating a sorting key that considers only the top level for sorting
-    def sort_key(col):
+    def sort_key(col: tuple[Any, ...]) -> Any:
         return col[level]
 
     # Sorting the top level while keeping the order of sub-levels
     sorted_columns = sorted(df.columns, key=sort_key, reverse=not ascending)
 
     # Reordering columns based on sorted top level while maintaining sub-level order
-    new_columns_order: list[tuple] = []
+    new_columns_order: list[tuple[Any, ...]] = []
     for col in sorted_columns:
         if col[level] not in [c[level] for c in new_columns_order]:
             new_columns_order.extend(

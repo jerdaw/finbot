@@ -1,5 +1,6 @@
 import time
 from itertools import product
+from typing import Any
 
 import pandas as pd
 from tqdm.contrib.concurrent import process_map
@@ -10,8 +11,13 @@ from finbot.services.backtesting.error_categorizer import categorize_error
 from finbot.services.backtesting.run_backtest import run_backtest
 
 
-def _get_starts_from_steps(latest_start_date, earliest_end_date, start_step, duration):
-    starts = []
+def _get_starts_from_steps(
+    latest_start_date: pd.Timestamp,
+    earliest_end_date: pd.Timestamp,
+    start_step: pd.Timedelta,
+    duration: pd.Timedelta,
+) -> list[pd.Timestamp]:
+    starts: list[pd.Timestamp] = []
     cur_start = latest_start_date
     cur_end = cur_start + duration
     while cur_end < earliest_end_date:
@@ -69,7 +75,7 @@ def _is_retryable_failure(item: dict) -> bool:
     return any(keyword in message for keyword in transient_keywords)
 
 
-def backtest_batch(**kwargs):  # noqa: C901 - Complex parameter validation logic
+def backtest_batch(**kwargs: Any) -> pd.DataFrame:  # noqa: C901 - Complex parameter validation logic
     track_batch = kwargs.pop("track_batch", False)
     batch_registry = kwargs.pop("batch_registry", None)
     retry_failed = kwargs.pop("retry_failed", False)

@@ -55,7 +55,9 @@ def save_dataframes(
             "The number of dataframes must match the number of file paths",
         )
 
-    def save_single_df(single_df, single_path):
+    resolved_paths: Sequence[Path | str | None] = [None] * len(dataframes) if file_paths is None else file_paths
+
+    def save_single_df(single_df: pd.DataFrame | pd.Series, single_path: Path | str | None) -> None:
         save_dataframe(
             df=single_df,
             file_path=single_path,
@@ -68,7 +70,7 @@ def save_dataframes(
         thread_map(
             save_single_df,
             dataframes,
-            file_paths,
+            resolved_paths,
             max_workers=MAX_THREADS,
         ),
     )

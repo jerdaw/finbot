@@ -17,7 +17,11 @@ Typical usage:
 import pandas as pd
 
 
-def merge_data_on_closest_date(index_df: pd.DataFrame, value_df: pd.DataFrame, columns_to_merge: list | None = None):
+def merge_data_on_closest_date(
+    index_df: pd.DataFrame,
+    value_df: pd.DataFrame,
+    columns_to_merge: list[str] | None = None,
+) -> pd.DataFrame:
     """
     Merges two pandas DataFrames, index_df and value_df, on the closest date.
     Allows the option to merge specific columns or all columns from value_df.

@@ -1,7 +1,7 @@
 import datetime
 import json
 import logging
-import traceback
+from typing import Any
 
 
 class ColorFormatter(logging.Formatter):
@@ -17,9 +17,10 @@ class ColorFormatter(logging.Formatter):
         "CRITICAL": "\033[0;41m",  # Red background
     }
 
-    def format(self, record):
+    def format(self, record: logging.LogRecord) -> str:
         indent_aligner = " " * (1 + max(len(k) for k in self.COLORS) - len(record.levelname))
-        log_fmt = self._fmt + "%(levelname)s]" + indent_aligner + "%(message)s\033[0m"  # type: ignore
+        base_fmt = getattr(self, "_fmt", "")
+        log_fmt = base_fmt + "%(levelname)s]" + indent_aligner + "%(message)s\033[0m"
         formatter = logging.Formatter(log_fmt)
         if record.levelname in self.COLORS:
             log_fmt = self.COLORS[record.levelname] + log_fmt
@@ -28,16 +29,22 @@ class ColorFormatter(logging.Formatter):
 
 
 class LoggingJsonFormatter(logging.Formatter):
-    def __init__(self, *args, rename_fields=None, static_fields=None, **kwargs):
+    def __init__(
+        self,
+        *args: Any,
+        rename_fields: dict[str, str] | None = None,
+        static_fields: dict[str, Any] | None = None,
+        **kwargs: Any,
+    ) -> None:
         super().__init__(*args, **kwargs)
         self.rename_fields = rename_fields or {}
         self.static_fields = static_fields or {}
 
-    def format(self, record):
+    def format(self, record: logging.LogRecord) -> str:
         message = self.create_log_record(record)
         return json.dumps(message, default=self.json_default)
 
-    def create_log_record(self, record):
+    def create_log_record(self, record: logging.LogRecord) -> dict[str, Any]:
         # Standard fields
         log_record = {
             "timestamp": datetime.datetime.fromtimestamp(record.created, datetime.UTC).isoformat(),
@@ -60,7 +67,7 @@ class LoggingJsonFormatter(logging.Formatter):
 
         # Include stack info
         if record.stack_info:
-            log_record["stack_info"] = traceback.format_stack()
+            log_record["stack_info"] = record.stack_info
 
         # Add extra fields
         for key, value in record.__dict__.items():
@@ -69,19 +76,19 @@ class LoggingJsonFormatter(logging.Formatter):
 
         return log_record
 
-    def json_default(self, obj):
+    def json_default(self, obj: Any) -> str:
         if isinstance(obj, datetime.date | datetime.datetime):
             return obj.isoformat()
-        elif isinstance(obj, Exception):
+        if isinstance(obj, Exception):
             return str(obj)
         return str(obj)  # Default for other types
 
 
 class NonErrorFilter(logging.Filter):
-    def filter(self, record):
+    def filter(self, record: logging.LogRecord) -> bool:
         return record.levelno <= logging.WARNING  # Pass logs of WARNING and below
 
 
 class ErrorFilter(logging.Filter):
-    def filter(self, record):
+    def filter(self, record: logging.LogRecord) -> bool:
         return record.levelno >= logging.ERROR  # Pass logs of ERROR and above
