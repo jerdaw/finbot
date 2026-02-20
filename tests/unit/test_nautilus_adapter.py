@@ -240,6 +240,7 @@ def test_nautilus_adapter_runs_dualmomentum_proxy_native(monkeypatch: pytest.Mon
     result = adapter.run(request)
 
     assert result.assumptions["adapter_mode"] == "native_nautilus_proxy"
+    assert result.assumptions["execution_fidelity"] == "proxy_native"
     assert result.assumptions["strategy_equivalent"] is True
     assert result.assumptions["confidence"] == "medium"
     assert result.metrics["ending_value"] > 0
@@ -267,6 +268,176 @@ def test_nautilus_adapter_runs_riskparity_proxy_native(monkeypatch: pytest.Monke
     result = adapter.run(request)
 
     assert result.assumptions["adapter_mode"] == "native_nautilus_proxy"
+    assert result.assumptions["execution_fidelity"] == "proxy_native"
     assert result.assumptions["strategy_equivalent"] is True
     assert result.assumptions["confidence"] == "medium"
     assert result.metrics["ending_value"] > 0
+
+
+def test_nautilus_adapter_dualmomentum_uses_full_native_when_available(monkeypatch: pytest.MonkeyPatch) -> None:
+    adapter = NautilusAdapter(
+        {"SPY": _make_price_df(seed=1), "TLT": _make_price_df(start_price=80.0, seed=2)},
+        enable_backtrader_fallback=False,
+    )
+    request = BacktestRunRequest(
+        strategy_name="DualMomentum",
+        symbols=("SPY", "TLT"),
+        start=pd.Timestamp("2019-01-01"),
+        end=pd.Timestamp("2019-12-31"),
+        initial_cash=100_000.0,
+        parameters={"lookback": 63, "rebal_interval": 21},
+    )
+
+    monkeypatch.setattr(adapter, "_supports_native_nautilus", lambda: True)
+    monkeypatch.setattr(
+        adapter,
+        "_run_via_nautilus_dual_momentum_native",
+        lambda _request: (
+            {
+                "starting_value": 100_000.0,
+                "ending_value": 120_000.0,
+                "roi": 0.2,
+                "cagr": 0.18,
+                "sharpe": 1.1,
+                "max_drawdown": -0.11,
+                "mean_cash_utilization": 0.8,
+            },
+            {
+                "nautilus_strategy": "DualMomentumNativeStrategy",
+                "adapter_mode": "native_nautilus_full",
+                "execution_fidelity": "full_native",
+                "strategy_equivalent": False,
+                "confidence": "low",
+            },
+            {"nautilus_strategy_impl": "full_native"},
+            (),
+        ),
+    )
+
+    result = adapter.run(request)
+
+    assert result.assumptions["adapter_mode"] == "native_nautilus_full"
+    assert result.assumptions["execution_fidelity"] == "full_native"
+    assert result.assumptions["strategy_equivalent"] is False
+    assert result.assumptions["confidence"] == "low"
+
+
+def test_nautilus_adapter_dualmomentum_full_native_failure_falls_back_to_proxy(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    adapter = NautilusAdapter(
+        {"SPY": _make_price_df(seed=1), "TLT": _make_price_df(start_price=80.0, seed=2)},
+        enable_backtrader_fallback=False,
+    )
+    request = BacktestRunRequest(
+        strategy_name="DualMomentum",
+        symbols=("SPY", "TLT"),
+        start=pd.Timestamp("2019-01-01"),
+        end=pd.Timestamp("2019-12-31"),
+        initial_cash=100_000.0,
+        parameters={"lookback": 63, "rebal_interval": 21},
+    )
+
+    monkeypatch.setattr(adapter, "_supports_native_nautilus", lambda: True)
+    monkeypatch.setattr(
+        adapter,
+        "_run_via_nautilus_dual_momentum_native",
+        lambda _request: (_ for _ in ()).throw(RuntimeError("boom")),
+    )
+    monkeypatch.setattr(
+        adapter,
+        "_run_via_nautilus_dual_momentum_proxy",
+        lambda _request: (
+            {
+                "starting_value": 100_000.0,
+                "ending_value": 101_000.0,
+                "roi": 0.01,
+                "cagr": 0.01,
+                "sharpe": 0.4,
+                "max_drawdown": -0.05,
+                "mean_cash_utilization": 0.75,
+            },
+            {
+                "nautilus_strategy": "DualMomentumProxy",
+                "adapter_mode": "native_nautilus_proxy",
+                "execution_fidelity": "proxy_native",
+                "strategy_equivalent": True,
+                "confidence": "medium",
+            },
+            {"nautilus_proxy_type": "dual_momentum"},
+            (),
+        ),
+    )
+
+    result = adapter.run(request)
+
+    assert result.assumptions["adapter_mode"] == "native_nautilus_proxy"
+    assert result.assumptions["execution_fidelity"] == "proxy_native"
+    assert any("fell back to proxy-native mode" in warning for warning in result.warnings)
+
+
+def test_build_metrics_from_equity_curve_tracks_mean_cash_utilization() -> None:
+    adapter = NautilusAdapter({"SPY": _make_price_df(seed=1)}, enable_native_execution=False)
+    index = pd.date_range("2024-01-01", periods=3, freq="D")
+    equity_curve = pd.Series([100.0, 120.0, 110.0], index=index)
+    cash_curve = pd.Series([100.0, 20.0, 10.0], index=index)
+
+    metrics = adapter._build_metrics_from_equity_curve(
+        equity_curve=equity_curve,
+        cash_curve=cash_curve,
+        initial_cash=100.0,
+    )
+
+    expected = (0.0 + (1.0 - (20.0 / 120.0)) + (1.0 - (10.0 / 110.0))) / 3.0
+    assert metrics["mean_cash_utilization"] == pytest.approx(expected)
+
+
+def test_simulate_dual_momentum_portfolio_returns_aligned_equity_and_cash() -> None:
+    adapter = NautilusAdapter({"SPY": _make_price_df(seed=1)}, enable_native_execution=False)
+    dates = pd.date_range("2024-01-01", periods=5, freq="D")
+    prices = pd.DataFrame(
+        {
+            "SPY": [100.0, 101.0, 102.0, 103.0, 104.0],
+            "TLT": [100.0, 99.0, 98.0, 97.0, 96.0],
+        },
+        index=dates,
+    )
+
+    equity_curve, cash_curve = adapter._simulate_dual_momentum_portfolio(
+        prices=prices,
+        symbols=("SPY", "TLT"),
+        initial_cash=1_000.0,
+        lookback=1,
+        rebal_interval=1,
+    )
+
+    assert len(equity_curve) == len(prices.index)
+    assert len(cash_curve) == len(prices.index)
+    assert (equity_curve > 0).all()
+    assert (cash_curve >= 0).all()
+
+
+def test_simulate_risk_parity_portfolio_returns_aligned_equity_and_cash() -> None:
+    adapter = NautilusAdapter({"SPY": _make_price_df(seed=1)}, enable_native_execution=False)
+    dates = pd.date_range("2024-01-01", periods=6, freq="D")
+    prices = pd.DataFrame(
+        {
+            "SPY": [100.0, 101.0, 102.0, 101.0, 103.0, 104.0],
+            "QQQ": [100.0, 102.0, 101.0, 103.0, 104.0, 106.0],
+            "TLT": [100.0, 99.5, 99.0, 99.2, 99.1, 99.0],
+        },
+        index=dates,
+    )
+
+    equity_curve, cash_curve = adapter._simulate_risk_parity_portfolio(
+        prices=prices,
+        symbols=("SPY", "QQQ", "TLT"),
+        initial_cash=1_000.0,
+        vol_window=2,
+        rebal_interval=1,
+    )
+
+    assert len(equity_curve) == len(prices.index)
+    assert len(cash_curve) == len(prices.index)
+    assert (equity_curve > 0).all()
+    assert (cash_curve >= 0).all()

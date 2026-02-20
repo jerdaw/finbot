@@ -69,6 +69,16 @@ class ScenarioConfig:
     nautilus_strategy_equivalent: bool
 
 
+@dataclass(frozen=True)
+class EquivalenceTolerance:
+    """Scenario-specific tolerance envelope for Backtrader vs Nautilus comparability."""
+
+    roi_abs: float
+    cagr_abs: float
+    max_drawdown_abs: float
+    ending_value_relative: float
+
+
 SCENARIOS: dict[str, ScenarioConfig] = {
     "gs01": ScenarioConfig(
         scenario_id="gs01",
@@ -125,6 +135,22 @@ SCENARIOS: dict[str, ScenarioConfig] = {
         nautilus_equivalence_note="Legacy E6 pilot mapping uses rebalance request mapped to EMA-cross strategy.",
         nautilus_confidence="medium",
         nautilus_strategy_equivalent=False,
+    ),
+}
+
+SCENARIO_EQUIVALENCE_TOLERANCES: dict[str, EquivalenceTolerance] = {
+    # GS-02/GS-03 thresholds reflect acceptable drift for native-vs-native pilot comparability.
+    "gs02": EquivalenceTolerance(
+        roi_abs=0.08,
+        cagr_abs=0.012,
+        max_drawdown_abs=0.03,
+        ending_value_relative=0.08,
+    ),
+    "gs03": EquivalenceTolerance(
+        roi_abs=0.10,
+        cagr_abs=0.015,
+        max_drawdown_abs=0.04,
+        ending_value_relative=0.10,
     ),
 }
 
@@ -200,7 +226,7 @@ def _summarize(
     assumptions: dict[str, object],
 ) -> BenchmarkSummary:
     strategy_equivalent = bool(assumptions.get("strategy_equivalent", engine == "backtrader"))
-    confidence = str(assumptions.get("confidence", "high" if strategy_equivalent else "medium"))
+    confidence = _derive_confidence(engine=engine, assumptions=assumptions, strategy_equivalent=strategy_equivalent)
     return BenchmarkSummary(
         engine=engine,
         scenario=scenario,
@@ -217,6 +243,90 @@ def _summarize(
         equivalence_notes=str(assumptions.get("equivalence_notes", "Backtrader baseline scenario.")),
         confidence=confidence,
     )
+
+
+def _relative_delta(candidate: float, baseline: float) -> float:
+    denominator = abs(baseline)
+    if denominator <= 1e-12:
+        return abs(candidate - baseline)
+    return abs(candidate - baseline) / denominator
+
+
+def _evaluate_strategy_equivalence(
+    *,
+    baseline: BenchmarkSummary,
+    candidate: BenchmarkSummary,
+    tolerance: EquivalenceTolerance,
+) -> tuple[bool, str]:
+    roi_delta = abs(candidate.roi - baseline.roi)
+    cagr_delta = abs(candidate.cagr - baseline.cagr)
+    max_drawdown_delta = abs(candidate.max_drawdown - baseline.max_drawdown)
+    ending_relative_delta = _relative_delta(candidate.ending_value, baseline.ending_value)
+
+    checks = {
+        "roi_abs": roi_delta <= tolerance.roi_abs,
+        "cagr_abs": cagr_delta <= tolerance.cagr_abs,
+        "max_drawdown_abs": max_drawdown_delta <= tolerance.max_drawdown_abs,
+        "ending_value_relative": ending_relative_delta <= tolerance.ending_value_relative,
+    }
+    equivalent = all(checks.values())
+    failed = [name for name, passed in checks.items() if not passed]
+    status = "pass" if equivalent else f"fail ({', '.join(failed)})"
+    note = (
+        "Tolerance-gated classification vs Backtrader baseline: "
+        f"roi_abs={roi_delta:.6f}<={tolerance.roi_abs:.6f}, "
+        f"cagr_abs={cagr_delta:.6f}<={tolerance.cagr_abs:.6f}, "
+        f"max_drawdown_abs={max_drawdown_delta:.6f}<={tolerance.max_drawdown_abs:.6f}, "
+        f"ending_value_relative={ending_relative_delta:.6f}<={tolerance.ending_value_relative:.6f}; "
+        f"result={status}."
+    )
+    return equivalent, note
+
+
+def _apply_tolerance_classification(
+    *,
+    scenario_id: str,
+    baseline_summary: BenchmarkSummary,
+    nautilus_summary: BenchmarkSummary,
+    nautilus_assumptions: dict[str, object],
+) -> BenchmarkSummary:
+    tolerance = SCENARIO_EQUIVALENCE_TOLERANCES.get(scenario_id)
+    if tolerance is None:
+        return nautilus_summary
+
+    equivalent, tolerance_note = _evaluate_strategy_equivalence(
+        baseline=baseline_summary,
+        candidate=nautilus_summary,
+        tolerance=tolerance,
+    )
+    nautilus_summary.strategy_equivalent = equivalent
+    nautilus_summary.confidence = _derive_confidence(
+        engine="nautilus-pilot",
+        assumptions=nautilus_assumptions,
+        strategy_equivalent=equivalent,
+    )
+    nautilus_summary.equivalence_notes = f"{nautilus_summary.equivalence_notes} {tolerance_note}"
+    return nautilus_summary
+
+
+def _derive_confidence(*, engine: str, assumptions: dict[str, object], strategy_equivalent: bool) -> str:
+    if engine != "nautilus-pilot":
+        return "high" if strategy_equivalent else "medium"
+
+    valuation_fidelity = str(assumptions.get("valuation_fidelity", "")).strip().lower()
+    if valuation_fidelity == "shadow_backtrader":
+        return "medium" if strategy_equivalent else "low"
+
+    fidelity = str(assumptions.get("execution_fidelity", "")).strip().lower()
+    if fidelity == "full_native":
+        return "high" if strategy_equivalent else "low"
+    if fidelity in {"proxy_native", "mapped_native"}:
+        return "medium" if strategy_equivalent else "low"
+
+    existing = assumptions.get("confidence")
+    if existing is not None:
+        return str(existing)
+    return "high" if strategy_equivalent else "medium"
 
 
 def _write_artifacts(
@@ -309,7 +419,7 @@ def main() -> int:
         )
         bt_assumptions.setdefault("strategy_equivalent", True)
         bt_assumptions.setdefault("equivalence_notes", scenario_config.backtrader_equivalence_note)
-        bt_assumptions.setdefault("confidence", "high")
+        bt_assumptions.setdefault("execution_fidelity", "full_native")
 
         nt_adapter = NautilusAdapter(
             price_histories,
@@ -322,26 +432,30 @@ def main() -> int:
         )
         nt_assumptions.setdefault("strategy_equivalent", scenario_config.nautilus_strategy_equivalent)
         nt_assumptions.setdefault("equivalence_notes", scenario_config.nautilus_equivalence_note)
-        nt_assumptions.setdefault("confidence", scenario_config.nautilus_confidence)
+        nt_assumptions.setdefault("execution_fidelity", "unknown")
 
-        summaries.extend(
-            [
-                _summarize(
-                    "backtrader",
-                    scenario_config.description,
-                    scenario_id,
-                    bt_rows,
-                    bt_assumptions,
-                ),
-                _summarize(
-                    "nautilus-pilot",
-                    scenario_config.description,
-                    scenario_id,
-                    nt_rows,
-                    nt_assumptions,
-                ),
-            ]
+        bt_summary = _summarize(
+            "backtrader",
+            scenario_config.description,
+            scenario_id,
+            bt_rows,
+            bt_assumptions,
         )
+        nt_summary = _summarize(
+            "nautilus-pilot",
+            scenario_config.description,
+            scenario_id,
+            nt_rows,
+            nt_assumptions,
+        )
+        nt_summary = _apply_tolerance_classification(
+            scenario_id=scenario_id,
+            baseline_summary=bt_summary,
+            nautilus_summary=nt_summary,
+            nautilus_assumptions=nt_assumptions,
+        )
+
+        summaries.extend([bt_summary, nt_summary])
 
     run_date = datetime.now(UTC).strftime("%Y-%m-%d")
     environment = {

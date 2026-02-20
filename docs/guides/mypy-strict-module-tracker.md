@@ -28,6 +28,11 @@ The following module scopes are enforced via `pyproject.toml` overrides:
 20. `finbot.utils.vectorization_utils.*`
 21. `finbot.utils.plotting_utils.*`
 22. `finbot.utils.data_science_utils.data_analysis.*`
+23. `finbot.utils.data_collection_utils.bls.*`
+24. `finbot.utils.data_collection_utils.fred.*`
+25. `finbot.utils.data_collection_utils.yfinance.*`
+26. `finbot.utils.data_science_utils.data_transformation.interpolators.*`
+27. `finbot.utils.data_science_utils.data_transformation.scalers_normalizers.*`
 
 Enforced flags:
 
@@ -60,6 +65,11 @@ Enforced flags:
 | `finbot.utils.vectorization_utils.*` | ✅ Enabled | Vectorization profiling helpers fully typed and import-safe |
 | `finbot.utils.plotting_utils.*` | ✅ Enabled | Interactive plotter helpers clean under strict signatures |
 | `finbot.utils.data_science_utils.data_analysis.*` | ✅ Enabled | Correlation/telltale analysis helpers typed for strict signatures |
+| `finbot.utils.data_collection_utils.bls.*` | ✅ Enabled | BLS API helpers/signatures hardened for strict typed-def enforcement |
+| `finbot.utils.data_collection_utils.fred.*` | ✅ Enabled | FRED collection helper scope passes strict function-signature checks |
+| `finbot.utils.data_collection_utils.yfinance.*` | ✅ Enabled | YFinance request/load helper signatures hardened for strict typed-def enforcement |
+| `finbot.utils.data_science_utils.data_transformation.interpolators.*` | ✅ Enabled | Interpolator helper scope passes strict function-signature checks |
+| `finbot.utils.data_science_utils.data_transformation.scalers_normalizers.*` | ✅ Enabled | Scaler/normalizer hierarchy signatures completed for strict typed-def enforcement |
 | `finbot.utils.*` | ⏳ Pending | Legacy utility subpackages still pending staged rollout |
 
 ## Policy for New Code
@@ -100,5 +110,10 @@ uv run mypy \
   finbot/utils/vectorization_utils \
   finbot/utils/plotting_utils \
   finbot/utils/data_science_utils/data_analysis \
+  finbot/utils/data_collection_utils/bls \
+  finbot/utils/data_collection_utils/fred \
+  finbot/utils/data_collection_utils/yfinance \
+  finbot/utils/data_science_utils/data_transformation/interpolators \
+  finbot/utils/data_science_utils/data_transformation/scalers_normalizers \
   --disallow-untyped-defs --disallow-incomplete-defs
 ```

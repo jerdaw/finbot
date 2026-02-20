@@ -2,13 +2,13 @@
 
 **Created:** 2026-02-10
 **Last Updated:** 2026-02-20
-**Status:** Priority 0-4 complete; Priority 5 closeout at 43/45 complete (Item 12 active partial, Item 42 deferred); Priority 6 complete with post-E6 follow-up phase 2 complete (items 69-72); v8.0 closeout plan complete and archived.
+**Status:** Priority 0-4 complete; Priority 5 closeout at 43/45 complete (Item 12 active partial, Item 42 deferred); Priority 6 baseline complete with post-E6 follow-up phase 6 in progress (item 76 native-valuation extraction complete, tolerance closure still open).
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
 
 See Completed Items table below and git history for details on implemented features.
 
-**Current Plan Record:** `docs/planning/archive/IMPLEMENTATION_PLAN_8.0_PRIORITY5_CLOSEOUT_AND_TYPE_HARDENING.md` (completed 2026-02-20)
+**Current Plan Record:** `docs/planning/IMPLEMENTATION_PLAN_8.5_E6_NATIVE_ONLY_VALUATION_PARITY_CLOSURE.md` (active, started 2026-02-20)
 
 ---
 
@@ -144,7 +144,7 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **What:** Gradually enable disallow_untyped_defs=true, add type annotations
     - **Evidence:** Stricter mypy config, type-safe codebase
     - **Status:** 🔄 Partially Complete (2026-02-20)
-    - **Implementation:** Added staged module-level strict mypy enforcement across core/execution/backtesting/libs plus expanded utility namespaces (see canonical scope list in `docs/guides/mypy-strict-module-tracker.md` and overrides in `pyproject.toml`); fixed surfaced typing gaps in each rollout wave; validated with `uv run mypy finbot/` (clean), targeted utility regressions (`uv run pytest tests/unit/test_datetime_utils.py tests/unit/test_file_utils.py tests/unit/test_finance_utils.py tests/unit/test_json_utils.py tests/unit/test_dict_utils.py -q`, 203 passed), and `DYNACONF_ENV=development` import smoke for analysis/plotter paths.
+    - **Implementation:** Added staged module-level strict mypy enforcement across core/execution/backtesting/libs plus expanded utility namespaces (see canonical scope list in `docs/guides/mypy-strict-module-tracker.md` and overrides in `pyproject.toml`); fixed surfaced typing gaps in each rollout wave; extended strict coverage into `data_collection_utils` (BLS/FRED/YFinance) and `data_transformation` interpolator/scaler-normalizer scopes; validated with `uv run mypy finbot/` (clean), targeted strict-module checks, and targeted unit regression suites.
 
 ### 5.3 Documentation & Communication
 
@@ -549,17 +549,54 @@ Priority 6 execution documents:
 
 71. **E6 follow-up phase 2: GS-02/GS-03 like-for-like native comparison** (M: 3-5 days)
     - **What:** Extend native Nautilus comparability to GS-02 and GS-03 frozen scenarios with confidence-labeled deltas.
-    - **Evidence:** Updated `scripts/benchmark/e6_compare_backtrader_vs_nautilus.py` (gs02/gs03/all scenarios), `finbot/adapters/nautilus/nautilus_adapter.py` (DualMomentum/RiskParity pilot proxy-native paths), `docs/research/artifacts/e6-benchmark-2026-02-19.json`, and `docs/research/nautilus-pilot-evaluation.md`.
-    - **Status:** ✅ Complete (2026-02-19, medium-confidence proxy-native evidence for GS-02/GS-03)
+    - **Evidence:** Updated `scripts/benchmark/e6_compare_backtrader_vs_nautilus.py` (fidelity-aware confidence derivation), `finbot/adapters/nautilus/nautilus_adapter.py` (full-native GS-02/GS-03 strategy attempts with explicit proxy fallback), `docs/research/artifacts/e6-benchmark-2026-02-20.json`, and `docs/research/nautilus-pilot-evaluation.md`.
+    - **Status:** ✅ Complete (2026-02-20, full-native execution path exercised; later superseded by items 73-75 remediation/closure updates)
 
 72. **ADR-011 final revisit after multi-scenario evidence** (S: 1-2 days)
     - **What:** Revisit final go/no-go/hybrid decision after GS-01/02/03 comparable evidence is published.
     - **Evidence:** Updated `docs/adr/ADR-011-nautilus-decision.md` with multi-scenario evidence snapshot, refreshed follow-up tracker, and explicit decision rationale.
     - **Status:** ✅ Complete (2026-02-19, decision remains Defer)
 
-**Current Phase:** Post-E6 follow-up phase 2 implemented (v7.1.0 complete; decision remains Defer with proxy-native medium-confidence GS-02/GS-03 evidence)
-- E4 reproducibility/observability deferred integration items are fully closed.
-- Latest maintenance batch (v8.0) is archived at `docs/planning/archive/IMPLEMENTATION_PLAN_8.0_PRIORITY5_CLOSEOUT_AND_TYPE_HARDENING.md`; next execution plan is pending selection.
+73. **E6 follow-up phase 3: full-native strategy-equivalence remediation** (M: 3-5 days)
+    - **What:** Fix GS-02/GS-03 full-native valuation/mapping path to remove catastrophic parity drift versus Backtrader baseline.
+    - **Evidence:** `finbot/adapters/nautilus/nautilus_adapter.py` (shared mark-to-market shadow portfolio simulators + full-native metric wiring), `tests/unit/test_nautilus_adapter.py` (new metric helper coverage), and refreshed artifact medians in `docs/research/artifacts/e6-benchmark-2026-02-20.json`.
+    - **Status:** ✅ Complete (2026-02-20, catastrophic full-native cash-only drift remediated; GS-02/GS-03 now report realistic mark-to-market outcomes)
+
+74. **E6 follow-up phase 4: equivalence-tolerance formalization** (S: 1-2 days)
+    - **What:** Define explicit numeric equivalence tolerances for GS-02/GS-03 and automate confidence/equivalence classification from measured deltas.
+    - **Evidence:** `scripts/benchmark/e6_compare_backtrader_vs_nautilus.py` (tolerance profiles + automated classification), `tests/unit/test_e6_benchmark_script.py` (tolerance coverage), refreshed `docs/research/artifacts/e6-benchmark-2026-02-20.json`, and updated `docs/research/nautilus-pilot-evaluation.md`/`docs/adr/ADR-011-nautilus-decision.md`.
+    - **Status:** ✅ Complete (2026-02-20, GS-02/GS-03 equivalence/confidence now tolerance-gated from measured deltas)
+
+75. **E6 follow-up phase 5: delta-closure remediation + ADR revisit prep** (M: 3-5 days)
+    - **What:** Reduce GS-02/GS-03 full-native ROI/drawdown/value deltas to satisfy tolerance gates and prepare decision-refresh evidence pack.
+    - **Evidence:** `finbot/adapters/nautilus/nautilus_adapter.py` (full-native shadow valuation wiring + valuation fidelity metadata), `scripts/benchmark/e6_compare_backtrader_vs_nautilus.py` (shadow-valued confidence guardrail), `tests/unit/test_e6_benchmark_script.py`, refreshed `docs/research/artifacts/e6-benchmark-2026-02-20.json`, and updated evaluation/ADR docs.
+    - **Status:** ✅ Complete (2026-02-20, GS-02/GS-03 tolerance gates pass with explicit shadow-valuation fidelity tags and medium confidence)
+
+76. **E6 follow-up phase 6: native-only valuation parity closure** (M: 3-5 days)
+    - **What:** Replace shadow valuation dependency by extracting/deriving native Nautilus portfolio-equity metrics that remain within tolerance.
+    - **Evidence:** `finbot/adapters/nautilus/nautilus_adapter.py` (native mark-to-market valuation extraction + synchronized multi-symbol bar sampling), refreshed `docs/research/artifacts/e6-benchmark-2026-02-20.json`, and updated evaluation/ADR status documents.
+    - **Status:** 🚧 In Progress (2026-02-20, shadow dependency removed but GS-02/GS-03 still fail tolerance gates under native-only valuation)
+    - **Current Gate Snapshot (2026-02-20, `--samples 3`):**
+      - `gs02`: `equivalent=no`, `confidence=low`, fail checks: `roi_abs`, `max_drawdown_abs`
+      - `gs03`: `equivalent=no`, `confidence=low`, fail checks: `roi_abs`, `cagr_abs`, `ending_value_relative`
+    - **Closure Criteria:**
+      - Keep `valuation_fidelity=native_mark_to_market` (no shadow valuation dependency)
+      - Regenerated artifact shows `equivalent=yes` for both `gs02` and `gs03`
+      - Update `docs/research/nautilus-pilot-evaluation.md` and `docs/adr/ADR-011-nautilus-decision.md` to reflect final gate outcome
+
+**Current Phase:** v8.5 in progress (E6 native-only valuation parity closure)
+- E4 reproducibility/observability deferred integration items remain fully closed.
+- v8.4 remediation plan archived at `docs/planning/archive/IMPLEMENTATION_PLAN_8.4_E6_DELTA_CLOSURE_SHADOW_VALUATION.md`.
+- Active implementation plan: `docs/planning/IMPLEMENTATION_PLAN_8.5_E6_NATIVE_ONLY_VALUATION_PARITY_CLOSURE.md`.
+- Latest execution update: `docs/research/artifacts/e6-benchmark-2026-02-20.json` (native-only valuation run).
+- Priority 7 status refresh: `docs/planning/priority-7-status-refresh-2026-02-20.md`.
+- GS-02/GS-03 full-native Nautilus rows are now tagged `valuation_fidelity=native_mark_to_market` with synchronized bar sampling, but current deltas remain out of tolerance (`equivalent=no`, `confidence=low`).
+- Next planned focus: item 76 parity-remediation subphase (native strategy semantics convergence for GS-02/GS-03).
+
+**Immediate Next Actions (Item 76)**
+- Align full-native order timing to Backtrader semantics (next-bar execution behavior) for GS-02/GS-03.
+- Produce per-rebalance trade-ledger diffs (Backtrader vs full-native Nautilus) to isolate remaining drift sources.
+- Re-run `uv run python scripts/benchmark/e6_compare_backtrader_vs_nautilus.py --samples 3 --scenario all` and reassess tolerance gates.
 
 ---
 
@@ -660,5 +697,10 @@ Priority 6 execution documents:
 | E6-T3 final decision refresh (6.68) | 2026-02-19 | Updated ADR-011 with measured evidence snapshot and explicit tradeoff matrix (decision remains Defer) |
 | E6 follow-up native GS-01 parity evidence (6.69) | 2026-02-19 | Added native NoRebalance buy-and-hold pilot mode and benchmark equivalence metadata for like-for-like evidence |
 | CI budget control tiered workflows (6.70) | 2026-02-19 | Split PR/main core CI from heavy scheduled/manual checks while preserving parity gate coverage |
-| E6 follow-up GS-02/GS-03 comparison expansion (6.71) | 2026-02-19 | Added GS-02/GS-03 benchmark scenarios with confidence-labeled proxy-native comparability evidence and updated evaluation artifacts |
-| ADR-011 multi-scenario decision revisit (6.72) | 2026-02-19 | Revisited decision after GS-01/02/03 evidence; decision remains Defer with explicit medium-confidence caveats for GS-02/GS-03 |
+| E6 follow-up GS-02/GS-03 comparison expansion (6.71) | 2026-02-19 | Added GS-02/GS-03 benchmark scenarios and confidence-labeled comparability evidence, then extended to full-native rows in the 2026-02-20 artifact refresh |
+| ADR-011 multi-scenario decision revisit (6.72) | 2026-02-19 | Revisited decision after GS-01/02/03 evidence; decision remains Defer, with later 2026-02-20 updates preserving Defer under both shadow-valued and native-only GS-02/GS-03 reassessments |
+| Stricter mypy rollout Wave 10 (5.2.12 partial) | 2026-02-20 | Extended strict typed-def enforcement to BLS/FRED/YFinance data-collection scopes and interpolator/scaler-normalizer transformation scopes; global `uv run mypy finbot/` remains clean |
+| E6 full-native GS-02/GS-03 artifact refresh (6.71 extension) | 2026-02-20 | Refreshed benchmark artifacts with `native_nautilus_full` rows (`docs/research/artifacts/e6-benchmark-2026-02-20.json`); findings show low-confidence non-equivalence requiring remediation (tracked as item 73) |
+| E6 full-native metric parity remediation (6.73) | 2026-02-20 | Replaced cash-only metric mapping with mark-to-market shadow metrics for GS-02/GS-03 full-native runs and removed catastrophic near-zero artifacts |
+| E6 tolerance-gated equivalence formalization (6.74) | 2026-02-20 | Added explicit GS-02/GS-03 numeric tolerance thresholds and automated equivalence/confidence classification from measured benchmark deltas |
+| E6 delta-closure shadow valuation (6.75) | 2026-02-20 | Wired GS-02/GS-03 full-native runs to Backtrader shadow valuation for parity closure, added valuation-fidelity confidence guardrails, and published tolerance-pass medium-confidence artifacts |

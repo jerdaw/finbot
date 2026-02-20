@@ -90,7 +90,7 @@ class BaseScaler(BaseEstimator, TransformerMixin):
     This class serves as a foundation for implementing various scaling techniques on Series data.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Initialize BaseScaler.
         """
@@ -136,7 +136,7 @@ class BaseScaler(BaseEstimator, TransformerMixin):
             "This method should be overridden by child class",
         )
 
-    def reset(self):
+    def reset(self) -> None:
         """
         Reset the scaler.
         """

@@ -17,13 +17,14 @@ Update frequency: Daily to weekly (depends on metric)
 from __future__ import annotations
 
 from collections.abc import Sequence
+from typing import Any
 
 import pandas as pd
 
 from finbot.utils.data_collection_utils.yfinance._yfinance_utils import get_yfinance_base
 
 
-def get_info(symbols: Sequence[str] | str, **kwargs) -> pd.DataFrame:
+def get_info(symbols: Sequence[str] | str, **kwargs: Any) -> pd.DataFrame:
     """
     Fetches and filters Yahoo Finance data for the given symbols.
 
