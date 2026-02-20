@@ -2,7 +2,7 @@
 
 **Created:** 2026-02-20
 **Updated:** 2026-02-20
-**Status:** In Progress (Phases 1-4 complete with Wave 5 strictness extension, Phase 5 in progress)
+**Status:** Complete (2026-02-20)
 **Roadmap Anchors:** Priority 5 items 12, 13/40, 42; roadmap/process consistency gaps identified in Priority 5.5-5.7 status rows
 **Scope Window:** 5-6 weeks (single-maintainer pace, CI free-tier aware)
 
@@ -173,7 +173,23 @@ Repository review across code, CI workflows, and planning docs indicates the fol
    - `finbot.utils.request_utils.*`
 6. Wave 5 extension strict overrides are enabled and passing for:
    - `finbot.utils.pandas_utils.*`
-7. Strict-module tracker and policy references are published in:
+7. Wave 6 extension strict overrides are enabled and passing for:
+   - `finbot.utils.datetime_utils.*`
+   - `finbot.utils.file_utils.*`
+   - `finbot.utils.multithreading_utils.*`
+8. Wave 7 extension strict overrides are enabled and passing for:
+   - `finbot.utils.finance_utils.*`
+9. Wave 8 extension strict overrides are enabled and passing for:
+   - `finbot.utils.class_utils.*`
+   - `finbot.utils.dict_utils.*`
+   - `finbot.utils.function_utils.*`
+   - `finbot.utils.json_utils.*`
+   - `finbot.utils.validation_utils.*`
+   - `finbot.utils.vectorization_utils.*`
+10. Wave 9 extension strict overrides are enabled and passing for:
+   - `finbot.utils.plotting_utils.*`
+   - `finbot.utils.data_science_utils.data_analysis.*`
+11. Strict-module tracker and policy references are published in:
    - `docs/guides/mypy-strict-module-tracker.md`
    - `CONTRIBUTING.md`
 
@@ -206,21 +222,28 @@ Repository review across code, CI workflows, and planning docs indicates the fol
 ## Phase 5: Priority 5 Tail Closure and Decision Gate
 
 **Goal:** Leave Priority 5 with only deliberate, documented open items.
-**Status:** In Progress (2026-02-20)
+**Status:** Complete (2026-02-20)
 
 **Progress Snapshot (2026-02-20):**
 1. Item 42 is explicitly deferred with rationale and re-entry criteria in roadmap/status docs.
-2. Item 39 remains partially complete pending external maintainer token/publish verification.
+2. Item 39 is complete with maintainer-owned token and publish verification evidence.
 3. External closure support is now prepared:
    - `docs/guides/testpypi-closure-checklist.md`
    - `scripts/verify_testpypi_publication.py`
+   - closure checklist now includes resolver-safe verification commands (`python` direct + isolated venv install checks)
 4. Verification script execution confirms external dependency remains:
-   - `uv run python scripts/verify_testpypi_publication.py` currently returns `Package 'finbot' not found on TestPyPI.`
+   - `python scripts/verify_testpypi_publication.py` now confirms `finbot` exists on TestPyPI and reports version `1.0.0`.
+   - Maintainer-triggered workflow run succeeded: `https://github.com/jerdaw/finbot/actions/runs/22208752403` (run #1, success).
 5. Maintenance pass completed:
-   - strict typing expanded into `finbot.utils.request_utils.*` and `finbot.utils.pandas_utils.*`
+   - strict typing expanded into `finbot.utils.request_utils.*`, `finbot.utils.pandas_utils.*`, `finbot.utils.datetime_utils.*`, `finbot.utils.file_utils.*`, `finbot.utils.multithreading_utils.*`, `finbot.utils.finance_utils.*`, `finbot.utils.class_utils.*`, `finbot.utils.dict_utils.*`, `finbot.utils.function_utils.*`, `finbot.utils.json_utils.*`, `finbot.utils.validation_utils.*`, `finbot.utils.vectorization_utils.*`, `finbot.utils.plotting_utils.*`, and `finbot.utils.data_science_utils.data_analysis.*`
+   - missing function annotations were added in datetime/file/finance/function/vectorization/plotting/data-analysis utility helpers to satisfy strict signature rules
    - targeted regression tests added for batched dataframe saves
    - global mypy surfaced yfinance typing regressions were fixed and validated
-6. Final v8.0 completion summary and archival are pending closure of external follow-up.
+   - validation rerun complete (`uv run mypy finbot/`, `uv run pytest tests/unit/test_datetime_utils.py tests/unit/test_file_utils.py tests/unit/test_finance_utils.py tests/unit/test_json_utils.py tests/unit/test_dict_utils.py -q`, plus `DYNACONF_ENV=development uv run python` smoke check for analysis/plotter imports)
+6. Final v8.0 completion summary published:
+   - `docs/planning/archive/IMPLEMENTATION_PLAN_8.0_COMPLETION_SUMMARY.md`
+7. Archive snapshot of implementation plan published:
+   - `docs/planning/archive/IMPLEMENTATION_PLAN_8.0_PRIORITY5_CLOSEOUT_AND_TYPE_HARDENING.md`
 
 **Deliverables:**
 1. Item 42 decision:
@@ -287,7 +310,7 @@ Repository review across code, CI workflows, and planning docs indicates the fol
 - [x] Phase 2 complete
 - [x] Phase 3 complete
 - [x] Phase 4 complete
-- [ ] Phase 5 complete
+- [x] Phase 5 complete
 
 ## Exit Criteria for v8.0.0
 

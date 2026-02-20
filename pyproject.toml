@@ -263,6 +263,24 @@ module = "finbot.utils.pandas_utils.*"
 disallow_untyped_defs = true
 disallow_incomplete_defs = true
 
+[[tool.mypy.overrides]]
+module = [
+    "finbot.utils.class_utils.*",
+    "finbot.utils.datetime_utils.*",
+    "finbot.utils.dict_utils.*",
+    "finbot.utils.file_utils.*",
+    "finbot.utils.finance_utils.*",
+    "finbot.utils.function_utils.*",
+    "finbot.utils.json_utils.*",
+    "finbot.utils.multithreading_utils.*",
+    "finbot.utils.plotting_utils.*",
+    "finbot.utils.validation_utils.*",
+    "finbot.utils.vectorization_utils.*",
+    "finbot.utils.data_science_utils.data_analysis.*",
+]
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
 [tool.mypy]
 python_version = "3.12"
 mypy_path = "/home/jer/localsync/finbot"

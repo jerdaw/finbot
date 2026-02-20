@@ -55,8 +55,8 @@ Backtesting/live-readiness transition is **Epics E0-E6 current cycle complete** 
 
 - **Post-E6 Follow-up:** Priority 6 items 69-72 complete; ADR-011 decision refreshed and remains **Defer**.
 - **Current Maintenance Focus:** Priority 5 closeout/type-hardening.
-  - Item 12 (stricter mypy): partially complete with strict module scopes active for core/execution/backtesting/libs/api-manager/logger/data-quality/health-economics/optimization/request-utils/pandas-utils.
-  - Item 39 (TestPyPI): partially complete pending maintainer token + publish/install verification.
+  - Item 12 (stricter mypy): partially complete with expanded strict module scopes active across core/execution/backtesting/libs plus staged utility namespaces (canonical scope list in `docs/guides/mypy-strict-module-tracker.md`).
+  - Item 39 (TestPyPI): complete (publish workflow run succeeded and package metadata/install verification documented).
   - Item 42 (logo/branding): deferred pending human-approved design direction.
 
 Authoritative tracking docs:

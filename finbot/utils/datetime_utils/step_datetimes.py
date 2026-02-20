@@ -20,7 +20,7 @@ STEP_OPTIONS = ("All Time", "Yearly", "Quarterly", "Monthly", "Weekly", "Daily")
 PERIODS_PER_YEAR = 252
 
 
-def validate_inputs(step: str):
+def validate_inputs(step: str) -> None:
     """Validates the inputs for the step parameter."""
     if step not in STEP_OPTIONS:
         raise ValueError(f"Invalid step option. Expected one of {STEP_OPTIONS}, got {step}.")
@@ -44,7 +44,12 @@ def rolling_method(series: pd.Series, step: str) -> pd.DataFrame:
     return steps_df
 
 
-def calendarize_method(series: pd.Series, step: str, start_date, end_date) -> pd.DataFrame:
+def calendarize_method(
+    series: pd.Series,
+    step: str,
+    start_date: pd.Timestamp,
+    end_date: pd.Timestamp,
+) -> pd.DataFrame:
     """Implements the calendarize method logic."""
     calendarized_steps = [
         lambda x: end_date,

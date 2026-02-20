@@ -9,6 +9,7 @@ Use this checklist to fully close roadmap item 39 (TestPyPI publishing).
    ```bash
    uv build
    ```
+3. Run verification commands from the `finbot` repository directory (not another project workspace).
 
 ## One-Time Setup (GitHub UI)
 
@@ -23,19 +24,36 @@ Use this checklist to fully close roadmap item 39 (TestPyPI publishing).
    - GitHub Actions -> `Publish to TestPyPI` -> `Run workflow`
 2. Verify package metadata exists on TestPyPI:
    ```bash
-   uv run python scripts/verify_testpypi_publication.py
+   python scripts/verify_testpypi_publication.py
    ```
 3. (Optional) Verify expected version:
    ```bash
-   uv run python scripts/verify_testpypi_publication.py --version 1.0.0
+   python scripts/verify_testpypi_publication.py --version 1.0.0
    ```
-4. Verify installability:
+4. Verify package artifact exists on TestPyPI (no PyPI fallback):
    ```bash
-   uv run --with pip python -m pip install \
+   python -m venv /tmp/finbot-testpypi
+   /tmp/finbot-testpypi/bin/python -m pip install --upgrade pip
+   /tmp/finbot-testpypi/bin/python -m pip install \
+     --index-url https://test.pypi.org/simple/ \
+     --no-deps \
+     finbot==<VERSION>
+   /tmp/finbot-testpypi/bin/pip show finbot
+   ```
+5. Verify dependency-resolved installability:
+   ```bash
+   /tmp/finbot-testpypi/bin/python -m pip install \
      --index-url https://test.pypi.org/simple/ \
      --extra-index-url https://pypi.org/simple/ \
-     finbot
+     finbot==<VERSION>
+   /tmp/finbot-testpypi/bin/finbot --help
    ```
+
+## Troubleshooting
+
+1. If `uv run ...` fails with resolver errors from another project (for example unrelated `dev` extras), switch to:
+   - Running commands from the `finbot` repository directory, and
+   - Using `python scripts/verify_testpypi_publication.py` directly (script uses only Python stdlib).
 
 ## Roadmap Closeout
 

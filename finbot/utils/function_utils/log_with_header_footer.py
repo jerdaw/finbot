@@ -195,9 +195,12 @@ especially in services modules.
 from collections.abc import Callable, Iterable
 from functools import wraps
 from time import perf_counter
-from typing import Any
+from typing import Any, ParamSpec, TypeVar, cast
 
 from finbot.config import logger
+
+P = ParamSpec("P")
+R = TypeVar("R")
 
 
 def _is_iterable_not_str(obj: Any) -> bool:
@@ -210,18 +213,23 @@ def _get_len(obj: Any) -> int:
     return len(obj) if _is_iterable_not_str(obj) else 1
 
 
-def log_with_header_footer(header: str | None = None, footer: str | None = None, timeit: bool = True) -> Callable:  # noqa: C901 - Decorator with multiple optional parameters
+def log_with_header_footer(  # noqa: C901 - Decorator with multiple optional parameters
+    header: str | None = None,
+    footer: str | None = None,
+    timeit: bool = True,
+) -> Callable[[Callable[P, R]], Callable[P, R]]:
     """Decorator to log header, footer, and runtime for a function."""
 
-    def decorator(func):
+    def decorator(func: Callable[P, R]) -> Callable[P, R]:  # noqa: C901 - Nested decorator complexity by design
         @wraps(func)
-        def wrapper(*args, **kwargs):
+        def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:  # noqa: C901 - Logging + timing branches are intentional
+            start_time: float | None = None
             try:
                 nonlocal header, footer
                 if header is None:
                     n_args, n_kwargs = _get_len(args), _get_len(kwargs)
                     arg_types = [type(arg) for arg in args] if _is_iterable_not_str(args) else [type(args)]
-                    kwarg_types = [type(kwarg) for kwarg in kwargs] if _is_iterable_not_str(kwargs) else [type(kwargs)]  # type: ignore
+                    kwarg_types = [type(kwarg) for kwarg in kwargs.values()] if kwargs else []
                     header = f"Calling function {func.__name__} with {n_args} args and {n_kwargs} kwargs. args: {arg_types}, kwargs: {kwarg_types}"
                 logger.debug(header)
                 if timeit:
@@ -233,11 +241,17 @@ def log_with_header_footer(header: str | None = None, footer: str | None = None,
 
             try:
                 if timeit:
+                    if start_time is None:
+                        raise RuntimeError("Timing start value missing for timed function execution")
                     execution_time = perf_counter() - start_time
 
                 if footer is None:
                     n_returns = _get_len(result)
-                    return_types = [type(r) for r in result] if _is_iterable_not_str(result) else [type(result)]
+                    if _is_iterable_not_str(result):
+                        iterable_result = cast(Iterable[Any], result)
+                        return_types = [type(r) for r in iterable_result]
+                    else:
+                        return_types = [type(result)]
                     footer = f"Function {func.__name__}"
                     if timeit:
                         footer += f" executed in {execution_time} seconds with"
@@ -260,19 +274,19 @@ if __name__ == "__main__":
     print()
 
     @log_with_header_footer(header="CUSTOM WRAPPER HEADER", footer="CUSTOM WRAPPER FOOTER")
-    def test_func1():
+    def test_func1() -> int:
         """Example function to demonstrate the decorator with logging."""
         print("This is my test func" * 3)
         return 1
 
     @log_with_header_footer()
-    def test_func2():
+    def test_func2() -> tuple[str, int, list[int], dict[str, int]]:
         """Example function to demonstrate the decorator with logging."""
         print("This is my test func" * 3)
         return "Test Function Result", 7, [1, 2, 3], {"a": 1, "b": 2}
 
     @log_with_header_footer()
-    def test_func3(myint):
+    def test_func3(myint: int) -> bool:
         """Example function to demonstrate the decorator with logging."""
         print("This is my test func" * 3)
         return bool(myint)

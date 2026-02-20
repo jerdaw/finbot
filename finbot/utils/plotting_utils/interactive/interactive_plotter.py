@@ -153,7 +153,7 @@ import plotly.graph_objects as go
 
 
 class InteractivePlotter:
-    def __init__(self):
+    def __init__(self) -> None:
         # Initialization, if needed
         pass
 
