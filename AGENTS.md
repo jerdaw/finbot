@@ -35,7 +35,9 @@ uv run python scripts/update_daily.py
 
 ## Current Delivery Status (2026-02-20)
 
-Backtesting/live-readiness transition is **Epics E0-E6 current cycle complete** (adapter-first path).
+Backtesting/live-readiness transition is **Epics E0-E6 current cycle complete** (adapter-first path). Priority 7 in progress.
+
+### Priority 6: Backtesting-to-Live Readiness (100% Complete)
 
 - **Completed Epics:**
   - ✅ **E0**: Foundational contracts (schemas, versioning, serialization, snapshots)
@@ -51,25 +53,44 @@ Backtesting/live-readiness transition is **Epics E0-E6 current cycle complete** 
   - Latency simulation (submission, fill, cancellation delays)
   - Risk controls (position limits, exposure limits, drawdown protection, kill-switch)
   - State checkpoint and recovery for disaster recovery
-  - 674 total tests (latest local run: 672 passed, 2 skipped)
 
 - **Post-E6 Follow-up:** Priority 6 items 69-75 complete; item 76 (native-only valuation parity closure) remains in progress; ADR-011 remains **Defer**.
-- **Current Maintenance Focus:** Priority 5 closeout/type-hardening.
-  - Item 12 (stricter mypy): partially complete with expanded strict module scopes active across core/execution/backtesting/libs plus staged utility namespaces (canonical scope list in `docs/guides/mypy-strict-module-tracker.md`).
-  - Item 39 (TestPyPI): complete (publish workflow run succeeded and package metadata/install verification documented).
-  - Item 42 (logo/branding): deferred pending human-approved design direction.
-  - Active plan record: `docs/planning/IMPLEMENTATION_PLAN_8.5_E6_NATIVE_ONLY_VALUATION_PARITY_CLOSURE.md` (in progress).
 
-Authoritative tracking docs:
+### Priority 5: OMSAS/CanMEDS Improvements (93.3% Complete)
+
+**Completed:** 42/45 items across 7 categories
+- ✅ Governance & Professionalism (7/7): LICENSE, SECURITY, CODE_OF_CONDUCT, templates
+- ✅ Quality & Reliability (4/5): CI/CD, test coverage, integration tests, py.typed
+- ✅ Documentation (6/6): MkDocs site, API docs, docstring enforcement, limitations
+- ✅ Health Economics (4/5): Research papers, clinical scenarios, methodology
+- ✅ Ethics & Security (6/6): Disclaimers, audit trails, license auditing, Docker security
+- ✅ Testing (5/5): Property-based testing, CLI tests, performance regression
+- ✅ Professional Polish (10/11): CODEOWNERS, releases, changelog, TestPyPI, OpenSSF
+
+**Remaining:** Item 12 (mypy) partially started, Items 22 & 42 blocked on external resources.
+- Item 12 (stricter mypy): expanded strict module scopes active across core/execution/backtesting/libs plus staged utility namespaces (canonical scope list in `docs/guides/mypy-strict-module-tracker.md`).
+
+### Priority 7: External Impact & Advanced Capabilities (89% Complete)
+
+**In Progress:** 24/27 items complete
+- ✅ **P7.1**: Stricter mypy Phase 1 audit — 355 errors catalogued, phased roadmap published
+- ✅ **P7.2**: Test coverage raised to 61.63% (1063+ tests)
+- ✅ **P7.3**: Scheduled CI for daily data updates
+- 🟡 **P7.4**: Conventional commits guide created (user action required)
+- ✅ **P7.15**: Walk-forward visualization — `walkforward_viz.py` (5 chart functions, dashboard page 8, 23 tests)
+- ✅ **P7.16**: Regime-adaptive strategy — `strategies/regime_adaptive.py` + 19 tests
+- ✅ **P7.17**: Multi-objective Pareto optimizer — `pareto_optimizer.py` + dashboard integration
+- ✅ **P7.21**: Health economics clinical scenarios — cancer screening, hypertension, vaccine (3 scenarios, 22 tests)
+- ✅ **P7.22**: Hypothesis testing module — `hypothesis_testing.py` (6 functions, 24 tests)
+- ✅ **P7.23**: Deferred unit tests — 39 new tests (bond_ladder, backtest_batch, rebalance_optimizer)
+
+**Authoritative tracking docs:**
 - `docs/planning/backtesting-live-readiness-backlog.md` (Epic tracking)
 - `docs/planning/roadmap.md`
+- `docs/planning/priority-5-6-completion-status.md`
 - `docs/research/nautilus-pilot-evaluation.md`
 - `docs/adr/ADR-011-nautilus-decision.md`
-- `docs/planning/archive/IMPLEMENTATION_PLAN_8.4_E6_DELTA_CLOSURE_SHADOW_VALUATION.md`
-- `docs/planning/archive/IMPLEMENTATION_PLAN_6.3_E6_EVIDENCE_GATE_AND_E4_CLOSURE.md`
-- `docs/planning/archive/IMPLEMENTATION_PLAN_7.1_POST_E6_PHASE2_MULTI_SCENARIO_EVIDENCE.md`
-- `docs/planning/archive/IMPLEMENTATION_PLAN_7.2_PRIORITY5_GOVERNANCE_SECURITY_QUICK_WINS.md`
-
+- `docs/planning/archive/` (20+ completed implementation plans)
 ## Common Commands
 
 ```bash
@@ -97,6 +118,19 @@ make docker-test                 # run tests in container
 ## Architecture
 
 **Data Flow:** Data Collection (utils) → Simulations (services) → Backtesting (services) → Performance Analysis
+
+### Backtesting Engines
+
+Finbot supports two backtesting engines through a unified adapter interface:
+- **Backtrader** (default): Mature, bar-based, great for pure backtesting
+- **NautilusTrader**: Event-driven, realistic fills, built for live trading
+
+**Choosing an engine:** See [docs/guides/choosing-backtest-engine.md](docs/guides/choosing-backtest-engine.md)
+
+**Hybrid approach (recommended):** Use both engines based on use case
+- Backtrader for familiar backtesting workflows
+- Nautilus for strategies planned for live trading
+- Decision rationale: [ADR-011](docs/adr/ADR-011-nautilus-decision.md)
 
 ### Global Access Pattern
 
@@ -368,6 +402,11 @@ Entry point: `BacktestRunner` in `backtest_runner.py`
 - **`qaly_simulator.py`**: Monte Carlo QALY simulation with stochastic cost/utility/mortality
 - **`cost_effectiveness.py`**: ICER, NMB, CEAC, cost-effectiveness plane (probabilistic sensitivity analysis)
 - **`treatment_optimizer.py`**: Grid-search treatment schedule optimization (dose frequency x duration)
+- **`scenarios/`**: Real-world clinical scenario analyses composed from the above modules
+  - `models.py`: `ScenarioResult` frozen dataclass (ICER, NMB, QALY gain, cost difference)
+  - `cancer_screening.py`: Annual mammography vs. no screening (10-year horizon)
+  - `hypertension.py`: ACE inhibitor vs. lifestyle modification for Stage 1 HTN (5-year)
+  - `vaccine.py`: Influenza vaccination vs. no vaccination for elderly ≥65 (1-year, societal)
 
 ##### `finbot/services/data_quality/` — Data Quality and Observability
 - **`data_source_registry.py`**: Registry of 7 data sources with staleness thresholds
@@ -474,6 +513,7 @@ Create `.env` file in `finbot/config/` (excluded by `.gitignore`).
 | **Other Services** | |
 | `finbot/services/health_economics/qaly_simulator.py` | QALY Monte Carlo simulation |
 | `finbot/services/health_economics/cost_effectiveness.py` | Cost-effectiveness analysis (ICER/NMB/CEAC) |
+| `finbot/services/health_economics/scenarios/` | Clinical scenarios: cancer screening, hypertension, vaccine |
 | `finbot/services/data_quality/check_data_freshness.py` | Data freshness monitoring |
 
 ## Code Style
@@ -502,12 +542,13 @@ uv run pytest --cov=finbot tests/
 ```
 
 **Test structure**:
-- `tests/unit/`: Unit tests (674 tests across 30+ files)
+- `tests/unit/`: Unit tests (1063+ tests across 30+ files)
   - `test_imports.py`: Smoke tests for all key module imports
   - `test_simulation_math.py`: Simulation math correctness
   - `test_finance_utils.py`: Finance calculation tests
   - `test_strategies.py`, `test_strategies_parametrized.py`: All 12 backtesting strategies
   - `test_health_economics.py`: QALY simulator, CEA, treatment optimizer
+  - `test_health_economics_scenarios.py`: Clinical scenarios (cancer screening, hypertension, vaccine, 22 tests)
   - `test_order_lifecycle.py`: Order tracking and execution (20 tests)
   - `test_latency_simulation.py`: Latency hooks and pending actions (17 tests)
   - `test_risk_controls.py`: Risk management (14 tests)
@@ -568,8 +609,18 @@ See [ADR-003](docs/adr/ADR-003-add-mkdocs-documentation.md) for implementation d
 GitHub Actions workflow (`.github/workflows/ci.yml`) runs on push/PR to main:
 - Lint: `ruff check .`
 - Format check: `ruff format --check .`
-- Tests: `pytest tests/ -v`
-- Python 3.13 (single version to conserve CI minutes on free tier)
+- Type check: `mypy finbot/` (continue-on-error)
+- Security: `bandit -r finbot/`, `pip-audit` (continue-on-error)
+- Tests: `pytest tests/ -v --cov` (Python 3.11, 3.12, 3.13)
+- Parity gate: Golden strategy parity tests (GS-01, GS-02, GS-03)
+- **Performance regression:** Benchmark fund_simulator and backtest_adapter (fails if >20% slower)
+
+**Performance Regression Testing** (Priority 5 Item 33):
+- Automated benchmarks run on every PR
+- Compares to baseline in `tests/performance/baseline.json`
+- Fails CI if performance degrades >20%
+- See `tests/performance/README.md` for details
+- Update baseline: `uv run python tests/performance/benchmark_runner.py --update-baseline`
 
 ## Architecture Decisions
 
@@ -589,6 +640,7 @@ See `docs/adr/` for architectural decision records:
 | **Settings Accessors** | `settings_accessors` module in `finbot/config/` | Lazy accessors for MAX_THREADS and API keys (alpha_vantage, nasdaq_data_link, bls, google_finance) |
 | **Lazy API keys** | `APIKeyManager.get_key()` only loads on first access | Prevents import failures when keys not needed |
 | **Queue-based logging** | `finbot/libs/logger/setup_queue_logging.py` | Non-blocking async logging for performance |
+| **Structured audit logs** | `finbot/libs/audit/audit_logger.py` | Queryable audit trails for compliance and debugging |
 | **Vectorized simulation** | Numpy broadcasting in `fund_simulator.py` | Faster than numba loop, no JIT compilation required |
 | **Parquet everywhere** | All serialization uses `to_parquet()`/`read_parquet()` | Safer, faster, smaller than pickle |
 | **Auto-create dirs** | `path_constants._process_dir()` uses `mkdir(exist_ok=True)` | Works in CI, fresh clones, no manual setup |
@@ -624,7 +676,10 @@ See `docs/adr/` for architectural decision records:
 3. Run tests: `uv run pytest`
 4. Run linter: `uv run ruff check . --fix`
 5. Run formatter: `uv run ruff format .`
-6. Commit with descriptive message following commit authorship policy (see below)
+6. Commit with conventional commit message following commit authorship policy (see below)
+   - Format: `type(scope): subject` (e.g., `feat(api): add new endpoint`)
+   - Pre-commit hook validates commit messages automatically
+   - See CONTRIBUTING.md for complete guidelines
 7. Push and create PR
 8. CI must pass
 
@@ -633,8 +688,9 @@ See `docs/adr/` for architectural decision records:
 **IMPORTANT:** All commits must list only human authors, co-authors, and contributors.
 
 - ✅ **Do:** Attribute commits to human developers
-- ❌ **Don't:** Include any AI assistant (Codex, Claude, Gemini, ChatGPT, etc.) in author, co-author, or contributor fields
-- **Rationale:** Commits represent human accountability and decision-making
+- ❌ **Don't:** Include AI assistants in author, co-author, or contributor fields. This includes Claude, Gemini, Codex, ChatGPT, Copilot, or any other AI tool.
+- ❌ **Don't:** Add "AI-generated" or "Created with AI" notices in code, docs, or commit messages.
+- **Rationale:** Commits represent human accountability and decision-making. AI tools are instruments, not authors.
 - Scope: This also applies to documentation attribution (README/ADRs/research/planning/changelogs/release notes).
 
 **Examples:**

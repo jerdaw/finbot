@@ -1,14 +1,73 @@
-# Default owners
+# CODEOWNERS - Automatic review requests for PRs
+#
+# This file defines code ownership for the finbot repository.
+# When a PR modifies files in these directories, the specified owners
+# will automatically be requested for review.
+#
+# Syntax: path/to/directory @github-username
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything in the repo
 * @jerdaw
 
-# Core platform
+# Core Architecture & Contracts
+# Live trading contracts, schemas, versioning, migration logic
+/finbot/adapters/ @jerdaw
 /finbot/core/ @jerdaw
-/finbot/services/ @jerdaw
+/finbot/core/contracts/ @jerdaw
+
+# Services - Backtesting
+# Backtrader engine, strategies, analyzers, backtesting orchestration
+/finbot/services/backtesting/ @jerdaw
+
+# Services - Simulation
+# Fund simulator, bond ladder, Monte Carlo, index simulators
+/finbot/services/simulation/ @jerdaw
+
+# Services - Optimization
+# DCA optimizer, rebalance optimizer
+/finbot/services/optimization/ @jerdaw
+
+# Services - Health Economics
+# QALY simulation, cost-effectiveness analysis, treatment optimization
+/finbot/services/health_economics/ @jerdaw
+
+# Utilities
+# Data collection, finance utils, pandas utils, plotting, API clients
+/finbot/utils/ @jerdaw
+
+# User Interfaces
+# CLI entry point and command handlers
+/finbot/cli/ @jerdaw
+
+# Dashboard (Streamlit)
+# Multi-page interactive dashboard application
+/finbot/dashboard/ @jerdaw
+
+# Configuration
+# Dynaconf settings, API key management, logging setup
+/finbot/config/ @jerdaw
 /finbot/libs/ @jerdaw
 
-# Tooling and governance
-/.github/ @jerdaw
+# Documentation
+# ADRs, planning docs, guidelines, research, MkDocs site
 /docs/ @jerdaw
 /docs_site/ @jerdaw
+
+# Tests
+# Unit tests, integration tests, test infrastructure
+/tests/ @jerdaw
+
+# Infrastructure & Automation
+# CI/CD, scripts, Docker, dependency management
+/.github/ @jerdaw
+/scripts/ @jerdaw
+/Dockerfile @jerdaw
+/Makefile @jerdaw
 /pyproject.toml @jerdaw
-/uv.lock @jerdaw
+
+# Project Documentation
+# README, contributing guide, license, project instructions
+/README.md @jerdaw
+/CONTRIBUTING.md @jerdaw
+/CLAUDE.md @jerdaw

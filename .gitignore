@@ -1,16 +1,27 @@
 ## Project Specific
+# Generated changelog (for manual review before merging to CHANGELOG.md)
+CHANGELOG_GENERATED.md
+
 # Ignore .env files and the actual .env file
 */.env
-config/.env
+finbot/config/.env
 
 # Ignore anything with "secret" in the title and the actual secret file
 *secret*
-config/.secrets.yaml
+finbot/config/.secrets.yaml
 
 # Ignore any scrap or temp directories
 scrap/*
 temp/*
 .claude/
+
+# Docker security scan reports (large files, regenerated frequently)
+docs/security/*.txt
+docs/security/*.json
+docs/security/*.sarif
+
+# Trivy ignore file (actual ignores, not the example)
+.trivyignore
 
 # Ignore everything in the finbot/data directory but not the directory itself
 finbot/data/**
@@ -82,6 +93,7 @@ coverage.json
 .cache
 nosetests.xml
 coverage.xml
+coverage*.json
 *.cover
 .hypothesis/
 .pytest_cache/

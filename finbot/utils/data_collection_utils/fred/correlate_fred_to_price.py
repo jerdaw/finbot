@@ -216,7 +216,7 @@ def _calculate_correlations(
             "abs_avg": overall_avg,
         }
 
-    return correlations
+    return correlations  # type: ignore[return-value]
 
 
 def correlate_fred_to_price(
