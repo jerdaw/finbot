@@ -18,7 +18,7 @@ Typical usage:
 from finbot.utils.finance_utils.get_mult_from_suffix import get_mult_from_suffix
 
 
-def get_number_from_suffix(num_str: str, require_suffix: bool = False):
+def get_number_from_suffix(num_str: str, require_suffix: bool = False) -> int | float:
     """
     Converts a string representation of a number with an optional suffix into a numerical value.
 

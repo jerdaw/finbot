@@ -154,7 +154,7 @@ class Normalizers(BaseScaler):
     - Mean Range Normalization
     """
 
-    def __init__(self, method: str, **kwargs):
+    def __init__(self, method: str, **kwargs: object) -> None:
         """
         Initializes the Normalizers class with a specific normalization method for `pandas.Series`.
 
@@ -173,7 +173,7 @@ class Normalizers(BaseScaler):
         self.mean_: None | float = None
         self.range_: None | float = None
 
-    def fit(self, X: pd.Series[int | float], y=None) -> Normalizers:
+    def fit(self, X: pd.Series[int | float], y: object | None = None) -> Normalizers:
         """
         Fit the normalizer to the data.
 
@@ -257,7 +257,7 @@ class Normalizers(BaseScaler):
         else:
             raise ValueError(f"Unknown normalization method: {self.method}")
 
-    def fit_transform(self, X: pd.Series[int | float], y=None) -> pd.Series:
+    def fit_transform(self, X: pd.Series[int | float], y: object | None = None) -> pd.Series:
         """
         Fit to data, then transform it.
 

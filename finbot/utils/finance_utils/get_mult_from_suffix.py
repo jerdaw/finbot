@@ -18,7 +18,7 @@ Typical usage:
 """
 
 
-def _generate_suffix_map():
+def _generate_suffix_map() -> dict[str, int | float]:
     base_values = {
         "hundred": 100,
         "thousand": 1_000,
@@ -47,7 +47,7 @@ def _generate_suffix_map():
     return dict(sorted(suffix_map.items(), key=lambda item: (item[1], item[0])))
 
 
-def get_mult_from_suffix(suffix: str) -> int:
+def get_mult_from_suffix(suffix: str) -> int | float:
     """
     Returns the integer multiplier for a given suffix.
 
@@ -55,7 +55,7 @@ def get_mult_from_suffix(suffix: str) -> int:
     suffix (str): A suffix like 'million' or 'k'.
 
     Returns:
-    int: The integer multiplier corresponding to the suffix.
+    int | float: The multiplier corresponding to the suffix.
     """
     suffix_map = _generate_suffix_map()
     return suffix_map.get(suffix.lower(), 1)

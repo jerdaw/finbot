@@ -6,11 +6,11 @@ from queue import Queue
 from typing import Any
 
 
-def setup_queue_logging(log_config: dict[str, Any], logger_name: str):
+def setup_queue_logging(log_config: dict[str, Any], logger_name: str) -> tuple[QueueHandler, QueueListener]:
     """
     Set up queue logging using the provided logging configuration.
     """
-    log_queue: Queue = Queue(-1)  # No limit on size
+    log_queue: Queue[Any] = Queue(-1)  # No limit on size
 
     # Apply the logging configuration
     dictConfig(log_config)

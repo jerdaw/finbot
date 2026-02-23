@@ -3,6 +3,7 @@
 **Created:** 2026-02-14
 **Status:** In progress
 **Plan Source:** `docs/planning/backtesting-live-readiness-implementation-plan.md`
+**Follow-up Plan Source:** `docs/planning/archive/IMPLEMENTATION_PLAN_7.1_POST_E6_PHASE2_MULTI_SCENARIO_EVIDENCE.md`
 **Handoff:** `docs/planning/backtesting-live-readiness-handoff-2026-02-14.md`
 
 ## Estimation Scale
@@ -193,7 +194,7 @@
 
 ### E4-T2 (M) Snapshot-based reproducibility mode
 
-- Status: 🟡 Partially Complete (2026-02-16) - Core infrastructure done, adapter integration deferred
+- Status: ✅ Complete (2026-02-19)
 - Completed:
   - [x] DataSnapshot contract with content-addressable hashing
   - [x] DataSnapshotRegistry with create/load/list/delete operations
@@ -202,23 +203,21 @@
   - [x] 21 comprehensive unit tests (all passing)
   - [x] 530 tests passing total (up from 509)
   - [x] Implementation plan documented
-- Deferred (Future work):
-  - [ ] BacktraderAdapter integration (auto_snapshot parameter)
-  - [ ] Replay functionality using snapshots
-  - [ ] Integration tests for replay reproducibility
-  - [ ] User guide documentation
+- Completed in follow-up:
+  - [x] BacktraderAdapter integration (`auto_snapshot`, `snapshot_registry`)
+  - [x] Unit test coverage for snapshot attachment
+- Completed in closure pass:
+  - [x] Replay functionality using snapshots (`BacktestRunRequest.data_snapshot_id`)
+  - [x] Replay unit tests for reproducibility and failure modes
+  - [x] User guide documentation (`docs/user-guides/snapshot-replay.md`)
 - Acceptance:
   - Snapshot infrastructure complete and tested. ✅
   - Can create/load/manage snapshots manually. ✅
-  - Runs can be replayed from dataset snapshot reference. ⬜ (Deferred to avoid breaking parity)
-
-**Note:** Core snapshot infrastructure is complete and fully functional. BacktraderAdapter
-integration deferred to maintain 100% parity on golden strategies and enable focused testing
-in a separate task.
+  - Runs can be replayed from dataset snapshot reference. ✅
 
 ### E4-T3 (M) Batch observability instrumentation
 
-- Status: 🟡 Partially Complete (2026-02-16) - Core infrastructure done, integration deferred
+- Status: ✅ Complete (2026-02-19)
 - Completed:
   - [x] Batch observability contracts (BatchRun, BatchStatus, ErrorCategory, BatchItemResult)
   - [x] BatchRegistry with create/update/list/query/complete operations
@@ -229,19 +228,18 @@ in a separate task.
   - [x] 39 comprehensive unit tests (23 registry + 16 categorizer, all passing)
   - [x] 569 tests passing total (up from 530)
   - [x] Implementation plan documented
-- Deferred (Future work):
-  - [ ] Integration with backtest_batch function
-  - [ ] Retry utilities for failed items
-  - [ ] User guide documentation
+- Completed in follow-up:
+  - [x] Integration with `backtest_batch` via optional `track_batch` mode
+  - [x] Unit tests for partial-failure and all-failure lifecycle tracking
+- Completed in closure pass:
+  - [x] Retry utilities for failed items (`retry_failed`, `max_retry_attempts`, `retry_backoff_seconds`)
+  - [x] Retry metadata (`attempt_count`, `final_attempt_success`)
+  - [x] User guide documentation (`docs/user-guides/batch-observability-and-retries.md`)
 - Acceptance:
   - Status tracking infrastructure complete and tested. ✅
   - Error taxonomy and categorization functional. ✅
   - Can track batches manually with full observability. ✅
   - Status/retry/failure taxonomy visible and queryable. ✅
-
-**Note:** Core batch observability infrastructure is complete and fully functional.
-Integration with existing batch runner deferred to maintain backward compatibility
-and enable focused testing in a separate task.
 
 ### E4-T4 (S) Dashboard experiment comparison page
 
@@ -326,23 +324,38 @@ and enable focused testing in a separate task.
 
 ### E6-T1 (M) Single-strategy pilot adapter
 
+- Status: ✅ Complete (2026-02-19) - Native Nautilus one-strategy pilot path implemented with contract-safe fallback
+- Completed:
+  - [x] Adapter method alignment (`run` contract + `run_backtest` alias)
+  - [x] Canonical metadata/result mapping
+  - [x] Rebalance-only pilot validation rules
+  - [x] Warning-tagged fallback execution path
+  - [x] Unit tests for pilot behavior
+  - [x] Native Nautilus execution path (engine/data/strategy wiring)
 - Acceptance:
-  - One strategy runs in paper mode via Nautilus path.
+  - One strategy runs in paper mode via Nautilus path. ✅
 
 ### E6-T2 (S) Comparative evaluation report
 
 - Output: `docs/research/nautilus-pilot-evaluation.md`
+- Status: ✅ Complete (2026-02-19)
+- Completed:
+  - [x] Comparative benchmark script for reproducible runs
+  - [x] JSON + Markdown benchmark artifacts under `docs/research/artifacts/`
+  - [x] Evaluation report updated with measured runtime/memory/metric table
 - Acceptance:
   - Fill realism, latency fit, ops complexity, integration cost compared.
 
 ### E6-T3 (S) Go/No-Go recommendation memo
 
 - Output: `docs/adr/ADR-011-nautilus-decision.md`
-- Status: ✅ Complete (2026-02-17)
+- Status: ✅ Complete (2026-02-19)
+- Completed:
+  - [x] ADR refreshed with measured evidence references
+  - [x] Explicit tradeoff matrix
+  - [x] Final decision for this cycle remains `Defer`
 - Acceptance:
-  - Decision and rationale recorded with quantified tradeoffs. ✅
-  - Clear recommendation: Hybrid approach ✅
-  - Implementation plan with decision gates ✅
+  - Decision and rationale recorded with quantified tradeoffs.
 
 ## Dependencies
 
@@ -427,6 +440,45 @@ and enable focused testing in a separate task.
 - `E1`: ✅ Complete
 - `E2`: ✅ Complete (all tasks done: adapter, parity harness, golden tests, CI gate)
 - `E3`: ✅ Complete (All tasks: E3-T1 cost models, E3-T2 corporate actions + data quality, E3-T3 walk-forward + regime analysis)
-- `E4`: ✅ Complete (All tasks: E4-T1 experiment registry, E4-T2 snapshot infrastructure, E4-T3 batch observability, E4-T4 dashboard comparison)
+- `E4`: ✅ Complete
 - `E5`: ✅ Complete (All tasks: E5-T1 orders/executions, E5-T2 latency simulation, E5-T3 risk controls, E5-T4 state checkpoints)
-- `E6`: ✅ Complete (All tasks: E6-T1 adapter implementation, E6-T2 evaluation report, E6-T3 decision memo - Hybrid approach adopted)
+- `E6`: ✅ Complete for current cycle (decision gate closed as Defer pending broader comparable evidence)
+
+## Next Follow-up Backlog (Post E6 Cycle)
+
+1. Expand native Nautilus evaluation to like-for-like strategy logic against Backtrader parity baselines.
+   - Status: ✅ Complete (2026-02-19)
+   - Evidence:
+     - `finbot/adapters/nautilus/nautilus_adapter.py` (native `NoRebalance` buy-and-hold path)
+     - `scripts/benchmark/e6_compare_backtrader_vs_nautilus.py` (`gs01` scenario + equivalence metadata)
+     - `docs/research/artifacts/e6-benchmark-2026-02-19.json`
+2. Revisit ADR-011 after comparable strategy evidence is collected.
+   - Status: ✅ Complete (2026-02-19, follow-up tracker added; final decision remains Defer)
+   - Evidence:
+     - `docs/adr/ADR-011-nautilus-decision.md` (post-E6 follow-up tracker section)
+3. Apply CI budget controls to keep PR checks within free-tier limits without removing core quality gates.
+   - Status: ✅ Complete (2026-02-19)
+   - Evidence:
+     - `.github/workflows/ci.yml` (lean PR/main gate)
+     - `.github/workflows/ci-heavy.yml` (heavy schedule/manual + main workflow)
+
+## Next Follow-up Backlog (Post E6 Cycle, Phase 2)
+
+1. Expand like-for-like native comparison to GS-02 (`DualMomentum` frozen scenario).
+   - Status: ✅ Complete (2026-02-19, proxy-native pilot mode with medium confidence)
+   - Evidence:
+     - `finbot/adapters/nautilus/nautilus_adapter.py` (DualMomentum proxy-native path + metadata)
+     - `scripts/benchmark/e6_compare_backtrader_vs_nautilus.py` (`gs02` scenario)
+     - `docs/research/artifacts/e6-benchmark-2026-02-19.json` (`gs02` rows)
+     - `docs/research/nautilus-pilot-evaluation.md` (GS-02 interpretation)
+2. Expand like-for-like native comparison to GS-03 (`RiskParity` frozen scenario).
+   - Status: ✅ Complete (2026-02-19, proxy-native pilot mode with medium confidence)
+   - Evidence:
+     - `finbot/adapters/nautilus/nautilus_adapter.py` (RiskParity proxy-native path + metadata)
+     - `scripts/benchmark/e6_compare_backtrader_vs_nautilus.py` (`gs03` scenario)
+     - `docs/research/artifacts/e6-benchmark-2026-02-19.json` (`gs03` rows)
+     - `docs/research/nautilus-pilot-evaluation.md` (GS-03 interpretation)
+3. Revisit ADR-011 final decision after GS-01/GS-02/GS-03 comparable evidence is complete.
+   - Status: ✅ Complete (2026-02-19, decision remains Defer)
+   - Evidence:
+     - `docs/adr/ADR-011-nautilus-decision.md` (decision refresh + tracker updates)

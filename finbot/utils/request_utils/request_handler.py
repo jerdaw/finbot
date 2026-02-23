@@ -179,7 +179,8 @@ API data fetching).
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+from types import TracebackType
+from typing import Any, Self
 
 import requests
 
@@ -201,7 +202,7 @@ class RequestHandler:
         save_response: Saves the response to a file.
     """
 
-    def __init__(self, retry_config: None | RetryConfig = None):
+    def __init__(self, retry_config: RetryConfig | None = None) -> None:
         """
         Initializes the RequestHandler with a given retry configuration.
 
@@ -219,7 +220,7 @@ class RequestHandler:
         payload_kwargs: None | dict[str, Any] = None,
         headers: None | dict[str, str] = None,
         request_type: str = "GET",
-        **kwargs,
+        **kwargs: Any,
     ) -> dict[str, Any]:
         """
         Makes an HTTP request and expects a JSON response.
@@ -261,7 +262,7 @@ class RequestHandler:
         payload_kwargs: None | dict[str, Any] = None,
         headers: None | dict[str, str] = None,
         request_type: str = "GET",
-        **kwargs,
+        **kwargs: Any,
     ) -> str:
         """
         Makes an HTTP request and expects a text response.
@@ -306,7 +307,7 @@ class RequestHandler:
         save_dir: str | Path | None = RESPONSES_DATA_DIR,
         file_name: str | None = None,
         compress: bool = True,
-        **kwargs,
+        **kwargs: Any,
     ) -> requests.Response:
         """
         Core method for making HTTP requests.
@@ -338,11 +339,16 @@ class RequestHandler:
             if request_type not in ["GET", "POST", "PUT", "DELETE", "PATCH"]:
                 raise NotImplementedError(f"Request type {request_type} is not supported.")
 
-            request_kwargs = {"method": request_type, "url": url, "headers": headers, "timeout": (5, 20)}
+            request_kwargs: dict[str, Any] = {
+                "method": request_type,
+                "url": url,
+                "headers": headers,
+                "timeout": (5, 20),
+            }
             request_kwargs.update(payload_kwargs)
             request_kwargs.update(kwargs)
 
-            response = self.session.request(**request_kwargs)  # type: ignore
+            response = self.session.request(**request_kwargs)
 
             if not response.ok:
                 logger.warning(
@@ -356,7 +362,7 @@ class RequestHandler:
 
         return response
 
-    def save_response(self, save_options: dict, response_data: Any):
+    def save_response(self, save_options: dict[str, Any], response_data: Any) -> None:
         """
         Saves the response data to a file.
         """
@@ -376,13 +382,18 @@ class RequestHandler:
                     compress=save_options.get("compress", True),
                 )
 
-    def __enter__(self):
+    def __enter__(self) -> Self:
         """
         Enables use of the RequestHandler with the 'with' statement for context management.
         """
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> None:
         """
         Ensures clean-up actions (like closing the session) when exiting the 'with' context.
         """

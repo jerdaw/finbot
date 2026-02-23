@@ -72,7 +72,7 @@ Use `@pytest.mark.parametrize` when testing the same logic with multiple inputs.
 
 ## Coverage
 
-- Current threshold: 30% (configured in CI)
+- Current threshold: 60% (configured in CI)
 - Target: increase as more tests are added
 - Check coverage: `uv run pytest --cov=finbot --cov-report=term-missing tests/`
 

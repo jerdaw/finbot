@@ -27,11 +27,13 @@ Typical usage:
 from __future__ import annotations
 
 from collections import Counter
+from collections.abc import Sequence
 from functools import lru_cache
 
 import pandas as pd
 from dateutil.relativedelta import relativedelta
 from pandas.tseries.frequencies import to_offset
+from pandas.tseries.offsets import BaseOffset
 
 from finbot.config import logger
 from finbot.utils.data_science_utils.data_cleaning.outlier_handlers.get_outliers_quantile import get_outliers_quantile
@@ -41,15 +43,15 @@ from finbot.utils.datetime_utils.conversions.timedelta_to_str import timedelta_t
 
 
 @lru_cache(maxsize=128)
-def cached_to_offset(freq: str):
+def cached_to_offset(freq: str) -> BaseOffset:
     return to_offset(freq)
 
 
 def match_frequency(
     time_differences: pd.Series,
     return_type: str,
-    common_frequencies: list,
-    freq_counter: Counter,
+    common_frequencies: list[str],
+    freq_counter: Counter[pd.Timedelta],
     raise_error: bool = True,
 ) -> pd.Timedelta | relativedelta | str | None:
     """
@@ -90,10 +92,10 @@ def match_frequency(
 def fallback_frequency_calculation(
     time_differences: pd.Series,
     return_type: str,
-    common_frequencies: list,
-    freq_counter: Counter,
+    common_frequencies: list[str],
+    freq_counter: Counter[pd.Timedelta],
     raise_error: bool = True,
-):
+) -> str | pd.Timedelta | relativedelta | None:
     """
     Calculates the fallback frequency when a direct match is not found.
     Calculation is based on the average time difference between updates.
@@ -129,7 +131,7 @@ def fallback_frequency_calculation(
 
 
 def get_timeseries_frequency(
-    time_series: pd.DataFrame | pd.Series | pd.DatetimeIndex | list | tuple,
+    time_series: pd.DataFrame | pd.Series | pd.DatetimeIndex | Sequence[object],
     return_type: str = "relativedelta",
     permit_fallback: bool = False,
 ) -> str | pd.Timedelta | relativedelta:
