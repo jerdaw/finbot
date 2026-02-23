@@ -103,7 +103,7 @@ web = [
     "fastapi>=0.115.0,<1",
     "uvicorn[standard]>=0.34.0,<1",
     "pydantic-settings>=2.7.0,<3",
-    "sse-starlette>=2.0.0,<3",
+    "sse-starlette>=2.0.0,<4",
 ]
 
 [tool.ruff]
