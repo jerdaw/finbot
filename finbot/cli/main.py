@@ -9,6 +9,7 @@ import click
 
 from finbot.cli.commands import backtest, dashboard, optimize, simulate, status, update
 from finbot.config import logger
+from finbot.libs.logger.audit import generate_trace_id, set_trace_id
 
 
 def _get_disclaimer_text() -> str:
@@ -70,13 +71,21 @@ def _show_disclaimer() -> None:
     help="Enable verbose logging output",
 )
 @click.option(
+    "--trace-id",
+    type=str,
+    default=None,
+    help="Optional trace ID for structured audit logs (auto-generated when omitted)",
+)
+@click.option(
     "--disclaimer",
     is_flag=True,
     help="Display the full disclaimer notice",
 )
 @click.pass_context
-def cli(ctx: click.Context, verbose: bool, disclaimer: bool) -> None:
+def cli(ctx: click.Context, verbose: bool, trace_id: str | None, disclaimer: bool) -> None:
     """Finbot - Financial simulation and backtesting platform.
+
+    Disclaimer: Research/education use only. See DISCLAIMER.md.
 
     \b
     Available commands:
@@ -98,9 +107,11 @@ def cli(ctx: click.Context, verbose: bool, disclaimer: bool) -> None:
     # Store verbose flag in context for subcommands
     ctx.ensure_object(dict)
     ctx.obj["verbose"] = verbose
+    ctx.obj["trace_id"] = trace_id or generate_trace_id()
+    set_trace_id(ctx.obj["trace_id"])
 
     if verbose:
-        logger.info("Verbose mode enabled")
+        logger.info("Verbose mode enabled", extra={"trace_id": ctx.obj["trace_id"]})
 
     # Show disclaimer if explicitly requested or on first run
     if disclaimer:

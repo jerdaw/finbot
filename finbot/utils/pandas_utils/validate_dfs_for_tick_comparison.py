@@ -19,8 +19,14 @@ Typical usage:
 
 import warnings
 
+import pandas as pd
 
-def validate_dfs_for_tick_comparison(*dfs, all_lens_match=True, identical_indexes=True):
+
+def validate_dfs_for_tick_comparison(
+    *dfs: pd.DataFrame,
+    all_lens_match: bool = True,
+    identical_indexes: bool = True,
+) -> bool:
     """
     Validates the given DataFrames for tick comparison.
 

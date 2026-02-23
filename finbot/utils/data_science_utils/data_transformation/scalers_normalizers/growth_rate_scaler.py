@@ -105,13 +105,13 @@ class GrowthRateScaler(BaseScaler):
     The growth rate is calculated based on the first and last elements of the Series.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Initializes the GrowthRateScaler.
         """
         self.growth_rate_: None | float = None
 
-    def fit(self, X: pd.Series) -> GrowthRateScaler:
+    def fit(self, X: pd.Series[int | float]) -> GrowthRateScaler:
         """
         Computes the growth rate based on the provided Series.
 
@@ -134,7 +134,7 @@ class GrowthRateScaler(BaseScaler):
         self.growth_rate_ = (X.iloc[-1] / X.iloc[0]) ** (1 / (len(X) - 1)) - 1
         return self
 
-    def transform(self, X: pd.Series) -> pd.Series:
+    def transform(self, X: pd.Series[int | float]) -> pd.Series:
         """
         Applies the growth rate scaling to the Series.
 
@@ -158,7 +158,7 @@ class GrowthRateScaler(BaseScaler):
 
         return X / _cumu_prod_growth
 
-    def fit_transform(self, X: pd.Series) -> pd.Series:
+    def fit_transform(self, X: pd.Series[int | float]) -> pd.Series:
         """
         Fits the scaler to the Series and then transforms it.
 
@@ -170,13 +170,13 @@ class GrowthRateScaler(BaseScaler):
         """
         return self.fit(X).transform(X)
 
-    def reset(self):
+    def reset(self) -> None:
         """
         Reset the scaler to its initial state.
         """
         self.growth_rate_ = None
 
-    def inverse_transform(self, X: pd.Series) -> pd.Series:
+    def inverse_transform(self, X: pd.Series[int | float]) -> pd.Series:
         """
         Reverses the growth rate scaling applied to the Series.
 

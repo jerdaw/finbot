@@ -130,36 +130,38 @@ from finbot.utils.plotting_utils.interactive.interactive_plotter import Interact
 
 
 class TelltaleDataProcessor:
-    def __init__(self, reference, *dfs):
-        self.reference = reference
-        self.dfs = dfs
+    def __init__(self, reference: pd.DataFrame | pd.Series, *dfs: pd.DataFrame | pd.Series) -> None:
+        self.reference: pd.DataFrame | pd.Series = reference
+        self.dfs: tuple[pd.DataFrame | pd.Series, ...] = dfs
         self.tell_data = self.get_telltale_data()
 
     @staticmethod
-    def norm(prices):
+    def norm(prices: pd.DataFrame | pd.Series) -> pd.DataFrame | pd.Series:
         return prices / prices.iloc[0]
 
     @staticmethod
-    def cat(*dfs, dropna=True):
+    def cat(*dfs: pd.DataFrame | pd.Series, dropna: bool = True) -> pd.DataFrame:
         result = pd.concat(dfs, axis=1)
         if dropna:
             result.dropna(inplace=True)
         return result
 
-    def get_telltale_data(self):
+    def get_telltale_data(self) -> pd.DataFrame:
         if isinstance(self.reference, pd.DataFrame):
             self.reference.columns = [f"{c} (Reference)" for c in self.reference.columns]
         else:
             self.reference.name = f"{self.reference.name} (Reference)"
 
         tell = self.norm(self.cat(self.reference, *self.dfs))
+        if not isinstance(tell, pd.DataFrame):
+            raise TypeError("Expected telltale data normalization output to be a DataFrame")
         # Check for unique column names
         if tell.columns.nunique() < len(tell.columns):
             print("Warning: Column names are not unique.")
 
         return tell.apply(lambda c: c / tell.iloc[:, 0])
 
-    def analyze_telltale_data(self):
+    def analyze_telltale_data(self) -> pd.DataFrame:
         results = pd.DataFrame()
         reference = self.tell_data.iloc[:, 0]
 
@@ -174,7 +176,7 @@ class TelltaleDataProcessor:
         results.index = ["Mean Absolute Deviation", "Root Mean Squared Deviation", "Maximum Deviation"]
         return results
 
-    def plot_telltale_data(self, **layout_kws):
+    def plot_telltale_data(self, **layout_kws: object) -> None:
         plotter = InteractivePlotter()
         plotter.plot_time_series(self.tell_data)
 

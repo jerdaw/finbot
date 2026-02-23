@@ -45,7 +45,7 @@ from finbot.utils.pandas_utils.sort_dataframe_columns import sort_dataframe_mult
 MAX_THREADS = settings_accessors.MAX_THREADS
 
 
-def _get_yf_req_params(**kwargs) -> dict[str, str | bool | None]:
+def _get_yf_req_params(**kwargs: Any) -> dict[str, str | bool | None]:
     """
     Construct a dictionary of parameters for Yahoo Finance API requests,
     applying defaults where necessary.
@@ -58,7 +58,6 @@ def _get_yf_req_params(**kwargs) -> dict[str, str | bool | None]:
     - prepost (bool): Whether to include pre and post market data. Default is True.
     - auto_adjust (bool): Whether to adjust the data for dividends and stock splits. Default is True.
     - actions (bool): Whether to include stock dividends and stock splits events. Default is True.
-    - proxy (str or None): The proxy URL to use for the request. Default is None.
     - progress (bool): Whether to show progress while downloading. Default is True.
     - group_by (str): The grouping method for multi-symbol download. Default is "ticker".
     - threads (bool): Whether to use multiple threads for downloading. Default is True.
@@ -81,7 +80,6 @@ def _get_yf_req_params(**kwargs) -> dict[str, str | bool | None]:
         "auto_adjust": False,  # YF Default is True for symbol and False for multi-symbol download
         # YF Default is True (Downloads stock dividends and stock splits events)
         "actions": True,
-        "proxy": None,  # YF Default is None
         "progress": True,  # YF Default is True
         # There are for multi-symbol download
         "group_by": "ticker",  # group by symbol or column
@@ -285,7 +283,7 @@ def _save_updated_data(updated_data: pd.DataFrame, file_paths: dict[str, Path], 
         raise KeyError(f"Missing symbol data or path for: {e}") from e
 
 
-def _load_yfinance_data(symbols_to_load: Sequence[str], file_paths: dict[str, Path], request_type) -> pd.DataFrame:
+def _load_yfinance_data(symbols_to_load: Sequence[str], file_paths: dict[str, Path], request_type: str) -> pd.DataFrame:
     """
     Load Yahoo Finance data from local files, if available, for given symbols.
 
@@ -313,24 +311,31 @@ def _load_yfinance_data(symbols_to_load: Sequence[str], file_paths: dict[str, Pa
             raise ValueError("Loaded DataFrames do not match the order of the requested IDs.")
 
         # This avoids the info double header problems.
-        merged_dict = symbol_data
         if request_type != "info":
-            merged_dict = dict(
+            symbol_data_map = dict(
                 zip(
                     symbol_names,
                     symbol_data,
                     strict=False,
                 )
             )
-
-        merged_df = (
-            pd.concat(
-                merged_dict,
-                axis=1,
+            merged_df = (
+                pd.concat(
+                    symbol_data_map,
+                    axis=1,
+                )
+                if symbol_data_map
+                else pd.DataFrame()
             )
-            if merged_dict
-            else pd.DataFrame()
-        )
+        else:
+            merged_df = (
+                pd.concat(
+                    symbol_data,
+                    axis=1,
+                )
+                if symbol_data
+                else pd.DataFrame()
+            )
         if request_type != "info" and not isinstance(merged_df.columns, pd.MultiIndex):
             merged_df.columns = pd.MultiIndex.from_product(
                 [merged_df.columns, list(symbol_names)],
@@ -483,14 +488,14 @@ def get_yfinance_base(
     )
 
     # Sort the data, if it is a multiindex dataframe
-    sorted_df = (
-        sort_dataframe_multiindex(filtered_df)
-        if isinstance(
-            filtered_df.columns,
-            pd.MultiIndex,
-        )
-        else filtered_df
-    )
+    if isinstance(
+        filtered_df.columns,
+        pd.MultiIndex,
+    ):
+        sorted_df = sort_dataframe_multiindex(filtered_df)
+        assert sorted_df is not None
+    else:
+        sorted_df = filtered_df
 
     # Remove the outer level of columns if there is only one symbol
     final_df = sorted_df[symbols[0]] if len(symbols) == 1 else sorted_df

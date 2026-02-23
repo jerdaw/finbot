@@ -100,19 +100,19 @@ class TestRetryStrategy:
     def test_default_retry_kwargs_exist(self):
         from finbot.utils.request_utils.retry_strategy import DEFAULT_HTTPX_RETRY_KWARGS
 
-        assert "max_retries" in DEFAULT_HTTPX_RETRY_KWARGS
-        assert "backoff_factor" in DEFAULT_HTTPX_RETRY_KWARGS
-        assert "status_forcelist" in DEFAULT_HTTPX_RETRY_KWARGS
+        assert "attempts" in DEFAULT_HTTPX_RETRY_KWARGS
+        assert "backoff" in DEFAULT_HTTPX_RETRY_KWARGS
+        assert "retry_on" in DEFAULT_HTTPX_RETRY_KWARGS
 
     def test_aggressive_retry_kwargs_exist(self):
         from finbot.utils.request_utils.retry_strategy import AGGRESSIVE_RETRY_KWARGS
 
-        assert AGGRESSIVE_RETRY_KWARGS["max_retries"] >= 4
+        assert AGGRESSIVE_RETRY_KWARGS["attempts"] >= 4
 
     def test_conservative_retry_kwargs_exist(self):
         from finbot.utils.request_utils.retry_strategy import CONSERVATIVE_RETRY_KWARGS
 
-        assert CONSERVATIVE_RETRY_KWARGS["max_retries"] <= 3
+        assert CONSERVATIVE_RETRY_KWARGS["attempts"] <= 3
 
     def test_max_retries_ordering(self):
         from finbot.utils.request_utils.retry_strategy import (
@@ -121,8 +121,8 @@ class TestRetryStrategy:
             DEFAULT_HTTPX_RETRY_KWARGS,
         )
 
-        assert CONSERVATIVE_RETRY_KWARGS["max_retries"] < DEFAULT_HTTPX_RETRY_KWARGS["max_retries"]
-        assert DEFAULT_HTTPX_RETRY_KWARGS["max_retries"] < AGGRESSIVE_RETRY_KWARGS["max_retries"]
+        assert CONSERVATIVE_RETRY_KWARGS["attempts"] < DEFAULT_HTTPX_RETRY_KWARGS["attempts"]
+        assert DEFAULT_HTTPX_RETRY_KWARGS["attempts"] < AGGRESSIVE_RETRY_KWARGS["attempts"]
 
 
 class TestRateLimiter:

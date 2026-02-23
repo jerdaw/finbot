@@ -86,36 +86,38 @@ make run-update
 - `make clean` - Remove cache files and build artifacts
 - `make all` - Run full CI pipeline (check + test)
 
-## Current Implementation Status (2026-02-16)
+## Current Implementation Status (2026-02-20)
 
-Engine-agnostic backtesting system with live-readiness execution simulator complete.
+Engine-agnostic backtesting system with live-readiness execution simulator complete. Priority 7 in progress.
 
-- **Epics E0-E5 Complete** (645 tests passing)
+- **Epics E0-E6 Complete** (1063+ tests passing)
   - ✅ E0: Typed contracts for engine portability
   - ✅ E1: Backtrader adapter implementation
   - ✅ E2: A/B parity testing with CI gate
   - ✅ E3: Cost models, corporate actions, walk-forward analysis, regime detection
   - ✅ E4: Experiment tracking with reproducible snapshots
   - ✅ E5: Execution simulator with latency, risk controls, state checkpoints
-- **Next**: E6 (NautilusTrader pilot integration)
+  - ✅ **E6**: NautilusTrader pilot hardening + decision gate closure (**Defer** outcome, ADR-011)
+- **CI Status**: Tiered CI active (`ci.yml` for PR/main core gates, `ci-heavy.yml` for scheduled/manual heavy checks)
+- **Priority 7**: Walk-forward viz, regime-adaptive strategy, Pareto optimizer, clinical scenarios, hypothesis testing in progress
 
 Key deliverables:
 - Engine-agnostic contracts (`finbot/core/contracts/`)
 - Execution simulator with risk management (`finbot/services/execution/`)
-- Backtrader adapter (`finbot/adapters/backtrader/`)
+- Backtrader adapter (`finbot/services/backtesting/adapters/`)
 - Walk-forward and regime detection tools
 - State checkpoint/recovery system
 
 Planning and handoff docs:
-- `docs/planning/post-e5-handoff-2026-02-16.md`
 - `docs/planning/backtesting-live-readiness-backlog.md`
-- `docs/planning/roadmap.md` (Priority 6)
+- `docs/planning/roadmap.md`
+- `docs/adr/ADR-011-nautilus-decision.md`
 
 ## Prerequisites
 
 | Requirement | Minimum Version |
 | --- | --- |
-| **Python** | 3.11+ |
+| **Python** | 3.12+ |
 | **uv** | 0.6+ |
 
 ### Docker (Alternative)
@@ -429,7 +431,6 @@ Built for reliability and scale:
 - **API Rate Limiting**: Built-in retry with exponential backoff for data collection
 - **Data Quality**: Automated freshness monitoring with staleness thresholds
 - **Docker Support**: Run without installing Python or dependencies
-
 ## Example Notebooks
 
 Explore comprehensive analyses demonstrating all major features:
@@ -475,6 +476,8 @@ See **[docs/limitations.md](docs/limitations.md)** for comprehensive documentati
 ## Ethics and Responsible Use
 
 **IMPORTANT:** This software is for educational and research purposes only.
+
+See **[DISCLAIMER.md](DISCLAIMER.md)** for concise financial/medical decision disclaimers and liability terms.
 
 See **[docs/ethics/responsible-use.md](docs/ethics/responsible-use.md)** for comprehensive ethical guidelines covering:
 - **Financial Advice Disclaimer:** Not a substitute for professional financial advisors

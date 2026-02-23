@@ -22,6 +22,7 @@ show_sidebar_accessibility()
 
 st.title("Finbot Dashboard")
 st.markdown("Financial simulation, backtesting, and optimization platform. Use the sidebar to navigate between pages.")
+st.warning("Research/education use only. This dashboard does not provide financial or medical advice.")
 
 # Add full disclaimer section on home page
 show_full_disclaimer_section()

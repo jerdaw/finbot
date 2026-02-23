@@ -14,8 +14,15 @@ Typical usage:
     - Filter data to overlapping range before analysis
 """
 
+import datetime as dt
 
-def get_overlapping_date_range(*series, raise_error: bool = True):
+import pandas as pd
+
+
+def get_overlapping_date_range(
+    *series: pd.Series,
+    raise_error: bool = True,
+) -> tuple[pd.Timestamp | dt.date, pd.Timestamp | dt.date]:
     """
     Find the overlapping date range among a list of pandas Series.
     This is the range where all series have data.
@@ -23,8 +30,8 @@ def get_overlapping_date_range(*series, raise_error: bool = True):
     :param raise_error: If True, raise an error if no overlapping range exists.
     :return: A tuple containing the start and end dates of the overlapping range.
     """
-    start_date = max(serie.index.min() for serie in series)
-    end_date = min(serie.index.max() for serie in series)
+    start_date: pd.Timestamp | dt.date = max(serie.index.min() for serie in series)
+    end_date: pd.Timestamp | dt.date = min(serie.index.max() for serie in series)
 
     if raise_error and start_date > end_date:
         raise ValueError("No overlapping date range exists among the provided series.")

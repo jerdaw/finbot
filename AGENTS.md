@@ -33,47 +33,42 @@ uv run pytest
 uv run python scripts/update_daily.py
 ```
 
-## Current Delivery Status (2026-02-18)
+## Current Delivery Status (2026-02-20)
 
-**Status:** Production-ready. Priority 0-6 substantially complete (P5: 93.3%, P6: 100%). Priority 7 in progress (24/27 items, 89%).
+Backtesting/live-readiness transition is **Epics E0-E6 current cycle complete** (adapter-first path). Priority 7 in progress.
+
+### Priority 6: Backtesting-to-Live Readiness (100% Complete)
+
+- **Completed Epics:**
+  - ✅ **E0**: Foundational contracts (schemas, versioning, serialization, snapshots)
+  - ✅ **E1**: Backtrader adapter implementation
+  - ✅ **E2**: A/B parity testing (harness, golden tests, CI gate)
+  - ✅ **E3**: Cost models, corporate actions, walk-forward analysis, regime detection
+  - ✅ **E4**: Experiment tracking (registry, snapshots, batch observability, dashboard)
+  - ✅ **E5**: Live-readiness execution system (orders, latency, risk controls, checkpoints)
+  - ✅ **E6 (current cycle)**: Nautilus pilot hardening, comparative benchmark artifact publication, and decision gate closure (**Defer** outcome)
+
+- **E5 Deliverables (Live-Readiness Without Production):**
+  - Order lifecycle tracking with full execution history
+  - Latency simulation (submission, fill, cancellation delays)
+  - Risk controls (position limits, exposure limits, drawdown protection, kill-switch)
+  - State checkpoint and recovery for disaster recovery
+
+- **Post-E6 Follow-up:** Priority 6 items 69-75 complete; item 76 (native-only valuation parity closure) remains in progress; ADR-011 remains **Defer**.
 
 ### Priority 5: OMSAS/CanMEDS Improvements (93.3% Complete)
 
 **Completed:** 42/45 items across 7 categories
 - ✅ Governance & Professionalism (7/7): LICENSE, SECURITY, CODE_OF_CONDUCT, templates
-- ✅ Quality & Reliability (4/5): CI/CD, test coverage (59.20%), integration tests, py.typed
+- ✅ Quality & Reliability (4/5): CI/CD, test coverage, integration tests, py.typed
 - ✅ Documentation (6/6): MkDocs site, API docs, docstring enforcement, limitations
 - ✅ Health Economics (4/5): Research papers, clinical scenarios, methodology
 - ✅ Ethics & Security (6/6): Disclaimers, audit trails, license auditing, Docker security
 - ✅ Testing (5/5): Property-based testing, CLI tests, performance regression
 - ✅ Professional Polish (10/11): CODEOWNERS, releases, changelog, TestPyPI, OpenSSF
 
-**Remaining:** 3 items (Item 12 partially started, Items 22 & 42 blocked on external resources)
-
-### Priority 6: Backtesting-to-Live Readiness (100% Complete)
-
-**All Epics Complete (E0-E6):**
-- ✅ **E0**: Baseline and decision framing
-- ✅ **E1**: Contracts and schema layer
-- ✅ **E2**: Backtrader adapter and parity harness (100% parity on 3 golden strategies)
-- ✅ **E3**: Fidelity improvements (cost models, corporate actions, walk-forward, regime)
-- ✅ **E4**: Reproducibility (experiment tracking, snapshots, batch observability, dashboard)
-- ✅ **E5**: Live-readiness (orders, latency simulation, risk controls, checkpoints)
-- ✅ **E6**: NautilusTrader pilot and decision gate (Hybrid approach adopted)
-
-**Key Metrics:**
-- 1063+ total tests (all passing)
-- 61.63% test coverage (exceeds 60% target)
-- 100% parity maintained on all golden strategies
-- CI parity gate prevents regressions
-- 7 CI jobs (lint, type-check, security, test, docs, parity, performance)
-- All GitHub Actions pinned to SHA hashes for supply chain security
-
-**Authoritative tracking docs:**
-- `docs/planning/roadmap.md` (overall roadmap)
-- `docs/planning/priority-5-6-completion-status.md` (detailed summary)
-- `docs/planning/backtesting-live-readiness-backlog.md` (Epic tracking)
-- `docs/planning/archive/` (20+ completed implementation plans)
+**Remaining:** Item 12 (mypy) partially started, Items 22 & 42 blocked on external resources.
+- Item 12 (stricter mypy): expanded strict module scopes active across core/execution/backtesting/libs plus staged utility namespaces (canonical scope list in `docs/guides/mypy-strict-module-tracker.md`).
 
 ### Priority 7: External Impact & Advanced Capabilities (89% Complete)
 
@@ -82,31 +77,20 @@ uv run python scripts/update_daily.py
 - ✅ **P7.2**: Test coverage raised to 61.63% (1063+ tests)
 - ✅ **P7.3**: Scheduled CI for daily data updates
 - 🟡 **P7.4**: Conventional commits guide created (user action required)
-- ✅ **P7.5**: Blog post — "Why I Built Finbot"
-- ✅ **P7.6**: Blog post — "Backtesting Engines Compared"
-- ✅ **P7.7**: Tutorial series — "Health Economics with Python" (3 parts)
-- ✅ **P7.10**: CanMEDS Competency Reflection essay
-- ✅ **P7.11**: Finbot Portfolio Summary (1-pager)
-- ✅ **P7.12**: Lessons Learned document (15 lessons)
-- ✅ **P7.13**: Impact Statement
-- ✅ **P7.14**: Nautilus strategy migration guide
 - ✅ **P7.15**: Walk-forward visualization — `walkforward_viz.py` (5 chart functions, dashboard page 8, 23 tests)
 - ✅ **P7.16**: Regime-adaptive strategy — `strategies/regime_adaptive.py` + 19 tests
 - ✅ **P7.17**: Multi-objective Pareto optimizer — `pareto_optimizer.py` + dashboard integration
+- ✅ **P7.21**: Health economics clinical scenarios — cancer screening, hypertension, vaccine (3 scenarios, 22 tests)
 - ✅ **P7.22**: Hypothesis testing module — `hypothesis_testing.py` (6 functions, 24 tests)
 - ✅ **P7.23**: Deferred unit tests — 39 new tests (bond_ladder, backtest_batch, rebalance_optimizer)
-- ✅ **P7.24**: Roadmap updates (ongoing)
-- ✅ **P7.21**: Health economics clinical scenarios — cancer screening, hypertension, vaccine (3 scenarios, 22 tests, dashboard tab 4)
-- ✅ **P7.26**: FAQ document (30+ Q&A pairs)
 
-**Remaining notable items:**
-- ⬜ P7.8/P7.9: Video/poster (requires user recording/design)
-- ⬜ P7.20: Video tutorials (requires user recording)
-
-**Mypy hardening:** Phase 4 (backtesting core) and Phase 5 (strategies/costs/indicators) complete — `disallow_untyped_defs = true` enforced for all `finbot.services.backtesting.*` modules.
-
-**Implementation plan:** `docs/planning/priority-7-batch4-implementation-plan.md` (v1.0)
-
+**Authoritative tracking docs:**
+- `docs/planning/backtesting-live-readiness-backlog.md` (Epic tracking)
+- `docs/planning/roadmap.md`
+- `docs/planning/priority-5-6-completion-status.md`
+- `docs/research/nautilus-pilot-evaluation.md`
+- `docs/adr/ADR-011-nautilus-decision.md`
+- `docs/planning/archive/` (20+ completed implementation plans)
 ## Common Commands
 
 ```bash
@@ -558,7 +542,7 @@ uv run pytest --cov=finbot tests/
 ```
 
 **Test structure**:
-- `tests/unit/`: Unit tests (645 tests across 30+ files)
+- `tests/unit/`: Unit tests (1063+ tests across 30+ files)
   - `test_imports.py`: Smoke tests for all key module imports
   - `test_simulation_math.py`: Simulation math correctness
   - `test_finance_utils.py`: Finance calculation tests
@@ -707,6 +691,7 @@ See `docs/adr/` for architectural decision records:
 - ❌ **Don't:** Include AI assistants in author, co-author, or contributor fields. This includes Claude, Gemini, Codex, ChatGPT, Copilot, or any other AI tool.
 - ❌ **Don't:** Add "AI-generated" or "Created with AI" notices in code, docs, or commit messages.
 - **Rationale:** Commits represent human accountability and decision-making. AI tools are instruments, not authors.
+- Scope: This also applies to documentation attribution (README/ADRs/research/planning/changelogs/release notes).
 
 **Examples:**
 
@@ -723,15 +708,18 @@ Bad commit message (don't do this):
 ```
 Add performance benchmarks
 
-[changes...]
-
-Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
+[changes with any AI co-author footer]
 ```
 
 This policy applies to:
 - All past commits (if needed, amend history to comply)
 - All current commits
 - All future commits
+
+### Agent File Sync
+
+- `AGENTS.md` is canonical for agent instructions.
+- `CLAUDE.md` and `GEMINI.md` must be symlinks to `AGENTS.md`.
 
 ## See Also
 

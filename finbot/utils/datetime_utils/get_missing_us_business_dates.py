@@ -28,7 +28,7 @@ from finbot.utils.datetime_utils.get_us_business_dates import get_us_business_da
 from finbot.utils.pandas_utils.get_timeseries_frequency import get_timeseries_frequency
 
 
-def adjust_end_of_month(current_date, next_date):
+def adjust_end_of_month(current_date: datetime.date, next_date: datetime.date) -> datetime.date:
     _, last_day_current_month = monthrange(current_date.year, current_date.month)
     _, last_day_next_month = monthrange(next_date.year, next_date.month)
 

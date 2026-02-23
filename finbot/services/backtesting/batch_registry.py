@@ -396,6 +396,8 @@ class BatchRegistry:
             "error_message": result.error_message,
             "error_category": result.error_category.value if result.error_category else None,
             "duration_seconds": result.duration_seconds,
+            "attempt_count": result.attempt_count,
+            "final_attempt_success": result.final_attempt_success,
         }
 
     def _item_result_from_dict(self, payload: dict) -> BatchItemResult:
@@ -414,4 +416,6 @@ class BatchRegistry:
             error_message=payload.get("error_message"),
             error_category=ErrorCategory(payload["error_category"]) if payload.get("error_category") else None,
             duration_seconds=payload.get("duration_seconds", 0.0),
+            attempt_count=payload.get("attempt_count", 1),
+            final_attempt_success=payload.get("final_attempt_success"),
         )

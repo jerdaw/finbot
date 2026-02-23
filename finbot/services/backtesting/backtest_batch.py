@@ -1,21 +1,25 @@
 from __future__ import annotations
 
+import time
 from itertools import product
 from typing import Any
 
 import pandas as pd
 from tqdm.contrib.concurrent import process_map
 
+from finbot.core.contracts.batch import BatchItemResult, BatchStatus, ErrorCategory
+from finbot.services.backtesting.batch_registry import BatchRegistry
+from finbot.services.backtesting.error_categorizer import categorize_error
 from finbot.services.backtesting.run_backtest import run_backtest
 
 
 def _get_starts_from_steps(
-    latest_start_date: Any,
-    earliest_end_date: Any,
-    start_step: Any,
-    duration: Any,
-) -> list[Any]:
-    starts: list[Any] = []
+    latest_start_date: pd.Timestamp,
+    earliest_end_date: pd.Timestamp,
+    start_step: pd.Timedelta,
+    duration: pd.Timedelta,
+) -> list[pd.Timestamp]:
+    starts: list[pd.Timestamp] = []
     cur_start = latest_start_date
     cur_end = cur_start + duration
     while cur_end < earliest_end_date:
@@ -25,7 +29,72 @@ def _get_starts_from_steps(
     return starts
 
 
+def _run_backtest_safely(task: tuple[int, int, tuple]) -> dict:
+    """Run one batch task and capture success/error metadata."""
+    item_id, attempt_count, comb = task
+    start_time = time.perf_counter()
+
+    try:
+        result_df = run_backtest(comb)
+        return {
+            "item_id": item_id,
+            "success": True,
+            "result": result_df,
+            "duration_seconds": time.perf_counter() - start_time,
+            "attempt_count": attempt_count,
+        }
+    except Exception as exc:  # pragma: no cover - covered via monkeypatched tests
+        return {
+            "item_id": item_id,
+            "success": False,
+            "error_message": str(exc),
+            "error_category": categorize_error(exc),
+            "duration_seconds": time.perf_counter() - start_time,
+            "attempt_count": attempt_count,
+        }
+
+
+def _is_retryable_failure(item: dict) -> bool:
+    """Return True when a failed item should be retried."""
+    if item.get("success", False):
+        return False
+
+    category = item.get("error_category")
+    if category in {ErrorCategory.TIMEOUT, ErrorCategory.MEMORY_ERROR}:
+        return True
+
+    message = str(item.get("error_message", "")).lower()
+    transient_keywords = (
+        "timeout",
+        "timed out",
+        "connection",
+        "network",
+        "temporary",
+        "resource",
+        "busy",
+        "unavailable",
+    )
+    return any(keyword in message for keyword in transient_keywords)
+
+
 def backtest_batch(**kwargs: Any) -> pd.DataFrame:  # noqa: C901 - Complex parameter validation logic
+    track_batch = kwargs.pop("track_batch", False)
+    batch_registry = kwargs.pop("batch_registry", None)
+    retry_failed = kwargs.pop("retry_failed", False)
+    max_retry_attempts = kwargs.pop("max_retry_attempts", 1)
+    retry_backoff_seconds = kwargs.pop("retry_backoff_seconds", 0.0)
+
+    if track_batch and batch_registry is None:
+        raise ValueError("track_batch=True requires batch_registry")
+    if batch_registry is not None and not isinstance(batch_registry, BatchRegistry):
+        raise TypeError("batch_registry must be a BatchRegistry instance")
+    if max_retry_attempts < 1:
+        raise ValueError("max_retry_attempts must be >= 1")
+    if retry_backoff_seconds < 0:
+        raise ValueError("retry_backoff_seconds must be >= 0")
+    if retry_failed and not track_batch:
+        raise ValueError("retry_failed=True requires track_batch=True")
+
     kwargs["plot"] = False
     for kw in kwargs:
         if not isinstance(kwargs[kw], tuple | list):
@@ -70,6 +139,76 @@ def backtest_batch(**kwargs: Any) -> pd.DataFrame:  # noqa: C901 - Complex param
     n_combs = len(combs)
     print(f"Running {n_combs} backtests...")
 
-    results = process_map(run_backtest, combs, total=n_combs, desc="Performing backtests", chunksize=1, smoothing=0.1)
-    results = pd.concat(results, axis=0).reset_index(drop=True)
-    return results
+    if not track_batch:
+        results = process_map(
+            run_backtest, combs, total=n_combs, desc="Performing backtests", chunksize=1, smoothing=0.1
+        )
+        results = pd.concat(results, axis=0).reset_index(drop=True)
+        return results
+
+    assert batch_registry is not None
+    configuration = {key: [str(value) for value in values] for key, values in kwargs.items()}
+    batch = batch_registry.create_batch(total_items=n_combs, configuration=configuration)
+    batch_registry.update_status(batch.batch_id, BatchStatus.RUNNING)
+
+    task_inputs = tuple((item_id, 1, comb) for item_id, comb in enumerate(combs))
+    execution_results = process_map(
+        _run_backtest_safely,
+        task_inputs,
+        total=n_combs,
+        desc="Performing backtests",
+        chunksize=1,
+        smoothing=0.1,
+    )
+
+    latest_results_by_item = {item["item_id"]: item for item in execution_results}
+
+    if retry_failed and max_retry_attempts > 1:
+        for attempt_count in range(2, max_retry_attempts + 1):
+            retry_task_inputs = tuple(
+                (item_id, attempt_count, combs[item_id])
+                for item_id, item in sorted(latest_results_by_item.items())
+                if _is_retryable_failure(item)
+            )
+            if not retry_task_inputs:
+                break
+
+            if retry_backoff_seconds > 0:
+                time.sleep(retry_backoff_seconds)
+
+            retry_results = process_map(
+                _run_backtest_safely,
+                retry_task_inputs,
+                total=len(retry_task_inputs),
+                desc=f"Retrying failed backtests (attempt {attempt_count})",
+                chunksize=1,
+                smoothing=0.1,
+            )
+            for item in retry_results:
+                latest_results_by_item[item["item_id"]] = item
+
+    successful_results: list[pd.DataFrame] = []
+    for item in (latest_results_by_item[item_id] for item_id in sorted(latest_results_by_item)):
+        batch_registry.add_item_result(
+            batch.batch_id,
+            BatchItemResult(
+                item_id=item["item_id"],
+                success=item["success"],
+                run_id=None,
+                error_message=item.get("error_message"),
+                error_category=item.get("error_category"),
+                duration_seconds=item["duration_seconds"],
+                attempt_count=item.get("attempt_count", 1),
+                final_attempt_success=item["success"],
+            ),
+        )
+        if item["success"]:
+            successful_results.append(item["result"])
+
+    completed = batch_registry.complete_batch(batch.batch_id)
+    if not successful_results:
+        raise RuntimeError(
+            f"All batch items failed (batch_id={completed.batch_id}, failed={completed.failed_items}/{completed.total_items})"
+        )
+
+    return pd.concat(successful_results, axis=0).reset_index(drop=True)

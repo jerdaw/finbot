@@ -177,7 +177,7 @@ class BacktestRunner:
         self._stats = compute_stats(
             cv_hist["Value"],
             cv_hist["Cash"],
-            self.stocks,
+            list(self.stocks),
             self.strat,
             self.strat_kwargs,
             self.broker,

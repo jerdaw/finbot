@@ -53,5 +53,37 @@ class TestGetTimeseriesFrequency:
         assert callable(get_timeseries_frequency)
 
 
+class TestSaveDataFrames:
+    """Tests for batched save/load helper utilities."""
+
+    def test_save_dataframes_with_save_dir_only(self, tmp_path: Path):
+        """save_dataframes should support save_dir-only calls."""
+        from finbot.utils.pandas_utils.load_dataframes import load_dataframes
+        from finbot.utils.pandas_utils.save_dataframes import save_dataframes
+
+        dfs = [
+            pd.DataFrame({"A": [1, 2], "B": [3.0, 4.0]}),
+            pd.DataFrame({"A": [5, 6], "B": [7.0, 8.0]}),
+        ]
+        save_dataframes(dataframes=dfs, save_dir=tmp_path)
+
+        saved_paths = sorted(tmp_path.glob("*.parquet"))
+        assert len(saved_paths) == 2
+
+        loaded_dfs = load_dataframes(saved_paths)
+        assert len(loaded_dfs) == 2
+
+    def test_save_dataframes_length_mismatch_raises(self, tmp_path: Path):
+        """save_dataframes should validate dataframe/file path cardinality."""
+        from finbot.utils.pandas_utils.save_dataframes import save_dataframes
+
+        df = pd.DataFrame({"A": [1], "B": [2.0]})
+        with pytest.raises(ValueError, match="must match the number of file paths"):
+            save_dataframes(
+                dataframes=[df],
+                file_paths=[tmp_path / "a.parquet", tmp_path / "b.parquet"],
+            )
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

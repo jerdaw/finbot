@@ -37,7 +37,7 @@ def get_bls_data(
     end_date: datetime.date | None = None,
     check_update: bool = False,
     force_update: bool = False,
-):
+) -> pd.DataFrame:
     """
     Fetches time series data from the BLS API for given series IDs.
 
@@ -73,6 +73,8 @@ def get_bls_data(
 
     # Filter data
     filtered_df = filter_by_date(df=combined_df, start_date=start_date, end_date=end_date)
+    if isinstance(filtered_df, pd.Series):
+        filtered_df = filtered_df.to_frame()
 
     # set data column to the same order as series_ids and other final things
     sorted_df = filtered_df[series_ids].drop_duplicates().dropna(axis=0, how="all").sort_index()

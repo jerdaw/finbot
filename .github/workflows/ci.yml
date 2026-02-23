@@ -5,6 +5,15 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+    paths-ignore:
+      - "docs_site/**"
+      - "site/**"
+      - "docs/**/*.md"
+      - "**/*.md"
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   lint-and-format:
@@ -49,7 +58,6 @@ jobs:
 
       - name: Type check with mypy
         run: uv run mypy finbot/
-        continue-on-error: true
 
   docstring-coverage:
     name: Docstring Coverage

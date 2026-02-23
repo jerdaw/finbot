@@ -1,30 +1,21 @@
-"""Retry strategy configuration for HTTP requests.
-
-This module provides default retry strategy kwargs for use with httpx
-or other HTTP clients. The retry strategy handles transient failures
-like rate limiting, server errors, and timeouts.
-"""
+"""HTTPX retry compatibility defaults for API manager resource groups."""
 
 from __future__ import annotations
 
-# Default retry strategy kwargs for httpx or similar HTTP clients
-# These are common retry-related configurations
-DEFAULT_HTTPX_RETRY_KWARGS: dict[str, int | float | tuple[int, ...]] = {
-    "max_retries": 3,
-    "backoff_factor": 0.3,
-    "status_forcelist": (429, 500, 502, 503, 504),
-}
+from typing import Any
 
-# Alternative: more aggressive retry strategy for unreliable APIs
-AGGRESSIVE_RETRY_KWARGS: dict[str, int | float | tuple[int, ...]] = {
-    "max_retries": 5,
-    "backoff_factor": 0.5,
-    "status_forcelist": (408, 429, 500, 502, 503, 504),
-}
+_DEFAULT_STATUS_FORCELIST = (429, 500, 502, 503, 504)
 
-# Conservative: minimal retries for well-behaved APIs
-CONSERVATIVE_RETRY_KWARGS: dict[str, int | float | tuple[int, ...]] = {
-    "max_retries": 2,
-    "backoff_factor": 0.1,
-    "status_forcelist": (429, 503),
-}
+
+def _compat_retry_kwargs(max_retries: int, backoff_factor: float) -> dict[str, Any]:
+    """Return retry kwargs using canonical HTTPX compatibility key naming."""
+    return {
+        "attempts": max_retries,
+        "backoff": backoff_factor,
+        "retry_on": _DEFAULT_STATUS_FORCELIST,
+    }
+
+
+CONSERVATIVE_RETRY_KWARGS: dict[str, Any] = _compat_retry_kwargs(max_retries=2, backoff_factor=0.2)
+DEFAULT_HTTPX_RETRY_KWARGS: dict[str, Any] = _compat_retry_kwargs(max_retries=3, backoff_factor=0.3)
+AGGRESSIVE_RETRY_KWARGS: dict[str, Any] = _compat_retry_kwargs(max_retries=5, backoff_factor=0.5)

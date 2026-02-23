@@ -12,8 +12,15 @@ Typical usage:
     - Merge time series with guaranteed no missing data
 """
 
+import datetime as dt
 
-def get_common_date_range(*series, raise_error: bool = True):
+import pandas as pd
+
+
+def get_common_date_range(
+    *series: pd.Series,
+    raise_error: bool = True,
+) -> tuple[pd.Timestamp | dt.date | None, pd.Timestamp | dt.date | None]:
     """
     Find the actual common date range among a list of pandas Series.
     This is the range where all series share the exact same dates.
