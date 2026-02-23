@@ -49,4 +49,3 @@ __pycache__
 # Misc
 *.log
 *.log.jsonl
-uv.lock
