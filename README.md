@@ -7,8 +7,20 @@
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/jerdaw/finbot/badge)](https://securityscorecards.dev/viewer/?uri=github.com/jerdaw/finbot)
 [![codecov](https://codecov.io/gh/jerdaw/finbot/branch/main/graph/badge.svg)](https://codecov.io/gh/jerdaw/finbot)
 [![Docstring Coverage](https://img.shields.io/badge/docstring%20coverage-58.2%25-brightgreen.svg)](https://github.com/jerdaw/finbot)
-[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![uv](https://img.shields.io/badge/uv-0.9+-blue.svg)](https://docs.astral.sh/uv/)
+
+## IMPORTANT DISCLAIMER
+
+**Finbot is for educational and research purposes only. This software does not constitute financial, investment, or medical advice. Past performance is not indicative of future results. You use this software entirely at your own risk.**
+
+See [DISCLAIMER.md](DISCLAIMER.md) for complete legal terms, limitations, and risk disclosures. By using this software, you acknowledge that:
+- This is NOT financial or investment advice
+- Results should NOT replace professional consultation
+- You accept all risks and limitations
+- The authors assume NO liability for losses
+
+**Always consult qualified professionals before making financial or medical decisions.**
 
 ## Overview
 
@@ -74,33 +86,32 @@ make run-update
 - `make clean` - Remove cache files and build artifacts
 - `make all` - Run full CI pipeline (check + test)
 
-## Current Implementation Status (2026-02-19)
+## Current Implementation Status (2026-02-20)
 
-Engine-agnostic backtesting system with live-readiness execution simulator complete.
+Engine-agnostic backtesting system with live-readiness execution simulator complete. Priority 7 in progress.
 
-- **Epics E0-E5 Complete** (674 tests in latest local suite run; 672 passing, 2 skipped)
+- **Epics E0-E6 Complete** (1063+ tests passing)
   - ✅ E0: Typed contracts for engine portability
   - ✅ E1: Backtrader adapter implementation
   - ✅ E2: A/B parity testing with CI gate
   - ✅ E3: Cost models, corporate actions, walk-forward analysis, regime detection
   - ✅ E4: Experiment tracking with reproducible snapshots
   - ✅ E5: Execution simulator with latency, risk controls, state checkpoints
-- **E6 Status**: Pilot adapter hardening + native single-strategy execution path complete; final adoption decision deferred pending broader comparative evidence
-- **CI Status**: Tiered CI is active for free-tier budget control (`ci.yml` for PR/main core gates, `ci-heavy.yml` for scheduled/manual heavy checks)
-- **Priority 6 Follow-up**: GS-01/GS-02/GS-03 evidence published; ADR-011 refreshed (decision remains Defer)
-- **Next Focus**: Priority 5 governance/security quick wins and CI/process polish
+  - ✅ **E6**: NautilusTrader pilot hardening + decision gate closure (**Defer** outcome, ADR-011)
+- **CI Status**: Tiered CI active (`ci.yml` for PR/main core gates, `ci-heavy.yml` for scheduled/manual heavy checks)
+- **Priority 7**: Walk-forward viz, regime-adaptive strategy, Pareto optimizer, clinical scenarios, hypothesis testing in progress
 
 Key deliverables:
 - Engine-agnostic contracts (`finbot/core/contracts/`)
 - Execution simulator with risk management (`finbot/services/execution/`)
-- Backtrader adapter (`finbot/adapters/backtrader/`)
+- Backtrader adapter (`finbot/services/backtesting/adapters/`)
 - Walk-forward and regime detection tools
 - State checkpoint/recovery system
 
 Planning and handoff docs:
-- `docs/planning/post-e5-handoff-2026-02-16.md`
 - `docs/planning/backtesting-live-readiness-backlog.md`
-- `docs/planning/roadmap.md` (Priority 6)
+- `docs/planning/roadmap.md`
+- `docs/adr/ADR-011-nautilus-decision.md`
 
 ## Prerequisites
 
@@ -132,6 +143,12 @@ Data is persisted in a Docker volume (`finbot-data`). API keys are loaded from `
 ## Usage
 
 ### Backtesting
+
+Finbot supports two backtesting engines through a unified adapter interface:
+- **Backtrader** - Mature, bar-based backtesting (default)
+- **NautilusTrader** - Event-driven, live-trading capable
+
+See **[Choosing a Backtest Engine](https://jerdaw.github.io/finbot/guides/choosing-backtest-engine/)** for a comprehensive comparison and decision guide.
 
 ```python
 from finbot.services.backtesting.backtest_runner import BacktestRunner
@@ -409,11 +426,11 @@ Research-grade features for strategy development:
 Built for reliability and scale:
 
 - **Queue-Based Logging**: Non-blocking async logging with dual output (console + JSON files)
+- **Audit Trails**: Structured logging for all operations with queryable audit logs
 - **Parquet Storage**: Fast, safe serialization (replaced pickle throughout for security)
 - **API Rate Limiting**: Built-in retry with exponential backoff for data collection
 - **Data Quality**: Automated freshness monitoring with staleness thresholds
 - **Docker Support**: Run without installing Python or dependencies
-
 ## Example Notebooks
 
 Explore comprehensive analyses demonstrating all major features:
@@ -487,6 +504,16 @@ Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for:
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details.
+
+### Third-Party Licenses
+
+Finbot depends on various open-source libraries. See [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) for a comprehensive audit of all dependencies and their licenses.
+
+**Key points:**
+- Most dependencies use permissive licenses (MIT, BSD, Apache 2.0)
+- A few dependencies use GPL/LGPL licenses (backtrader, ecos, frozendict, nautilus_trader, portion)
+- All licenses are compatible with the MIT license when used as library dependencies
+- No proprietary dependencies
 
 ## Citation
 

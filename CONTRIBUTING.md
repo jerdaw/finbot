@@ -40,7 +40,6 @@ make test      # Run test suite
 - **Docstrings**: Google style
 - **Type hints**: Required
 - **Testing**: Required for new features
-- **Strict mypy scopes**: New code in strict-enabled modules must use fully typed function signatures (see `docs/guides/mypy-strict-module-tracker.md`)
 
 ## Commit Messages
 
