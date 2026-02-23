@@ -202,7 +202,7 @@ git push --force-with-lease origin main
 ## Note on Commit Authorship Policy
 
 Per CLAUDE.md commit policy: commits must list only **human authors**. Do not add:
-- `Co-Authored-By: <non-human entity> ...`
+- `Co-Authored-By: Claude ...`
 - `AI-Assisted: ...`
 
 All conventional commit rewrites should be attributed to you as the human author.

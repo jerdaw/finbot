@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
+from typing import cast
+
 import pandas as pd
 
 from finbot.core.contracts import BacktestRunResult
@@ -95,10 +96,11 @@ class SimpleRegimeDetector:
         period_returns: list[float] = []
         period_vols: list[float] = []
 
-        for date in pd.DatetimeIndex(regime_series.index):
-            regime = regime_series.loc[date]
+        for date, regime in regime_series.items():
             if regime is None:
                 continue
+
+            ts = cast(pd.Timestamp, date)
 
             if regime != current_regime:
                 # Save previous period if exists
@@ -107,7 +109,7 @@ class SimpleRegimeDetector:
                         RegimePeriod(
                             regime=current_regime,
                             start=period_start,
-                            end=date - pd.Timedelta(days=1),  # Previous day
+                            end=ts - pd.Timedelta(days=1),  # Previous day
                             market_return=sum(period_returns) / len(period_returns) if period_returns else 0.0,
                             market_volatility=sum(period_vols) / len(period_vols) if period_vols else 0.0,
                         )
@@ -115,13 +117,13 @@ class SimpleRegimeDetector:
 
                 # Start new period
                 current_regime = regime
-                period_start = date
-                period_returns = [float(rolling_returns.loc[date])]
-                period_vols = [float(rolling_vol.loc[date])]
+                period_start = ts
+                period_returns = [rolling_returns.loc[ts]]
+                period_vols = [rolling_vol.loc[ts]]
             else:
                 # Continue current period
-                period_returns.append(float(rolling_returns.loc[date]))
-                period_vols.append(float(rolling_vol.loc[date]))
+                period_returns.append(rolling_returns.loc[ts])
+                period_vols.append(rolling_vol.loc[ts])
 
         # Don't forget the last period
         if current_regime is not None and period_start is not None:
@@ -141,40 +143,45 @@ class SimpleRegimeDetector:
 def segment_by_regime(
     result: BacktestRunResult,
     market_data: pd.DataFrame,
-    equity_curve: pd.Series | None = None,
     detector: SimpleRegimeDetector | None = None,
     config: RegimeConfig | None = None,
+    *,
+    equity_curve: pd.Series | None = None,
 ) -> dict[MarketRegime, RegimeMetrics]:
     """Segment backtest results by market regime.
 
-    Note: This is a simplified implementation that assumes the backtest
-    result has artifacts containing trade-level or daily data. A full
-    implementation would need access to the strategy's equity curve
-    or trade timestamps to properly segment performance.
+    When *equity_curve* is provided (a ``pd.Series`` with a
+    ``DatetimeIndex`` mapping dates to portfolio value), per-regime
+    performance metrics (CAGR, volatility, Sharpe) are computed by
+    slicing the curve to each regime period.
 
-    For now, we detect regimes from market data and provide regime
-    statistics. Users can manually correlate with backtest periods.
+    Without *equity_curve* the function returns metadata-only metrics
+    (period counts and day totals), preserving backward compatibility.
 
     Args:
-        result: Backtest result to segment
-        market_data: Market data used for regime detection
-        equity_curve: Optional portfolio value series indexed by datetime
-        detector: Regime detector implementation (uses SimpleRegimeDetector if None)
-        config: Regime configuration (uses defaults if None)
+        result: Backtest result to segment.
+        market_data: Market data used for regime detection (must contain
+            a ``Close`` or ``Adj Close`` column with a ``DatetimeIndex``).
+        detector: Regime detector implementation.  Defaults to
+            ``SimpleRegimeDetector``.
+        config: Regime detection configuration.  Uses defaults if None.
+        equity_curve: Optional portfolio value time series.  When supplied,
+            per-regime annualised return, volatility, and Sharpe ratio are
+            computed and included in ``RegimeMetrics.metrics``.
 
     Returns:
-        Dictionary mapping each regime to its metrics
+        Dictionary mapping each ``MarketRegime`` to its ``RegimeMetrics``.
 
     Raises:
-        ValueError: If inputs are invalid
+        ValueError: If inputs are invalid.
     """
     if detector is None:
         detector = SimpleRegimeDetector()
 
-    # Detect regimes
+    # Detect regimes from market data
     periods = detector.detect(market_data, config)
 
-    # Count periods and days per regime
+    # Accumulate period counts and days per regime
     regime_stats: dict[MarketRegime, dict] = {
         MarketRegime.BULL: {"count": 0, "days": 0},
         MarketRegime.BEAR: {"count": 0, "days": 0},
@@ -184,50 +191,54 @@ def segment_by_regime(
 
     for period in periods:
         regime_stats[period.regime]["count"] += 1
-        days = (period.end - period.start).days + 1
+        days = int((period.end - period.start).days) + 1
         regime_stats[period.regime]["days"] += days
 
-    returns: pd.Series | None = None
-    regime_by_date: pd.Series | None = None
-    if equity_curve is not None and not equity_curve.empty:
-        returns = equity_curve.pct_change().dropna()
-        if not returns.empty:
-            regime_by_date = pd.Series(index=market_data.index, dtype=object)
-            for period in periods:
-                mask = (regime_by_date.index >= period.start) & (regime_by_date.index <= period.end)
-                regime_by_date.loc[mask] = period.regime
+    # Accumulate equity-curve slices per regime (when curve is available)
+    regime_returns: dict[MarketRegime, list[float]] = {r: [] for r in MarketRegime}
 
-    # Create RegimeMetrics for each regime.
+    if equity_curve is not None and not equity_curve.empty:
+        curve = equity_curve.sort_index()
+        for period in periods:
+            # Slice to this period's date range (inclusive)
+            mask = (curve.index >= period.start) & (curve.index <= period.end)
+            slice_ = curve[mask]
+            if len(slice_) < 2:
+                continue
+            daily_rets = slice_.pct_change().dropna().tolist()
+            regime_returns[period.regime].extend(daily_rets)
+
+    # Build RegimeMetrics for each regime
     regime_metrics: dict[MarketRegime, RegimeMetrics] = {}
 
     for regime in MarketRegime:
         stats = regime_stats[regime]
-        metrics: dict[str, float | int] = {}
-        if returns is not None and regime_by_date is not None:
-            aligned_regimes = regime_by_date.reindex(returns.index)
-            regime_returns = returns[aligned_regimes == regime].astype(float)
-            if not regime_returns.empty:
-                values = regime_returns.to_numpy(dtype=float)
-                days = len(values)
-                total_return = float(np.prod(values + 1.0) - 1.0)
-                std_daily = float(np.std(values, ddof=1)) if days > 1 else 0.0
-                mean_daily = float(np.mean(values))
-                volatility = float(std_daily * (252**0.5))
-                sharpe = float((mean_daily / std_daily) * (252**0.5)) if std_daily > 0 else 0.0
-                cagr = float((1 + total_return) ** (252 / days) - 1) if total_return > -1 else -1.0
-                metrics = {
-                    "cagr": cagr,
-                    "volatility": volatility,
-                    "sharpe": sharpe,
-                    "total_return": total_return,
-                    "days": days,
-                }
+        computed: dict[str, float] = {}
+
+        rets = regime_returns[regime]
+        if rets:
+            import math
+
+            mean_daily = sum(rets) / len(rets)
+            ann_return = mean_daily * 252
+            variance = sum((r - mean_daily) ** 2 for r in rets) / max(len(rets) - 1, 1)
+            ann_vol = math.sqrt(variance) * math.sqrt(252)
+            sharpe = ann_return / ann_vol if ann_vol > 0 else 0.0
+            _prod = cast(float, pd.Series(rets).add(1).prod())
+            total_return = (_prod - 1) if rets else 0.0
+            computed = {
+                "cagr": ann_return,
+                "volatility": ann_vol,
+                "sharpe": sharpe,
+                "total_return": total_return,
+                "days": float(stats["days"]),
+            }
 
         regime_metrics[regime] = RegimeMetrics(
             regime=regime,
             count_periods=stats["count"],
             total_days=stats["days"],
-            metrics=metrics,
+            metrics=computed,
         )
 
     return regime_metrics

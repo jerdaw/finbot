@@ -967,7 +967,7 @@ Remaining open items after Batch 2:
 **Libraries:** All required (`scipy`, `statsmodels`, `plotly`, `numpy`, `pandas`,
 `backtrader`) are already in `pyproject.toml`. No new dependencies.
 
-**Human time:** Solo developer + local automation tooling. Estimated 14–19 hours of
+**Human time:** Solo developer + Claude Code assistance. Estimated 14–19 hours of
 active development work.
 
 **Risk-free items:** Phases 1, 2, and 5 are purely additive (new files only).

@@ -1,17 +1,17 @@
 # Priority 5 & 6 Completion Status
 
-**Date:** 2026-02-20
+**Date:** 2026-02-17
 **Overall Status:** Priorities 5 & 6 substantially complete
 
 ## Summary
 
-Finbot has achieved an exceptional state of maturity with 43/45 Priority 5 items complete, one active partial (Item 12), and one deliberate defer (Item 42), alongside 100% completion of Priority 6. The project now has comprehensive testing, documentation, governance artifacts, and a production-ready backtesting engine with live-trading readiness infrastructure.
+Finbot has achieved an exceptional state of maturity with 93.3% of Priority 5 items and 100% of Priority 6 items complete. The project now has comprehensive testing, documentation, governance artifacts, and a production-ready backtesting engine with live-trading readiness infrastructure.
 
 ## Priority 5: Admissions-Focused Improvements (OMSAS/CanMEDS)
 
-**Status:** 43/45 items complete (95.6%), with 1 partial item active and 1 deferred item
+**Status:** 42/45 items complete (93.3%)
 
-### Completed (43 items) ✅
+### Completed (42 items) ✅
 
 **5.1 Governance & Professionalism (7/7)**
 1. ✅ LICENSE file
@@ -57,7 +57,7 @@ Finbot has achieved an exceptional state of maturity with 43/45 Priority 5 items
 33. ✅ Performance regression testing
 34. ✅ Fixed mypy exclusions
 
-**5.7 Professional Polish & Deployment (10/11 complete)**
+**5.7 Professional Polish & Deployment (10/11)**
 35. ✅ CODEOWNERS
 36. ✅ Conventional commit linting
 37. ✅ Release automation
@@ -69,19 +69,21 @@ Finbot has achieved an exceptional state of maturity with 43/45 Priority 5 items
 44. ✅ Data freshness monitoring docs
 45. ✅ Cleaned up stale directories
 
-### Open / Partial Items (2 items)
+### Not Started (3 items) ⬜
 
 12. **Stricter mypy settings** (L: 3-5 weeks)
-    - Status: 🔄 Partially complete (2026-02-20)
-    - Progress: strict module-level enforcement enabled for `finbot.core.*`, `finbot.services.execution.*`, `finbot.services.backtesting.*`, `finbot.libs.api_manager.*`, `finbot.libs.logger.*`, `finbot.services.data_quality.*`, `finbot.services.health_economics.*`, `finbot.services.optimization.*`, `finbot.utils.request_utils.*`, `finbot.utils.pandas_utils.*`, `finbot.utils.datetime_utils.*`, `finbot.utils.file_utils.*`, `finbot.utils.multithreading_utils.*`, `finbot.utils.finance_utils.*`, `finbot.utils.class_utils.*`, `finbot.utils.dict_utils.*`, `finbot.utils.function_utils.*`, `finbot.utils.json_utils.*`, `finbot.utils.validation_utils.*`, `finbot.utils.vectorization_utils.*`, `finbot.utils.plotting_utils.*`, and `finbot.utils.data_science_utils.data_analysis.*`
-    - Remaining work: expand strictness into broader libs/utils scopes
+    - Status: 🟡 Phase 2 already complete (`check_untyped_defs = true` enabled)
+    - Remaining work: Phases 1, 3-7 (module-by-module annotation)
     - Blocker: Large scope (3-5 weeks of work)
-    - Implementation plans: `docs/planning/archive/IMPLEMENTATION_PLAN_8.0_PRIORITY5_CLOSEOUT_AND_TYPE_HARDENING.md`, `docs/planning/mypy-phase1-audit-report.md`
+    - Implementation plan: `docs/planning/stricter-mypy-implementation-plan.md`
+
+22. **Simulation validation against known results** (M: 1-2 days)
+    - Status: ⬜ Not started
+    - Blocker: Requires historical data files from FRED/external sources
 
 42. **Project logo/branding** (S: 1-2 hours)
-    - Status: ⏸ Deferred (2026-02-20)
-    - Blocker: Requires human design approval and branding direction
-    - Re-entry: Resume when maintainer-approved logo concept is available
+    - Status: ⬜ Not started
+    - Blocker: Requires human design approval
 
 ## Priority 6: Backtesting-to-Live Readiness (Adapter-First)
 
@@ -121,7 +123,7 @@ Finbot has achieved an exceptional state of maturity with 43/45 Priority 5 items
 
 ## Documentation Coverage
 
-**MkDocs Site:** Live on GitHub Pages (https://jerdaw.github.io/finbot/, verified reachable on 2026-02-20)
+**MkDocs Site:** Deployed to GitHub Pages (https://jerdaw.github.io/finbot/)
 **Docstring Coverage:** 58.2% (enforced in CI with interrogate)
 **API Documentation:** 12 comprehensive reference pages with examples
 **User Guides:** 8 tutorials and guides
@@ -161,7 +163,7 @@ Finbot has achieved an exceptional state of maturity with 43/45 Priority 5 items
 - ✅ PEP 561 (py.typed marker for downstream type checking)
 - ✅ Conventional Commits (enforced with commitlint)
 - ✅ Release automation (GitHub Actions)
-- ✅ TestPyPI publishing workflow (manual trigger + test-v* tags) validated by successful run and metadata publication
+- ✅ TestPyPI publishing (manual trigger + test-v* tags)
 
 ## CanMEDS Alignment
 
@@ -204,9 +206,9 @@ Finbot has achieved an exceptional state of maturity with 43/45 Priority 5 items
 ## Next Steps
 
 ### Short-term (Optional)
-1. **Item 12:** Continue strict mypy rollout into additional modules
-2. **Item 42:** Add logo/branding (requires design approval)
-3. **Type-hardening governance:** keep strict-module tracker and roadmap evidence synchronized as rollout continues
+1. **Item 12:** Complete stricter mypy (3-5 weeks, Phases 1, 3-7)
+2. **Item 22:** Add simulation validation (1-2 days, requires historical data)
+3. **Item 42:** Add logo/branding (1-2 hours, requires design approval)
 
 ### Long-term Considerations
 - Consider Priority 7 roadmap items (if any)
@@ -217,7 +219,7 @@ Finbot has achieved an exceptional state of maturity with 43/45 Priority 5 items
 
 ## Conclusion
 
-Finbot has achieved **95.6% completion of Priority 5** and **100% completion of Priority 6**, representing an exceptional state of project maturity. The project demonstrates:
+Finbot has achieved **93.3% completion of Priority 5** and **100% completion of Priority 6**, representing an exceptional state of project maturity. The project demonstrates:
 
 - **Technical Excellence:** Comprehensive testing, type safety, security scanning
 - **Professional Governance:** Complete governance artifacts, compliance standards
@@ -225,12 +227,12 @@ Finbot has achieved **95.6% completion of Priority 5** and **100% completion of 
 - **Medical Relevance:** Health economics tools with clinical applications
 - **Live-Trading Readiness:** Production-ready backtesting engine with contract layer
 
-The remaining Priority 5 tail items (Item 12 partial and Item 42 deferred) are now primarily strategic type-hardening continuation plus optional branding direction. The project remains ready for medical school application showcasing and continued incremental hardening.
+The remaining Priority 5 items (Item 12, 22, 42) are either large scope or blocked on resources. The project is ready for medical school application showcasing or further development as opportunities arise.
 
 ---
 
 **Repository:** finbot
 **Branch:** main
 **Status:** Production-ready
-**Date:** 2026-02-20
+**Date:** 2026-02-17
 **Maintainer:** @jerdaw

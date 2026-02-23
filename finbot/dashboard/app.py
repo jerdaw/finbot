@@ -4,15 +4,28 @@ from __future__ import annotations
 
 import streamlit as st
 
+from finbot.dashboard.disclaimer import (
+    show_full_disclaimer_section,
+    show_sidebar_accessibility,
+    show_sidebar_disclaimer,
+)
+
 st.set_page_config(
     page_title="Finbot Dashboard",
     page_icon="📊",
     layout="wide",
 )
 
+# Display disclaimer and accessibility info in sidebar (shown on all pages)
+show_sidebar_disclaimer()
+show_sidebar_accessibility()
+
 st.title("Finbot Dashboard")
 st.markdown("Financial simulation, backtesting, and optimization platform. Use the sidebar to navigate between pages.")
 st.warning("Research/education use only. This dashboard does not provide financial or medical advice.")
+
+# Add full disclaimer section on home page
+show_full_disclaimer_section()
 
 # Quick links
 st.markdown("### Pages")
