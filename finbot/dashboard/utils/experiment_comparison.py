@@ -6,6 +6,7 @@ from typing import Any
 
 import pandas as pd
 import plotly.graph_objects as go
+from pandas.io.formats.style import Styler
 
 from finbot.core.contracts import BacktestRunResult
 
@@ -100,7 +101,7 @@ def format_metric_value(value: Any) -> str:
 def highlight_best_worst(
     df: pd.DataFrame,
     higher_is_better: dict[str, bool] | None = None,
-) -> pd.io.formats.style.Styler:
+) -> Styler:
     """Apply styling to highlight best and worst values.
 
     Args:

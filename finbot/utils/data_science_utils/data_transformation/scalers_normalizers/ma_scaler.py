@@ -108,7 +108,7 @@ class MAScaler(BaseScaler):
             raise ValueError("window_size must be a positive integer.")
         self.window_size = window_size
 
-    def fit(self, *args, **kwargs) -> MAScaler:
+    def fit(self, *args: object, **kwargs: object) -> MAScaler:
         """
         This operation has no effect for this scaler but is present for API consistency.
         """
@@ -158,7 +158,7 @@ class MAScaler(BaseScaler):
         """
         raise NotImplementedError("Inverse transformation is not implemented for moving average scaling.")
 
-    def reset(self):
+    def reset(self) -> None:
         """
         Reset the normalizer to its initial state.
         """

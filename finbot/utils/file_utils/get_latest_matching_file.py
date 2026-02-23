@@ -106,7 +106,14 @@ from pathlib import Path
 from finbot.utils.file_utils.get_matching_files import get_matching_files
 
 
-def get_latest_matching_file(save_dir: Path | str, **kwargs) -> Path | None:
+def get_latest_matching_file(
+    save_dir: Path | str,
+    starts_with: str | None = None,
+    ends_with: str | None = None,
+    contains: str | None = None,
+    regex_pattern: str | None = None,
+    time_sort: str = "mtime",
+) -> Path | None:
     """
     Gets the most recent file in the save_dir that matches the given criteria.
 
@@ -118,7 +125,14 @@ def get_latest_matching_file(save_dir: Path | str, **kwargs) -> Path | None:
     - Path or None: Path to the most recent file matching the criteria or None if no file is found.
     """
     save_dir = Path(save_dir)
-    matching_files = get_matching_files(save_dir, **kwargs)
+    matching_files = get_matching_files(
+        save_dir=save_dir,
+        starts_with=starts_with,
+        ends_with=ends_with,
+        contains=contains,
+        regex_pattern=regex_pattern,
+        time_sort=time_sort,
+    )
     if matching_files:
         # The last file in the sorted list is the most recent
         return matching_files[-1]

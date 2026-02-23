@@ -142,7 +142,7 @@ class RetryConfig:
         retry_count: int = 3,
         backoff_factor: float = 0.3,
         status_forcelist: tuple[int, ...] = (429, 500, 502, 503, 504),
-    ):
+    ) -> None:
         """
         Initializes the RetryConfig with default or custom settings.
 
@@ -155,7 +155,7 @@ class RetryConfig:
         self.backoff_factor = backoff_factor
         self.status_forcelist = status_forcelist
 
-    def apply_to_session(self, session: requests.Session):
+    def apply_to_session(self, session: requests.Session) -> None:
         """
         Applies the retry configuration to a given requests session.
 

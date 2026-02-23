@@ -35,6 +35,8 @@ from finbot.utils.finance_utils.get_us_gdp_recessions_bools import get_us_gdp_re
 from finbot.utils.pandas_utils.get_timeseries_frequency import get_timeseries_frequency
 from finbot.utils.pandas_utils.merge_data_on_closest_date import merge_data_on_closest_date
 
+CorrMethod = Literal["pearson", "spearman", "kendall"]
+
 
 def _load_popular_databases(max_pages: int | None) -> DataFrame:
     """
@@ -49,9 +51,8 @@ def _load_popular_databases(max_pages: int | None) -> DataFrame:
     """
     try:
         popular_symbols = get_popular_fred_symbols(max_pages_to_scrape=max_pages)
-        popular_dbs = (
-            get_fred_data(symbols=popular_symbols, check_update=False).dropna(axis=1, how="all").sort_index(axis=1)  # type: ignore[call-overload]
-        )
+        fred_data = get_fred_data(symbols=popular_symbols, check_update=False)
+        popular_dbs = pd.DataFrame(fred_data).dropna(axis=1, how="all").sort_index(axis=1)
         return popular_dbs
     except Exception as e:
         logger.error(f"Failed to load popular databases: {e}")
@@ -73,7 +74,9 @@ def _get_recession_and_cycle_data() -> tuple[list[tuple[Any, Any]], list[tuple[A
     return recessionary_periods, non_recessionary_periods
 
 
-def _compute_correlation(trunc_gspc: DataFrame, trunc_serie: Series, corr_methods: list[str]) -> dict[str, float]:
+def _compute_correlation(
+    trunc_gspc: DataFrame, trunc_serie: Series, corr_methods: list[CorrMethod]
+) -> dict[str, float]:
     """
     Compute correlations between two time series using specified methods.
     Optimized using vectorized operations.
@@ -89,15 +92,12 @@ def _compute_correlation(trunc_gspc: DataFrame, trunc_serie: Series, corr_method
     correlations: dict[str, float] = {}
     for method in corr_methods:
         try:
-            correlation = get_correlation(
-                [trunc_gspc, trunc_serie],
-                method=cast(Literal["pearson", "kendall", "spearman"], method),
-            ).iloc[0, 1]
-            corr_val = float(np.float64(correlation))  # type: ignore[arg-type]
-            correlations[method] = corr_val if not np.isnan(corr_val) else float("nan")
+            correlation_obj = get_correlation([trunc_gspc, trunc_serie], method=method).iloc[0, 1]
+            correlation = float(cast(Any, correlation_obj))
+            correlations[method] = correlation if not np.isnan(correlation) else float(np.nan)
         except Exception as e:
             logger.warning(f"Error in computing correlation using {method}: {e}")
-            correlations[method] = float("nan")
+            correlations[method] = float(np.nan)
     correlations["avg"] = float(np.nanmean(list(correlations.values())))
     return correlations
 
@@ -106,7 +106,7 @@ def _compute_period_correlation(
     serie: Series,
     gspc_close: Series,
     periods: list[tuple[Any, Any]],
-    corr_methods: list[str],
+    corr_methods: list[CorrMethod],
 ) -> dict[str, float]:
     """
     Compute correlations for specified periods using various methods.
@@ -120,7 +120,7 @@ def _compute_period_correlation(
     Returns:
         dict[str, float]: A dictionary containing average correlation values for each method across specified periods.
     """
-    period_corrs: dict[str, list[float]] = {method: [] for method in corr_methods}
+    period_corrs: dict[CorrMethod, list[float]] = {method: [] for method in corr_methods}
     for start_dt, end_dt in periods:
         trunc_serie = serie.truncate(before=start_dt, after=end_dt)
         trunc_gspc = merge_data_on_closest_date(
@@ -128,11 +128,8 @@ def _compute_period_correlation(
             value_df=pd.DataFrame(gspc_close.truncate(before=start_dt, after=end_dt)),
         )
         for method in corr_methods:
-            corr = get_correlation(
-                [trunc_gspc, trunc_serie],
-                method=cast(Literal["pearson", "kendall", "spearman"], method),
-            ).iloc[0, 1]
-            if isinstance(corr, float | int) and not np.isnan(corr):
+            corr = float(cast(Any, get_correlation([trunc_gspc, trunc_serie], method=method).iloc[0, 1]))
+            if not np.isnan(corr):
                 period_corrs[method].append(corr)
 
     averaged_corrs: dict[str, float] = {method: float(np.nanmean(period_corrs[method])) for method in corr_methods}
@@ -159,7 +156,7 @@ def _aggregate_average_correlation(
     all_avg_corrs = [
         abs(corr["avg"]) for corr in [full_data_corrs, rec_corrs, non_rec_corrs] if not np.isnan(corr["avg"])
     ]
-    overall_avg: float = float(np.nanmean(all_avg_corrs)) if all_avg_corrs else float(np.nan)
+    overall_avg = float(np.nanmean(all_avg_corrs)) if all_avg_corrs else float(np.nan)
     return overall_avg
 
 
@@ -168,7 +165,7 @@ def _calculate_correlations(
     popular_dbs: DataFrame,
     recessionary_periods: list[tuple[Any, Any]],
     non_recessionary_periods: list[tuple[Any, Any]],
-    corr_methods: list[str],
+    corr_methods: list[CorrMethod],
     min_days: int,
 ) -> dict[str, dict[str, float | dict[str, float]]]:
     """
@@ -185,7 +182,7 @@ def _calculate_correlations(
     Returns:
         dict[str, dict[str, Union[float, dict[str, float]]]]: A dictionary of correlations.
     """
-    correlations = {}
+    correlations: dict[str, dict[str, float | dict[str, float]]] = {}
     for db_name in popular_dbs.columns:
         serie = popular_dbs[db_name].ffill().dropna().sort_index()
         freq = get_timeseries_frequency(time_series=serie)
@@ -219,7 +216,7 @@ def _calculate_correlations(
             "abs_avg": overall_avg,
         }
 
-    return correlations  # type: ignore[return-value]
+    return correlations
 
 
 def correlate_fred_to_price(
@@ -254,7 +251,7 @@ def correlate_fred_to_price(
     recessionary_periods, non_recessionary_periods = _get_recession_and_cycle_data()
 
     # Defining correlation methods
-    corr_methods = ["pearson", "spearman", "kendall"]
+    corr_methods: list[CorrMethod] = ["pearson", "spearman", "kendall"]
 
     # Calculating correlations
     correlations = _calculate_correlations(
@@ -267,7 +264,13 @@ def correlate_fred_to_price(
     )
 
     # Sorting correlations
-    sorted_correlations = dict(sorted(correlations.items(), key=lambda x: cast(float, x[1]["abs_avg"]), reverse=True))
+    sorted_correlations = dict(
+        sorted(
+            correlations.items(),
+            key=lambda item: float(cast(float, item[1]["abs_avg"])),
+            reverse=True,
+        )
+    )
 
     return sorted_correlations
 

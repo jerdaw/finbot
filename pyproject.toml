@@ -79,6 +79,7 @@ dev = [
     "mypy>=1.7.1,<2",
     "ruff>=0.15.0,<0.16",
     "pytest>=9.0.2,<10",
+    "hypothesis>=6.148.2,<7",
     "bandit>=1.7.6,<2",
     "ssort>=0.16.0,<0.17",
     "pyupgrade>=3.15.0,<4",
@@ -97,13 +98,6 @@ dev = [
     "interrogate>=1.7.0",
     "pip-licenses>=5.5.1,<6",
     "git-changelog>=2.5.2,<3",
-    "hypothesis>=6.100.0,<7",
-]
-web = [
-    "fastapi>=0.115.0,<1",
-    "uvicorn[standard]>=0.34.0,<1",
-    "pydantic-settings>=2.7.0,<3",
-    "sse-starlette>=2.0.0,<3",
 ]
 
 [tool.ruff]
@@ -112,13 +106,12 @@ exclude = [
     ".bzr", ".direnv", ".eggs", ".git", ".git-rewrite", ".hg",
     ".mypy_cache", ".nox", ".pants.d", ".pytype", ".ruff_cache",
     ".svn", ".tox", ".venv", "__pypackages__", "_build", "buck-out",
-    "build", "dist", "node_modules", "venv", ".venv", "*.egg-info",
+    "build", "dist", "node_modules", "notebooks", "venv", ".venv", "*.egg-info",
     "__pycache__", "web/frontend",
 ]
 line-length = 120
 indent-width = 4
 target-version = "py311"
-extend-include = ["*.ipynb"]
 
 [tool.ruff.lint]
 # Rule categories:
@@ -233,11 +226,72 @@ ignore_missing_imports = true
 [[tool.mypy.overrides]]
 module = "nautilus_trader.*"
 ignore_missing_imports = true
-follow_imports = "skip"
-ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = [
+    "finbot.core.*",
+    "finbot.services.execution.*",
+]
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+[[tool.mypy.overrides]]
+module = "finbot.services.backtesting.*"
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+[[tool.mypy.overrides]]
+module = [
+    "finbot.libs.api_manager.*",
+    "finbot.libs.logger.*",
+]
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+[[tool.mypy.overrides]]
+module = [
+    "finbot.services.data_quality.*",
+    "finbot.services.health_economics.*",
+    "finbot.services.optimization.*",
+]
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+[[tool.mypy.overrides]]
+module = "finbot.utils.request_utils.*"
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+[[tool.mypy.overrides]]
+module = "finbot.utils.pandas_utils.*"
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+[[tool.mypy.overrides]]
+module = [
+    "finbot.utils.class_utils.*",
+    "finbot.utils.data_collection_utils.bls.*",
+    "finbot.utils.data_collection_utils.fred.*",
+    "finbot.utils.data_collection_utils.yfinance.*",
+    "finbot.utils.data_science_utils.data_transformation.interpolators.*",
+    "finbot.utils.data_science_utils.data_transformation.scalers_normalizers.*",
+    "finbot.utils.datetime_utils.*",
+    "finbot.utils.dict_utils.*",
+    "finbot.utils.file_utils.*",
+    "finbot.utils.finance_utils.*",
+    "finbot.utils.function_utils.*",
+    "finbot.utils.json_utils.*",
+    "finbot.utils.multithreading_utils.*",
+    "finbot.utils.plotting_utils.*",
+    "finbot.utils.validation_utils.*",
+    "finbot.utils.vectorization_utils.*",
+    "finbot.utils.data_science_utils.data_analysis.*",
+]
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.12"
 exclude = [".venv", "build", "dist"]
 check_untyped_defs = true
 warn_redundant_casts = true
@@ -248,34 +302,6 @@ no_implicit_optional = true
 disallow_untyped_defs = false  # Gradual adoption
 disallow_any_generics = false  # Too strict for current codebase
 strict_optional = true
-
-[[tool.mypy.overrides]]
-module = ["finbot.core.*", "finbot.services.execution.*"]
-disallow_untyped_defs = true
-disallow_incomplete_defs = true
-
-# Phase 4: Backtesting core annotations
-[[tool.mypy.overrides]]
-module = [
-    "finbot.services.backtesting.analyzers.*",
-    "finbot.services.backtesting.compute_stats",
-    "finbot.services.backtesting.run_backtest",
-    "finbot.services.backtesting.rebalance_optimizer",
-    "finbot.services.backtesting.backtest_batch",
-    "finbot.services.backtesting.gen_rebal_proportions",
-    "finbot.services.backtesting.print_and_save_backtest",
-    "finbot.services.backtesting.brokers.*",
-]
-disallow_untyped_defs = true
-
-# Phase 5: Strategies, costs, and indicators annotations
-[[tool.mypy.overrides]]
-module = [
-    "finbot.services.backtesting.strategies.*",
-    "finbot.services.backtesting.costs.*",
-    "finbot.services.backtesting.indicators.*",
-]
-disallow_untyped_defs = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

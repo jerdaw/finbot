@@ -29,7 +29,7 @@ from finbot.utils.request_utils.request_handler import RequestHandler
 from finbot.utils.validation_utils.validation_helpers import validate_types
 
 
-def _convert_bls_data_to_series(data):
+def _convert_bls_data_to_series(data: list[dict[str, str]]) -> pd.Series:
     """
     Convert a list of dictionaries to a pandas Series with timestamp index.
 
@@ -44,10 +44,17 @@ def _convert_bls_data_to_series(data):
     df.set_index("date", inplace=True)
     df["value"] = pd.to_numeric(df["value"], errors="coerce")
 
-    return df.squeeze()
+    squeezed = df.squeeze()
+    if isinstance(squeezed, pd.Series):
+        return squeezed
+    return pd.Series(squeezed, index=df.index)
 
 
-def _prep_params(series_ids, start_date, end_date) -> list[str]:
+def _prep_params(
+    series_ids: str | list[str],
+    start_date: datetime.date | None,
+    end_date: datetime.date | None,
+) -> list[str]:
     if isinstance(series_ids, str):
         series_ids = [series_ids]
 
@@ -61,7 +68,7 @@ def _prep_params(series_ids, start_date, end_date) -> list[str]:
     return series_ids
 
 
-def _get_ids_to_update(ids_paths_dict: dict[str, Path], force_update) -> list[str]:
+def _get_ids_to_update(ids_paths_dict: dict[str, Path], force_update: bool) -> list[str]:
     immutable_ids = tuple(ids_paths_dict.keys())
 
     if force_update:
@@ -82,7 +89,7 @@ def _get_ids_to_update(ids_paths_dict: dict[str, Path], force_update) -> list[st
     return [immutable_ids[i] for i, outdated in enumerate(outdated_mask) if outdated]
 
 
-def _request_bls_data(series_ids):
+def _request_bls_data(series_ids: list[str]) -> dict[str, pd.DataFrame]:
     headers = {"Content-type": "application/json"}
     series_partial_dfs = []
     current_year = datetime.datetime.now().year
@@ -122,7 +129,7 @@ def _request_bls_data(series_ids):
     return data_dict
 
 
-def _save_updated_data(updated_data: dict, ids_paths_dict, save_dir) -> None:
+def _save_updated_data(updated_data: dict[str, pd.DataFrame], ids_paths_dict: dict[str, Path], save_dir: Path) -> None:
     validate_types(updated_data, "updated_data", [dict])
     if not updated_data:
         return

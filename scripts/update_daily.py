@@ -8,6 +8,7 @@ import time
 from time import perf_counter
 
 from finbot.config import logger
+from finbot.libs.logger.audit import AuditOutcome, audit_operation, emit_audit_event
 from finbot.services.simulation.approximate_overnight_libor import approximate_overnight_libor
 from finbot.services.simulation.sim_specific_bond_indexes import (
     sim_idcot1tr,
@@ -48,49 +49,73 @@ _step_results: list[tuple[str, float, bool]] = []
 def _run_with_retry(func, name: str, max_retries: int = 2) -> None:
     """Run a function with retry logic. Logs errors instead of printing."""
     for attempt in range(1, max_retries + 1):
+        t1 = perf_counter()
         try:
-            t1 = perf_counter()
             func()
             t2 = perf_counter()
             elapsed = t2 - t1
             logger.info(f"Completed {name} in {elapsed:.1f}s")
             _step_results.append((name, elapsed, True))
+            emit_audit_event(
+                logger,
+                operation="update_daily_step",
+                component="scripts.update_daily",
+                outcome=AuditOutcome.SUCCESS,
+                duration_ms=int(elapsed * 1000),
+                parameters={"step_name": name, "attempt": attempt, "max_retries": max_retries},
+            )
             return
         except Exception as e:
+            elapsed_ms = int((perf_counter() - t1) * 1000)
             if attempt < max_retries:
                 logger.warning(f"{name} failed (attempt {attempt}/{max_retries}): {e}")
             else:
                 logger.error(f"{name} failed after {max_retries} attempts: {e}")
                 _step_results.append((name, 0.0, False))
+            emit_audit_event(
+                logger,
+                operation="update_daily_step",
+                component="scripts.update_daily",
+                outcome=AuditOutcome.FAILURE,
+                duration_ms=elapsed_ms,
+                parameters={"step_name": name, "attempt": attempt, "max_retries": max_retries},
+                error_type=type(e).__name__,
+            )
 
 
 def update_daily() -> None:
     """Run the full daily data update pipeline."""
-    logger.info("Starting daily data update")
-    t_start = perf_counter()
+    with audit_operation(
+        logger,
+        operation="update_daily",
+        component="scripts.update_daily",
+        parameters={"step_count": 5},
+    ):
+        logger.info("Starting daily data update")
+        t_start = perf_counter()
 
-    steps = [
-        (update_yf_price_histories, "YF Price Histories"),
-        (update_gf_price_histories, "GF Price Histories"),
-        (update_fred_data, "FRED Data"),
-        (update_shiller_data, "Shiller Data"),
-        (update_simulations, "Simulations"),
-    ]
+        steps = [
+            (update_yf_price_histories, "YF Price Histories"),
+            (update_gf_price_histories, "GF Price Histories"),
+            (update_fred_data, "FRED Data"),
+            (update_shiller_data, "Shiller Data"),
+            (update_simulations, "Simulations"),
+        ]
 
-    for func, name in steps:
-        _run_with_retry(func, name)
+        for func, name in steps:
+            _run_with_retry(func, name)
 
-    t_end = perf_counter()
-    total_elapsed = t_end - t_start
+        t_end = perf_counter()
+        total_elapsed = t_end - t_start
 
-    # Pipeline summary
-    succeeded = sum(1 for _, _, ok in _step_results if ok)
-    failed = sum(1 for _, _, ok in _step_results if not ok)
-    logger.info(f"Daily update complete in {total_elapsed:.1f}s ({succeeded} succeeded, {failed} failed)")
-    for name, elapsed, ok in _step_results:
-        status = "OK" if ok else "FAILED"
-        logger.info(f"  [{status}] {name}: {elapsed:.1f}s")
-    _step_results.clear()
+        # Pipeline summary
+        succeeded = sum(1 for _, _, ok in _step_results if ok)
+        failed = sum(1 for _, _, ok in _step_results if not ok)
+        logger.info(f"Daily update complete in {total_elapsed:.1f}s ({succeeded} succeeded, {failed} failed)")
+        for name, elapsed, ok in _step_results:
+            status = "OK" if ok else "FAILED"
+            logger.info(f"  [{status}] {name}: {elapsed:.1f}s")
+        _step_results.clear()
 
 
 def update_yf_price_histories() -> None:

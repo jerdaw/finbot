@@ -183,7 +183,7 @@ class LogarithmicScaler(BaseScaler):
         base: float | int | str = DEFAULT_BASE,
         epsilon: float | int = DEFAULT_EPSILON,
         normalize: None | str = None,
-    ):
+    ) -> None:
         """
         Initialize LogarithmicScaler with transformation parameter.
 
@@ -282,13 +282,13 @@ class LogarithmicScaler(BaseScaler):
         """
         return self.fit(X).transform(X)
 
-    def reset(self):
+    def reset(self) -> None:
         """
         Reset the scaler to its initial state, setting base_ to the initial base value.
         """
         self.base_ = self.base
 
-    def inverse_transform(self, X: pd.Series) -> pd.Series:
+    def inverse_transform(self, X: pd.Series[int | float]) -> pd.Series:
         """
         Reverses the logarithmic scaling applied to the Series.
 

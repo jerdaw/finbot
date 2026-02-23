@@ -74,7 +74,7 @@ def calculate_event_horizon(
     return int(max_years)
 
 
-def generate_horizon_grid(cagr: None | np.ndarray = None, contrib: None | range = None):
+def generate_horizon_grid(cagr: np.ndarray | None = None, contrib: range | None = None) -> pd.DataFrame:
     # Testing the function with different CAGRs and contributions
     if cagr is None:
         cagr = np.linspace(0.0, 0.25, 26).round(2)
@@ -100,7 +100,7 @@ def generate_horizon_grid(cagr: None | np.ndarray = None, contrib: None | range 
     return df.astype(int)
 
 
-def plot_horizon_grid(df: pd.DataFrame | None = None):
+def plot_horizon_grid(df: pd.DataFrame | None = None) -> None:
     if df is None:
         df = generate_horizon_grid()
 

@@ -89,9 +89,8 @@ class ExecutionSimulator:
 
         self.current_time = timestamp
 
-        current_prices: dict[str, Decimal] = {}
-
         # Risk checks first (if enabled)
+        current_prices: dict[str, Decimal] = {}
         if self.risk_checker:
             risk_check = self.risk_checker.check_order(order, self.positions, current_prices, self.cash)
             if risk_check:

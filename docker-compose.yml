@@ -48,6 +48,37 @@ services:
     environment:
       - DYNACONF_ENV=${DYNACONF_ENV:-development}
 
+  # FastAPI backend API
+  finbot-api:
+    build:
+      context: .
+      dockerfile: web/Dockerfile.backend
+    container_name: finbot-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - finbot-data:/app/finbot/data
+    env_file:
+      - finbot/config/.env
+    environment:
+      - DYNACONF_ENV=${DYNACONF_ENV:-development}
+      - FINBOT_API_CORS_ORIGINS=["http://localhost:3000"]
+    restart: unless-stopped
+
+  # Next.js web frontend
+  finbot-web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile.frontend
+    container_name: finbot-web
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://finbot-api:8000
+    depends_on:
+      - finbot-api
+    restart: unless-stopped
+
 volumes:
   finbot-data:
     name: finbot-data

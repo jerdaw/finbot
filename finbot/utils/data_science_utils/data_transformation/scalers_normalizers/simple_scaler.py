@@ -19,7 +19,7 @@ class SimpleScaler(BaseScaler):
         scale_value (pd.Series): The computed scale value.
     """
 
-    def __init__(self, scale_method: str, abs_fit: bool = False):
+    def __init__(self, scale_method: str, abs_fit: bool = False) -> None:
         if scale_method not in ["max", "min", "first", "last", "mean", "median", "mode"]:
             raise ValueError(
                 "scale_method must be one of the following: 'min', 'max', 'first', 'last', 'mean', 'median', 'mode'.",
@@ -89,7 +89,7 @@ class SimpleScaler(BaseScaler):
         """
         return self.fit(X).transform(X)
 
-    def reset(self):
+    def reset(self) -> None:
         """
         Reset the scaler to its initial state.
         """

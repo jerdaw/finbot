@@ -1,38 +1,37 @@
-"""Rate limiter stub for API resource groups.
+"""Rate limiter compatibility shim used by the API manager layer.
 
-This module provides a simple RateLimiter class that wraps around
-rate limit specifications. Currently a minimal implementation to satisfy
-module imports - full rate limiting functionality is handled by the
-limits library in APIResourceGroup.
+This module provides a lightweight `RateLimiter` type that stores parsed limits.
+The current API manager contracts only require configuration storage, not active
+request throttling behavior.
 """
 
 from __future__ import annotations
 
+from collections.abc import Iterable
+from dataclasses import dataclass, field
 
+from limits import parse, parse_many
+from limits.limits import RateLimitItem
+
+
+@dataclass(frozen=True)
 class RateLimiter:
-    """Simple rate limiter wrapper.
+    """Container for configured API rate limits."""
 
-    Args:
-        rate_limits: Rate limit specification string (e.g., "5/minute;500/day")
+    rate_limits: str | Iterable[RateLimitItem]
+    parsed_limits: tuple[RateLimitItem, ...] = field(init=False)
 
-    Note:
-        This is a stub implementation. Actual rate limiting is handled by
-        the limits library in APIResourceGroup.
-    """
+    def __post_init__(self) -> None:
+        parsed = self._parse_limits(self.rate_limits)
+        object.__setattr__(self, "parsed_limits", parsed)
 
-    def __init__(self, rate_limits: str):
-        """Initialize rate limiter with rate limits specification.
-
-        Args:
-            rate_limits: Rate limit string in format "count/period;count/period"
-                        Examples: "5/minute", "120/minute", "5/minute;500/day"
-        """
-        self.rate_limits = rate_limits
-
-    def __repr__(self) -> str:
-        """Return string representation."""
-        return f"RateLimiter(rate_limits={self.rate_limits!r})"
+    @staticmethod
+    def _parse_limits(limits_input: str | Iterable[RateLimitItem]) -> tuple[RateLimitItem, ...]:
+        if isinstance(limits_input, str):
+            if ";" in limits_input:
+                return tuple(parse_many(limits_input))
+            return (parse(limits_input),)
+        return tuple(limits_input)
 
 
-# Default rate limit (120 requests per minute)
-DEFAULT_RATE_LIMIT = RateLimiter(rate_limits="120/minute")
+DEFAULT_RATE_LIMIT = RateLimiter("60/minute")

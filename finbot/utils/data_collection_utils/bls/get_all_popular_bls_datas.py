@@ -15,14 +15,17 @@ Update frequency: Varies by series (monthly, quarterly)
 API endpoint: /timeseries/popular
 """
 
+import datetime
 import json
+
+import pandas as pd
 
 from finbot.config import settings_accessors
 from finbot.utils.data_collection_utils.bls.get_bls_data import get_bls_data
 from finbot.utils.request_utils.request_handler import RequestHandler
 
 
-def _get_popular_bls_series_ids():
+def _get_popular_bls_series_ids() -> list[str]:
     headers = {"Content-type": "application/json"}
     payload = json.dumps({"registrationkey": settings_accessors.get_us_bureau_of_labor_statistics_api_key()})
     json_data = RequestHandler().make_json_request(
@@ -35,7 +38,12 @@ def _get_popular_bls_series_ids():
     return popular_series_ids
 
 
-def get_all_popular_bls_datas(start_date=None, end_date=None, check_update=False, force_update=False):
+def get_all_popular_bls_datas(
+    start_date: datetime.date | None = None,
+    end_date: datetime.date | None = None,
+    check_update: bool = False,
+    force_update: bool = False,
+) -> pd.DataFrame:
     popular_series = _get_popular_bls_series_ids()
     return get_bls_data(
         popular_series,

@@ -46,6 +46,11 @@ class DCAParameters:
     starting_cash: float
 
 
+TrialKey = tuple[int, float, int, int, int]
+TrialMetrics = tuple[float, float, float, float, float, float]
+MPResult = tuple[TrialKey | None, TrialMetrics | None]
+
+
 def dca_optimizer(
     price_history: pd.Series,
     ticker: str | None = None,
@@ -125,7 +130,7 @@ def dca_optimizer(
     return df
 
 
-def _mp_helper(params: DCAParameters):
+def _mp_helper(params: DCAParameters) -> MPResult:
     """Multiprocessing helper for a single DCA parameter combination.
 
     Parameters

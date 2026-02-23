@@ -56,6 +56,18 @@ class TestMainCLI:
         # Verbose flag should not break help output
         assert "Finbot" in result.output
 
+    def test_cli_trace_id_option(self, runner):
+        """Test main CLI --trace-id option exists."""
+        result = runner.invoke(cli, ["--help"])
+        assert result.exit_code == 0
+        assert "--trace-id" in result.output
+
+    def test_cli_trace_id_flag_with_help(self, runner):
+        """Test --trace-id works with command help."""
+        result = runner.invoke(cli, ["--trace-id", "trace-test-123", "status", "--help"])
+        assert result.exit_code == 0
+        assert "status" in result.output.lower()
+
 
 class TestSimulateCommand:
     """Test simulate command."""
