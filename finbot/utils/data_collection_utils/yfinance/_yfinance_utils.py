@@ -58,7 +58,6 @@ def _get_yf_req_params(**kwargs: Any) -> dict[str, str | bool | None]:
     - prepost (bool): Whether to include pre and post market data. Default is True.
     - auto_adjust (bool): Whether to adjust the data for dividends and stock splits. Default is True.
     - actions (bool): Whether to include stock dividends and stock splits events. Default is True.
-    - proxy (str or None): The proxy URL to use for the request. Default is None.
     - progress (bool): Whether to show progress while downloading. Default is True.
     - group_by (str): The grouping method for multi-symbol download. Default is "ticker".
     - threads (bool): Whether to use multiple threads for downloading. Default is True.
@@ -81,7 +80,6 @@ def _get_yf_req_params(**kwargs: Any) -> dict[str, str | bool | None]:
         "auto_adjust": False,  # YF Default is True for symbol and False for multi-symbol download
         # YF Default is True (Downloads stock dividends and stock splits events)
         "actions": True,
-        "proxy": None,  # YF Default is None
         "progress": True,  # YF Default is True
         # There are for multi-symbol download
         "group_by": "ticker",  # group by symbol or column
