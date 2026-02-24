@@ -1,3 +1,9 @@
+"""Pre-configured API resource group instances.
+
+Defines rate limits, retry strategies, and concurrency constraints for each
+external data provider (Alpha Vantage, FRED, OANDA, NASDAQ/Quandl, BLS).
+"""
+
 from limits import RateLimitItemPerDay, RateLimitItemPerMinute, RateLimitItemPerSecond
 
 from finbot.libs.api_manager._utils.api_resource_group import APIResourceGroup

@@ -6,9 +6,35 @@ import backtrader as bt
 
 
 class SMACrossoverTriple(bt.Strategy):
-    """Three equities SMA crossover — allocates based on fast/med/slow SMA ordering."""
+    """Three-equity SMA crossover allocating based on fast/med/slow SMA ordering.
+
+    Uses the relative ordering of three SMA periods on datas[0] to classify
+    the market as uptrend, mid, or downtrend, and allocates to the
+    corresponding equity:
+
+    - Uptrend (fast > med > slow or fast > slow > med): Hold aggressive asset.
+    - Mid (med > fast > slow or med > slow > fast): Hold moderate asset.
+    - Downtrend (slow > med > fast or slow > fast > med): Hold defensive asset.
+
+    Args:
+        fast_ma: Period for the fast simple moving average.
+        med_ma: Period for the medium simple moving average.
+        slow_ma: Period for the slow simple moving average.
+
+    Data feeds:
+        datas[0]: Aggressive / high-beta asset.
+        datas[1]: Moderate / balanced asset.
+        datas[2]: Defensive / low-beta asset.
+    """
 
     def __init__(self, fast_ma: int, med_ma: int, slow_ma: int) -> None:
+        """Initialize the triple SMA crossover strategy.
+
+        Args:
+            fast_ma: Period for the fast simple moving average.
+            med_ma: Period for the medium simple moving average.
+            slow_ma: Period for the slow simple moving average.
+        """
         self.fast_ma = fast_ma
         self.med_ma = med_ma
         self.slow_ma = slow_ma
@@ -19,9 +45,15 @@ class SMACrossoverTriple(bt.Strategy):
         self.slow_sma = bt.indicators.SimpleMovingAverage(self.datas[0], period=self.slow_ma)
 
     def notify_order(self, order: bt.Order) -> None:
+        """Reset pending order flag when an order completes."""
         self.order = None
 
     def next(self) -> None:
+        """Select target equity based on SMA ordering and rebalance.
+
+        Classifies the trend from the fast/med/slow SMA values, sells
+        non-target positions, and buys the target equity.
+        """
         if self.order:
             return
 

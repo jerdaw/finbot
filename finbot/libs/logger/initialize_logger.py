@@ -1,3 +1,9 @@
+"""Logger initialization for the Finbot application.
+
+Creates a configured Python logger backed by an asynchronous queue listener
+so that log I/O never blocks the calling thread.
+"""
+
 import logging
 from pathlib import Path
 
@@ -7,8 +13,21 @@ from finbot.libs.logger.setup_queue_logging import setup_queue_logging
 
 
 def initialize_logger(logger_name: str, log_level: str, log_dir: Path = LOGS_DIR) -> logging.Logger:
-    """
-    Initialize the logger for the application.
+    """Initialize a queue-based logger for the application.
+
+    If the logger already has handlers attached it is returned as-is,
+    preventing duplicate handler registration on repeated calls.
+
+    Args:
+        logger_name: Name passed to ``logging.getLogger``.
+        log_level: Minimum log level string (e.g. ``"INFO"``, ``"DEBUG"``).
+        log_dir: Directory where log files are written. Must already exist.
+
+    Returns:
+        Configured ``logging.Logger`` instance with a ``QueueHandler``.
+
+    Raises:
+        ValueError: If *log_dir* does not exist on disk.
     """
 
     if not log_dir.exists():

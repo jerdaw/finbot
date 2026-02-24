@@ -191,8 +191,11 @@ def audit_operation(
     """
 
     def decorator(func: Callable) -> Callable:
+        """Wrap *func* with audit logging."""
+
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
+            """Execute the decorated function inside an audit log context."""
             # Lazy import to avoid circular dependency
             import logging
 

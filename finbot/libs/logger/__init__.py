@@ -1,3 +1,5 @@
+"""Finbot logging package -- exposes the global ``logger`` and audit helpers."""
+
 import logging
 
 from finbot.config.project_config import settings

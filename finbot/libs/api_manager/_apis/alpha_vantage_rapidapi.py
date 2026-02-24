@@ -1,3 +1,10 @@
+"""Alpha Vantage RapidAPI proxy configuration.
+
+Registers the Alpha Vantage RapidAPI proxy with extended endpoints
+(time-series, technical indicators, FX, crypto) and the corresponding
+RapidAPI authentication headers.
+"""
+
 from finbot.config import settings
 from finbot.libs.api_manager._resource_groups.api_resource_groups import alpha_vantage_rapidapi_resouce_group
 from finbot.libs.api_manager._utils.api import API

@@ -33,7 +33,7 @@ uv run pytest
 uv run python scripts/update_daily.py
 ```
 
-## Current Delivery Status (2026-02-23)
+## Current Delivery Status (2026-02-24)
 
 Backtesting/live-readiness transition is **Epics E0-E6 complete** (adapter-first path). Priority 7 complete (25/27 active items).
 
@@ -56,25 +56,25 @@ Backtesting/live-readiness transition is **Epics E0-E6 complete** (adapter-first
 
 - **Post-E6 Follow-up:** Priority 6 items 69-75 complete; item 76 (native-only valuation parity closure) formally deferred (2026-02-23, vision-aligned — Backtrader confirmed as primary engine); ADR-011 confirmed **Defer**.
 
-### Priority 5: OMSAS/CanMEDS Improvements (93.3% Complete)
+### Priority 5: OMSAS/CanMEDS Improvements (97.8% Complete)
 
-**Completed:** 42/45 items across 7 categories
+**Completed:** 44/45 items across 7 categories
 - ✅ Governance & Professionalism (7/7): LICENSE, SECURITY, CODE_OF_CONDUCT, templates
-- ✅ Quality & Reliability (4/5): CI/CD, test coverage, integration tests, py.typed
+- ✅ Quality & Reliability (5/5): CI/CD, test coverage, integration tests, py.typed, strict mypy
 - ✅ Documentation (6/6): MkDocs site, API docs, docstring enforcement, limitations
 - ✅ Health Economics (4/5): Research papers, clinical scenarios, methodology
 - ✅ Ethics & Security (6/6): Disclaimers, audit trails, license auditing, Docker security
 - ✅ Testing (5/5): Property-based testing, CLI tests, performance regression
 - ✅ Professional Polish (10/11): CODEOWNERS, releases, changelog, TestPyPI, OpenSSF
 
-**Remaining:** Item 12 (mypy) partially started, Items 22 & 42 blocked on external resources.
-- Item 12 (stricter mypy): expanded strict module scopes active across core/execution/backtesting/libs plus staged utility namespaces (canonical scope list in `docs/guides/mypy-strict-module-tracker.md`).
+**Remaining:** Item 42 blocked on external resources.
+- Item 12 (stricter mypy): ✅ Complete — all 37 namespaces under strict enforcement, plus selective `warn_return_any` and `disallow_any_generics` (see `docs/guides/mypy-strict-module-tracker.md`).
 
 ### Priority 7: External Impact & Advanced Capabilities (93% Complete)
 
 **Complete:** 25/27 active items (5 media items on hold pending user recording/design)
 - ✅ **P7.1**: Stricter mypy Phase 1 audit — 355 errors catalogued, phased roadmap published
-- ✅ **P7.2**: Test coverage raised to 61.63% (1063+ tests)
+- ✅ **P7.2**: Test coverage raised to 67%+ (1398 tests)
 - ✅ **P7.3**: Scheduled CI for daily data updates
 - 🟡 **P7.4**: Conventional commits guide created (user action required)
 - ✅ **P7.15**: Walk-forward visualization — `walkforward_viz.py` (5 chart functions, dashboard page 8, 23 tests)
@@ -542,7 +542,7 @@ uv run pytest --cov=finbot tests/
 ```
 
 **Test structure**:
-- `tests/unit/`: Unit tests (1063+ tests across 30+ files)
+- `tests/unit/`: Unit tests (1398 tests across 40+ files)
   - `test_imports.py`: Smoke tests for all key module imports
   - `test_simulation_math.py`: Simulation math correctness
   - `test_finance_utils.py`: Finance calculation tests

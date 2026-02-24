@@ -1,3 +1,9 @@
+"""API model representing a single external API endpoint configuration.
+
+Stores base URL, headers, endpoints, and the associated resource group
+that controls rate-limiting and retry behavior.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -10,6 +16,8 @@ if TYPE_CHECKING:
 
 
 class API:
+    """Represents a single API with its connection details and resource group."""
+
     def _add_api_resource_group(self) -> None:
         """Adds this API instance to its resource group."""
         if self.resource_group is not None:
@@ -48,30 +56,37 @@ class API:
 
     @property
     def identifier(self) -> str:
+        """Unique identifier for this API."""
         return self._identifier
 
     @property
     def base_url(self) -> str | None:
+        """Base URL for the API endpoints, or None if not set."""
         return self._base_url
 
     @property
     def resource_group(self) -> APIResourceGroup | None:
+        """Resource group governing rate limits and retries, or None."""
         return self._resource_group
 
     @property
     def response_save_dir(self) -> Path | None:
+        """Directory for saving raw API responses, or None."""
         return self._response_save_dir
 
     @property
     def data_save_dir(self) -> Path | None:
+        """Directory for saving processed API data, or None."""
         return self._data_save_dir
 
     @property
     def headers(self) -> dict[str, str] | None:
+        """Default HTTP headers for API requests, or None."""
         return self._headers
 
     @property
     def endpoints(self) -> list[str]:
+        """List of available API endpoint names."""
         return self._endpoints
 
 

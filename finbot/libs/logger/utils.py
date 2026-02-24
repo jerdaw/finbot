@@ -1,3 +1,10 @@
+"""Logging formatters and filters used by the Finbot logger.
+
+Provides colorized console output (``ColorFormatter``), structured JSON
+output (``LoggingJsonFormatter``), and severity-based stream filters
+(``NonErrorFilter``, ``ErrorFilter``).
+"""
+
 import datetime
 import json
 import logging
@@ -18,6 +25,14 @@ class ColorFormatter(logging.Formatter):
     }
 
     def format(self, record: logging.LogRecord) -> str:
+        """Format the log record with ANSI color codes based on severity.
+
+        Args:
+            record: The log record to format.
+
+        Returns:
+            Colorized, formatted log string.
+        """
         indent_aligner = " " * (1 + max(len(k) for k in self.COLORS) - len(record.levelname))
         base_fmt = getattr(self, "_fmt", "")
         log_fmt = base_fmt + "%(levelname)s]" + indent_aligner + "%(message)s\033[0m"
@@ -29,6 +44,12 @@ class ColorFormatter(logging.Formatter):
 
 
 class LoggingJsonFormatter(logging.Formatter):
+    """Formatter that serializes each log record as a single JSON line.
+
+    Supports field renaming, static fields injected into every record,
+    and safe serialization of datetime objects and exceptions.
+    """
+
     def __init__(
         self,
         *args: Any,
@@ -36,15 +57,43 @@ class LoggingJsonFormatter(logging.Formatter):
         static_fields: dict[str, Any] | None = None,
         **kwargs: Any,
     ) -> None:
+        """Initialize the JSON formatter.
+
+        Args:
+            *args: Positional arguments forwarded to ``logging.Formatter``.
+            rename_fields: Mapping of original field names to replacement names.
+            static_fields: Key/value pairs added to every log record.
+            **kwargs: Keyword arguments forwarded to ``logging.Formatter``.
+        """
         super().__init__(*args, **kwargs)
         self.rename_fields = rename_fields or {}
         self.static_fields = static_fields or {}
 
     def format(self, record: logging.LogRecord) -> str:
+        """Serialize the log record to a JSON string.
+
+        Args:
+            record: The log record to format.
+
+        Returns:
+            A single-line JSON string representing the record.
+        """
         message = self.create_log_record(record)
         return json.dumps(message, default=self.json_default)
 
     def create_log_record(self, record: logging.LogRecord) -> dict[str, Any]:
+        """Build a dictionary from the log record for JSON serialization.
+
+        Includes standard fields (timestamp, level, name, message), any
+        configured static or renamed fields, exception/stack info, and
+        extra attributes attached to the record.
+
+        Args:
+            record: The log record to convert.
+
+        Returns:
+            Dictionary suitable for ``json.dumps``.
+        """
         # Standard fields
         log_record = {
             "timestamp": datetime.datetime.fromtimestamp(record.created, datetime.UTC).isoformat(),
@@ -77,6 +126,14 @@ class LoggingJsonFormatter(logging.Formatter):
         return log_record
 
     def json_default(self, obj: Any) -> str:
+        """Fallback serializer for objects that ``json.dumps`` cannot handle.
+
+        Args:
+            obj: The object to serialize.
+
+        Returns:
+            ISO-format string for dates/datetimes, ``str()`` for everything else.
+        """
         if isinstance(obj, datetime.date | datetime.datetime):
             return obj.isoformat()
         if isinstance(obj, Exception):
@@ -85,10 +142,16 @@ class LoggingJsonFormatter(logging.Formatter):
 
 
 class NonErrorFilter(logging.Filter):
+    """Filter that passes records at WARNING level and below."""
+
     def filter(self, record: logging.LogRecord) -> bool:
+        """Return True for records with severity <= WARNING."""
         return record.levelno <= logging.WARNING  # Pass logs of WARNING and below
 
 
 class ErrorFilter(logging.Filter):
+    """Filter that passes records at ERROR level and above."""
+
     def filter(self, record: logging.LogRecord) -> bool:
+        """Return True for records with severity >= ERROR."""
         return record.levelno >= logging.ERROR  # Pass logs of ERROR and above

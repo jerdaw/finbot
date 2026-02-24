@@ -11,7 +11,7 @@ class CollectionTrackerBase:
 
     def load_csv(self) -> pd.DataFrame:
         # Function to convert "None" strings to None
-        def convert_none(value):
+        def convert_none(value: object) -> object:
             value = str(value)
             return {
                 "None": None,
