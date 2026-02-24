@@ -6,9 +6,26 @@ import backtrader as bt
 
 
 class Rebalance(bt.Strategy):
-    """Rebalance multiple stocks with configurable proportions and interval."""
+    """Periodic portfolio rebalancing strategy across multiple equities.
+
+    Sells overweight positions and buys underweight positions to maintain
+    target allocation proportions at a configurable interval.
+
+    Args:
+        rebal_proportions: Target weight for each data feed (must sum to 1.0).
+        rebal_interval: Number of bars between rebalance events.
+
+    Data feeds:
+        Accepts N data feeds, one per equity to rebalance.
+    """
 
     def __init__(self, rebal_proportions: list[float], rebal_interval: int) -> None:
+        """Initialize the rebalance strategy.
+
+        Args:
+            rebal_proportions: Target allocation weights for each data feed.
+            rebal_interval: Number of bars between rebalance events.
+        """
         self.rebal_proportions = rebal_proportions
         self.rebal_interval = rebal_interval
         self.periods_since_last_rebal = rebal_interval
@@ -16,9 +33,16 @@ class Rebalance(bt.Strategy):
         self.order: Any = None
 
     def notify_order(self, order: bt.Order) -> None:
+        """Reset pending order flag when an order completes."""
         self.order = None
 
     def next(self) -> None:
+        """Execute rebalance logic on each bar.
+
+        Skips if an order is pending. When the rebalance interval is reached,
+        sells overweight positions first to free cash, then buys underweight
+        positions to match target proportions.
+        """
         if self.order:
             return
 

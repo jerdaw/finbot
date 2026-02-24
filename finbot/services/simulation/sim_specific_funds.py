@@ -79,17 +79,17 @@ FUND_CONFIGS: dict[str, FundConfig] = {
 
 def _sim_fund(
     fund_name: str,
-    underlying_func,
+    underlying_func: Callable[[], pd.DataFrame],
     leverage_mult: float,
     annual_er_pct: float,
     percent_daily_spread_cost: float,
     fund_swap_pct: float,
     additive_constant_default: float,
-    underlying=None,
-    libor_yield_df=None,
+    underlying: pd.DataFrame | None = None,
+    libor_yield_df: pd.DataFrame | None = None,
     save_sim: bool = True,
     force_update: bool = False,
-    adj=None,
+    adj: float | None = None,
     overwrite_sim_with_fund: bool = True,
 ) -> pd.DataFrame:
     """Generic fund simulation helper to reduce repetition."""
@@ -125,11 +125,11 @@ def _sim_fund(
 
 def simulate_fund(
     ticker: str,
-    underlying=None,
-    libor_yield_df=None,
+    underlying: pd.DataFrame | None = None,
+    libor_yield_df: pd.DataFrame | None = None,
     save_sim: bool = True,
     force_update: bool = False,
-    adj=None,
+    adj: float | None = None,
     overwrite_sim_with_fund: bool | None = None,
 ) -> pd.DataFrame:
     """Simulate any fund by ticker using configuration registry.
@@ -185,8 +185,13 @@ def simulate_fund(
 
 # S&P 500 Fund Simulations
 def sim_spy(
-    underlying=None, libor_yield_df=None, save_sim=True, force_update=False, adj=None, overwrite_sim_with_fund=True
-):
+    underlying: pd.DataFrame | None = None,
+    libor_yield_df: pd.DataFrame | None = None,
+    save_sim: bool = True,
+    force_update: bool = False,
+    adj: float | None = None,
+    overwrite_sim_with_fund: bool = True,
+) -> pd.DataFrame:
     """Simulate SPY (S&P 500 ETF, 1x leverage).
 
     Deprecated: Use simulate_fund("SPY", ...) instead.
@@ -195,8 +200,13 @@ def sim_spy(
 
 
 def sim_sso(
-    underlying=None, libor_yield_df=None, save_sim=True, force_update=False, adj=None, overwrite_sim_with_fund=True
-):
+    underlying: pd.DataFrame | None = None,
+    libor_yield_df: pd.DataFrame | None = None,
+    save_sim: bool = True,
+    force_update: bool = False,
+    adj: float | None = None,
+    overwrite_sim_with_fund: bool = True,
+) -> pd.DataFrame:
     """Simulate SSO (ProShares Ultra S&P500, 2x leverage).
 
     Deprecated: Use simulate_fund("SSO", ...) instead.
@@ -205,8 +215,13 @@ def sim_sso(
 
 
 def sim_upro(
-    underlying=None, libor_yield_df=None, save_sim=True, force_update=False, adj=None, overwrite_sim_with_fund=True
-):
+    underlying: pd.DataFrame | None = None,
+    libor_yield_df: pd.DataFrame | None = None,
+    save_sim: bool = True,
+    force_update: bool = False,
+    adj: float | None = None,
+    overwrite_sim_with_fund: bool = True,
+) -> pd.DataFrame:
     """Simulate UPRO (ProShares UltraPro S&P500, 3x leverage).
 
     Deprecated: Use simulate_fund("UPRO", ...) instead.
@@ -216,8 +231,13 @@ def sim_upro(
 
 # Nasdaq 100 Fund Simulations
 def sim_qqq(
-    underlying=None, libor_yield_df=None, save_sim=True, force_update=False, adj=None, overwrite_sim_with_fund=True
-):
+    underlying: pd.DataFrame | None = None,
+    libor_yield_df: pd.DataFrame | None = None,
+    save_sim: bool = True,
+    force_update: bool = False,
+    adj: float | None = None,
+    overwrite_sim_with_fund: bool = True,
+) -> pd.DataFrame:
     """Simulate QQQ (Invesco QQQ Trust, 1x Nasdaq-100).
 
     Deprecated: Use simulate_fund("QQQ", ...) instead.
@@ -226,8 +246,13 @@ def sim_qqq(
 
 
 def sim_qld(
-    underlying=None, libor_yield_df=None, save_sim=True, force_update=False, adj=None, overwrite_sim_with_fund=True
-):
+    underlying: pd.DataFrame | None = None,
+    libor_yield_df: pd.DataFrame | None = None,
+    save_sim: bool = True,
+    force_update: bool = False,
+    adj: float | None = None,
+    overwrite_sim_with_fund: bool = True,
+) -> pd.DataFrame:
     """Simulate QLD (ProShares Ultra QQQ, 2x Nasdaq-100 leverage).
 
     Deprecated: Use simulate_fund("QLD", ...) instead.
@@ -236,8 +261,13 @@ def sim_qld(
 
 
 def sim_tqqq(
-    underlying=None, libor_yield_df=None, save_sim=True, force_update=False, adj=None, overwrite_sim_with_fund=True
-):
+    underlying: pd.DataFrame | None = None,
+    libor_yield_df: pd.DataFrame | None = None,
+    save_sim: bool = True,
+    force_update: bool = False,
+    adj: float | None = None,
+    overwrite_sim_with_fund: bool = True,
+) -> pd.DataFrame:
     """Simulate TQQQ (ProShares UltraPro QQQ, 3x Nasdaq-100 leverage).
 
     Deprecated: Use simulate_fund("TQQQ", ...) instead.
@@ -247,8 +277,13 @@ def sim_tqqq(
 
 # Long Term US Treasury Fund Simulations
 def sim_tlt(
-    underlying=None, libor_yield_df=None, save_sim=True, force_update=False, adj=None, overwrite_sim_with_fund=True
-):
+    underlying: pd.DataFrame | None = None,
+    libor_yield_df: pd.DataFrame | None = None,
+    save_sim: bool = True,
+    force_update: bool = False,
+    adj: float | None = None,
+    overwrite_sim_with_fund: bool = True,
+) -> pd.DataFrame:
     """Simulate TLT (iShares 20+ Year Treasury Bond ETF, 1x).
 
     Deprecated: Use simulate_fund("TLT", ...) instead.
@@ -257,8 +292,13 @@ def sim_tlt(
 
 
 def sim_ubt(
-    underlying=None, libor_yield_df=None, save_sim=True, force_update=False, adj=None, overwrite_sim_with_fund=True
-):
+    underlying: pd.DataFrame | None = None,
+    libor_yield_df: pd.DataFrame | None = None,
+    save_sim: bool = True,
+    force_update: bool = False,
+    adj: float | None = None,
+    overwrite_sim_with_fund: bool = True,
+) -> pd.DataFrame:
     """Simulate UBT (ProShares Ultra 20+ Year Treasury, 2x leverage).
 
     Deprecated: Use simulate_fund("UBT", ...) instead.
@@ -267,8 +307,13 @@ def sim_ubt(
 
 
 def sim_tmf(
-    underlying=None, libor_yield_df=None, save_sim=True, force_update=False, adj=None, overwrite_sim_with_fund=True
-):
+    underlying: pd.DataFrame | None = None,
+    libor_yield_df: pd.DataFrame | None = None,
+    save_sim: bool = True,
+    force_update: bool = False,
+    adj: float | None = None,
+    overwrite_sim_with_fund: bool = True,
+) -> pd.DataFrame:
     """Simulate TMF (Direxion Daily 20+ Year Treasury Bull 3x, 3x leverage).
 
     Deprecated: Use simulate_fund("TMF", ...) instead.
@@ -278,8 +323,13 @@ def sim_tmf(
 
 # Intermediate Term US Treasury Fund Simulations
 def sim_ief(
-    underlying=None, libor_yield_df=None, save_sim=True, force_update=False, adj=None, overwrite_sim_with_fund=True
-):
+    underlying: pd.DataFrame | None = None,
+    libor_yield_df: pd.DataFrame | None = None,
+    save_sim: bool = True,
+    force_update: bool = False,
+    adj: float | None = None,
+    overwrite_sim_with_fund: bool = True,
+) -> pd.DataFrame:
     """Simulate IEF (iShares 7-10 Year Treasury Bond ETF, 1x).
 
     Deprecated: Use simulate_fund("IEF", ...) instead.
@@ -288,8 +338,13 @@ def sim_ief(
 
 
 def sim_ust(
-    underlying=None, libor_yield_df=None, save_sim=True, force_update=False, adj=None, overwrite_sim_with_fund=True
-):
+    underlying: pd.DataFrame | None = None,
+    libor_yield_df: pd.DataFrame | None = None,
+    save_sim: bool = True,
+    force_update: bool = False,
+    adj: float | None = None,
+    overwrite_sim_with_fund: bool = True,
+) -> pd.DataFrame:
     """Simulate UST (ProShares Ultra 7-10 Year Treasury, 2x leverage).
 
     Deprecated: Use simulate_fund("UST", ...) instead.
@@ -298,8 +353,13 @@ def sim_ust(
 
 
 def sim_tyd(
-    underlying=None, libor_yield_df=None, save_sim=True, force_update=False, adj=None, overwrite_sim_with_fund=True
-):
+    underlying: pd.DataFrame | None = None,
+    libor_yield_df: pd.DataFrame | None = None,
+    save_sim: bool = True,
+    force_update: bool = False,
+    adj: float | None = None,
+    overwrite_sim_with_fund: bool = True,
+) -> pd.DataFrame:
     """Simulate TYD (Direxion Daily 7-10 Year Treasury Bull 3x, 3x leverage).
 
     Deprecated: Use simulate_fund("TYD", ...) instead.
@@ -309,8 +369,13 @@ def sim_tyd(
 
 # Short Term US Treasury Fund Simulations
 def sim_shy(
-    underlying=None, libor_yield_df=None, save_sim=True, force_update=False, adj=None, overwrite_sim_with_fund=True
-):
+    underlying: pd.DataFrame | None = None,
+    libor_yield_df: pd.DataFrame | None = None,
+    save_sim: bool = True,
+    force_update: bool = False,
+    adj: float | None = None,
+    overwrite_sim_with_fund: bool = True,
+) -> pd.DataFrame:
     """Simulate SHY (iShares 1-3 Year Treasury Bond ETF, 1x).
 
     Deprecated: Use simulate_fund("SHY", ...) instead.
@@ -319,8 +384,13 @@ def sim_shy(
 
 
 def sim_2x_stt(
-    underlying=None, libor_yield_df=None, save_sim=True, force_update=False, adj=None, overwrite_sim_with_fund=True
-):
+    underlying: pd.DataFrame | None = None,
+    libor_yield_df: pd.DataFrame | None = None,
+    save_sim: bool = True,
+    force_update: bool = False,
+    adj: float | None = None,
+    overwrite_sim_with_fund: bool = True,
+) -> pd.DataFrame:
     """Simulate hypothetical 2x short-term Treasury fund.
 
     Deprecated: Use simulate_fund("2X_STT", ...) instead.
@@ -329,8 +399,13 @@ def sim_2x_stt(
 
 
 def sim_3x_stt(
-    underlying=None, libor_yield_df=None, save_sim=True, force_update=False, adj=None, overwrite_sim_with_fund=True
-):
+    underlying: pd.DataFrame | None = None,
+    libor_yield_df: pd.DataFrame | None = None,
+    save_sim: bool = True,
+    force_update: bool = False,
+    adj: float | None = None,
+    overwrite_sim_with_fund: bool = True,
+) -> pd.DataFrame:
     """Simulate hypothetical 3x short-term Treasury fund.
 
     Deprecated: Use simulate_fund("3X_STT", ...) instead.
@@ -339,8 +414,13 @@ def sim_3x_stt(
 
 
 def sim_ntsx(
-    underlying=None, libor_yield_df=None, save_sim=True, force_update=False, adj=None, overwrite_sim_with_fund=True
-):
+    underlying: pd.DataFrame | None = None,
+    libor_yield_df: pd.DataFrame | None = None,
+    save_sim: bool = True,
+    force_update: bool = False,
+    adj: float | None = None,
+    overwrite_sim_with_fund: bool = True,
+) -> pd.DataFrame:
     fund_name = "NTSX_sim"
     fund_path = SIMULATIONS_DATA_DIR / f"{fund_name}.parquet"
     if is_sufficiently_updated(fund_name) and not force_update:

@@ -72,6 +72,19 @@ class RegimeAdaptive(bt.Strategy):
         volatile_equity_pct: float = 0.30,
         bear_equity_pct: float = 0.10,
     ) -> None:
+        """Initialize the regime-adaptive strategy.
+
+        Args:
+            lookback: Rolling window (bars) for regime classification.
+            rebal_interval: Bars between rebalance events.
+            bull_threshold: Annualised return threshold for BULL regime.
+            bear_threshold: Annualised return threshold for BEAR regime.
+            vol_threshold: Annualised volatility threshold for VOLATILE regime.
+            bull_equity_pct: Equity fraction during BULL regime.
+            sideways_equity_pct: Equity fraction during SIDEWAYS regime.
+            volatile_equity_pct: Equity fraction during VOLATILE regime.
+            bear_equity_pct: Equity fraction during BEAR regime.
+        """
         self.lookback = lookback
         self.rebal_interval = rebal_interval
         self.bull_threshold = bull_threshold
@@ -87,6 +100,7 @@ class RegimeAdaptive(bt.Strategy):
         self.order: bt.Order | None = None
 
     def notify_order(self, order: bt.Order) -> None:
+        """Clear pending order flag when an order is completed, cancelled, or rejected."""
         if order.status in (order.Completed, order.Cancelled, order.Rejected):
             self.order = None
 
@@ -146,6 +160,12 @@ class RegimeAdaptive(bt.Strategy):
                 self.buy(data=data, size=shares_to_buy)
 
     def next(self) -> None:
+        """Execute regime-adaptive allocation on each bar.
+
+        Waits for sufficient history, then classifies the market regime
+        and rebalances equity/bond allocations at the configured interval.
+        Sells overweight positions first to free cash before buying.
+        """
         if self.order:
             return
 

@@ -45,6 +45,16 @@ class NautilusAdapter(BacktestEngine):
         enable_backtrader_fallback: bool = True,
         enable_native_execution: bool = True,
     ) -> None:
+        """Initialize the NautilusAdapter with price data and execution options.
+
+        Args:
+            price_histories: Mapping of symbol to OHLCV DataFrames.
+            data_snapshot_id: Identifier for data lineage tracking.
+            random_seed: Optional seed for reproducible runs.
+            enable_backtrader_fallback: Whether to fall back to Backtrader when
+                native Nautilus execution is unavailable or fails.
+            enable_native_execution: Whether to attempt native Nautilus execution.
+        """
         self.name = "nautilus-pilot"
         self.version = self._get_nautilus_version()
         self._price_histories = price_histories
@@ -142,6 +152,14 @@ class NautilusAdapter(BacktestEngine):
         return self.run(request)
 
     def _validate_request(self, request: BacktestRunRequest) -> None:
+        """Validate the backtest request and delegate to strategy-specific validators.
+
+        Args:
+            request: The backtest run request to validate.
+
+        Raises:
+            ValueError: If the request is malformed or unsupported.
+        """
         if not request.strategy_name:
             raise ValueError("strategy_name is required")
         normalized_strategy = request.strategy_name.lower().replace("_", "")
@@ -168,6 +186,7 @@ class NautilusAdapter(BacktestEngine):
         self._validate_risk_parity_request(request)
 
     def _validate_rebalance_request(self, request: BacktestRunRequest) -> None:
+        """Validate rebalance-strategy-specific request parameters."""
         if "rebal_proportions" not in request.parameters:
             raise ValueError("rebalance pilot requires 'rebal_proportions' parameter")
         if "rebal_interval" not in request.parameters:
@@ -176,6 +195,7 @@ class NautilusAdapter(BacktestEngine):
             raise ValueError("Length of rebal_proportions must match symbol count")
 
     def _validate_norebalance_request(self, request: BacktestRunRequest) -> None:
+        """Validate NoRebalance-strategy-specific request parameters."""
         if len(request.symbols) != 1:
             raise ValueError("NoRebalance pilot currently supports exactly one symbol")
         if "equity_proportions" in request.parameters and len(request.parameters["equity_proportions"]) != len(
@@ -184,6 +204,7 @@ class NautilusAdapter(BacktestEngine):
             raise ValueError("Length of equity_proportions must match symbol count")
 
     def _validate_dual_momentum_request(self, request: BacktestRunRequest) -> None:
+        """Validate DualMomentum-strategy-specific request parameters."""
         if len(request.symbols) != 2:
             raise ValueError("DualMomentum pilot currently requires exactly two symbols")
         lookback = int(request.parameters.get("lookback", 252))
@@ -194,6 +215,7 @@ class NautilusAdapter(BacktestEngine):
             raise ValueError("rebal_interval must be positive")
 
     def _validate_risk_parity_request(self, request: BacktestRunRequest) -> None:
+        """Validate RiskParity-strategy-specific request parameters."""
         if len(request.symbols) < 2:
             raise ValueError("RiskParity pilot currently requires at least two symbols")
         vol_window = int(request.parameters.get("vol_window", 63))
@@ -204,6 +226,14 @@ class NautilusAdapter(BacktestEngine):
             raise ValueError("rebal_interval must be positive")
 
     def _run_via_backtrader(self, request: BacktestRunRequest) -> BacktestRunResult:
+        """Execute the backtest via the Backtrader fallback adapter.
+
+        Args:
+            request: The backtest run request.
+
+        Returns:
+            The backtest result produced by the BacktraderAdapter.
+        """
         adapter = BacktraderAdapter(
             price_histories=self._price_histories,
             strategy_registry={
@@ -229,6 +259,17 @@ class NautilusAdapter(BacktestEngine):
     def _run_via_nautilus(
         self, request: BacktestRunRequest
     ) -> tuple[dict[str, float], dict[str, Any], dict[str, str], tuple[str, ...]]:
+        """Dispatch to the appropriate native Nautilus execution path.
+
+        Args:
+            request: The backtest run request.
+
+        Returns:
+            A tuple of (metrics, assumptions, artifacts, warnings).
+
+        Raises:
+            ValueError: If the strategy is not supported for native execution.
+        """
         normalized_strategy = request.strategy_name.lower().replace("_", "")
         if normalized_strategy == "norebalance":
             return self._run_via_nautilus_buy_and_hold(request)
@@ -321,6 +362,14 @@ class NautilusAdapter(BacktestEngine):
     def _run_via_nautilus_buy_and_hold(
         self, request: BacktestRunRequest
     ) -> tuple[dict[str, float], dict[str, Any], dict[str, str], tuple[str, ...]]:
+        """Run a single-symbol buy-and-hold backtest via native Nautilus.
+
+        Args:
+            request: The backtest run request (must have exactly one symbol).
+
+        Returns:
+            A tuple of (metrics, assumptions, artifacts, warnings).
+        """
         from decimal import Decimal
 
         from nautilus_trader.backtest.engine import BacktestEngine as NautilusBacktestEngine
@@ -351,11 +400,13 @@ class NautilusAdapter(BacktestEngine):
 
         class BuyAndHoldStrategy(Strategy):
             def __init__(self, config: BuyAndHoldConfig) -> None:
+                """Initialize with the buy-and-hold configuration."""
                 super().__init__(config)
                 self.instrument: Instrument | None = None
                 self._entered = False
 
             def on_start(self) -> None:
+                """Resolve the instrument and subscribe to bar data."""
                 self.instrument = self.cache.instrument(self.config.instrument_id)
                 if self.instrument is None:
                     self.log.error(f"Could not find instrument for {self.config.instrument_id}")
@@ -364,6 +415,7 @@ class NautilusAdapter(BacktestEngine):
                 self.subscribe_bars(self.config.bar_type)
 
             def on_bar(self, bar: Bar) -> None:
+                """Submit a single market buy order on the first valid bar."""
                 if bar.is_single_price():
                     return
                 if self._entered:
@@ -464,6 +516,14 @@ class NautilusAdapter(BacktestEngine):
     def _run_via_nautilus_dual_momentum(
         self, request: BacktestRunRequest
     ) -> tuple[dict[str, float], dict[str, Any], dict[str, str], tuple[str, ...]]:
+        """Run a dual momentum backtest, trying native Nautilus then falling back to proxy.
+
+        Args:
+            request: The backtest run request (must have exactly two symbols).
+
+        Returns:
+            A tuple of (metrics, assumptions, artifacts, warnings).
+        """
         try:
             return self._run_via_nautilus_dual_momentum_native(request)
         except ImportError:
@@ -492,6 +552,18 @@ class NautilusAdapter(BacktestEngine):
     def _run_via_nautilus_dual_momentum_native(  # noqa: C901
         self, request: BacktestRunRequest
     ) -> tuple[dict[str, float], dict[str, Any], dict[str, str], tuple[str, ...]]:
+        """Execute dual momentum via full native Nautilus strategy hooks.
+
+        Args:
+            request: The backtest run request (must have exactly two symbols).
+
+        Returns:
+            A tuple of (metrics, assumptions, artifacts, warnings).
+
+        Raises:
+            ImportError: If nautilus_trader is not installed.
+            ValueError: If the request does not contain exactly two symbols.
+        """
         if len(request.symbols) != 2:
             raise ValueError("DualMomentum native mode requires exactly 2 symbols.")
         dual_symbols: tuple[str, str] = (request.symbols[0], request.symbols[1])
@@ -528,6 +600,7 @@ class NautilusAdapter(BacktestEngine):
 
         class DualMomentumNativeStrategy(Strategy):
             def __init__(self, config: DualMomentumNativeConfig) -> None:
+                """Initialize dual momentum state tracking for two instruments."""
                 super().__init__(config)
                 self._instruments: dict[InstrumentId, Instrument] = {}
                 self._symbol_lookup: dict[InstrumentId, str] = {}
@@ -544,12 +617,14 @@ class NautilusAdapter(BacktestEngine):
 
             @staticmethod
             def _price_as_float(price_obj: Any) -> float:
+                """Convert a Nautilus price object to a plain float."""
                 as_double = getattr(price_obj, "as_double", None)
                 if callable(as_double):
                     return float(as_double())
                 return float(price_obj)
 
             def on_start(self) -> None:
+                """Resolve instruments, build symbol lookups, and subscribe to bars."""
                 for instrument_id in self.config.instrument_ids:
                     instrument = self.cache.instrument(instrument_id)
                     if instrument is None:
@@ -569,6 +644,7 @@ class NautilusAdapter(BacktestEngine):
                     self.subscribe_bars(bar_type)
 
             def _submit_market(self, instrument_id: InstrumentId, side: OrderSide, quantity: int) -> None:
+                """Submit an IOC market order for the given instrument and quantity."""
                 if quantity <= 0:
                     return
                 instrument = self._instruments[instrument_id]
@@ -581,6 +657,7 @@ class NautilusAdapter(BacktestEngine):
                 self.submit_order(order)
 
             def _record_equity_point(self, *, timestamp: pd.Timestamp, symbols: tuple[str, str]) -> None:
+                """Record a portfolio equity and cash data point at the given timestamp."""
                 native_equity: float | None = None
                 total_pnls = getattr(self.portfolio, "total_pnls", None)
                 if callable(total_pnls):
@@ -603,12 +680,14 @@ class NautilusAdapter(BacktestEngine):
                 self._cash_points.append((timestamp, max(float(self._cash), 0.0)))
 
             def native_curves(self) -> tuple[pd.Series, pd.Series]:
+                """Return the accumulated equity and cash curves as pd.Series."""
                 return (
                     NautilusAdapter._series_from_points(self._equity_points),
                     NautilusAdapter._series_from_points(self._cash_points),
                 )
 
             def on_bar(self, bar: Bar) -> None:  # noqa: C901
+                """Process a bar event, synchronize multi-symbol closes, and rebalance."""
                 if bar.is_single_price():
                     return
 
@@ -763,6 +842,14 @@ class NautilusAdapter(BacktestEngine):
     def _run_via_nautilus_dual_momentum_proxy(
         self, request: BacktestRunRequest
     ) -> tuple[dict[str, float], dict[str, Any], dict[str, str], tuple[str, ...]]:
+        """Execute dual momentum via deterministic proxy simulation without Nautilus.
+
+        Args:
+            request: The backtest run request (must have exactly two symbols).
+
+        Returns:
+            A tuple of (metrics, assumptions, artifacts, warnings).
+        """
         if len(request.symbols) != 2:
             raise ValueError("DualMomentum proxy mode requires exactly 2 symbols.")
         dual_symbols: tuple[str, str] = (request.symbols[0], request.symbols[1])
@@ -807,6 +894,14 @@ class NautilusAdapter(BacktestEngine):
     def _run_via_nautilus_risk_parity(
         self, request: BacktestRunRequest
     ) -> tuple[dict[str, float], dict[str, Any], dict[str, str], tuple[str, ...]]:
+        """Run a risk parity backtest, trying native Nautilus then falling back to proxy.
+
+        Args:
+            request: The backtest run request (must have at least two symbols).
+
+        Returns:
+            A tuple of (metrics, assumptions, artifacts, warnings).
+        """
         try:
             return self._run_via_nautilus_risk_parity_native(request)
         except ImportError:
@@ -835,6 +930,17 @@ class NautilusAdapter(BacktestEngine):
     def _run_via_nautilus_risk_parity_native(  # noqa: C901
         self, request: BacktestRunRequest
     ) -> tuple[dict[str, float], dict[str, Any], dict[str, str], tuple[str, ...]]:
+        """Execute risk parity via full native Nautilus strategy hooks.
+
+        Args:
+            request: The backtest run request (must have at least two symbols).
+
+        Returns:
+            A tuple of (metrics, assumptions, artifacts, warnings).
+
+        Raises:
+            ImportError: If nautilus_trader is not installed.
+        """
         from decimal import Decimal
 
         from nautilus_trader.backtest.engine import BacktestEngine as NautilusBacktestEngine
@@ -868,6 +974,7 @@ class NautilusAdapter(BacktestEngine):
 
         class RiskParityNativeStrategy(Strategy):
             def __init__(self, config: RiskParityNativeConfig) -> None:
+                """Initialize risk parity state tracking for multiple instruments."""
                 super().__init__(config)
                 self._instruments: dict[InstrumentId, Instrument] = {}
                 self._symbol_lookup: dict[InstrumentId, str] = {}
@@ -884,12 +991,14 @@ class NautilusAdapter(BacktestEngine):
 
             @staticmethod
             def _price_as_float(price_obj: Any) -> float:
+                """Convert a Nautilus price object to a plain float."""
                 as_double = getattr(price_obj, "as_double", None)
                 if callable(as_double):
                     return float(as_double())
                 return float(price_obj)
 
             def on_start(self) -> None:
+                """Resolve instruments, build symbol lookups, and subscribe to bars."""
                 for instrument_id in self.config.instrument_ids:
                     instrument = self.cache.instrument(instrument_id)
                     if instrument is None:
@@ -906,6 +1015,7 @@ class NautilusAdapter(BacktestEngine):
                     self.subscribe_bars(bar_type)
 
             def _submit_market(self, instrument_id: InstrumentId, side: OrderSide, quantity: int) -> None:
+                """Submit an IOC market order for the given instrument and quantity."""
                 if quantity <= 0:
                     return
                 instrument = self._instruments[instrument_id]
@@ -918,6 +1028,7 @@ class NautilusAdapter(BacktestEngine):
                 self.submit_order(order)
 
             def _record_equity_point(self, *, timestamp: pd.Timestamp) -> None:
+                """Record a portfolio equity and cash data point at the given timestamp."""
                 native_equity: float | None = None
                 total_pnls = getattr(self.portfolio, "total_pnls", None)
                 if callable(total_pnls):
@@ -940,12 +1051,14 @@ class NautilusAdapter(BacktestEngine):
                 self._cash_points.append((timestamp, max(float(self._cash), 0.0)))
 
             def native_curves(self) -> tuple[pd.Series, pd.Series]:
+                """Return the accumulated equity and cash curves as pd.Series."""
                 return (
                     NautilusAdapter._series_from_points(self._equity_points),
                     NautilusAdapter._series_from_points(self._cash_points),
                 )
 
             def on_bar(self, bar: Bar) -> None:  # noqa: C901
+                """Process a bar event, synchronize multi-symbol closes, and rebalance."""
                 if bar.is_single_price():
                     return
 
@@ -1114,6 +1227,14 @@ class NautilusAdapter(BacktestEngine):
     def _run_via_nautilus_risk_parity_proxy(
         self, request: BacktestRunRequest
     ) -> tuple[dict[str, float], dict[str, Any], dict[str, str], tuple[str, ...]]:
+        """Execute risk parity via deterministic proxy simulation without Nautilus.
+
+        Args:
+            request: The backtest run request (must have at least two symbols).
+
+        Returns:
+            A tuple of (metrics, assumptions, artifacts, warnings).
+        """
         price_histories = self._select_native_price_histories(request.symbols, request.start, request.end)
         prices = self._build_aligned_close_frame(price_histories)
 
@@ -1158,6 +1279,16 @@ class NautilusAdapter(BacktestEngine):
         symbols: tuple[str, ...],
         vol_window: int,
     ) -> dict[str, float]:
+        """Compute inverse-volatility target weights for risk parity allocation.
+
+        Args:
+            returns: Mapping of symbol to list of historical return values.
+            symbols: Tuple of symbol names to compute weights for.
+            vol_window: Number of recent returns to use for volatility estimation.
+
+        Returns:
+            Mapping of symbol to target weight (sums to 1.0).
+        """
         inv_vols: dict[str, float] = {}
         for symbol in symbols:
             window = returns[symbol][-vol_window:]
@@ -1178,6 +1309,18 @@ class NautilusAdapter(BacktestEngine):
         cash: float,
         target_weights: dict[str, float],
     ) -> float:
+        """Rebalance positions toward target weights by selling then buying.
+
+        Args:
+            symbols: Tuple of symbol names.
+            prices_row: Current prices as a pandas Series indexed by symbol.
+            shares: Mutable mapping of symbol to share count (updated in place).
+            cash: Available cash before rebalancing.
+            target_weights: Mapping of symbol to target portfolio weight.
+
+        Returns:
+            Updated cash balance after rebalancing.
+        """
         total_value = cash + sum(shares[symbol] * float(prices_row[symbol]) for symbol in symbols)
 
         for symbol in symbols:
@@ -1204,6 +1347,7 @@ class NautilusAdapter(BacktestEngine):
         return cash
 
     def _build_config_hash(self, request: BacktestRunRequest) -> str:
+        """Build a deterministic hash of the adapter configuration and request."""
         return hash_dictionary(
             {
                 "adapter": self.name,
@@ -1227,6 +1371,19 @@ class NautilusAdapter(BacktestEngine):
         start: pd.Timestamp | None,
         end: pd.Timestamp | None,
     ) -> pd.DataFrame:
+        """Select and validate a single symbol's price history for the date range.
+
+        Args:
+            symbol: The ticker symbol to look up.
+            start: Optional inclusive start date filter.
+            end: Optional inclusive end date filter.
+
+        Returns:
+            Validated OHLCV DataFrame filtered to the requested date range.
+
+        Raises:
+            ValueError: If the symbol is missing or has fewer than 40 bars.
+        """
         if len(self._price_histories) == 0:
             raise ValueError("price_histories cannot be empty")
         if symbol not in self._price_histories:
@@ -1250,12 +1407,33 @@ class NautilusAdapter(BacktestEngine):
         start: pd.Timestamp | None,
         end: pd.Timestamp | None,
     ) -> dict[str, pd.DataFrame]:
+        """Select and validate price histories for multiple symbols.
+
+        Args:
+            symbols: Tuple of ticker symbols to look up.
+            start: Optional inclusive start date filter.
+            end: Optional inclusive end date filter.
+
+        Returns:
+            Mapping of symbol to validated, date-filtered OHLCV DataFrame.
+        """
         histories: dict[str, pd.DataFrame] = {}
         for symbol in symbols:
             histories[symbol] = self._select_native_price_history(symbol=symbol, start=start, end=end)
         return histories
 
     def _build_aligned_close_frame(self, price_histories: dict[str, pd.DataFrame]) -> pd.DataFrame:
+        """Build a date-aligned DataFrame of close prices across all symbols.
+
+        Args:
+            price_histories: Mapping of symbol to OHLCV DataFrames.
+
+        Returns:
+            DataFrame with symbols as columns and aligned dates as the index.
+
+        Raises:
+            ValueError: If fewer than 40 aligned bars exist across all symbols.
+        """
         closes = [df["Close"].rename(symbol) for symbol, df in price_histories.items()]
         aligned = pd.concat(closes, axis=1, join="inner").dropna()
         if len(aligned) < 40:
@@ -1264,6 +1442,7 @@ class NautilusAdapter(BacktestEngine):
 
     @staticmethod
     def _coerce_nautilus_timestamp(raw_ts: Any) -> pd.Timestamp:
+        """Coerce a Nautilus timestamp (nanoseconds, int, or datetime) to a tz-naive pd.Timestamp."""
         if raw_ts is None:
             return pd.Timestamp.now(tz=UTC).tz_convert(None)
 
@@ -1287,6 +1466,7 @@ class NautilusAdapter(BacktestEngine):
 
     @staticmethod
     def _coerce_nautilus_money_value(value: Any) -> float | None:
+        """Coerce a Nautilus Money object to a float, returning None on failure."""
         if value is None:
             return None
         as_double = getattr(value, "as_double", None)
@@ -1308,6 +1488,7 @@ class NautilusAdapter(BacktestEngine):
 
     @classmethod
     def _coerce_nautilus_total_pnl(cls, payload: Any) -> float | None:
+        """Coerce a Nautilus total PnL payload (dict or Money) to a summed float."""
         if payload is None:
             return None
 
@@ -1340,6 +1521,7 @@ class NautilusAdapter(BacktestEngine):
 
     @staticmethod
     def _series_from_points(points: list[tuple[pd.Timestamp, float]]) -> pd.Series:
+        """Convert a list of (timestamp, value) tuples into a deduplicated, sorted pd.Series."""
         if not points:
             return pd.Series(dtype=float)
         index = pd.DatetimeIndex([point[0] for point in points])
@@ -1356,6 +1538,17 @@ class NautilusAdapter(BacktestEngine):
         initial_cash: float,
         cash_curve: pd.Series | None = None,
     ) -> dict[str, float]:
+        """Derive standard backtest metrics from an equity curve.
+
+        Args:
+            equity_curve: Time series of portfolio values.
+            initial_cash: Starting cash used to compute returns.
+            cash_curve: Optional time series of cash balances for utilization.
+
+        Returns:
+            Dict of canonical metric keys (starting_value, ending_value, roi,
+            cagr, sharpe, max_drawdown, mean_cash_utilization).
+        """
         ending_value = float(equity_curve.iloc[-1])
         roi = (ending_value / initial_cash) - 1.0 if initial_cash > 0 else 0.0
 
@@ -1387,6 +1580,15 @@ class NautilusAdapter(BacktestEngine):
         }
 
     def _compute_mean_cash_utilization(self, *, equity_curve: pd.Series, cash_curve: pd.Series | None) -> float:
+        """Compute mean cash utilization as the average fraction of equity deployed.
+
+        Args:
+            equity_curve: Time series of portfolio values.
+            cash_curve: Optional time series of cash balances.
+
+        Returns:
+            Mean utilization ratio between 0.0 and 1.0, or 0.0 if unavailable.
+        """
         if cash_curve is None or cash_curve.empty:
             return 0.0
         aligned = pd.concat([equity_curve.rename("equity"), cash_curve.rename("cash")], axis=1).dropna()
@@ -1412,6 +1614,18 @@ class NautilusAdapter(BacktestEngine):
         lookback: int,
         rebal_interval: int,
     ) -> tuple[pd.Series, pd.Series]:
+        """Simulate a dual momentum portfolio using deterministic close-price fills.
+
+        Args:
+            prices: Aligned close-price DataFrame with symbols as columns.
+            symbols: Tuple of (primary_symbol, alt_symbol).
+            initial_cash: Starting cash balance.
+            lookback: Number of periods for momentum calculation.
+            rebal_interval: Number of periods between rebalance checks.
+
+        Returns:
+            Tuple of (equity_curve, cash_curve) as pd.Series.
+        """
         primary_symbol, alt_symbol = symbols
         cash = float(initial_cash)
         shares: dict[str, int] = {primary_symbol: 0, alt_symbol: 0}
@@ -1464,6 +1678,18 @@ class NautilusAdapter(BacktestEngine):
         vol_window: int,
         rebal_interval: int,
     ) -> tuple[pd.Series, pd.Series]:
+        """Simulate a risk parity portfolio using deterministic close-price fills.
+
+        Args:
+            prices: Aligned close-price DataFrame with symbols as columns.
+            symbols: Tuple of symbol names.
+            initial_cash: Starting cash balance.
+            vol_window: Number of periods for volatility estimation.
+            rebal_interval: Number of periods between rebalance checks.
+
+        Returns:
+            Tuple of (equity_curve, cash_curve) as pd.Series.
+        """
         cash = float(initial_cash)
         shares: dict[str, int] = dict.fromkeys(symbols, 0)
         returns: dict[str, list[float]] = {symbol: [] for symbol in symbols}
@@ -1504,12 +1730,22 @@ class NautilusAdapter(BacktestEngine):
         return pd.Series(equity_values, index=prices.index), pd.Series(cash_values, index=prices.index)
 
     def _to_nautilus_dataframe(self, price_df: pd.DataFrame) -> pd.DataFrame:
+        """Convert an OHLCV DataFrame to the lowercase, UTC-indexed format Nautilus expects."""
         bars = price_df.loc[:, ["Open", "High", "Low", "Close", "Volume"]].copy()
         bars.columns = ["open", "high", "low", "close", "volume"]
         bars.index = pd.to_datetime(bars.index, utc=True)
         return bars
 
     def _map_nautilus_metrics(self, *, result: Any, initial_cash: float) -> dict[str, float]:
+        """Map a NautilusTrader backtest result object to canonical metric keys.
+
+        Args:
+            result: The Nautilus BacktestResult object.
+            initial_cash: Starting cash used to compute returns and CAGR.
+
+        Returns:
+            Dict of canonical metric keys.
+        """
         pnl_by_currency = getattr(result, "stats_pnls", {})
         usd_stats = pnl_by_currency.get("USD", {}) if isinstance(pnl_by_currency, dict) else {}
         pnl_total = float(usd_stats.get("PnL (total)", 0.0))
@@ -1537,6 +1773,7 @@ class NautilusAdapter(BacktestEngine):
         }
 
     def _finite_or_default(self, value: Any, default: float) -> float:
+        """Return the value as a float if finite, otherwise return the default."""
         try:
             as_float = float(value)
         except (TypeError, ValueError):
@@ -1544,9 +1781,11 @@ class NautilusAdapter(BacktestEngine):
         return as_float if isfinite(as_float) else default
 
     def _supports_native_nautilus(self) -> bool:
+        """Check whether the nautilus_trader package is importable."""
         return find_spec("nautilus_trader") is not None
 
     def _get_nautilus_version(self) -> str:
+        """Return the installed nautilus_trader version, or a fallback string."""
         try:
             import nautilus_trader
 
@@ -1555,6 +1794,14 @@ class NautilusAdapter(BacktestEngine):
             return "unknown (not installed)"
 
     def supports_feature(self, feature: str) -> bool:
+        """Check whether this adapter supports a named feature.
+
+        Args:
+            feature: The feature name to query (e.g., "basic_backtest").
+
+        Returns:
+            True if the feature is supported, False otherwise.
+        """
         supported = {
             "basic_backtest",
             "snapshot_reference",

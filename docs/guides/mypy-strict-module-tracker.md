@@ -6,52 +6,76 @@ Tracks package scopes where stricter function-signature rules are enforced.
 
 The following module scopes are enforced via `pyproject.toml` overrides:
 
-1. `finbot.core.*`
-2. `finbot.services.execution.*`
-3. `finbot.services.backtesting.*`
-4. `finbot.libs.api_manager.*`
-5. `finbot.libs.logger.*`
-6. `finbot.services.data_quality.*`
-7. `finbot.services.health_economics.*`
-8. `finbot.services.optimization.*`
-9. `finbot.utils.request_utils.*`
-10. `finbot.utils.pandas_utils.*`
-11. `finbot.utils.datetime_utils.*`
-12. `finbot.utils.file_utils.*`
-13. `finbot.utils.multithreading_utils.*`
-14. `finbot.utils.finance_utils.*`
-15. `finbot.utils.class_utils.*`
-16. `finbot.utils.dict_utils.*`
-17. `finbot.utils.function_utils.*`
-18. `finbot.utils.json_utils.*`
-19. `finbot.utils.validation_utils.*`
-20. `finbot.utils.vectorization_utils.*`
-21. `finbot.utils.plotting_utils.*`
-22. `finbot.utils.data_science_utils.data_analysis.*`
-23. `finbot.utils.data_collection_utils.bls.*`
-24. `finbot.utils.data_collection_utils.fred.*`
-25. `finbot.utils.data_collection_utils.yfinance.*`
-26. `finbot.utils.data_science_utils.data_transformation.*` (full scope: interpolators, scalers_normalizers, data_smoothing, rebase)
-27. `finbot.utils.data_collection_utils.alpha_vantage.*`
-28. `finbot.utils.data_collection_utils.google_finance.*`
-29. `finbot.utils.data_collection_utils.pdr.*`
-30. `finbot.utils.data_collection_utils.scrapers.*`
-31. `finbot.utils.data_science_utils.data_cleaning.*`
+1. `finbot.adapters.*`
+2. `finbot.cli.*`
+3. `finbot.config.*`
+4. `finbot.constants.*`
+5. `finbot.core.*`
+6. `finbot.dashboard.*`
+7. `finbot.services.execution.*`
+8. `finbot.services.backtesting.*`
+9. `finbot.services.simulation.*`
+10. `finbot.libs.api_manager.*`
+11. `finbot.libs.logger.*`
+12. `finbot.services.data_quality.*`
+13. `finbot.services.health_economics.*`
+14. `finbot.services.optimization.*`
+15. `finbot.utils.request_utils.*`
+16. `finbot.utils.pandas_utils.*`
+17. `finbot.utils.datetime_utils.*`
+18. `finbot.utils.file_utils.*`
+19. `finbot.utils.multithreading_utils.*`
+20. `finbot.utils.finance_utils.*`
+21. `finbot.utils.class_utils.*`
+22. `finbot.utils.dict_utils.*`
+23. `finbot.utils.function_utils.*`
+24. `finbot.utils.json_utils.*`
+25. `finbot.utils.validation_utils.*`
+26. `finbot.utils.vectorization_utils.*`
+27. `finbot.utils.plotting_utils.*`
+28. `finbot.utils.data_science_utils.data_analysis.*`
+29. `finbot.utils.data_collection_utils.bls.*`
+30. `finbot.utils.data_collection_utils.fred.*`
+31. `finbot.utils.data_collection_utils.yfinance.*`
+32. `finbot.utils.data_science_utils.data_transformation.*` (full scope: interpolators, scalers_normalizers, data_smoothing, rebase)
+33. `finbot.utils.data_collection_utils.alpha_vantage.*`
+34. `finbot.utils.data_collection_utils.google_finance.*`
+35. `finbot.utils.data_collection_utils.pdr.*`
+36. `finbot.utils.data_collection_utils.scrapers.*`
+37. `finbot.utils.data_science_utils.data_cleaning.*`
 
-Enforced flags:
+Enforced flags (all 37 scopes):
 
 - `disallow_untyped_defs = true`
 - `disallow_incomplete_defs = true`
 
-## Current Status (2026-02-23)
+### Stricter flags (selective scopes, 2026-02-24)
 
-All `finbot/utils/` subpackages are now under strict mypy enforcement. Full coverage achieved.
+| Scope | `warn_return_any` | `disallow_any_generics` |
+| --- | --- | --- |
+| `finbot.cli.*` | ✅ | ✅ |
+| `finbot.services.data_quality.*` | ✅ | ✅ |
+| `finbot.core.*` | ✅ | — |
+| `finbot.constants.*` | ✅ | — |
+| `finbot.services.execution.*` | ✅ | — |
+| `finbot.services.health_economics.*` | ✅ | — |
+| `finbot.adapters.*` | — | ✅ |
+
+## Current Status (2026-02-24)
+
+All `finbot/` namespaces are now under strict mypy enforcement (37 scopes total). Full coverage achieved.
 
 | Scope | Strict Status | Notes |
 | --- | --- | --- |
+| `finbot.adapters.*` | ✅ Enabled | Nautilus adapter signatures clean (2026-02-24) |
+| `finbot.cli.*` | ✅ Enabled | Click commands and validators clean (2026-02-24) |
+| `finbot.config.*` | ✅ Enabled | Dynaconf settings/logging config typed (2026-02-24) |
+| `finbot.constants.*` | ✅ Enabled | Host constants/tracked collections typed (2026-02-24) |
 | `finbot.core.*` | ✅ Enabled | Clean under strict function-signature rules |
+| `finbot.dashboard.*` | ✅ Enabled | Dashboard pages and utils typed (2026-02-24) |
 | `finbot.services.execution.*` | ✅ Enabled | Clean under strict function-signature rules |
 | `finbot.services.backtesting.*` | ✅ Enabled | Clean under strict function-signature rules |
+| `finbot.services.simulation.*` | ✅ Enabled | Fund/MC/bond simulators typed (2026-02-24) |
 | `finbot.libs.api_manager.*` | ✅ Enabled | Typed APIs/resource groups/manager helpers |
 | `finbot.libs.logger.*` | ✅ Enabled | Typed formatters/audit/queue setup helpers |
 | `finbot.services.data_quality.*` | ✅ Enabled | Validators and freshness checks pass strict signatures |

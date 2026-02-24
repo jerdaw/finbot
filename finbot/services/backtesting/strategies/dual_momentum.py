@@ -27,12 +27,19 @@ class DualMomentum(bt.Strategy):
     """
 
     def __init__(self, lookback: int = 252, rebal_interval: int = 21):
+        """Initialize the dual momentum strategy.
+
+        Args:
+            lookback: Number of periods for momentum calculation.
+            rebal_interval: Periods between rebalance checks.
+        """
         self.lookback = lookback
         self.rebal_interval = rebal_interval
         self.periods_elapsed = 0
         self.order = None
 
     def notify_order(self, order: bt.Order) -> None:
+        """Reset pending order flag when an order completes."""
         self.order = None
 
     def _momentum(self, data: bt.feeds.PandasData) -> float:
@@ -65,6 +72,12 @@ class DualMomentum(bt.Strategy):
                 self.sell(data=d, size=pos)
 
     def next(self) -> None:
+        """Execute dual momentum logic on each bar.
+
+        Waits for sufficient lookback history, then rebalances at the
+        configured interval by selecting the strongest asset or moving
+        to cash if both assets show negative momentum.
+        """
         if self.order:
             return  # type: ignore[unreachable]
         if len(self.datas[0]) <= self.lookback:

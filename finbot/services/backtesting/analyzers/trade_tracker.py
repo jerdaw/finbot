@@ -31,6 +31,7 @@ class TradeTracker(bt.Analyzer):
     """
 
     def __init__(self) -> None:
+        """Initialize the trade tracker with an empty trade list."""
         super().__init__()
         self.trades: list[TradeInfo] = []
 

@@ -84,7 +84,7 @@ def prepare_logging_config(logger_name: str, log_level: str, log_file_path: Path
     }
 
 
-def _setup_queue_logging(log_config: dict[str, Any], logger_name: str):
+def _setup_queue_logging(log_config: dict[str, Any], logger_name: str) -> tuple[QueueHandler, QueueListener]:
     """
     Set up queue logging using the provided logging configuration.
     """

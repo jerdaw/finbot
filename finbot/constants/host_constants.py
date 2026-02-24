@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 import psutil
 
 
-def _generate_impersistent_host_id():
+def _generate_impersistent_host_id() -> str:
     """Generate a unique host ID based on system attributes."""
     # TODO: Using impersistent host ID. ID may change and cause issues with data consistency.
     system_info = [
@@ -42,7 +42,7 @@ class HostSystem:
     host_identifier: str = field(default_factory=_generate_impersistent_host_id)
 
     @staticmethod
-    def get_cpu_name():
+    def get_cpu_name() -> str:
         """Retrieve the CPU name using system commands based on the OS."""
         try:
             if platform.system() == "Windows":
@@ -74,7 +74,7 @@ class HostSystem:
             return "Unavailable"
 
     @staticmethod
-    def get_active_network_interface():
+    def get_active_network_interface() -> str:
         """Identify the currently active network interface."""
         active_interfaces = []
         for interface, addrs in psutil.net_if_addrs().items():
@@ -84,7 +84,7 @@ class HostSystem:
                     break  # Only add each interface once
         return ", ".join(active_interfaces) if active_interfaces else "None"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return (
             f"Host ID: {self.host_identifier}, "
             f"Hostname: {self.hostname}, IP Address: {self.ip_address}, "

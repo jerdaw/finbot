@@ -11,7 +11,7 @@ from finbot.constants.path_constants import CONFIG_DIR
 from finbot.utils.multithreading_utils.get_max_threads import get_max_threads
 
 
-def validate_settings(settings: Dynaconf):
+def validate_settings(settings: Dynaconf) -> None:
     settings.validators.register(
         Validator("APP_NAME", must_exist=True, eq="finbot"),
         Validator("NAME", must_exist=True, eq="development", env="development"),
@@ -22,7 +22,7 @@ def validate_settings(settings: Dynaconf):
     settings.validators.validate()
 
 
-def configure_settings(settings: Dynaconf):
+def configure_settings(settings: Dynaconf) -> None:
     # Host configuration
     settings.set("host.host_identifier", CURRENT_HOST_INFO.host_identifier)
     settings.set("host.max_threads", get_max_threads(reserved_threads=1))
@@ -38,7 +38,7 @@ def configure_settings(settings: Dynaconf):
         pd.set_option("display.max_rows", 50)
 
 
-def load_settings():
+def load_settings() -> Dynaconf:
     """
     Load settings from the configuration files and environment variables.
 

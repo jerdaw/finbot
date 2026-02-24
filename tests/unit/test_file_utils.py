@@ -20,6 +20,7 @@ from finbot.utils.file_utils.get_latest_matching_file import (
     get_latest_matching_file,
 )
 from finbot.utils.file_utils.get_matching_files import get_matching_files
+from finbot.utils.file_utils.is_binary_file import is_binary
 from finbot.utils.file_utils.is_file_outdated import is_file_outdated
 from finbot.utils.file_utils.load_text import load_text
 
@@ -415,6 +416,28 @@ class TestIsFileOutdated:
         result = is_file_outdated(parquet_file, analyze_pandas=True)
 
         assert result is True
+
+
+class TestIsBinary:
+    """Tests for is_binary()."""
+
+    def test_ascii_text_is_not_binary(self):
+        assert is_binary(b"Hello, world!\nThis is plain text.") is False
+
+    def test_empty_bytes_is_not_binary(self):
+        assert is_binary(b"") is False
+
+    def test_null_bytes_is_binary(self):
+        assert is_binary(b"\x00\x01\x02\x03") is True
+
+    def test_mixed_text_with_null_is_binary(self):
+        assert is_binary(b"Hello\x00World") is True
+
+    def test_tab_newline_carriage_return_are_text(self):
+        assert is_binary(b"line1\tfield\nline2\r\n") is False
+
+    def test_high_bytes_are_binary(self):
+        assert is_binary(b"\x80\x81\xff") is True
 
 
 if __name__ == "__main__":
