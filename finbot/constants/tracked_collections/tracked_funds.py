@@ -53,7 +53,7 @@ class FundData:
         },
     )
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if not hasattr(self, "TRACKED_ATTRS"):
             raise AttributeError("TRACKED_ATTRS must be defined.")
 
@@ -64,7 +64,7 @@ class FundData:
 
         self.validate_fund_data()
 
-    def validate_fund_data(self):
+    def validate_fund_data(self) -> None:
         for expected_attr, expected_type in self.TRACKED_ATTRS.items():
             actual_attr = getattr(self, expected_attr)
             if not actual_attr and not (

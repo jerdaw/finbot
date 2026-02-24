@@ -1,17 +1,18 @@
 import numpy as np
+import pandas as pd
 from matplotlib import pyplot as plt
 
 
-def plot_trials(trials_df):
+def plot_trials(trials_df: pd.DataFrame) -> None:
     for _i, t in trials_df.iterrows():
         plt.plot(t)
-    plt.xlabel(trials_df.columns.name)
-    plt.ylabel(trials_df.index.name)
+    plt.xlabel(str(trials_df.columns.name))
+    plt.ylabel(str(trials_df.index.name))
     plt.suptitle("Monte Carlo Trial Results")
     plt.show()
 
 
-def plot_hist(trials_df, bins=100):
+def plot_hist(trials_df: pd.DataFrame, bins: int = 100) -> None:
     trial_closes = trials_df[trials_df.columns[-1]]
     start_price = trials_df[trials_df.columns[0]][trials_df.index[0]]
     sim_periods = len(trials_df.columns)

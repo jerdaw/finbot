@@ -1,14 +1,14 @@
 # Finbot Roadmap
 
 **Created:** 2026-02-10
-**Last Updated:** 2026-02-23
-**Status:** Priority 0-6 complete (P5: 43/45 with item 12 partial/item 42 deferred; P6: 100% with item 76 formally deferred). Priority 7 complete (25/27 active items — 5 media items on hold).
+**Last Updated:** 2026-02-24
+**Status:** Priority 0-6 complete (P5: 44/45 with item 42 deferred; P6: 100% with item 76 formally deferred). Priority 7 complete (25/27 active items — 5 media items on hold).
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
 
 See Completed Items table below and git history for details on implemented features.
 
-**Current Plan Record:** None active. Last plan: `docs/planning/archive/IMPLEMENTATION_PLAN_8.5_E6_NATIVE_ONLY_VALUATION_PARITY_CLOSURE.md` (deferred 2026-02-23)
+**Current Plan Record:** None active. Last plan: `docs/planning/archive/IMPLEMENTATION_PLAN_9_AUTONOMOUS_WORKSTREAMS.md` (completed 2026-02-24)
 
 ---
 
@@ -142,8 +142,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Professional (quality standards)
     - **What:** Gradually enable disallow_untyped_defs=true, add type annotations
     - **Evidence:** Stricter mypy config, type-safe codebase
-    - **Status:** 🔄 Partially Complete (2026-02-23)
-    - **Implementation:** Added staged module-level strict mypy enforcement across core/execution/backtesting/libs plus all utility namespaces (see canonical scope list in `docs/guides/mypy-strict-module-tracker.md` and overrides in `pyproject.toml`); fixed surfaced typing gaps in each rollout wave; extended strict coverage into all `data_collection_utils` and `data_science_utils` scopes plus remaining utility subpackages; all `finbot/utils/` subpackages now under strict enforcement; validated with `uv run mypy finbot/` (clean). Global `disallow_untyped_defs = true` remains deferred for non-utility/non-core scopes (gradual adoption).
+    - **Status:** ✅ Complete (2026-02-24)
+    - **Implementation:** All 37 namespaces now under strict `disallow_untyped_defs` + `disallow_incomplete_defs` enforcement (see `docs/guides/mypy-strict-module-tracker.md`). Additionally, `warn_return_any` enabled on 6 scopes and `disallow_any_generics` on 3 scopes where error-free. Validated with `uv run mypy finbot/` (0 errors, 378 files).
 
 ### 5.3 Documentation & Communication
 
@@ -910,3 +910,6 @@ New priority tier defined 2026-02-17 to maximize project impact and visibility w
 | Mypy Phases 4–5 (P7.1 cont.) | 2026-02-18 | disallow_untyped_defs enforced for all finbot.services.backtesting.* modules; 0 errors in 39 files |
 | Stricter mypy Wave 11 — full utils coverage (5.2.12 partial) | 2026-02-23 | Extended strict typed-def enforcement to all remaining `finbot/utils/` subpackages: alpha_vantage, google_finance, pdr, scrapers, data_cleaning, and full data_transformation scope; 31 scopes now enforced; global `uv run mypy finbot/` remains clean (0 errors, 378 files) |
 | E6 Item 76 formal deferral (6.76) | 2026-02-23 | Native-only Nautilus valuation parity formally deferred; ADR-011 Defer confirmed; Backtrader primary engine; IMPLEMENTATION_PLAN_8.5 archived |
+| Autonomous workstreams — unit tests (WS1) | 2026-02-24 | 198 new tests across 9 new + 2 modified test files: datetime utils (63), pandas/file utils (23), backtesting/simulation helpers (36), tracked collections (31), Alpha Vantage utils/wrappers (31), YFinance utils (19); 1398 total tests |
+| Autonomous workstreams — mypy strict completion (WS2) | 2026-02-24 | Extended strict enforcement to all remaining namespaces (adapters, cli, config, constants, dashboard, simulation); 37 scopes total; selectively enabled `warn_return_any` (6 scopes) and `disallow_any_generics` (3 scopes); item 5.2.12 now complete |
+| Autonomous workstreams — docstring coverage (WS4) | 2026-02-24 | Added Google-style docstrings to nautilus adapter (~37 methods), api_manager/logger (~60 items), backtesting strategies/analyzers/brokers (~55 items); interrogate threshold raised 55% to 73%; actual coverage 75.6% |

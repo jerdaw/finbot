@@ -1,7 +1,9 @@
+from typing import Any
+
 import numpy as np
 
 
-def sim_type_nd(**kwargs) -> np.ndarray:
+def sim_type_nd(**kwargs: Any) -> np.ndarray:
     """Normal distribution Monte Carlo simulation."""
     sim_periods = kwargs["sim_periods"]
     start_price = kwargs["start_price"]

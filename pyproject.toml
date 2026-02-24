@@ -229,14 +229,39 @@ ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = [
-    "finbot.core.*",
-    "finbot.services.execution.*",
+    "finbot.cli.*",
+    "finbot.services.data_quality.*",
 ]
 disallow_untyped_defs = true
 disallow_incomplete_defs = true
+warn_return_any = true
+disallow_any_generics = true
 
 [[tool.mypy.overrides]]
-module = "finbot.services.backtesting.*"
+module = [
+    "finbot.core.*",
+    "finbot.constants.*",
+    "finbot.services.execution.*",
+    "finbot.services.health_economics.*",
+]
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+warn_return_any = true
+
+[[tool.mypy.overrides]]
+module = "finbot.adapters.*"
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_any_generics = true
+
+[[tool.mypy.overrides]]
+module = [
+    "finbot.config.*",
+    "finbot.dashboard.*",
+    "finbot.services.backtesting.*",
+    "finbot.services.optimization.*",
+    "finbot.services.simulation.*",
+]
 disallow_untyped_defs = true
 disallow_incomplete_defs = true
 
@@ -244,15 +269,6 @@ disallow_incomplete_defs = true
 module = [
     "finbot.libs.api_manager.*",
     "finbot.libs.logger.*",
-]
-disallow_untyped_defs = true
-disallow_incomplete_defs = true
-
-[[tool.mypy.overrides]]
-module = [
-    "finbot.services.data_quality.*",
-    "finbot.services.health_economics.*",
-    "finbot.services.optimization.*",
 ]
 disallow_untyped_defs = true
 disallow_incomplete_defs = true
@@ -323,10 +339,10 @@ exclude_dirs = ["tests", "./tests/*.py", "*/test_*.py", "*/*_test.py"]
 
 [tool.interrogate]
 # Docstring coverage enforcement
-# Current coverage: 56.6% (as of 2026-02-12)
+# Current coverage: 75.6% (as of 2026-02-24)
 # Goal: 80% (gradual improvement)
-# Starting threshold set to 55% to allow for minor fluctuations
-fail-under = 55.0
+# Threshold raised from 55% after docstring additions across adapters, libs, strategies
+fail-under = 73.0
 exclude = [
     "setup.py",
     "docs",

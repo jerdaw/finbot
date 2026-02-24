@@ -3,11 +3,15 @@
 from __future__ import annotations
 
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 import pandas as pd
 import streamlit as st
 
 from finbot.dashboard.disclaimer import show_sidebar_accessibility, show_sidebar_disclaimer
+
+if TYPE_CHECKING:
+    from finbot.services.backtesting.experiment_registry import ExperimentRegistry
 from finbot.dashboard.utils.experiment_comparison import (
     build_assumptions_comparison,
     build_metrics_comparison,
@@ -27,10 +31,9 @@ st.markdown("Compare backtest experiments side-by-side to analyze assumptions an
 
 
 @st.cache_resource
-def _get_registry():
+def _get_registry() -> ExperimentRegistry:
     """Get experiment registry (cached)."""
     from finbot.constants.path_constants import BACKTESTS_DATA_DIR
-    from finbot.services.backtesting.experiment_registry import ExperimentRegistry
 
     return ExperimentRegistry(BACKTESTS_DATA_DIR / "experiments")
 

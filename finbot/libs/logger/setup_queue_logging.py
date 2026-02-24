@@ -1,3 +1,10 @@
+"""Queue-based logging setup for non-blocking async log output.
+
+Configures a ``QueueHandler`` / ``QueueListener`` pair so that all log
+records are enqueued by the caller and consumed on a background thread,
+keeping the main thread free of I/O overhead.
+"""
+
 import atexit
 import logging
 from logging.config import dictConfig
@@ -7,8 +14,22 @@ from typing import Any
 
 
 def setup_queue_logging(log_config: dict[str, Any], logger_name: str) -> tuple[QueueHandler, QueueListener]:
-    """
-    Set up queue logging using the provided logging configuration.
+    """Set up queue-based logging using the provided logging configuration.
+
+    Applies *log_config* via ``dictConfig``, extracts the resulting handlers,
+    wraps them in a ``QueueListener``, and returns a ``QueueHandler`` that
+    the caller should attach to the target logger.
+
+    The listener is started immediately and registered for graceful shutdown
+    via ``atexit``.
+
+    Args:
+        log_config: A ``logging.config.dictConfig``-compatible dictionary.
+        logger_name: Name of the logger whose handlers should be migrated
+            to the queue listener.
+
+    Returns:
+        A tuple of (``QueueHandler``, ``QueueListener``).
     """
     log_queue: Queue[Any] = Queue(-1)  # No limit on size
 

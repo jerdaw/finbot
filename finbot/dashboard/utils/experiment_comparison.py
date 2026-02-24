@@ -126,7 +126,7 @@ def highlight_best_worst(
             "var_95": False,  # Lower is better (less negative)
         }
 
-    def highlight_row(row):
+    def highlight_row(row: pd.Series[Any]) -> list[str]:
         """Highlight best (green) and worst (red) in a row."""
         if row.name not in df.index:
             return [""] * len(row)

@@ -10,9 +10,34 @@ from finbot.services.backtesting.indicators.positive_returns import PositiveRetu
 
 
 class DipBuyStdev(bt.Strategy):
-    """Dip-buying strategy using standard deviation quantiles."""
+    """Dip-buying strategy using return distribution quantiles.
+
+    Buys when the current negative return falls below its historical
+    quantile (indicating a significant dip) and sells when the current
+    positive return exceeds its historical quantile (indicating unusual
+    strength). Optionally rotates between datas[0] and datas[1].
+
+    Uses a 252-bar window for positive returns and a 63-bar window
+    (~1 quarter) for negative returns.
+
+    Args:
+        buy_quantile: Quantile threshold for negative returns to trigger a buy
+            (e.g., 0.1 means buy on the worst 10% of negative returns).
+        sell_quantile: Quantile threshold for positive returns to trigger a sell
+            (default 1.0 effectively disables selling on positive returns).
+
+    Data feeds:
+        datas[0]: Primary equity to buy on dips.
+        datas[1] (optional): Alternative asset to rotate into on sells.
+    """
 
     def __init__(self, buy_quantile: float, sell_quantile: float = 1.0) -> None:
+        """Initialize the standard-deviation dip-buy strategy.
+
+        Args:
+            buy_quantile: Quantile threshold for negative returns (buy trigger).
+            sell_quantile: Quantile threshold for positive returns (sell trigger).
+        """
         self.buy_quantile = buy_quantile
         self.sell_quantile = sell_quantile
         self.d_since_last_sale = 0
@@ -22,9 +47,16 @@ class DipBuyStdev(bt.Strategy):
         self.neg_returns = NegativeReturns(self.datas[0], period=round(252 / 4))  # type: ignore[call-arg]
 
     def notify_order(self, order: bt.Order) -> None:
+        """Reset pending order flag when an order completes."""
         self.order = None
 
     def next(self) -> None:
+        """Execute quantile-based dip-buy logic on each bar.
+
+        Buys datas[0] when negative returns fall below buy_quantile, selling
+        datas[1] if needed to fund the purchase. Sells datas[0] when positive
+        returns exceed sell_quantile, optionally buying datas[1] with proceeds.
+        """
         if self.order:
             return
 

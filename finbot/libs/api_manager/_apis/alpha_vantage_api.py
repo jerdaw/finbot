@@ -1,3 +1,10 @@
+"""Alpha Vantage free-tier API configuration.
+
+Registers the Alpha Vantage economic-indicator endpoints (GDP, CPI,
+unemployment, etc.) under the free-tier resource group with its
+associated rate limits.
+"""
+
 from finbot.libs.api_manager._resource_groups.api_resource_groups import alpha_vantage_api_resouce_group
 from finbot.libs.api_manager._utils.api import API
 

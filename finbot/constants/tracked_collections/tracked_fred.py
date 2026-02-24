@@ -59,7 +59,7 @@ class FredData:
         },
     )
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if not hasattr(self, "TRACKED_ATTRS"):
             raise AttributeError("TRACKED_ATTRS must be defined.")
 
@@ -71,7 +71,7 @@ class FredData:
 
         self.validate_fred_data()
 
-    def validate_fred_data(self):
+    def validate_fred_data(self) -> None:
         for attr, attr_type in self.TRACKED_ATTRS.items():
             val = getattr(self, attr)
             if not val and (attr != "seasonally_adjusted" and not isinstance(val, bool)):

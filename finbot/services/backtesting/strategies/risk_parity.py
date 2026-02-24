@@ -20,6 +20,12 @@ class RiskParity(bt.Strategy):
     """
 
     def __init__(self, vol_window: int = 63, rebal_interval: int = 21):
+        """Initialize the risk parity strategy.
+
+        Args:
+            vol_window: Rolling window for volatility calculation.
+            rebal_interval: Periods between rebalances.
+        """
         self.vol_window = vol_window
         self.rebal_interval = rebal_interval
         self.periods_elapsed = 0
@@ -30,6 +36,7 @@ class RiskParity(bt.Strategy):
         self.prev_close: dict[int, float | None] = dict.fromkeys(range(len(self.datas)))
 
     def notify_order(self, order: bt.Order) -> None:
+        """Reset pending order flag when an order completes."""
         self.order = None
 
     def _compute_weights(self) -> list[float]:
@@ -52,6 +59,12 @@ class RiskParity(bt.Strategy):
         return [v / total for v in inv_vols]
 
     def next(self) -> None:
+        """Execute risk parity logic on each bar.
+
+        Tracks daily returns for all assets, waits for sufficient history,
+        then rebalances at the configured interval. Sells overweight
+        positions first, then buys underweight positions.
+        """
         if self.order:
             return  # type: ignore[unreachable]
 
