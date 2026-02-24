@@ -31,15 +31,21 @@ The following module scopes are enforced via `pyproject.toml` overrides:
 23. `finbot.utils.data_collection_utils.bls.*`
 24. `finbot.utils.data_collection_utils.fred.*`
 25. `finbot.utils.data_collection_utils.yfinance.*`
-26. `finbot.utils.data_science_utils.data_transformation.interpolators.*`
-27. `finbot.utils.data_science_utils.data_transformation.scalers_normalizers.*`
+26. `finbot.utils.data_science_utils.data_transformation.*` (full scope: interpolators, scalers_normalizers, data_smoothing, rebase)
+27. `finbot.utils.data_collection_utils.alpha_vantage.*`
+28. `finbot.utils.data_collection_utils.google_finance.*`
+29. `finbot.utils.data_collection_utils.pdr.*`
+30. `finbot.utils.data_collection_utils.scrapers.*`
+31. `finbot.utils.data_science_utils.data_cleaning.*`
 
 Enforced flags:
 
 - `disallow_untyped_defs = true`
 - `disallow_incomplete_defs = true`
 
-## Current Status (2026-02-20)
+## Current Status (2026-02-23)
+
+All `finbot/utils/` subpackages are now under strict mypy enforcement. Full coverage achieved.
 
 | Scope | Strict Status | Notes |
 | --- | --- | --- |
@@ -68,9 +74,12 @@ Enforced flags:
 | `finbot.utils.data_collection_utils.bls.*` | ✅ Enabled | BLS API helpers/signatures hardened for strict typed-def enforcement |
 | `finbot.utils.data_collection_utils.fred.*` | ✅ Enabled | FRED collection helper scope passes strict function-signature checks |
 | `finbot.utils.data_collection_utils.yfinance.*` | ✅ Enabled | YFinance request/load helper signatures hardened for strict typed-def enforcement |
-| `finbot.utils.data_science_utils.data_transformation.interpolators.*` | ✅ Enabled | Interpolator helper scope passes strict function-signature checks |
-| `finbot.utils.data_science_utils.data_transformation.scalers_normalizers.*` | ✅ Enabled | Scaler/normalizer hierarchy signatures completed for strict typed-def enforcement |
-| `finbot.utils.*` | ⏳ Pending | Legacy utility subpackages still pending staged rollout |
+| `finbot.utils.data_science_utils.data_transformation.*` | ✅ Enabled | Full scope: interpolators, scalers_normalizers, data_smoothing, rebase (2026-02-23) |
+| `finbot.utils.data_collection_utils.alpha_vantage.*` | ✅ Enabled | Sentiment plotting/retrieval signatures typed (2026-02-23) |
+| `finbot.utils.data_collection_utils.google_finance.*` | ✅ Enabled | Google Sheets API helpers typed (2026-02-23) |
+| `finbot.utils.data_collection_utils.pdr.*` | ✅ Enabled | pandas_datareader base helpers typed (2026-02-23) |
+| `finbot.utils.data_collection_utils.scrapers.*` | ✅ Enabled | MSCI/Shiller/multpl scraper signatures typed (2026-02-23) |
+| `finbot.utils.data_science_utils.data_cleaning.*` | ✅ Enabled | Outlier/missing-data/imputation handlers typed (2026-02-23) |
 
 ## Policy for New Code
 
@@ -81,39 +90,8 @@ For new modules in strict-enabled namespaces:
 3. New `# type: ignore` comments require justification and should be scoped narrowly.
 4. Changes should keep `uv run mypy finbot/` clean.
 
-For new modules outside strict-enabled namespaces:
-
-1. Prefer complete signatures by default.
-2. If untyped signatures are introduced for practical reasons, add a follow-up task to type them.
-
 ## Validation Commands
 
 ```bash
 uv run mypy finbot/
-uv run mypy \
-  finbot/libs/api_manager \
-  finbot/libs/logger \
-  finbot/services/data_quality \
-  finbot/services/health_economics \
-  finbot/services/optimization \
-  finbot/utils/request_utils \
-  finbot/utils/pandas_utils \
-  finbot/utils/datetime_utils \
-  finbot/utils/file_utils \
-  finbot/utils/multithreading_utils \
-  finbot/utils/finance_utils \
-  finbot/utils/class_utils \
-  finbot/utils/dict_utils \
-  finbot/utils/function_utils \
-  finbot/utils/json_utils \
-  finbot/utils/validation_utils \
-  finbot/utils/vectorization_utils \
-  finbot/utils/plotting_utils \
-  finbot/utils/data_science_utils/data_analysis \
-  finbot/utils/data_collection_utils/bls \
-  finbot/utils/data_collection_utils/fred \
-  finbot/utils/data_collection_utils/yfinance \
-  finbot/utils/data_science_utils/data_transformation/interpolators \
-  finbot/utils/data_science_utils/data_transformation/scalers_normalizers \
-  --disallow-untyped-defs --disallow-incomplete-defs
 ```

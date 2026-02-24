@@ -45,7 +45,9 @@ from finbot.utils.data_science_utils.data_cleaning.missing_data_handlers._missin
 )
 
 
-def add_missing_indicators(data, features="missing-only", **kwargs):
+def add_missing_indicators(
+    data: pd.DataFrame | pd.Series, features: str = "missing-only", **kwargs: object
+) -> pd.DataFrame | pd.Series:
     """
     Adds binary indicators for missing values in the given data using sklearn's MissingIndicator.
 
@@ -76,4 +78,4 @@ def add_missing_indicators(data, features="missing-only", **kwargs):
     )
 
     result = pd.concat([data, df_indicators], axis=1)
-    return result.squeeze() if was_series else result
+    return result.squeeze() if was_series else result  # type: ignore[return-value]

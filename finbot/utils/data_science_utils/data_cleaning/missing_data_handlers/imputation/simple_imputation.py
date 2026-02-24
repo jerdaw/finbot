@@ -61,7 +61,7 @@ def simple_averaging(
     fill_value: Any | None = None,
     dropna_start: bool = True,
     inplace: bool = False,
-    **kwargs,
+    **kwargs: object,
 ) -> pd.DataFrame | pd.Series:
     """
     Fill missing values using sklearn's SimpleImputer with extended functionality.

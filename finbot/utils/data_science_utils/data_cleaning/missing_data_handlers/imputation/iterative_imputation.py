@@ -68,7 +68,9 @@ from finbot.utils.data_science_utils.data_cleaning.missing_data_handlers._missin
 )
 
 
-def iterative_impute(data, inplace: bool = False, **kwargs):
+def iterative_impute(
+    data: pd.DataFrame | pd.Series, inplace: bool = False, **kwargs: object
+) -> pd.DataFrame | pd.Series:
     """
     Perform imputation on the given data using sklearn's IterativeImputer.
 
@@ -93,11 +95,11 @@ def iterative_impute(data, inplace: bool = False, **kwargs):
 
     if inplace:
         data.loc[:, :] = imputed_data
-        return data.squeeze() if was_series else data
+        return data.squeeze() if was_series else data  # type: ignore[return-value]
     else:
         imputed_result = pd.DataFrame(
             imputed_data,
             columns=data.columns,
             index=data.index,
         )
-        return imputed_result.squeeze() if was_series else imputed_result
+        return imputed_result.squeeze() if was_series else imputed_result  # type: ignore[return-value]

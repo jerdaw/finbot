@@ -786,7 +786,7 @@ def get_all(
     end_date: dt.date | None = None,
     check_update: bool = False,
     force_update: bool = False,
-    multiprocessing=True,
+    multiprocessing: bool = True,
 ) -> list[pd.DataFrame]:
     """Runs all the other functions in the module, optionally using multiprocessing."""
     # List of all functions to call

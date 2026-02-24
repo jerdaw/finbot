@@ -79,7 +79,7 @@ import pandas as pd
 from finbot.utils.data_science_utils.data_cleaning.outlier_handlers._outliers_utils import _apply_treatment_to_pandas
 
 
-def _cap_outliers_logic(**kwargs) -> pd.Series:
+def _cap_outliers_logic(**kwargs: object) -> pd.Series:
     """Cap outliers in the Series within the specified limits."""
     raise NotImplementedError("This function hasn't yet been confirmed to work as intended.")
     data = kwargs.get("data")  # type: ignore[unreachable]

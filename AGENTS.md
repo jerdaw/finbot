@@ -33,9 +33,9 @@ uv run pytest
 uv run python scripts/update_daily.py
 ```
 
-## Current Delivery Status (2026-02-20)
+## Current Delivery Status (2026-02-23)
 
-Backtesting/live-readiness transition is **Epics E0-E6 current cycle complete** (adapter-first path). Priority 7 in progress.
+Backtesting/live-readiness transition is **Epics E0-E6 complete** (adapter-first path). Priority 7 complete (25/27 active items).
 
 ### Priority 6: Backtesting-to-Live Readiness (100% Complete)
 
@@ -46,7 +46,7 @@ Backtesting/live-readiness transition is **Epics E0-E6 current cycle complete** 
   - ✅ **E3**: Cost models, corporate actions, walk-forward analysis, regime detection
   - ✅ **E4**: Experiment tracking (registry, snapshots, batch observability, dashboard)
   - ✅ **E5**: Live-readiness execution system (orders, latency, risk controls, checkpoints)
-  - ✅ **E6 (current cycle)**: Nautilus pilot hardening, comparative benchmark artifact publication, and decision gate closure (**Defer** outcome)
+  - ✅ **E6**: Nautilus pilot hardening, comparative benchmark artifact publication, and decision gate closure (**Defer** outcome; item 76 formally deferred 2026-02-23)
 
 - **E5 Deliverables (Live-Readiness Without Production):**
   - Order lifecycle tracking with full execution history
@@ -54,7 +54,7 @@ Backtesting/live-readiness transition is **Epics E0-E6 current cycle complete** 
   - Risk controls (position limits, exposure limits, drawdown protection, kill-switch)
   - State checkpoint and recovery for disaster recovery
 
-- **Post-E6 Follow-up:** Priority 6 items 69-75 complete; item 76 (native-only valuation parity closure) remains in progress; ADR-011 remains **Defer**.
+- **Post-E6 Follow-up:** Priority 6 items 69-75 complete; item 76 (native-only valuation parity closure) formally deferred (2026-02-23, vision-aligned — Backtrader confirmed as primary engine); ADR-011 confirmed **Defer**.
 
 ### Priority 5: OMSAS/CanMEDS Improvements (93.3% Complete)
 
@@ -70,9 +70,9 @@ Backtesting/live-readiness transition is **Epics E0-E6 current cycle complete** 
 **Remaining:** Item 12 (mypy) partially started, Items 22 & 42 blocked on external resources.
 - Item 12 (stricter mypy): expanded strict module scopes active across core/execution/backtesting/libs plus staged utility namespaces (canonical scope list in `docs/guides/mypy-strict-module-tracker.md`).
 
-### Priority 7: External Impact & Advanced Capabilities (89% Complete)
+### Priority 7: External Impact & Advanced Capabilities (93% Complete)
 
-**In Progress:** 24/27 items complete
+**Complete:** 25/27 active items (5 media items on hold pending user recording/design)
 - ✅ **P7.1**: Stricter mypy Phase 1 audit — 355 errors catalogued, phased roadmap published
 - ✅ **P7.2**: Test coverage raised to 61.63% (1063+ tests)
 - ✅ **P7.3**: Scheduled CI for daily data updates

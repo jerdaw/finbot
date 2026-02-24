@@ -28,11 +28,14 @@ Features:
 """
 
 from collections.abc import Callable
+from typing import Any
 
 import pandas as pd
 
 
-def _apply_detection_to_pandas(data: pd.Series | pd.DataFrame, method: Callable, **kwargs) -> pd.Series | pd.DataFrame:
+def _apply_detection_to_pandas(
+    data: pd.Series | pd.DataFrame, method: Callable[..., pd.Series | pd.DataFrame | None], **kwargs: Any
+) -> pd.Series | pd.DataFrame:
     """
     Apply outlier detection method to pandas Series or DataFrame.
 
@@ -45,20 +48,24 @@ def _apply_detection_to_pandas(data: pd.Series | pd.DataFrame, method: Callable,
         pd.Series | pd.DataFrame: The result of applying the outlier detection method to the input data.
     """
 
-    def apply_method_if_numeric(data, method, **kwargs):
+    def apply_method_if_numeric(
+        data: pd.Series, method: Callable[..., pd.Series | pd.DataFrame | None], **kwargs: Any
+    ) -> pd.Series | pd.DataFrame | None:
         if data.dtype.kind in "biufcm":
             return method(data=data, **kwargs)
         else:
             raise ValueError("Data must be numeric or convertible to numeric.")
 
     if isinstance(data, pd.Series):
-        return apply_method_if_numeric(data, method, **kwargs)
+        return apply_method_if_numeric(data, method, **kwargs)  # type: ignore[return-value]
     elif isinstance(data, pd.DataFrame):
         return data.apply(lambda col: apply_method_if_numeric(col, method, **kwargs))
     raise ValueError("Input data must be a pandas Series or DataFrame.")
 
 
-def _apply_treatment_to_pandas(data: pd.Series | pd.DataFrame, method: Callable, **kwargs) -> pd.Series | pd.DataFrame:
+def _apply_treatment_to_pandas(
+    data: pd.Series | pd.DataFrame, method: Callable[..., pd.Series], **kwargs: Any
+) -> pd.Series | pd.DataFrame:
     """
     Apply outlier treatment method to pandas Series or DataFrame.
 

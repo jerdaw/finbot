@@ -41,7 +41,7 @@ from finbot.utils.pandas_utils.save_dataframes import save_dataframes
 MAX_THREADS = settings_accessors.MAX_THREADS
 
 
-def _get_pdr_req_params(**kwargs) -> dict[str, Any]:
+def _get_pdr_req_params(**kwargs: Any) -> dict[str, Any]:
     """
     Get the request parameters for the Pandas DataReader function.
 
@@ -117,7 +117,7 @@ def _prep_params(
     return symbols, start_date, end_date, save_dir
 
 
-def _request_pdr_data(pdr_reader_class, symbols: Sequence[str]) -> pd.DataFrame:
+def _request_pdr_data(pdr_reader_class: type[Any], symbols: Sequence[str]) -> pd.DataFrame:
     """
     Fetches data for the given symbols using the specified PDR reader class.
 

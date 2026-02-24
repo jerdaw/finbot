@@ -1,7 +1,8 @@
 # Implementation Plan v8.5.0: E6 Native-Only Valuation Parity Closure
 
 **Date:** 2026-02-20
-**Status:** In Progress
+**Last Updated:** 2026-02-23
+**Status:** Deferred — vision-aligned closure (Backtrader confirmed as primary engine for portfolio backtesting)
 **Roadmap Anchor:** `docs/planning/roadmap.md` item 76
 
 ## Current State Summary
@@ -101,8 +102,8 @@ Deliverables:
 
 - [x] Regenerated benchmark artifacts (`--samples 3 --scenario all`) with native-only valuation path.
 - [x] Updated roadmap item-76 status and active plan reference.
-- [ ] Update evaluation + ADR narrative to reflect current native-only non-equivalence state.
-- [ ] Achieve tolerance-pass native-only GS-02/GS-03 evidence (closure condition for item 76).
+- [~] Update evaluation + ADR narrative to reflect current native-only non-equivalence state — **deferred (2026-02-23)**: vision-aligned closure; Backtrader confirmed as primary engine.
+- [~] Achieve tolerance-pass native-only GS-02/GS-03 evidence — **deferred (2026-02-23)**: not required for current project direction (testfol.io-style backtesting).
 
 Dependencies/Risks:
 
@@ -119,8 +120,8 @@ Validation:
 
 Deliverables:
 
-- [ ] If tolerance pass achieved: mark roadmap item 76 complete and update ADR decision posture.
-- [ ] If tolerance still fails: keep item 76 open, publish residual risk/next-step remediation scope.
+- [~] If tolerance pass achieved: mark roadmap item 76 complete and update ADR decision posture — **not achieved; formally deferred (2026-02-23)**.
+- [x] If tolerance still fails: keep item 76 open, publish residual risk/next-step remediation scope — **outcome: formally deferred per vision alignment. Backtrader is primary engine; Nautilus native-only parity is not required. Measured deltas preserved as baseline for future revisit.**
 
 ## High-Level Timeline and Milestones
 
