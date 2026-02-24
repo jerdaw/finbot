@@ -62,7 +62,9 @@ from finbot.utils.data_science_utils.data_cleaning.missing_data_handlers._missin
 )
 
 
-def knn_imputation(data: pd.DataFrame | pd.Series, n_neighbors: int = 5, inplace: bool = False, **kwargs):
+def knn_imputation(
+    data: pd.DataFrame | pd.Series, n_neighbors: int = 5, inplace: bool = False, **kwargs: object
+) -> pd.DataFrame | pd.Series:
     """
     Perform K-nearest neighbors (KNN) imputation on the given data using sklearn's KNNImputer.
 
@@ -91,11 +93,11 @@ def knn_imputation(data: pd.DataFrame | pd.Series, n_neighbors: int = 5, inplace
 
     if inplace:
         data.loc[:, :] = imputed_data
-        return data.squeeze() if was_series else data
+        return data.squeeze() if was_series else data  # type: ignore[return-value]
     else:
         imputed_result = pd.DataFrame(
             imputed_data,
             columns=data.columns,
             index=data.index,
         )
-        return imputed_result.squeeze() if was_series else imputed_result
+        return imputed_result.squeeze() if was_series else imputed_result  # type: ignore[return-value]

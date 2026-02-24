@@ -2,7 +2,7 @@
 
 **Status:** Accepted
 **Date:** 2026-02-19
-**Last Updated:** 2026-02-20
+**Last Updated:** 2026-02-23
 **Deciders:** Project maintainer team
 **Epic:** E6 - NautilusTrader Pilot and Decision Gate
 
@@ -18,9 +18,15 @@ Current evidence mix:
 - GS-02/GS-03: full-native execution with native-only valuation extraction (`valuation_fidelity=native_mark_to_market`), currently non-equivalent and low confidence under tolerance gates.
 - Backtrader remains parity-gated and stable across all golden strategies.
 
+## Vision Alignment (2026-02-23)
+
+Finbot's primary mission is testfol.io-style portfolio backtesting. Backtrader is confirmed as the primary engine for this workflow — it is mature, stable, and parity-gated across all golden strategies.
+
+Nautilus remains available as an experimental adapter for future live-trading use cases if/when the project scope expands. Chasing native-only valuation parity for GS-02/GS-03 is not aligned with the current project direction and is formally deferred.
+
 ## Decision
 
-**Chosen option: Defer final Go/No-Go adoption decision (reconfirmed after native-only valuation evidence refresh).**
+**Chosen option: Defer final Go/No-Go adoption decision (reconfirmed after native-only valuation evidence refresh). Formally deferred as of 2026-02-23 per vision alignment.**
 
 Backtrader remains default engine. Nautilus remains experimental/pilot.
 
@@ -102,7 +108,7 @@ Accepted as the highest-information, lowest-risk path under current constraints.
 - [x] Full-native GS-02/GS-03 strategy paths implemented with proxy fallback + fidelity tags (2026-02-20).
 - [x] GS-02/GS-03 tolerance-gated equivalence classification automated in benchmark artifacts (2026-02-20).
 - [x] GS-02/GS-03 native-only valuation extraction path implemented (`native_mark_to_market`) (2026-02-20).
-- [ ] GS-02/GS-03 native-only tolerance closure achieved.
+- [~] GS-02/GS-03 native-only tolerance closure achieved — **formally deferred (2026-02-23)**. Backtrader confirmed as primary engine for portfolio backtesting; native-only parity is not required for current project direction. Nautilus adapter preserved for future live-trading exploration.
 - [x] CI budget tiering implemented for PR-vs-heavy quality gates (2026-02-19).
 - [x] Final decision refresh after multi-scenario evidence review (decision remains Defer).
 
