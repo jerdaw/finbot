@@ -44,6 +44,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC  # noqa: N812 - Standard Selenium convention
 from selenium.webdriver.support.ui import Select, WebDriverWait
 from webdriver_manager.firefox import GeckoDriverManager
@@ -66,19 +68,19 @@ class element_has_style_value:  # noqa: N801 - Selenium expected_condition namin
     style_value - the style value to check
     """
 
-    def __init__(self, locator, style_value):
+    def __init__(self, locator: tuple[str, str], style_value: str) -> None:
         self.locator = locator
         self.style_value = style_value
 
-    def __call__(self, driver):
+    def __call__(self, driver: WebDriver) -> WebElement | bool:
         element = driver.find_element(*self.locator)  # Finding the referenced element
-        if self.style_value in element.get_attribute("style"):
+        if self.style_value in element.get_attribute("style"):  # type: ignore[operator]
             return element
         else:
             return False
 
 
-def _check_loaded(wait, locale_type, do_sleep=0):
+def _check_loaded(wait: WebDriverWait, locale_type: str, do_sleep: int = 0) -> None:
     try:
         time.sleep(do_sleep)
         wait.until(element_has_style_value((By.ID, "loading-image-graph"), "display: none"))
@@ -102,14 +104,22 @@ def _check_loaded(wait, locale_type, do_sleep=0):
         logger.info(err)
 
 
-def _take_screencap(driver, dl_dir_path, file_name=None):
+def _take_screencap(driver: WebDriver, dl_dir_path: Path, file_name: str | None = None) -> None:
     # Taking a screenshot before clicking the download link
-    screenshot_path = os.path.join(dl_dir_path, file_name)
+    screenshot_path = os.path.join(dl_dir_path, file_name)  # type: ignore[arg-type]
     driver.save_screenshot(screenshot_path)
     logger.info(f"Screenshot saved to {screenshot_path}.")
 
 
-def _set_term(wait, locale_type, long_wait_time, data_term_options, driver, dl_dir_path, index_name):
+def _set_term(
+    wait: WebDriverWait,
+    locale_type: str,
+    long_wait_time: int,
+    data_term_options: list[str],
+    driver: WebDriver,
+    dl_dir_path: Path,
+    index_name: str,
+) -> None:
     term_select_xpath = "//label[text()='Term']/following::div[1]//select"
 
     try:
@@ -139,7 +149,7 @@ def _set_term(wait, locale_type, long_wait_time, data_term_options, driver, dl_d
     logger.info(f"Set 'Term' to: {option}.")
 
 
-def _get_date(date_type, driver):
+def _get_date(date_type: str, driver: WebDriver) -> datetime.datetime | None:
     valid_date_types = ["start", "end"]
     if date_type not in valid_date_types:
         raise ValueError(f"date_type must be one of {valid_date_types}.")
@@ -148,7 +158,7 @@ def _get_date(date_type, driver):
         date_input = driver.find_element(By.ID, f"{date_type}DateFilterShow")
         date_str = date_input.get_attribute("value")
         # Assuming the date is in the format "MMM d, YYYY" (e.g., "Jan 1, 2020")
-        return datetime.datetime.strptime(date_str, "%b %d, %Y")
+        return datetime.datetime.strptime(date_str, "%b %d, %Y")  # type: ignore[arg-type]
     except NoSuchElementException:
         logger.error(f"{date_type.capitalize()} Date input field not found.")
         return None
@@ -157,7 +167,15 @@ def _get_date(date_type, driver):
         return None
 
 
-def _set_frequency(driver, data_frequency, wait, long_wait_time, locale_type, dl_dir_path, index_name):
+def _set_frequency(
+    driver: WebDriver,
+    data_frequency: str,
+    wait: WebDriverWait,
+    long_wait_time: int,
+    locale_type: str,
+    dl_dir_path: Path,
+    index_name: str,
+) -> None:
     # Select the most frequent option ('Daily', 'Monthly', 'Yearly') in the 'Frequency' dropdown
     frequency_select_xpath = "//label[contains(text(), 'Frequency')]/following::div[1]//select"
     try:
@@ -177,7 +195,9 @@ def _set_frequency(driver, data_frequency, wait, long_wait_time, locale_type, dl
     logger.info(f"Set frequency to {data_frequency}.")
 
 
-def _get_max_date_range(driver, wait, locale_type, long_wait_time, dl_dir_path, index_name):
+def _get_max_date_range(
+    driver: WebDriver, wait: WebDriverWait, locale_type: str, long_wait_time: int, dl_dir_path: Path, index_name: str
+) -> tuple[datetime.datetime | None, datetime.datetime | None]:
     _set_frequency(
         driver=driver,
         data_frequency="Monthly",
@@ -203,7 +223,7 @@ def _get_max_date_range(driver, wait, locale_type, long_wait_time, dl_dir_path, 
     return start_date, end_date
 
 
-def _update_url_date(url, end_date: datetime.datetime):
+def _update_url_date(url: str, end_date: datetime.datetime) -> str:
     # Define the current date in the desired format
     current_date = end_date.strftime("%d/%b/%Y")
     # Define the regular expression pattern for the date format (e.g., 10/Jan/2020)
@@ -214,12 +234,12 @@ def _update_url_date(url, end_date: datetime.datetime):
     return updated_url
 
 
-def _nav_driver(driver, url):
+def _nav_driver(driver: WebDriver, url: str) -> None:
     driver.get(url=url)
     logger.info(f"Selenium driver navigated to {url}.")
 
 
-def _get_driver(dl_dir_path, long_wait_time, idx_id):
+def _get_driver(dl_dir_path: Path, long_wait_time: int, idx_id: str) -> webdriver.Firefox:
     # Set up Firefox options for headless mode
     firefox_options = FirefoxOptions()
     firefox_options.add_argument("--headless")
@@ -239,7 +259,16 @@ def _get_driver(dl_dir_path, long_wait_time, idx_id):
     return driver
 
 
-def _set_date(date, date_type, driver, long_wait_time, wait, locale_type, dl_dir_path, index_name):
+def _set_date(
+    date: datetime.datetime | datetime.date,
+    date_type: str,
+    driver: WebDriver,
+    long_wait_time: int,
+    wait: WebDriverWait,
+    locale_type: str,
+    dl_dir_path: Path,
+    index_name: str,
+) -> None:
     valid_date_types = ["start", "end"]
     if date_type not in valid_date_types:
         raise ValueError(f"date_type must be one of {valid_date_types}.")
@@ -262,7 +291,7 @@ def _set_date(date, date_type, driver, long_wait_time, wait, locale_type, dl_dir
     logger.info(f"Set {date_type.capitalize()} date to {date_str}.")
 
 
-def _click_update_btn(wait, locale_type):
+def _click_update_btn(wait: WebDriverWait, locale_type: str) -> None:
     # Click the 'Update' button
     update_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[text()='Update']")))
     update_button.click()
@@ -270,7 +299,15 @@ def _click_update_btn(wait, locale_type):
     logger.info("Clicked the 'Update' button.")
 
 
-def _click_download_btn(wait, locale_type, screencap, driver, dl_dir_path, index_name, long_wait_time):
+def _click_download_btn(
+    wait: WebDriverWait,
+    locale_type: str,
+    screencap: bool,
+    driver: WebDriver,
+    dl_dir_path: Path,
+    index_name: str,
+    long_wait_time: int,
+) -> float:
     # Wait for update to complete
     try:
         _check_loaded(wait=wait, locale_type=locale_type)
@@ -293,7 +330,9 @@ def _click_download_btn(wait, locale_type, screencap, driver, dl_dir_path, index
     return dl_start_time
 
 
-def _wait_for_download_complete(directory, timeout, start_time=None, new_files_only=True):
+def _wait_for_download_complete(
+    directory: str | Path, timeout: int, start_time: float | None = None, new_files_only: bool = True
+) -> str:
     """
     Wait for the download to complete in the specified directory.
     """
@@ -318,7 +357,7 @@ def _wait_for_download_complete(directory, timeout, start_time=None, new_files_o
         time.sleep(1)
 
 
-def _read_msci_data(file_path, index_name=None, remove=True):
+def _read_msci_data(file_path: str, index_name: str | None = None, remove: bool = True) -> pd.DataFrame:
     index_name = index_name or "Value"
 
     try:
@@ -360,7 +399,15 @@ def _read_msci_data(file_path, index_name=None, remove=True):
     return data
 
 
-def _process_download(wait, locale_type, dl_dir_path, dl_start_time, long_wait_time, index_name, idx_id):
+def _process_download(
+    wait: WebDriverWait,
+    locale_type: str,
+    dl_dir_path: Path,
+    dl_start_time: float,
+    long_wait_time: int,
+    index_name: str,
+    idx_id: str,
+) -> pd.DataFrame:
     dl_dir_path = dl_dir_path / idx_id
     try:
         # _check_loaded(wait=wait, locale_type=locale_type)
@@ -386,20 +433,20 @@ def _process_download(wait, locale_type, dl_dir_path, dl_start_time, long_wait_t
 
 
 def _download_msci_single(
-    driver,
-    wait,
-    locale_type,
+    driver: WebDriver,
+    wait: WebDriverWait,
+    locale_type: str,
     url: str,
     dl_dir_path: Path,
     index_name: str,
     idx_id: str,
     long_wait_time: int,
-    data_term_options: list | None = None,
+    data_term_options: list[str] | None = None,
     data_frequency: str | None = None,
     start_date: None | datetime.datetime = None,
     end_date: None | datetime.datetime = None,
     screencap: bool = False,
-):
+) -> pd.DataFrame:
     if end_date is None:
         end_date = datetime.datetime.now()
 
@@ -486,7 +533,9 @@ def _download_msci_single(
     return data_df
 
 
-def _prep_params(idx_name: str, idx_id: str, data_frequency: str, dir_path: Path):
+def _prep_params(
+    idx_name: str, idx_id: str, data_frequency: str, dir_path: Path
+) -> tuple[str, int, Path, list[str], webdriver.Firefox]:
     valid_freqs = ["Daily", "Monthly", "Yearly"]
     if data_frequency not in valid_freqs:
         raise ValueError(f"Duration must be one of {valid_freqs}.")
@@ -505,17 +554,17 @@ def _prep_params(idx_name: str, idx_id: str, data_frequency: str, dir_path: Path
 
 
 def _scrape_msci_data(  # noqa: C901 - Complex web scraping logic with multiple steps
-    driver,
-    url,
-    dir_path,
-    index_name,
-    idx_id,
-    wait_time,
-    data_term_options,
-    data_frequency,
-    dl_dir_path,
-    missing_business_days,
-):
+    driver: WebDriver,
+    url: str,
+    dir_path: Path,
+    index_name: str,
+    idx_id: str,
+    wait_time: int,
+    data_term_options: list[str],
+    data_frequency: str,
+    dl_dir_path: Path,
+    missing_business_days: list[datetime.date],
+) -> pd.DataFrame:
     try:
         wait = WebDriverWait(driver=driver, timeout=wait_time)
         locale_type = "Country" if driver.find_elements(By.ID, "updateTermCountry") else "Region"
@@ -552,25 +601,25 @@ def _scrape_msci_data(  # noqa: C901 - Complex web scraping logic with multiple 
                 if missing_in_chunk:
                     chunk_end_dates.append(cur_chunk_end_dt)
                 # Update the chunk end date to the next missing business day before the current chunk start date
-                cur_chunk_end_dt = max([dt for dt in missing_business_days if dt < cur_chunk_start_dt], default=None)
+                cur_chunk_end_dt = max([dt for dt in missing_business_days if dt < cur_chunk_start_dt], default=None)  # type: ignore[assignment]
                 if not cur_chunk_end_dt:
                     break
 
         for cur_end_dt in chunk_end_dates:
             params["end_date"] = cur_end_dt
             params["start_date"] = (
-                None if data_frequency != "Daily" else max(params["end_date"] - relativedelta(years=3), start_date)
+                None if data_frequency != "Daily" else max(params["end_date"] - relativedelta(years=3), start_date)  # type: ignore[operator]
             )
 
             try:
-                data_df = _download_msci_single(**params)
+                data_df = _download_msci_single(**params)  # type: ignore[arg-type]
                 data_dfs_list.append(data_df)
             except (TimeoutException, NoSuchElementException, WebDriverException, FileNotFoundError, OSError) as e:
                 fail_str = f"Failed to get {params['start_date']}-{params['end_date']} {data_frequency} {index_name} msci data from {url}."
                 # retry
                 logger.warning(f"\n\n {fail_str} ({type(e).__name__}: {e}). Retrying now.")
                 try:
-                    data_df = _download_msci_single(**params)
+                    data_df = _download_msci_single(**params)  # type: ignore[arg-type]
                     data_dfs_list.append(data_df)
                 except (
                     TimeoutException,
@@ -624,7 +673,9 @@ def _filter_msci_data(
     return df.loc[(df.index >= start_date) & (df.index <= end_date)]
 
 
-def _validate_initial_params(idx_name, idx_id, data_frequency, start_date, end_date):
+def _validate_initial_params(
+    idx_name: str, idx_id: str, data_frequency: str, start_date: datetime.date | None, end_date: datetime.date | None
+) -> tuple[Path, str, str, Path]:
     # Validate and get the parameters needed to check the existing data
     if not idx_name or not idx_id:
         raise ValueError("idx_name and idx_id must be specified.")
@@ -645,7 +696,7 @@ def get_msci_single(
     end_date: datetime.date | None = None,
     check_update: bool = False,
     force_update: bool = False,
-):
+) -> pd.DataFrame:
     logger.info(f"\n\nAttempting to get {data_frequency} data from msci for index {idx_name}\n")
 
     # Validate and get the parameters needed to check the existing data

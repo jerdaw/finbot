@@ -131,7 +131,7 @@ if __name__ == "__main__":
     )
 
     # Using a function
-    def removal_criteria(row):
+    def removal_criteria(row: pd.Series) -> bool:
         return row["C"] == "remove"
 
     print(

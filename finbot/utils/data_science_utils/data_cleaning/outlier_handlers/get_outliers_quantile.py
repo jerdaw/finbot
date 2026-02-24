@@ -82,13 +82,15 @@ treat_outliers_cap (capping instead of removal), treat_outliers_transform
 
 from __future__ import annotations
 
+from typing import Any
+
 import pandas as pd
 
 from finbot.utils.data_science_utils.data_cleaning.outlier_handlers._outliers_utils import _apply_detection_to_pandas
 from finbot.utils.pandas_utils.remove_masked_data import remove_masked_data
 
 
-def _quantile_detection_logic(data: pd.Series, **kwargs) -> pd.Series | None:
+def _quantile_detection_logic(data: pd.Series, **kwargs: Any) -> pd.Series | None:
     q1 = data.quantile(kwargs["lower_quantile"])
     q3 = data.quantile(kwargs["upper_quantile"])
     iqr = q3 - q1

@@ -270,11 +270,16 @@ disallow_incomplete_defs = true
 [[tool.mypy.overrides]]
 module = [
     "finbot.utils.class_utils.*",
+    "finbot.utils.data_collection_utils.alpha_vantage.*",
     "finbot.utils.data_collection_utils.bls.*",
     "finbot.utils.data_collection_utils.fred.*",
+    "finbot.utils.data_collection_utils.google_finance.*",
+    "finbot.utils.data_collection_utils.pdr.*",
+    "finbot.utils.data_collection_utils.scrapers.*",
     "finbot.utils.data_collection_utils.yfinance.*",
-    "finbot.utils.data_science_utils.data_transformation.interpolators.*",
-    "finbot.utils.data_science_utils.data_transformation.scalers_normalizers.*",
+    "finbot.utils.data_science_utils.data_analysis.*",
+    "finbot.utils.data_science_utils.data_cleaning.*",
+    "finbot.utils.data_science_utils.data_transformation.*",
     "finbot.utils.datetime_utils.*",
     "finbot.utils.dict_utils.*",
     "finbot.utils.file_utils.*",
@@ -285,7 +290,6 @@ module = [
     "finbot.utils.plotting_utils.*",
     "finbot.utils.validation_utils.*",
     "finbot.utils.vectorization_utils.*",
-    "finbot.utils.data_science_utils.data_analysis.*",
 ]
 disallow_untyped_defs = true
 disallow_incomplete_defs = true

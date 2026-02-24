@@ -8,6 +8,7 @@ Data source: MSCI website
 Update frequency: Daily
 """
 
+import pandas as pd
 from tqdm.contrib.concurrent import thread_map
 
 from finbot.config import settings_accessors
@@ -17,12 +18,12 @@ MAX_THREADS = settings_accessors.MAX_THREADS
 
 
 def get_msci_data(
-    idx_names: str | list,
-    idx_ids: str | list,
+    idx_names: str | list[str],
+    idx_ids: str | list[str],
     data_frequency: str,
     check_update: bool = False,
     force_update: bool = False,
-):
+) -> list[pd.DataFrame]:
     if isinstance(idx_names, str) and isinstance(idx_ids, str):
         idx_names = [idx_names]
         idx_ids = [idx_ids]

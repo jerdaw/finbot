@@ -19,6 +19,7 @@ Google Sheets API documentation: https://developers.google.com/sheets/api
 """
 
 import datetime as dt
+from typing import Any
 
 import pandas as pd
 from google.oauth2 import service_account
@@ -33,18 +34,18 @@ from finbot.utils.pandas_utils.load_dataframe import load_dataframe
 from finbot.utils.pandas_utils.save_dataframe import save_dataframe
 
 
-def _get_google_sheets_credentials():
+def _get_google_sheets_credentials() -> service_account.Credentials:
     SERVICE_ACCOUNT_FILE = settings_accessors.get_google_finance_service_account_credentials_path()  # noqa: N806 - Constant scoped to function
     SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]  # noqa: N806 - Constant scoped to function
     credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
     return credentials
 
 
-def _get_google_sheets_service(credentials):
+def _get_google_sheets_service(credentials: service_account.Credentials) -> Any:
     return build("sheets", "v4", credentials=credentials)
 
 
-def _process_sheet_response(response) -> pd.DataFrame:
+def _process_sheet_response(response: dict[str, Any]) -> pd.DataFrame:
     values = response.get("values", [])
 
     # Process sheet into dataframe
@@ -82,7 +83,7 @@ def _get_sheet_df(range_to_get: str) -> pd.DataFrame:
     return df
 
 
-def _prep_params(range_to_get, start_date, end_date):
+def _prep_params(range_to_get: str, start_date: dt.date | None, end_date: dt.date | None) -> None:
     if not isinstance(range_to_get, str):
         raise TypeError("range_to_get must be a string")
 

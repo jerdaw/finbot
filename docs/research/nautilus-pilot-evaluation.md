@@ -1,7 +1,8 @@
 # NautilusTrader Pilot Evaluation
 
 **Date:** 2026-02-20
-**Status:** Updated with native-only valuation evidence (item 76 in progress)
+**Last Updated:** 2026-02-23
+**Status:** Item 76 formally deferred — vision-aligned closure (Backtrader confirmed as primary engine)
 **Epic:** E6-T2 (Comparative Evaluation Report)
 
 ## Executive Summary
@@ -87,6 +88,26 @@ Rationale: native-only valuation dependency has been removed, but GS-02/GS-03 st
 1. Reduce GS-02/GS-03 native-only ROI/drawdown/ending-value deltas to pass tolerance gates.
 2. Re-run benchmark artifacts with native-only valuation and upgraded confidence only after tolerance pass.
 3. Extend operational overhead assessment over sustained CI/debug cycles.
+
+## 7. Closure Status (2026-02-23)
+
+Item 76 (native-only valuation parity closure) is **formally deferred**.
+
+**Rationale:** Finbot's primary mission is testfol.io-style portfolio backtesting. Backtrader is confirmed as the primary engine for this workflow. Chasing native-only valuation parity for GS-02/GS-03 is not aligned with the current project direction.
+
+**Current measured deltas (baseline for any future revisit):**
+
+| Scenario | Metric | Backtrader | Nautilus (native-only) | Delta |
+| --- | --- | ---: | ---: | ---: |
+| `gs02` | ROI | 1.0003 | 0.8963 | -0.1040 |
+| `gs02` | Max Drawdown | -0.2725 | -0.3407 | -0.0682 |
+| `gs03` | ROI | 4.2750 | 2.9933 | -1.2817 |
+| `gs03` | CAGR | 0.1090 | 0.0898 | -0.0192 |
+
+**Preserved artifacts:**
+- Native-only valuation extraction is implemented and preserved in the adapter (`valuation_fidelity=native_mark_to_market`).
+- Benchmark harness and tolerance-gated classification remain operational for future use.
+- ADR-011 Defer posture is confirmed as the long-term position.
 
 ## References
 

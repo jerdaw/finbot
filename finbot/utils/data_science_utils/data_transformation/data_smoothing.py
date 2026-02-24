@@ -183,7 +183,7 @@ class DataSmoother:
         validate_num_in_range(value=alpha, parameter_name="alpha", min_value=0, max_value=1)
         return self._data.ewm(alpha=alpha, adjust=False).mean()
 
-    def double_exponential_smoothing(self, alpha: float, beta: float, **kwargs) -> pd.Series:
+    def double_exponential_smoothing(self, alpha: float, beta: float, **kwargs: object) -> pd.Series:
         """
         Applies Double Exponential Smoothing with additional configurable parameters.
 
@@ -292,11 +292,11 @@ class DataSmoother:
 
     def kalman_smoothing(
         self,
-        initial_state,
-        observation_covariance,
-        transition_covariance,
-        transition_matrix,
-        chunk_size=None,
+        initial_state: float,
+        observation_covariance: float,
+        transition_covariance: float,
+        transition_matrix: float,
+        chunk_size: int | None = None,
     ) -> pd.Series:
         """
         Applies Kalman Filter smoothing, a powerful algorithm used in a wide range of applications

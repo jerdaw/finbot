@@ -90,16 +90,18 @@ from finbot.utils.data_science_utils.data_cleaning.missing_data_handlers._missin
 )
 
 
-def _apply_interpolation(data, method, order=None):
+def _apply_interpolation(data: pd.Series, method: str, order: int | None = None) -> pd.Series:
     if method == "quadratic":
         return data.interpolate(method="polynomial", order=2)
     elif method == "cubic":
         return data.interpolate(method="polynomial", order=3)
     else:
-        return data.interpolate(method=method, order=order)
+        return data.interpolate(method=method, order=order)  # type: ignore[call-overload]
 
 
-def interpolate_data(data, method="linear", order=None, inplace=False):
+def interpolate_data(
+    data: pd.DataFrame | pd.Series, method: str = "linear", order: int | None = None, inplace: bool = False
+) -> pd.DataFrame | pd.Series:
     """
     Interpolates missing values in a DataFrame or Series using various methods.
 

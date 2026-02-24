@@ -74,6 +74,8 @@ Related modules: get_outliers_quantile (robust alternative - RECOMMENDED),
 treat_outliers_cap (capping outliers), treat_outliers_remove (removal).
 """
 
+from typing import Any
+
 import numpy as np
 import pandas as pd
 from scipy import stats
@@ -82,7 +84,7 @@ from finbot.utils.data_science_utils.data_cleaning.outlier_handlers._outliers_ut
 from finbot.utils.pandas_utils.remove_masked_data import remove_masked_data
 
 
-def _z_score_detection_logic(data: pd.Series, **kwargs) -> pd.Series:
+def _z_score_detection_logic(data: pd.Series, **kwargs: Any) -> pd.Series:
     raise NotImplementedError("This function hasn't yet been confirmed to work as intended.")
     threshold = kwargs.get("threshold", 3)  # type: ignore[unreachable]
     z_scores = np.abs(stats.zscore(data, nan_policy="omit"))

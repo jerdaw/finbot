@@ -28,6 +28,8 @@ Use cases:
 
 from __future__ import annotations
 
+from typing import Any
+
 import pandas as pd
 
 from finbot.utils.data_science_utils.data_cleaning.missing_data_handlers._missing_data_utils import (
@@ -39,7 +41,7 @@ from finbot.utils.data_science_utils.data_cleaning.missing_data_handlers._missin
 def analyze_missing_data_pattern(
     data: pd.DataFrame | pd.Series,
     round_decimals: int = 2,
-    missing_values=None,
+    missing_values: list[Any] | None = None,
 ) -> tuple[pd.DataFrame | pd.Series, dict[str, int]]:
     """
     Analyzes the pattern of missing data in the DataFrame or Series.

@@ -2,13 +2,13 @@
 
 **Created:** 2026-02-10
 **Last Updated:** 2026-02-23
-**Status:** Priority 0-6 complete (P5: 43/45 with item 12 partial/item 42 deferred; P6: 100% with item 76 in progress). Priority 7 complete (25/27 active items — 5 media items on hold).
+**Status:** Priority 0-6 complete (P5: 43/45 with item 12 partial/item 42 deferred; P6: 100% with item 76 formally deferred). Priority 7 complete (25/27 active items — 5 media items on hold).
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
 
 See Completed Items table below and git history for details on implemented features.
 
-**Current Plan Record:** `docs/planning/IMPLEMENTATION_PLAN_8.5_E6_NATIVE_ONLY_VALUATION_PARITY_CLOSURE.md` (active, started 2026-02-20)
+**Current Plan Record:** None active. Last plan: `docs/planning/archive/IMPLEMENTATION_PLAN_8.5_E6_NATIVE_ONLY_VALUATION_PARITY_CLOSURE.md` (deferred 2026-02-23)
 
 ---
 
@@ -142,8 +142,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
     - **CanMEDS:** Professional (quality standards)
     - **What:** Gradually enable disallow_untyped_defs=true, add type annotations
     - **Evidence:** Stricter mypy config, type-safe codebase
-    - **Status:** 🔄 Partially Complete (2026-02-20)
-    - **Implementation:** Added staged module-level strict mypy enforcement across core/execution/backtesting/libs plus expanded utility namespaces (see canonical scope list in `docs/guides/mypy-strict-module-tracker.md` and overrides in `pyproject.toml`); fixed surfaced typing gaps in each rollout wave; extended strict coverage into `data_collection_utils` (BLS/FRED/YFinance) and `data_transformation` interpolator/scaler-normalizer scopes; validated with `uv run mypy finbot/` (clean), targeted strict-module checks, and targeted unit regression suites.
+    - **Status:** 🔄 Partially Complete (2026-02-23)
+    - **Implementation:** Added staged module-level strict mypy enforcement across core/execution/backtesting/libs plus all utility namespaces (see canonical scope list in `docs/guides/mypy-strict-module-tracker.md` and overrides in `pyproject.toml`); fixed surfaced typing gaps in each rollout wave; extended strict coverage into all `data_collection_utils` and `data_science_utils` scopes plus remaining utility subpackages; all `finbot/utils/` subpackages now under strict enforcement; validated with `uv run mypy finbot/` (clean). Global `disallow_untyped_defs = true` remains deferred for non-utility/non-core scopes (gradual adoption).
 
 ### 5.3 Documentation & Communication
 
@@ -420,8 +420,8 @@ New improvements identified 2026-02-12 to strengthen the project for Ontario med
 
 **High-impact medical relevance (items 19-23):** Health economics methodology, clinical scenarios, validation - demonstrates medical/clinical competency.
 
-**Current Open Priority 5 Items (2026-02-20):**
-- 12: Stricter mypy settings (partially complete; strict scopes expanded substantially, with full active scope tracked in `docs/guides/mypy-strict-module-tracker.md`; broader rollout still pending).
+**Current Open Priority 5 Items (2026-02-23):**
+- 12: Stricter mypy settings (partially complete; all `finbot/utils/` subpackages now under strict enforcement — 31 scopes total tracked in `docs/guides/mypy-strict-module-tracker.md`; global `disallow_untyped_defs` remains gradual for non-core scopes).
 - 42: Project logo/branding (deferred pending human design approval and brand direction).
 
 ---
@@ -574,28 +574,20 @@ Priority 6 execution documents:
 76. **E6 follow-up phase 6: native-only valuation parity closure** (M: 3-5 days)
     - **What:** Replace shadow valuation dependency by extracting/deriving native Nautilus portfolio-equity metrics that remain within tolerance.
     - **Evidence:** `finbot/adapters/nautilus/nautilus_adapter.py` (native mark-to-market valuation extraction + synchronized multi-symbol bar sampling), refreshed `docs/research/artifacts/e6-benchmark-2026-02-20.json`, and updated evaluation/ADR status documents.
-    - **Status:** 🚧 In Progress (2026-02-20, shadow dependency removed but GS-02/GS-03 still fail tolerance gates under native-only valuation)
-    - **Current Gate Snapshot (2026-02-20, `--samples 3`):**
+    - **Status:** ⏸ Formally Deferred (2026-02-23)
+    - **Rationale:** Finbot's primary mission is testfol.io-style portfolio backtesting. Backtrader is confirmed as the primary engine. Chasing native-only Nautilus valuation parity is not aligned with the current project direction. ADR-011 Defer is the correct long-term posture. Nautilus adapter and native-only extraction code are preserved for future live-trading exploration.
+    - **Last Gate Snapshot (2026-02-20, `--samples 3`):**
       - `gs02`: `equivalent=no`, `confidence=low`, fail checks: `roi_abs`, `max_drawdown_abs`
       - `gs03`: `equivalent=no`, `confidence=low`, fail checks: `roi_abs`, `cagr_abs`, `ending_value_relative`
-    - **Closure Criteria:**
-      - Keep `valuation_fidelity=native_mark_to_market` (no shadow valuation dependency)
-      - Regenerated artifact shows `equivalent=yes` for both `gs02` and `gs03`
-      - Update `docs/research/nautilus-pilot-evaluation.md` and `docs/adr/ADR-011-nautilus-decision.md` to reflect final gate outcome
 
-**Current Phase:** v8.5 in progress (E6 native-only valuation parity closure)
-- E4 reproducibility/observability deferred integration items remain fully closed.
+**Current Phase:** Item 76 formally deferred (2026-02-23). No active implementation plan.
+- Backtrader confirmed as the primary engine for testfol.io-style portfolio backtesting.
+- Nautilus adapter and native-only valuation extraction code preserved for future live-trading use cases.
+- ADR-011 Defer is the confirmed long-term posture.
+- v8.5 implementation plan archived at `docs/planning/archive/IMPLEMENTATION_PLAN_8.5_E6_NATIVE_ONLY_VALUATION_PARITY_CLOSURE.md` (deferred — vision-aligned closure).
 - v8.4 remediation plan archived at `docs/planning/archive/IMPLEMENTATION_PLAN_8.4_E6_DELTA_CLOSURE_SHADOW_VALUATION.md`.
-- Active implementation plan: `docs/planning/IMPLEMENTATION_PLAN_8.5_E6_NATIVE_ONLY_VALUATION_PARITY_CLOSURE.md`.
-- Latest execution update: `docs/research/artifacts/e6-benchmark-2026-02-20.json` (native-only valuation run).
+- Latest benchmark artifact: `docs/research/artifacts/e6-benchmark-2026-02-20.json` (native-only valuation run, measured deltas preserved as baseline).
 - Priority 7 status refresh: `docs/planning/priority-7-status-refresh-2026-02-20.md`.
-- GS-02/GS-03 full-native Nautilus rows are now tagged `valuation_fidelity=native_mark_to_market` with synchronized bar sampling, but current deltas remain out of tolerance (`equivalent=no`, `confidence=low`).
-- Next planned focus: item 76 parity-remediation subphase (native strategy semantics convergence for GS-02/GS-03).
-
-**Immediate Next Actions (Item 76)**
-- Align full-native order timing to Backtrader semantics (next-bar execution behavior) for GS-02/GS-03.
-- Produce per-rebalance trade-ledger diffs (Backtrader vs full-native Nautilus) to isolate remaining drift sources.
-- Re-run `uv run python scripts/benchmark/e6_compare_backtrader_vs_nautilus.py --samples 3 --scenario all` and reassess tolerance gates.
 
 ---
 
@@ -916,3 +908,5 @@ New priority tier defined 2026-02-17 to maximize project impact and visibility w
 | E6 delta-closure shadow valuation (6.75) | 2026-02-20 | Wired GS-02/GS-03 full-native runs to Backtrader shadow valuation for parity closure, added valuation-fidelity confidence guardrails, and published tolerance-pass medium-confidence artifacts |
 | Health economics scenarios (P7.21) | 2026-02-18 | Cancer screening, hypertension, vaccine scenarios; ScenarioResult dataclass; 22 tests; dashboard tab 4 |
 | Mypy Phases 4–5 (P7.1 cont.) | 2026-02-18 | disallow_untyped_defs enforced for all finbot.services.backtesting.* modules; 0 errors in 39 files |
+| Stricter mypy Wave 11 — full utils coverage (5.2.12 partial) | 2026-02-23 | Extended strict typed-def enforcement to all remaining `finbot/utils/` subpackages: alpha_vantage, google_finance, pdr, scrapers, data_cleaning, and full data_transformation scope; 31 scopes now enforced; global `uv run mypy finbot/` remains clean (0 errors, 378 files) |
+| E6 Item 76 formal deferral (6.76) | 2026-02-23 | Native-only Nautilus valuation parity formally deferred; ADR-011 Defer confirmed; Backtrader primary engine; IMPLEMENTATION_PLAN_8.5 archived |

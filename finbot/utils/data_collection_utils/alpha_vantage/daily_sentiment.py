@@ -20,7 +20,7 @@ from finbot.config import logger
 from finbot.utils.data_collection_utils.alpha_vantage.sentiment import get_sentiment
 
 
-def _plot_daily_sentiment(df: pd.DataFrame, moving_averages: Sequence[int] | None = None):
+def _plot_daily_sentiment(df: pd.DataFrame, moving_averages: Sequence[int] | None = None) -> None:
     """
     Plots daily sentiment data with optional moving averages.
 

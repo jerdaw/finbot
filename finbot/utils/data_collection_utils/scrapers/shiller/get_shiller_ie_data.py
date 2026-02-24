@@ -32,7 +32,7 @@ from finbot.utils.pandas_utils.filter_by_date import filter_by_date
 from finbot.utils.pandas_utils.save_dataframe import save_dataframe
 
 
-def _download_shiller_ie_data():
+def _download_shiller_ie_data() -> pd.DataFrame:
     print("Requesting Shiller ie_data from Shiller's website...")
     url = "http://www.econ.yale.edu/~shiller/data/ie_data.xls"
     df = pd.read_excel(
@@ -80,7 +80,7 @@ def get_shiller_ie_data(
     end_date: dt.date | None = None,
     check_update: bool = False,
     force_update: bool = False,
-):
+) -> pd.DataFrame:
     # Prep params
     file_name_stem = "ie_data.parquet"
     file_path = SHILLER_DATA_DIR / file_name_stem
@@ -105,7 +105,7 @@ def get_shiller_ie_data(
     # filter and sort data
     filtered_df = filter_by_date(df=df, start_date=start_date, end_date=end_date)
 
-    return filtered_df.drop_duplicates().dropna(how="all").sort_index()
+    return filtered_df.drop_duplicates().dropna(how="all").sort_index()  # type: ignore[return-value]
 
 
 if __name__ == "__main__":

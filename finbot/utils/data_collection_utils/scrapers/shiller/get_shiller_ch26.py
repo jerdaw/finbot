@@ -27,7 +27,7 @@ from finbot.utils.pandas_utils.load_dataframe import load_dataframe
 from finbot.utils.pandas_utils.save_dataframe import save_dataframe
 
 
-def get_shiller_ch26(force_update=False):
+def get_shiller_ch26(force_update: bool = False) -> pd.DataFrame:
     url = "http://www.econ.yale.edu/~shiller/data/chapt26.xlsx"
     file_name = "chapt26.parquet"
     file_path = SHILLER_DATA_DIR / file_name
