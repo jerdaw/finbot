@@ -349,4 +349,4 @@ This complements the existing unit test suite (314 tests) with 35 integration te
 ---
 
 **Implementation completed:** 2026-02-17
-**Implemented by:** Claude Sonnet 4.5 (supervised by user jer)
+**Implemented by:** Jeremy Dawson

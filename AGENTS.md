@@ -35,7 +35,7 @@ uv run python scripts/update_daily.py
 
 ## Current Delivery Status (2026-02-24)
 
-Backtesting/live-readiness transition is **Epics E0-E6 complete** (adapter-first path). Priority 7 complete (25/27 active items). **Priority 8 Cluster A (Risk Analytics) complete.**
+Backtesting/live-readiness transition is **Epics E0-E6 complete** (adapter-first path). Priority 7 complete (25/27 active items). **Priority 8 Cluster A (Risk Analytics) complete. Priority 8 Cluster B (Portfolio Analytics) complete.**
 
 ### Priority 6: Backtesting-to-Live Readiness (100% Complete)
 
@@ -432,6 +432,18 @@ Standalone risk analysis modules that work on any returns or price series, indep
 
 **Contracts** (`finbot/core/contracts/risk_analytics.py`): `VaRMethod`, `VaRResult`, `CVaRResult`, `VaRBacktestResult`, `StressScenario`, `StressTestResult`, `KellyResult`, `MultiAssetKellyResult` — all frozen dataclasses with `__post_init__` validation.
 
+##### `finbot/services/portfolio_analytics/` — Standalone Portfolio Analytics
+
+Standalone portfolio analysis modules that work on any returns or price series. Four major capabilities:
+
+- **`rolling.py`**: Rolling Sharpe ratio, annualized volatility, and beta over configurable windows using a sliding window loop.
+- **`benchmark.py`**: OLS-based benchmark comparison — Jensen's alpha, systematic beta, R², tracking error, information ratio, up/down capture ratios.
+- **`drawdown.py`**: Full drawdown period analysis — underwater curve, per-episode peak/trough/recovery detection, aggregate statistics. Unlike `quantstats.max_drawdown()` (a single scalar), this provides every distinct episode.
+- **`correlation.py`**: Diversification metrics — Herfindahl-Hirschman Index (HHI), effective N, diversification ratio, per-asset volatilities, and pairwise correlation matrix.
+- **`viz.py`**: Six Plotly visualisation functions (rolling metrics subplot, benchmark scatter, underwater area chart, drawdown period bars, correlation heatmap, diversification weights bar).
+
+**Contracts** (`finbot/core/contracts/portfolio_analytics.py`): `RollingMetricsResult`, `BenchmarkComparisonResult`, `DrawdownPeriod`, `DrawdownAnalysisResult`, `DiversificationResult` — all frozen dataclasses with `__post_init__` validation.
+
 ##### `finbot/utils/` — Utility Library (~176 files)
 
 **Data collection** (`data_collection_utils/`):
@@ -539,6 +551,12 @@ Create `.env` file in `finbot/config/` (excluded by `.gitignore`).
 | `finbot/services/risk_analytics/stress.py` | Parametric stress testing (4 built-in scenarios) |
 | `finbot/services/risk_analytics/kelly.py` | Kelly criterion (single + multi-asset) |
 | `finbot/core/contracts/risk_analytics.py` | Risk analytics result contracts |
+| **Portfolio Analytics** | |
+| `finbot/services/portfolio_analytics/rolling.py` | Rolling Sharpe, vol, beta |
+| `finbot/services/portfolio_analytics/benchmark.py` | Alpha, beta, R², tracking error, IR, up/down capture |
+| `finbot/services/portfolio_analytics/drawdown.py` | Drawdown period detection + underwater curve |
+| `finbot/services/portfolio_analytics/correlation.py` | HHI, effective N, diversification ratio |
+| `finbot/core/contracts/portfolio_analytics.py` | Portfolio analytics result contracts |
 
 ## Code Style
 

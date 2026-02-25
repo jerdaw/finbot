@@ -272,4 +272,4 @@ These are **legitimate type safety issues**, not exclusions. They represent oppo
 ---
 
 **Implementation completed:** 2026-02-17
-**Implemented by:** Claude Sonnet 4.5 (supervised by user jer)
+**Implemented by:** Jeremy Dawson

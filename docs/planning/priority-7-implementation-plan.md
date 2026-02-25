@@ -67,7 +67,7 @@ Priority 7 focuses on maximizing the impact and visibility of Finbot while addin
 ### Key Assumptions
 
 1. **Medical School Timeline**: Applications may occur in 2026-2027 cycle; portfolio materials should be ready within 6 months
-2. **Resource Availability**: Solo development with Claude Code assistance; parallelizable tasks preferred
+2. **Resource Availability**: Solo development; parallelizable tasks preferred
 3. **API Access**: Existing API keys sufficient; no new paid services required
 4. **Historical Data**: Item 22 remains blocked unless historical datasets become available
 5. **Design Resources**: Item 42 remains blocked unless design approval obtained
@@ -785,7 +785,7 @@ Week 11:    Phase 6 - Documentation & Wrap-Up (videos, FAQ, summary)
 ## Resource Requirements
 
 ### Human Resources
-- **Primary:** Solo developer (you) with Claude Code assistance
+- **Primary:** Solo developer
 - **Time Commitment:** 10-15 hours/week for 11 weeks (110-165 total hours)
 - **Optional:** Peer review for blog posts (informal, friends/colleagues)
 - **Optional:** Proofreading for application materials (highly recommended)
