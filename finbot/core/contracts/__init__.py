@@ -19,6 +19,13 @@ from finbot.core.contracts.models import (
 )
 from finbot.core.contracts.optimization import ParetoPoint, ParetoResult
 from finbot.core.contracts.orders import Order, OrderExecution, OrderStatus, RejectionReason
+from finbot.core.contracts.portfolio_analytics import (
+    BenchmarkComparisonResult,
+    DiversificationResult,
+    DrawdownAnalysisResult,
+    DrawdownPeriod,
+    RollingMetricsResult,
+)
 from finbot.core.contracts.regime import MarketRegime, RegimeConfig, RegimeDetector, RegimeMetrics, RegimePeriod
 from finbot.core.contracts.risk import (
     DrawdownLimitRule,
@@ -81,13 +88,17 @@ __all__ = [
     "BatchItemResult",
     "BatchRun",
     "BatchStatus",
+    "BenchmarkComparisonResult",
     "CVaRResult",
     "CostEvent",
     "CostModel",
     "CostSummary",
     "CostType",
     "DataSnapshot",
+    "DiversificationResult",
+    "DrawdownAnalysisResult",
     "DrawdownLimitRule",
+    "DrawdownPeriod",
     "ErrorCategory",
     "ExecutionCheckpoint",
     "ExecutionSimulator",
@@ -118,6 +129,7 @@ __all__ = [
     "RiskConfig",
     "RiskRuleType",
     "RiskViolation",
+    "RollingMetricsResult",
     "StressScenario",
     "StressTestResult",
     "VaRBacktestResult",

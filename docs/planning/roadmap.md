@@ -2,13 +2,13 @@
 
 **Created:** 2026-02-10
 **Last Updated:** 2026-02-24
-**Status:** Priority 0-7 complete. Priority 8 Cluster A (Risk Analytics) complete (2026-02-24).
+**Status:** Priority 0-7 complete. Priority 8 Clusters A (Risk Analytics) and B (Portfolio Analytics) complete (2026-02-24).
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
 
 See Completed Items table below and git history for details on implemented features.
 
-**Current Plan Record:** None active. Last plan: `docs/planning/archive/IMPLEMENTATION_PLAN_10_P8_RISK_ANALYTICS_CLUSTER_A.md` (completed 2026-02-24)
+**Current Plan Record:** None active. Last plan: `docs/planning/archive/IMPLEMENTATION_PLAN_11_P8_PORTFOLIO_ANALYTICS_CLUSTER_B.md` (completed 2026-02-24)
 
 ---
 
@@ -819,9 +819,24 @@ New priority tier defined 2026-02-17 to maximize project impact and visibility w
 
 **What Was Done:** Added standalone risk analytics as `finbot/services/risk_analytics/`. Three computation modules (VaR, stress, Kelly), a visualisation module, and a 3-tab dashboard page. All result types are immutable frozen dataclasses with `__post_init__` validation. No new dependencies required — `scipy` was already present.
 
+### P8.2 Portfolio Analytics — Cluster B ✓
+
+**Status:** ✅ COMPLETED (2026-02-24)
+
+- [x] `finbot/core/contracts/portfolio_analytics.py` — 5 frozen dataclasses (`RollingMetricsResult`, `BenchmarkComparisonResult`, `DrawdownPeriod`, `DrawdownAnalysisResult`, `DiversificationResult`)
+- [x] `finbot/services/portfolio_analytics/rolling.py` — rolling Sharpe, vol, beta
+- [x] `finbot/services/portfolio_analytics/benchmark.py` — alpha, beta, R², tracking error, IR, up/down capture
+- [x] `finbot/services/portfolio_analytics/drawdown.py` — full drawdown period detection, underwater curve
+- [x] `finbot/services/portfolio_analytics/correlation.py` — HHI, effective N, diversification ratio
+- [x] `finbot/services/portfolio_analytics/viz.py` — 6 Plotly chart functions (Wong palette)
+- [x] `finbot/dashboard/pages/10_portfolio_analytics.py` — 4-tab dashboard page
+- [x] 89 new tests across 6 test files; 1472 → 1561 total
+- [x] mypy strict coverage for new modules
+
+**What Was Done:** Added standalone portfolio analytics as `finbot/services/portfolio_analytics/`. Four computation modules (rolling, benchmark, drawdown, correlation), a visualisation module, and a 4-tab dashboard page. No new dependencies required. None of this duplicates existing quantstats output — it adds multi-period drawdown decomposition, rolling time-series metrics, relative benchmark statistics, and portfolio-level diversification measures.
+
 ### P8 Remaining / Future
 
-- [ ] Cluster B (portfolio analytics) — future
 - [ ] Cluster C (factor models) — future
 - Items 18-19 from P7 (options overlay, real-time data) — blocked on cost/data
 
@@ -939,3 +954,4 @@ New priority tier defined 2026-02-17 to maximize project impact and visibility w
 | Autonomous workstreams — mypy strict completion (WS2) | 2026-02-24 | Extended strict enforcement to all remaining namespaces (adapters, cli, config, constants, dashboard, simulation); 37 scopes total; selectively enabled `warn_return_any` (6 scopes) and `disallow_any_generics` (3 scopes); item 5.2.12 now complete |
 | Autonomous workstreams — docstring coverage (WS4) | 2026-02-24 | Added Google-style docstrings to nautilus adapter (~37 methods), api_manager/logger (~60 items), backtesting strategies/analyzers/brokers (~55 items); interrogate threshold raised 55% to 73%; actual coverage 75.6% |
 | Risk Analytics — P8 Cluster A (P8.1) | 2026-02-24 | Standalone VaR/CVaR (3 methods), parametric stress testing (4 crisis scenarios), Kelly criterion (single + multi-asset); 74 new tests; dashboard page 9; 1472 total tests |
+| Portfolio Analytics — P8 Cluster B (P8.2) | 2026-02-24 | Rolling metrics (Sharpe/vol/beta), benchmark comparison (alpha/beta/R²/TE/IR/capture), drawdown period detection, correlation/diversification (HHI/effective-N/DR); 89 new tests; dashboard page 10; 1561 total tests |
