@@ -5,14 +5,15 @@
 Finbot is a financial data collection, simulation, and backtesting platform that consolidates:
 - Modern infrastructure (Dynaconf config, queue-based logging, API management)
 - **Engine-agnostic execution system** with orders, latency simulation, risk controls, and state checkpoints
-- Comprehensive backtesting engine (Backtrader-based with 12 strategies)
+- Comprehensive backtesting engine (Backtrader-based with 13 strategies)
 - **Typed contracts** for portable backtests with versioning, serialization, and migration
 - Advanced simulation systems (fund, bond ladder, Monte Carlo, multi-asset Monte Carlo, index simulators)
-- Portfolio optimization (DCA optimizer, rebalance optimizer)
+- Portfolio optimization (DCA optimizer, rebalance optimizer, Pareto optimizer)
 - **Cost models** and **corporate actions** handling for realistic backtests
 - **Walk-forward analysis** and **market regime detection** for robust strategy evaluation
 - **Experiment tracking** with snapshots, batch observability, and dashboard comparison
 - **Real-time market data** from Alpaca, Twelve Data, and yfinance with composite fallback
+- **Standalone analytics**: risk (VaR/CVaR, stress testing, Kelly), portfolio (rolling, benchmark, drawdown, diversification), factor (Fama-French regression, attribution, risk decomposition)
 - Health economics analysis (QALY simulation, cost-effectiveness, treatment optimization)
 - Interactive Streamlit web dashboard
 
@@ -34,64 +35,18 @@ uv run pytest
 uv run python scripts/update_daily.py
 ```
 
-## Current Delivery Status (2026-02-24)
+## Current Delivery Status (2026-02-25)
 
-Backtesting/live-readiness transition is **Epics E0-E6 complete** (adapter-first path). Priority 7 complete (25/27 active items). **Priority 8 Clusters A–D complete** (Risk Analytics, Portfolio Analytics, Real-Time Data, Factor Analytics).
+**P0-P8 complete. 1749 tests. P9 active.**
 
-### Priority 6: Backtesting-to-Live Readiness (100% Complete)
+- **P5** (97.8%): OMSAS/CanMEDS improvements — 44/45 items (item 42 blocked on external resources)
+- **P6** (100%): Backtesting-to-live readiness — Epics E0-E6 complete; ADR-011 confirmed **Defer**
+- **P7** (93%): External impact & advanced capabilities — 25/27 active items
+- **P8** (100%): Risk Analytics, Portfolio Analytics, Real-Time Data, Factor Analytics
+- **P9** (active): Agent tooling optimizations
 
-- **Completed Epics:**
-  - ✅ **E0**: Foundational contracts (schemas, versioning, serialization, snapshots)
-  - ✅ **E1**: Backtrader adapter implementation
-  - ✅ **E2**: A/B parity testing (harness, golden tests, CI gate)
-  - ✅ **E3**: Cost models, corporate actions, walk-forward analysis, regime detection
-  - ✅ **E4**: Experiment tracking (registry, snapshots, batch observability, dashboard)
-  - ✅ **E5**: Live-readiness execution system (orders, latency, risk controls, checkpoints)
-  - ✅ **E6**: Nautilus pilot hardening, comparative benchmark artifact publication, and decision gate closure (**Defer** outcome; item 76 formally deferred 2026-02-23)
+**Tracking docs:** `docs/planning/roadmap.md`, `docs/planning/backtesting-live-readiness-backlog.md`, `docs/planning/priority-5-6-completion-status.md`, `docs/adr/ADR-011-nautilus-decision.md`
 
-- **E5 Deliverables (Live-Readiness Without Production):**
-  - Order lifecycle tracking with full execution history
-  - Latency simulation (submission, fill, cancellation delays)
-  - Risk controls (position limits, exposure limits, drawdown protection, kill-switch)
-  - State checkpoint and recovery for disaster recovery
-
-- **Post-E6 Follow-up:** Priority 6 items 69-75 complete; item 76 (native-only valuation parity closure) formally deferred (2026-02-23, vision-aligned — Backtrader confirmed as primary engine); ADR-011 confirmed **Defer**.
-
-### Priority 5: OMSAS/CanMEDS Improvements (97.8% Complete)
-
-**Completed:** 44/45 items across 7 categories
-- ✅ Governance & Professionalism (7/7): LICENSE, SECURITY, CODE_OF_CONDUCT, templates
-- ✅ Quality & Reliability (5/5): CI/CD, test coverage, integration tests, py.typed, strict mypy
-- ✅ Documentation (6/6): MkDocs site, API docs, docstring enforcement, limitations
-- ✅ Health Economics (4/5): Research papers, clinical scenarios, methodology
-- ✅ Ethics & Security (6/6): Disclaimers, audit trails, license auditing, Docker security
-- ✅ Testing (5/5): Property-based testing, CLI tests, performance regression
-- ✅ Professional Polish (10/11): CODEOWNERS, releases, changelog, TestPyPI, OpenSSF
-
-**Remaining:** Item 42 blocked on external resources.
-- Item 12 (stricter mypy): ✅ Complete — all 37 namespaces under strict enforcement, plus selective `warn_return_any` and `disallow_any_generics` (see `docs/guides/mypy-strict-module-tracker.md`).
-
-### Priority 7: External Impact & Advanced Capabilities (93% Complete)
-
-**Complete:** 25/27 active items (5 media items on hold pending user recording/design)
-- ✅ **P7.1**: Stricter mypy Phase 1 audit — 355 errors catalogued, phased roadmap published
-- ✅ **P7.2**: Test coverage raised to 67%+ (1398 tests)
-- ✅ **P7.3**: Scheduled CI for daily data updates
-- 🟡 **P7.4**: Conventional commits guide created (user action required)
-- ✅ **P7.15**: Walk-forward visualization — `walkforward_viz.py` (5 chart functions, dashboard page 8, 23 tests)
-- ✅ **P7.16**: Regime-adaptive strategy — `strategies/regime_adaptive.py` + 19 tests
-- ✅ **P7.17**: Multi-objective Pareto optimizer — `pareto_optimizer.py` + dashboard integration
-- ✅ **P7.21**: Health economics clinical scenarios — cancer screening, hypertension, vaccine (3 scenarios, 22 tests)
-- ✅ **P7.22**: Hypothesis testing module — `hypothesis_testing.py` (6 functions, 24 tests)
-- ✅ **P7.23**: Deferred unit tests — 39 new tests (bond_ladder, backtest_batch, rebalance_optimizer)
-
-**Authoritative tracking docs:**
-- `docs/planning/backtesting-live-readiness-backlog.md` (Epic tracking)
-- `docs/planning/roadmap.md`
-- `docs/planning/priority-5-6-completion-status.md`
-- `docs/research/nautilus-pilot-evaluation.md`
-- `docs/adr/ADR-011-nautilus-decision.md`
-- `docs/planning/archive/` (20+ completed implementation plans)
 ## Common Commands
 
 ```bash
@@ -164,183 +119,29 @@ All packages live under the single `finbot/` namespace:
 
 #### `finbot/core/contracts/` — Engine-Agnostic Contracts
 
-Typed contracts for portable, engine-agnostic backtesting and execution. Enables multiple backends (Backtrader, NautilusTrader) with consistent interfaces.
+Typed frozen dataclasses for portable, engine-agnostic backtesting and execution. All contracts use `slots=True`, `__post_init__` validation, and are available via `from finbot.core.contracts import ...`.
 
-**Core Modules:**
-
-- **`models.py`**: Core data models
-  - `BacktestRunRequest`, `BacktestRunResult`, `BacktestRunMetadata`: Backtest request/response
-  - `BarEvent`, `FillEvent`, `OrderRequest`: Event types
-  - `PortfolioSnapshot`: Point-in-time portfolio state
-  - `OrderSide`, `OrderType`: Enums for order parameters
-
-- **`orders.py`**: Order lifecycle tracking
-  - `Order`: Complete order state (status, fills, rejections, timestamps)
-  - `OrderExecution`: Individual fill records
-  - `OrderStatus`: Enum (NEW, SUBMITTED, PARTIALLY_FILLED, FILLED, REJECTED, CANCELLED)
-  - `RejectionReason`: Typed rejection reasons (funds, validation, risk controls)
-
-- **`checkpoint.py`**: State persistence for disaster recovery
-  - `ExecutionCheckpoint`: Snapshot of ExecutionSimulator state
-  - `CHECKPOINT_VERSION`: Schema version for migration support
-  - Captures: cash, positions, orders, risk state, configuration
-
-- **`latency.py`**: Realistic order timing simulation
-  - `LatencyConfig`: Submission, fill, and cancellation delays
-  - Pre-configured profiles: `LATENCY_INSTANT`, `LATENCY_FAST`, `LATENCY_NORMAL`, `LATENCY_SLOW`
-  - Supports min/max ranges for realistic variance
-
-- **`risk.py`**: Risk management rules
-  - `RiskConfig`: Composable risk rule configuration
-  - `PositionLimitRule`: Max shares/value per position
-  - `ExposureLimitRule`: Gross/net exposure limits
-  - `DrawdownLimitRule`: Daily/total drawdown protection
-  - `RiskViolation`: Typed violation records
-
-- **`costs.py`**: Cost modeling for realistic simulations
-  - `CostModel`: Slippage + commission configuration
-  - `CostEvent`: Individual cost records (type, amount, timestamp)
-  - `CostSummary`: Aggregated cost metrics
-  - `CostType`: Enum (COMMISSION, SLIPPAGE, BORROW, FEE)
-
-- **`schemas.py`**: Data validation and canonical metrics
-  - `validate_bar_dataframe()`: OHLCV data validation
-  - `extract_canonical_metrics()`: Standardized performance metrics
-  - `CANONICAL_METRIC_KEYS`: Standard metric names (CAGR, Sharpe, Sortino, max drawdown, etc.)
-  - Column mappings for cross-engine compatibility
-
-- **`versioning.py`**: Schema versioning and migration
-  - `CONTRACT_SCHEMA_VERSION`: Current contract version
-  - `BACKTEST_RESULT_SCHEMA_VERSION`: Result format version
-  - `is_schema_compatible()`: Version compatibility check
-  - `migrate_backtest_result_payload()`: Automatic migration
-
-- **`serialization.py`**: Portable result serialization
-  - `backtest_result_to_payload()`: Serialize to JSON-compatible dict
-  - `backtest_result_from_payload()`: Deserialize with migration
-  - `build_backtest_run_result_from_stats()`: Build from metrics dict
-
-- **`snapshot.py`**: Data lineage tracking
-  - `DataSnapshot`: Captures data source versions and checksums
-  - `compute_data_content_hash()`: Content-based hashing
-  - `compute_snapshot_hash()`: Snapshot fingerprinting
-
-- **`walkforward.py`**: Walk-forward analysis
-  - `WalkForwardConfig`: Window configuration (rolling/anchored)
-  - `WalkForwardWindow`: Single window definition
-  - `WalkForwardResult`: Aggregated walk-forward metrics
-
-- **`regime.py`**: Market regime detection
-  - `MarketRegime`: Enum (BULL, BEAR, SIDEWAYS, HIGH_VOL, LOW_VOL)
-  - `RegimeConfig`: Detection parameters (lookback, thresholds)
-  - `RegimeDetector`: Regime classification logic
-  - `RegimePeriod`: Regime time periods
-
-- **`batch.py`**: Batch execution tracking
-  - `BatchRun`: Batch metadata and status
-  - `BatchItemResult`: Individual backtest result
-  - `BatchStatus`: Enum (PENDING, RUNNING, COMPLETED, FAILED)
-  - `ErrorCategory`: Typed error classification
-
-- **`interfaces.py`**: Engine abstraction interfaces
-  - `BacktestEngine`: Engine interface (Backtrader, Nautilus)
-  - `ExecutionSimulator`: Execution interface for paper trading
-  - `MarketDataProvider`: Data source interface
-  - `PortfolioStateStore`: State persistence interface
-
-- **`missing_data.py`**: Missing data policies
-  - `MissingDataPolicy`: How to handle gaps (ERROR, WARN, SKIP, FILL)
-  - `DEFAULT_MISSING_DATA_POLICY`: Project-wide default
-
-**Export:** All contracts available via `from finbot.core.contracts import ...`
+21 modules covering: models, orders, checkpoint, latency, risk, costs, schemas, versioning, serialization, snapshot, walkforward, regime, batch, interfaces, missing_data, optimization, risk_analytics, portfolio_analytics, realtime_data, factor_analytics, corporate_actions. See Key Entry Points table for file paths.
 
 #### `finbot/services/execution/` — Execution Simulation System
 
-Paper trading simulator with realistic latency, risk controls, and state persistence. Engine-agnostic, usable standalone or integrated with backtesting engines.
-
-**Core Components:**
-
-- **`execution_simulator.py`**: Main execution simulator (350+ lines)
-  - Order submission with latency simulation
-  - Market/limit order execution with slippage
-  - Position and cash tracking
-  - Risk checking before order acceptance
-  - Pending action queue for delayed execution
-  - Full order lifecycle tracking
-  - Configurable commission and slippage
-  - State checkpoint support via `simulator_id`
-
-- **`order_validator.py`**: Order validation logic
-  - Quantity validation (positive, non-zero)
-  - Symbol validation (non-empty)
-  - Limit price validation for limit orders
-  - Returns typed rejection reasons
-
-- **`pending_actions.py`**: Latency simulation (104 lines)
-  - `PendingActionQueue`: Time-based action queue
-  - `PendingAction`: Scheduled actions (submit, fill, cancel)
-  - Binary search insertion for O(log n) performance
-  - Process actions up to current time
-
-- **`risk_checker.py`**: Risk controls enforcement (300 lines)
-  - Position limit checking (max shares, max value)
-  - Exposure limit checking (gross, net)
-  - Drawdown limit checking (daily, total)
-  - Trading kill-switch (enable/disable)
-  - Peak value and daily start tracking
-  - Returns typed violation reasons
-
-- **`checkpoint_manager.py`**: State persistence (360 lines)
-  - `create_checkpoint()`: Extract simulator state
-  - `save_checkpoint()`: Persist to JSON with versioning
-  - `load_checkpoint()`: Load from disk (latest or specific timestamp)
-  - `restore_simulator()`: Rebuild simulator from checkpoint
-  - `list_checkpoints()`: Available checkpoints for simulator
-  - Storage: `checkpoints/{simulator_id}/{timestamp}.json`
-
-- **`checkpoint_serialization.py`**: Checkpoint serialization (168 lines)
-  - `serialize_checkpoint()`: JSON-compatible dict conversion
-  - `deserialize_checkpoint()`: Rebuild from dict
-  - Decimal-to-string conversion for precision
-  - Datetime ISO format handling
-  - Order and execution serialization helpers
-
-**Example Usage:**
+Paper trading simulator with realistic latency, risk controls, and state persistence. **No `__init__.py`** — import from submodules directly:
 
 ```python
-from decimal import Decimal
-from finbot.core.contracts import Order, OrderSide, OrderType, LatencyConfig
-from finbot.core.contracts.risk import RiskConfig, DrawdownLimitRule
-from finbot.services.execution import ExecutionSimulator, CheckpointManager
-
-# Create simulator with risk controls and latency
-risk_config = RiskConfig(
-    drawdown_limit=DrawdownLimitRule(max_daily_drawdown_pct=Decimal("5"))
-)
-simulator = ExecutionSimulator(
-    initial_cash=Decimal("100000"),
-    latency_config=LATENCY_NORMAL,
-    risk_config=risk_config,
-    simulator_id="my-paper-account",
-)
-
-# Submit order (will be delayed by latency)
-order = Order(...)
-simulator.submit_order(order, timestamp=datetime.now())
-
-# Process market data (triggers fills)
-simulator.process_market_data(current_time, current_prices)
-
-# Checkpoint state for recovery
-manager = CheckpointManager("checkpoints")
-checkpoint = manager.create_checkpoint(simulator)
-manager.save_checkpoint(checkpoint)
-
-# Later: restore from checkpoint
-restored = manager.restore_simulator(checkpoint)
+from finbot.services.execution.execution_simulator import ExecutionSimulator
+from finbot.services.execution.checkpoint_manager import CheckpointManager
 ```
 
-##### `finbot/services/backtesting/` — Backtrader-Based Backtesting Engine
+- **`execution_simulator.py`**: Order submission, market/limit execution with slippage, position/cash tracking, risk checking, pending action queue, checkpoint support
+- **`order_validator.py`**: Quantity, symbol, and limit price validation with typed rejection reasons
+- **`order_registry.py`**: Order lookup and lifecycle queries
+- **`pending_actions.py`**: Time-based action queue with O(log n) binary search insertion for latency simulation
+- **`risk_checker.py`**: Position limits, exposure limits, drawdown limits, kill-switch
+- **`checkpoint_manager.py`**: Create/save/load/restore state checkpoints (`checkpoints/{simulator_id}/{timestamp}.json`)
+- **`checkpoint_serialization.py`**: JSON-safe serialization (Decimal→string, datetime→ISO)
+
+#### `finbot/services/backtesting/` — Backtrader-Based Backtesting Engine
+
 Entry point: `BacktestRunner` in `backtest_runner.py`
 
 **Key modules:**
@@ -349,186 +150,91 @@ Entry point: `BacktestRunner` in `backtest_runner.py`
 - **`backtest_batch.py`**: Parallel batch backtesting
 - **`compute_stats.py`**: Performance metrics using quantstats (Sharpe, Sortino, Calmar, max drawdown, Kelly criterion)
 - **`rebalance_optimizer.py`**: Gradient descent-like optimizer for portfolio rebalance ratios
+- **`hypothesis_testing.py`**: Statistical hypothesis tests (t-test, bootstrap, permutation, etc.)
 
-**Strategies** (in `strategies/`):
-- `rebalance.py`: Periodic portfolio rebalancing
-- `no_rebalance.py`: Buy and hold
-- `sma_crossover.py`, `sma_crossover_double.py`, `sma_crossover_triple.py`: SMA timing strategies
-- `macd_single.py`, `macd_dual.py`: MACD-based strategies
-- `dip_buy_sma.py`, `dip_buy_stdev.py`: Dip buying strategies
-- `sma_rebal_mix.py`: Mixed SMA + rebalance approach
-- `dual_momentum.py`: Dual momentum (absolute + relative) with safe-asset fallback
-- `risk_parity.py`: Inverse-volatility weighting with periodic rebalance
+**13 strategies** (in `strategies/`): `rebalance`, `no_rebalance`, `sma_crossover`, `sma_crossover_double`, `sma_crossover_triple`, `macd_single`, `macd_dual`, `dip_buy_sma`, `dip_buy_stdev`, `sma_rebal_mix`, `dual_momentum`, `risk_parity`, `regime_adaptive`
 
-**Supporting components:**
-- `analyzers/cv_tracker.py`: Tracks cash and value throughout backtest
-- `brokers/`: Commission schemes (fixed commission)
-- `indicators/`: Returns, positive returns, negative returns
-- `sizers/`: Position sizing (AllInSizer, etc.)
+**Supporting:** `analyzers/cv_tracker.py` (cash/value tracking), `brokers/` (commission schemes), `indicators/` (returns), `sizers/` (position sizing)
 
-##### `finbot/services/simulation/` — Simulators (No Numba, Vectorized Numpy)
+#### `finbot/services/simulation/` — Simulators (Vectorized Numpy)
 
-**Fund simulator** (`fund_simulator.py`):
-- Simulates leveraged funds with fees, spread costs, LIBOR borrowing
-- **Equation**: `(underlying_change * leverage - daily_expenses) * mult_constant + add_constant`
-- Uses **vectorized numpy** (replaced numba @jit for performance + Python 3.12+ compatibility)
+- **`fund_simulator.py`**: Leveraged fund simulation with fees, spread costs, LIBOR borrowing (vectorized numpy)
+- **`bond_ladder/`**: 6-file bond ladder simulator using `numpy_financial.pv()`
+- **`stock_index_simulator.py`**, **`bond_index_simulator.py`**: Generic index simulation
+- **`sim_specific_stock_indexes.py`**, **`sim_specific_bond_indexes.py`**: S&P 500 TR, Nasdaq 100 TR, ICE Treasury indexes
+- **`sim_specific_funds.py`**: 16 fund simulation functions (SPY, SSO, UPRO, QQQ, QLD, TQQQ, TLT, UBT, TMF, etc.)
+- **`monte_carlo/`**: Single-asset and correlated multi-asset Monte Carlo simulation
 
-**Bond ladder simulator** (`bond_ladder/`):
-- 6 files: `bond.py`, `ladder.py`, `bond_ladder_simulator.py`, `build_yield_curve.py`, `loop.py`, `get_yield_history.py`
-- Uses `numpy_financial.pv()` for present value calculations (replaced custom numba PV function)
-- Plain Python classes (removed `@jitclass` decorators)
-
-**Index simulators**:
-- `stock_index_simulator.py`, `bond_index_simulator.py`: Generic index simulation
-- `sim_specific_stock_indexes.py`: S&P 500 TR, Nasdaq 100 TR
-- `sim_specific_bond_indexes.py`: ICE US Treasury indexes (1Y, 7Y, 20Y)
-
-**Fund-specific simulators** (`sim_specific_funds.py`):
-- 16 fund simulation functions (SPY, SSO, UPRO, QQQ, QLD, TQQQ, TLT, UBT, TMF, IEF, UST, TYD, SHY, 2x/3x short-term treasuries, NTSX)
-- Generic `_sim_fund()` helper reduces code duplication
-
-**Monte Carlo** (`monte_carlo/`):
-- `monte_carlo_simulator.py`: Main simulator (single-asset)
-- `multi_asset_monte_carlo.py`: Correlated multi-asset simulation using multivariate normal
-- `sim_types.py`: Normal distribution simulation
-- `visualization.py`: Plot trials and histograms
-
-##### `finbot/services/optimization/` — Portfolio Optimizers
-- **`dca_optimizer.py`**: DCA (Dollar Cost Averaging) optimizer
-  - Grid search across ratios, durations, purchase intervals using multiprocessing
-  - Calculates CAGR, Sharpe, max drawdown, std dev for each combination
+#### `finbot/services/optimization/` — Portfolio Optimizers
+- **`dca_optimizer.py`**: DCA grid search across ratios, durations, purchase intervals (multiprocessing)
+- **`pareto_optimizer.py`**: Multi-objective Pareto optimization with dashboard integration
 - **`rebalance_optimizer.py`**: Placeholder (see `backtesting/rebalance_optimizer.py` for working version)
 
-##### `finbot/services/health_economics/` — Health Economics Analysis
+#### `finbot/services/health_economics/` — Health Economics Analysis
 - **`qaly_simulator.py`**: Monte Carlo QALY simulation with stochastic cost/utility/mortality
 - **`cost_effectiveness.py`**: ICER, NMB, CEAC, cost-effectiveness plane (probabilistic sensitivity analysis)
 - **`treatment_optimizer.py`**: Grid-search treatment schedule optimization (dose frequency x duration)
-- **`scenarios/`**: Real-world clinical scenario analyses composed from the above modules
-  - `models.py`: `ScenarioResult` frozen dataclass (ICER, NMB, QALY gain, cost difference)
-  - `cancer_screening.py`: Annual mammography vs. no screening (10-year horizon)
-  - `hypertension.py`: ACE inhibitor vs. lifestyle modification for Stage 1 HTN (5-year)
-  - `vaccine.py`: Influenza vaccination vs. no vaccination for elderly ≥65 (1-year, societal)
+- **`scenarios/`**: Clinical scenarios — cancer screening, hypertension, vaccine (3 scenarios composed from above modules)
 
-##### `finbot/services/data_quality/` — Data Quality and Observability
+#### `finbot/services/data_quality/` — Data Quality and Observability
 - **`data_source_registry.py`**: Registry of 7 data sources with staleness thresholds
 - **`check_data_freshness.py`**: Scan directories and report freshness status
 - **`validate_dataframe.py`**: Lightweight DataFrame validation (empty, schema, duplicates, nulls)
 
-##### `finbot/services/risk_analytics/` — Standalone Risk Analytics
+#### `finbot/services/risk_analytics/` — Standalone Risk Analytics
 
-Standalone risk analysis modules that work on any returns or price series, independent of the backtesting engine. Three major capabilities:
+Standalone risk analysis on any returns/price series, independent of the backtesting engine.
 
-- **`var.py`**: Value at Risk and Conditional VaR (Expected Shortfall)
-  - Three methods: historical (empirical percentile), parametric (normal distribution), Monte Carlo
-  - Square-root-of-time scaling for multi-day horizons
-  - `var_backtest()`: expanding-window violation analysis with calibration check
-- **`stress.py`**: Parametric stress testing with named crisis scenarios
-  - `SCENARIOS`: four built-in scenarios (2008 Financial Crisis, COVID-19, Dot-Com Bubble, Black Monday 1987)
-  - Linear interpolation synthetic price paths (shock phase + recovery phase)
-  - Custom scenarios via `StressScenario` dataclass
-- **`kelly.py`**: Kelly criterion position sizing
-  - Single-asset: discrete Kelly formula from win rate + win/loss ratio or raw returns
-  - Multi-asset: continuous matrix Kelly `f* = Σ⁻¹ μ`, weights clipped `[0,1]` and normalised
-- **`viz.py`**: Six Plotly visualisation functions (VaR distribution, VaR comparison, stress path, stress comparison, Kelly fractions, Kelly correlation heatmap)
+- **`var.py`**: VaR and CVaR — historical, parametric, Monte Carlo methods; multi-day scaling; expanding-window backtest
+- **`stress.py`**: Parametric stress testing — 4 built-in crisis scenarios + custom `StressScenario` support
+- **`kelly.py`**: Kelly criterion — single-asset discrete formula + multi-asset matrix Kelly `f* = Sigma^-1 * mu`
+- **`viz.py`**: 6 Plotly charts (VaR distribution, comparison, stress path/comparison, Kelly fractions, correlation heatmap)
 
-**Contracts** (`finbot/core/contracts/risk_analytics.py`): `VaRMethod`, `VaRResult`, `CVaRResult`, `VaRBacktestResult`, `StressScenario`, `StressTestResult`, `KellyResult`, `MultiAssetKellyResult` — all frozen dataclasses with `__post_init__` validation.
+#### `finbot/services/portfolio_analytics/` — Standalone Portfolio Analytics
 
-##### `finbot/services/portfolio_analytics/` — Standalone Portfolio Analytics
+Standalone portfolio analysis on any returns/price series.
 
-Standalone portfolio analysis modules that work on any returns or price series. Four major capabilities:
+- **`rolling.py`**: Rolling Sharpe, annualized vol, beta over configurable windows
+- **`benchmark.py`**: OLS alpha, beta, R-squared, tracking error, information ratio, up/down capture
+- **`drawdown.py`**: Full drawdown period detection — underwater curve, per-episode peak/trough/recovery
+- **`correlation.py`**: HHI, effective N, diversification ratio, pairwise correlation matrix
+- **`viz.py`**: 6 Plotly charts (rolling metrics, benchmark scatter, underwater, drawdown bars, correlation heatmap, weights bar)
 
-- **`rolling.py`**: Rolling Sharpe ratio, annualized volatility, and beta over configurable windows using a sliding window loop.
-- **`benchmark.py`**: OLS-based benchmark comparison — Jensen's alpha, systematic beta, R², tracking error, information ratio, up/down capture ratios.
-- **`drawdown.py`**: Full drawdown period analysis — underwater curve, per-episode peak/trough/recovery detection, aggregate statistics. Unlike `quantstats.max_drawdown()` (a single scalar), this provides every distinct episode.
-- **`correlation.py`**: Diversification metrics — Herfindahl-Hirschman Index (HHI), effective N, diversification ratio, per-asset volatilities, and pairwise correlation matrix.
-- **`viz.py`**: Six Plotly visualisation functions (rolling metrics subplot, benchmark scatter, underwater area chart, drawdown period bars, correlation heatmap, diversification weights bar).
+#### `finbot/services/realtime_data/` — Real-Time Market Data
 
-**Contracts** (`finbot/core/contracts/portfolio_analytics.py`): `RollingMetricsResult`, `BenchmarkComparisonResult`, `DrawdownPeriod`, `DrawdownAnalysisResult`, `DiversificationResult` — all frozen dataclasses with `__post_init__` validation.
+Multi-provider real-time quotes for US and Canadian equities via REST (no vendor SDKs).
 
-##### `finbot/services/realtime_data/` — Real-Time Market Data
+- **`_providers/`**: `alpaca_provider.py` (IEX feed), `twelvedata_provider.py` (US + TSX/TSXV), `yfinance_provider.py` (fallback)
+- **`composite_provider.py`**: Priority routing with fallback (Canadian → Twelve Data → yfinance; US → Alpaca → Twelve Data → yfinance)
+- **`quote_cache.py`**: Thread-safe TTL cache (15s default)
+- **`viz.py`**: 3 Plotly charts (quote table, sparkline, provider status bar)
 
-Multi-provider real-time quote system for US and Canadian equities. Uses plain REST (no vendor SDKs) via the existing `RequestHandler`.
+#### `finbot/services/factor_analytics/` — Fama-French-Style Factor Analytics
 
-- **`_providers/alpaca_provider.py`**: Alpaca IEX feed — `data.alpaca.markets/v2/stocks/snapshots` for US equities.
-- **`_providers/twelvedata_provider.py`**: Twelve Data — `api.twelvedata.com/quote` for US + Canadian (TSX/TSXV) equities. Transforms `.TO`/`.V` suffixes to `:TSX`/`:TSXV`.
-- **`_providers/yfinance_provider.py`**: yfinance fallback — always available (no API key), wraps `yf.Ticker().history()`.
-- **`composite_provider.py`**: Priority routing with fallback: Canadian symbols → Twelve Data → yfinance; US symbols → Alpaca → Twelve Data → yfinance. Skips unavailable providers silently.
-- **`quote_cache.py`**: Thread-safe TTL cache (`threading.Lock`, default 15s TTL).
-- **`viz.py`**: Three Plotly visualisation functions (quote table, sparkline, provider status bar).
+Standalone multi-factor model modules. Accept returns arrays/DataFrames — no data fetching.
 
-**Contracts** (`finbot/core/contracts/realtime_data.py`): `Quote`, `QuoteBatch`, `ProviderStatus`, `QuoteProvider` (StrEnum), `Exchange` (StrEnum) — all frozen dataclasses with `__post_init__` validation.
+- **`factor_regression.py`**: OLS regression with auto-detected model type (CAPM/FF3/FF5/CUSTOM) + rolling R-squared
+- **`factor_attribution.py`**: Per-factor return contribution decomposition
+- **`factor_risk.py`**: Systematic/idiosyncratic variance decomposition with per-factor marginal contributions
+- **`viz.py`**: 5 Plotly charts (loadings, attribution, risk donut, rolling R-squared, factor correlation heatmap)
 
-**Protocol** (`finbot/core/contracts/interfaces.py`): `RealtimeQuoteProvider` — `get_quote()`, `get_quotes()`, `is_available()`.
+#### `finbot/utils/` — Utility Library (~176 files)
 
-##### `finbot/services/factor_analytics/` — Fama-French-Style Factor Analytics
-
-Standalone multi-factor model modules. Accept returns arrays/DataFrames and compute — no data fetching. Three major capabilities:
-
-- **`factor_regression.py`**: OLS regression of portfolio returns on factor returns.
-  - `compute_factor_regression()`: loadings, annualized alpha, R², adj-R², residual std, t-stats, p-values.
-  - Auto-detects `FactorModelType` from column names: `Mkt-RF` → CAPM; `Mkt-RF/SMB/HML` → FF3; + `RMW/CMA` → FF5; otherwise CUSTOM.
-  - `compute_rolling_r_squared()`: sliding-window R² time series; NaN for first `window-1` bars.
-  - Uses `np.linalg.lstsq` + `np.linalg.pinv` fallback for near-singular factor matrices.
-- **`factor_attribution.py`**: Return attribution — per-factor contribution = `loading * sum(factor_returns)`; alpha contribution = `(daily_alpha) * n_obs`; residual = total − explained.
-- **`factor_risk.py`**: Variance decomposition — systematic = `beta.T @ Sigma_f @ beta`; idiosyncratic = clamped residual; per-factor marginal contributions sum to systematic variance.
-- **`viz.py`**: Five Plotly visualisation functions (factor loadings bars with CI, attribution bars, systematic/idiosyncratic donut, rolling R² line, factor correlation heatmap).
-
-**Contracts** (`finbot/core/contracts/factor_analytics.py`): `FactorModelType` (StrEnum), `FactorRegressionResult`, `FactorAttributionResult`, `FactorRiskResult` — all frozen dataclasses with `__post_init__` validation.
-
-##### `finbot/utils/` — Utility Library (~176 files)
-
-**Data collection** (`data_collection_utils/`):
-- `yfinance/`: Yahoo Finance price histories
-- `fred/`: FRED economic data (yields, rates, CPI, GDP, unemployment)
-- `google_finance/`: Google Sheets-based index data (XNDX, ICE treasury indexes)
-- `scrapers/shiller/`: Shiller's online datasets (CAPE, PE ratios, S&P data)
-- `alpha_vantage/`: Alpha Vantage API (quotes, sentiment, economic indicators)
-- `bls/`: Bureau of Labor Statistics data
-- `pdr/`: Pandas DataReader wrapper utilities
-
-**Finance utilities** (`finance_utils/`):
-- `get_cgr.py`: Compound growth rate
-- `get_pct_change.py`: Percentage change
-- `get_periods_per_year.py`: Detect frequency from price data
-- `merge_price_histories.py`: Merge overlapping price series
-- `get_risk_free_rate.py`: Fetch risk-free rate
-- `get_drawdown.py`, `get_timeseries_stats.py`, etc.
-- `get_inflation_adjusted_returns.py`: Deflate nominal prices by FRED CPI data
-
-**Pandas utilities** (`pandas_utils/`):
-- Save/load DataFrames (parquet, CSV, Excel)
-- Date filtering, frequency detection, hashing
-- Column sorting, data masking
-
-**Other utilities**:
-- `datetime_utils/`: Date conversions, US business dates, time ranges
-- `data_science_utils/`: Data cleaning, imputation, outlier detection, scalers/normalizers
-- `plotting_utils/`: Interactive plotly visualizations
-- `request_utils/`: HTTP request handler with retry logic, exponential backoff, response caching (zstandard compression)
-- `multithreading_utils/`: Thread pool configuration
+- **`data_collection_utils/`**: yfinance, FRED, Google Finance, Shiller scrapers, Alpha Vantage, BLS, Pandas DataReader
+- **`finance_utils/`**: CGR, percent change, period detection, price series merging, risk-free rate, drawdown, inflation adjustment
+- **`pandas_utils/`**: Save/load (parquet, CSV, Excel), date filtering, frequency detection, hashing
+- **`datetime_utils/`**: Date conversions, US business dates, time ranges
+- **`data_science_utils/`**: Data cleaning, imputation, outlier detection, scalers/normalizers
+- **`plotting_utils/`**: Interactive plotly visualizations
+- **`request_utils/`**: HTTP handler with retry, exponential backoff, response caching (zstandard)
+- **`multithreading_utils/`**: Thread pool configuration
 
 #### `scripts/` — Automation Scripts
-- **`update_daily.py`**: Daily data update pipeline
-  - Fetches YF/GF price histories, FRED data, Shiller data
-  - Re-runs all simulations (overnight LIBOR approximation → index sims → fund sims)
-  - Uses `_run_with_retry()` helper with logging
+- **`update_daily.py`**: Daily data update pipeline — fetches prices/FRED/Shiller, re-runs all simulations
 
 ### Data Storage
 
-All data stored as **parquet** files (replaced pickle throughout for safety, speed, interoperability).
-
-Directories under `finbot/data/` (configured in `finbot/constants/path_constants.py`):
-- `simulations/`: Fund and index simulation results
-- `backtests/`: Backtest results
-- `price_histories/`: Cached price data (YF, GF)
-- `longtermtrends_data/`: Long-term trends datasets
-- `fred_data/`: FRED economic data
-- `yfinance_data/`: YFinance data cache
-- `google_finance_data/`: Google Finance data cache
-- `shiller_data/`: Shiller datasets
-- `alpha_vantage_data/`: Alpha Vantage data cache
-- `bls_data/`: BLS data cache
-- `responses/`: HTTP response cache (by source)
+All data stored as **parquet** files under `finbot/data/` (configured in `finbot/constants/path_constants.py`): `simulations/`, `backtests/`, `price_histories/`, `longtermtrends_data/`, `fred_data/`, `yfinance_data/`, `google_finance_data/`, `shiller_data/`, `alpha_vantage_data/`, `bls_data/`, `responses/`.
 
 ## Environment Variables
 
@@ -557,20 +263,24 @@ Create `.env` file in `finbot/config/` (excluded by `.gitignore`).
 | `finbot/core/contracts/checkpoint.py` | State persistence contracts |
 | `finbot/core/contracts/risk.py` | Risk management rules |
 | `finbot/core/contracts/schemas.py` | Data validation, canonical metrics |
+| `finbot/core/contracts/optimization.py` | Optimization result contracts |
 | **Execution System** | |
 | `finbot/services/execution/execution_simulator.py` | Paper trading simulator with latency/risk controls |
 | `finbot/services/execution/checkpoint_manager.py` | State checkpoint/restore for disaster recovery |
 | `finbot/services/execution/risk_checker.py` | Risk limit enforcement (position, exposure, drawdown) |
+| `finbot/services/execution/order_registry.py` | Order lookup and lifecycle queries |
 | **Backtesting** | |
 | `finbot/services/backtesting/run_backtest.py` | Run single backtest |
 | `finbot/services/backtesting/backtest_batch.py` | Run backtests in parallel |
 | `finbot/services/backtesting/backtest_runner.py` | BacktestRunner class (Cerebro wrapper) |
+| `finbot/services/backtesting/hypothesis_testing.py` | Statistical hypothesis tests for strategy evaluation |
 | **Simulations** | |
 | `finbot/services/simulation/fund_simulator.py` | Simulate leveraged funds with fees |
 | `finbot/services/simulation/bond_ladder/bond_ladder_simulator.py` | Simulate bond ladders |
 | `finbot/services/simulation/monte_carlo/monte_carlo_simulator.py` | Monte Carlo simulations |
 | **Optimization** | |
 | `finbot/services/optimization/dca_optimizer.py` | DCA grid search optimizer |
+| `finbot/services/optimization/pareto_optimizer.py` | Multi-objective Pareto optimizer |
 | **Infrastructure** | |
 | `scripts/update_daily.py` | Daily data update + simulation pipeline |
 | `finbot/cli/main.py` | CLI entry point (`finbot simulate/backtest/optimize/update/status/dashboard`) |
@@ -584,12 +294,14 @@ Create `.env` file in `finbot/config/` (excluded by `.gitignore`).
 | `finbot/services/risk_analytics/var.py` | VaR / CVaR (historical, parametric, Monte Carlo) |
 | `finbot/services/risk_analytics/stress.py` | Parametric stress testing (4 built-in scenarios) |
 | `finbot/services/risk_analytics/kelly.py` | Kelly criterion (single + multi-asset) |
+| `finbot/services/risk_analytics/viz.py` | 6 risk analytics Plotly charts |
 | `finbot/core/contracts/risk_analytics.py` | Risk analytics result contracts |
 | **Portfolio Analytics** | |
 | `finbot/services/portfolio_analytics/rolling.py` | Rolling Sharpe, vol, beta |
-| `finbot/services/portfolio_analytics/benchmark.py` | Alpha, beta, R², tracking error, IR, up/down capture |
+| `finbot/services/portfolio_analytics/benchmark.py` | Alpha, beta, R-squared, tracking error, IR, up/down capture |
 | `finbot/services/portfolio_analytics/drawdown.py` | Drawdown period detection + underwater curve |
 | `finbot/services/portfolio_analytics/correlation.py` | HHI, effective N, diversification ratio |
+| `finbot/services/portfolio_analytics/viz.py` | 6 portfolio analytics Plotly charts |
 | `finbot/core/contracts/portfolio_analytics.py` | Portfolio analytics result contracts |
 | **Real-Time Data** | |
 | `finbot/services/realtime_data/composite_provider.py` | Multi-provider quote fetcher with fallback + caching |
@@ -597,11 +309,13 @@ Create `.env` file in `finbot/config/` (excluded by `.gitignore`).
 | `finbot/services/realtime_data/_providers/alpaca_provider.py` | Alpaca IEX feed (US equities) |
 | `finbot/services/realtime_data/_providers/twelvedata_provider.py` | Twelve Data (US + Canada/TSX) |
 | `finbot/services/realtime_data/_providers/yfinance_provider.py` | yfinance fallback (always available) |
+| `finbot/services/realtime_data/viz.py` | 3 real-time data Plotly charts |
 | `finbot/core/contracts/realtime_data.py` | Quote, QuoteBatch, ProviderStatus contracts |
 | **Factor Analytics** | |
-| `finbot/services/factor_analytics/factor_regression.py` | OLS factor regression + rolling R² |
+| `finbot/services/factor_analytics/factor_regression.py` | OLS factor regression + rolling R-squared |
 | `finbot/services/factor_analytics/factor_attribution.py` | Per-factor return contribution decomposition |
 | `finbot/services/factor_analytics/factor_risk.py` | Systematic/idiosyncratic variance decomposition |
+| `finbot/services/factor_analytics/viz.py` | 5 factor analytics Plotly charts |
 | `finbot/core/contracts/factor_analytics.py` | FactorModelType, FactorRegressionResult, FactorAttributionResult, FactorRiskResult |
 
 ## Code Style
@@ -629,85 +343,27 @@ uv run pytest -k test_simulation
 uv run pytest --cov=finbot tests/
 ```
 
-**Test structure**:
-- `tests/unit/`: Unit tests (1398 tests across 40+ files)
-  - `test_imports.py`: Smoke tests for all key module imports
-  - `test_simulation_math.py`: Simulation math correctness
-  - `test_finance_utils.py`: Finance calculation tests
-  - `test_strategies.py`, `test_strategies_parametrized.py`: All 12 backtesting strategies
-  - `test_health_economics.py`: QALY simulator, CEA, treatment optimizer
-  - `test_health_economics_scenarios.py`: Clinical scenarios (cancer screening, hypertension, vaccine, 22 tests)
-  - `test_order_lifecycle.py`: Order tracking and execution (20 tests)
-  - `test_latency_simulation.py`: Latency hooks and pending actions (17 tests)
-  - `test_risk_controls.py`: Risk management (14 tests)
-  - `test_checkpoint_recovery.py`: State persistence (18 tests)
-  - `test_backtrader_adapter.py`: Backtrader adapter compliance
-  - `test_cost_models.py`, `test_corporate_actions.py`: Cost tracking, dividend/split handling
-  - `test_walkforward.py`, `test_regime_detection.py`: Walk-forward and regime analysis
-  - `test_dashboard_charts.py`: Chart component tests
-  - `test_new_strategies.py`: DualMomentum, RiskParity, multi-asset Monte Carlo
-  - More test files for core functionality
-- `tests/integration/`: Integration tests (future)
+**Test structure**: `tests/unit/` contains 1749 tests across 50+ files covering imports, simulation math, finance utils, all 13 strategies, health economics, order lifecycle, latency, risk controls, checkpoints, cost models, corporate actions, walk-forward, regime detection, dashboard charts, risk analytics, portfolio analytics, real-time data, and factor analytics. `tests/integration/` reserved for future integration tests.
 
 ## Documentation
 
 **MkDocs documentation site** (`docs_site/`):
 
 ```bash
-# Serve locally with auto-reload
-make docs-serve
-# or
-uv run mkdocs serve
-# Access at http://127.0.0.1:8000
-
-# Build static site
-make docs-build
-
-# Deploy to GitHub Pages
-uv run mkdocs gh-deploy
+make docs-serve       # or: uv run mkdocs serve (http://127.0.0.1:8000)
+make docs-build       # build static site
+uv run mkdocs gh-deploy  # deploy to GitHub Pages
 ```
 
-**Documentation structure**:
-- `docs_site/`: MkDocs source (Markdown)
-  - `index.md`: Home page with project overview
-  - `user-guide/`: Installation, quick start, CLI reference, configuration
-  - `api/`: API reference for services and utilities
-  - `research/`: Research documentation
-  - `contributing.md`, `changelog.md`: Contributing guide and version history
-- `site/`: Generated static site (gitignored)
-- `docs/`: Project documentation
-  - `adr/`: Architectural Decision Records
-  - `guidelines/`: Development guidelines (testing, documentation, roadmap process)
-  - `planning/`: Roadmap and implementation guides
-  - `research/`: Research findings and analysis
-  - `guides/`: Development guides
-  - `benchmarks.md`: Performance benchmarks
-
-**Features**:
-- Material Design theme with dark mode
-- Full-text search
-- Auto-generated API reference from docstrings
-- Responsive mobile/desktop layout
-- Fast builds (~2 seconds)
-
-See [ADR-003](docs/adr/ADR-003-add-mkdocs-documentation.md) for implementation details.
+Source in `docs_site/` (index, user-guide, api, research, contributing, changelog). Project docs in `docs/` (adr, guidelines, planning, research, guides). See [ADR-003](docs/adr/ADR-003-add-mkdocs-documentation.md).
 
 ## CI/CD
 
-GitHub Actions workflow (`.github/workflows/ci.yml`) runs on push/PR to main:
-- Lint: `ruff check .`
-- Format check: `ruff format --check .`
-- Type check: `mypy finbot/` (continue-on-error)
-- Security: `bandit -r finbot/`, `pip-audit` (continue-on-error)
-- Tests: `pytest tests/ -v --cov` (Python 3.11, 3.12, 3.13)
-- Parity gate: Golden strategy parity tests (GS-01, GS-02, GS-03)
-- **Performance regression:** Benchmark fund_simulator and backtest_adapter (fails if >20% slower)
-
-**Performance Regression Testing** (Priority 5 Item 33):
-- Automated benchmarks run on every PR
-- Compares to baseline in `tests/performance/baseline.json`
-- Fails CI if performance degrades >20%
-- See `tests/performance/README.md` for details
+GitHub Actions (`.github/workflows/ci.yml`) on push/PR to main:
+- Lint (`ruff check`), format (`ruff format --check`), type check (`mypy`), security (`bandit`, `pip-audit`)
+- Tests: `pytest --cov` on Python 3.11, 3.12, 3.13
+- Parity gate: Golden strategy tests (GS-01, GS-02, GS-03)
+- Performance regression: benchmarks vs `tests/performance/baseline.json` (fails if >20% slower)
 - Update baseline: `uv run python tests/performance/benchmark_runner.py --update-baseline`
 
 ## Architecture Decisions
@@ -764,45 +420,18 @@ See `docs/adr/` for architectural decision records:
 3. Run tests: `uv run pytest`
 4. Run linter: `uv run ruff check . --fix`
 5. Run formatter: `uv run ruff format .`
-6. Commit with conventional commit message following commit authorship policy (see below)
-   - Format: `type(scope): subject` (e.g., `feat(api): add new endpoint`)
-   - Pre-commit hook validates commit messages automatically
-   - See CONTRIBUTING.md for complete guidelines
-7. Push and create PR
-8. CI must pass
+6. Commit with conventional commit message: `type(scope): subject` (e.g., `feat(api): add new endpoint`)
+7. Push and create PR — CI must pass
 
 ### Commit Authorship Policy
 
 **IMPORTANT:** All commits must list only human authors, co-authors, and contributors.
 
-- ✅ **Do:** Attribute commits to human developers
-- ❌ **Don't:** Include AI assistants in author, co-author, or contributor fields. This includes Claude, Gemini, Codex, ChatGPT, Copilot, or any other AI tool.
-- ❌ **Don't:** Add "AI-generated" or "Created with AI" notices in code, docs, or commit messages.
-- **Rationale:** Commits represent human accountability and decision-making. AI tools are instruments, not authors.
-- Scope: This also applies to documentation attribution (README/ADRs/research/planning/changelogs/release notes).
-
-**Examples:**
-
-Good commit message:
-```
-Add performance benchmarks
-
-- Created benchmark_fund_simulator.py with 10 data sizes
-- Created comprehensive docs/benchmarks.md
-- Validates vectorized numpy performance claims
-```
-
-Bad commit message (don't do this):
-```
-Add performance benchmarks
-
-[changes with any AI co-author footer]
-```
-
-This policy applies to:
-- All past commits (if needed, amend history to comply)
-- All current commits
-- All future commits
+- **Do:** Attribute commits to human developers
+- **Don't:** Include AI assistants (Claude, Gemini, Codex, ChatGPT, Copilot, etc.) in author, co-author, or contributor fields
+- **Don't:** Add "AI-generated" or "Created with AI" notices in code, docs, or commit messages
+- **Rationale:** Commits represent human accountability. AI tools are instruments, not authors.
+- **Scope:** Applies to all commits and documentation attribution (README, ADRs, research, planning, changelogs, release notes)
 
 ### Agent File Sync
 

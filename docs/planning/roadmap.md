@@ -2,30 +2,30 @@
 
 **Created:** 2026-02-10
 **Last Updated:** 2026-02-25
-**Status:** Priority 0-8 complete (1749 tests). Priority 9 (agent tooling) active.
+**Status:** Priority 0-9 complete (1752 tests). Roadmap clean.
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
 
 See Completed Items table below and git history for details on implemented features.
 
-**Current Plan Record:** None active. Last plan: `docs/planning/archive/IMPLEMENTATION_PLAN_12_P8_REALTIME_DATA_CLUSTER_C.md` (completed 2026-02-25)
+**Current Plan Record:** None active. Last plan: P9.1 AGENTS.md optimization (completed 2026-02-25, no separate plan file — single-file edit)
 
 ---
 
 ## Priority 9: Agent Tooling
 
-### P9.1 Optimize AGENTS.md / CLAUDE.md
+### P9.1 Optimize AGENTS.md / CLAUDE.md ✓
 
-**Status:** 🔄 Active
-
-Ensure the agent instruction file (`AGENTS.md`, symlinked as `CLAUDE.md` and `GEMINI.md`) remains accurate, navigable, and context-window-efficient as the project grows.
+**Status:** ✅ COMPLETED (2026-02-25)
 
 - [x] Trim roadmap verbose P5–P7 sections (completed items already in Completed Items table)
-- [ ] Audit AGENTS.md architecture sections for accuracy against current implementation
-- [ ] Verify "Current Delivery Status" section reflects P0–P8 all complete
-- [ ] Ensure AGENTS.md Key Entry Points table is complete for all P8 modules
-- [ ] Keep AGENTS.md under ~500 lines to remain context-window-friendly
-- [ ] Remove or archive any planning notes that are stale post-P8
+- [x] Audit AGENTS.md architecture sections for accuracy against current implementation
+- [x] Verify "Current Delivery Status" section reflects P0–P8 all complete
+- [x] Ensure AGENTS.md Key Entry Points table is complete for all P8 modules
+- [x] Keep AGENTS.md under ~500 lines to remain context-window-friendly (818 → 447 lines)
+- [x] Remove or archive any planning notes that are stale post-P8
+
+**What Was Done:** Optimized AGENTS.md from 818 → 447 lines (45% reduction). Applied accuracy fixes: strategy count 12→13 (added `regime_adaptive`), test count updated to 1752, date corrected. Added 6 missing Key Entry Points rows (`optimization.py`, `hypothesis_testing.py`, `order_registry.py`, `pareto_optimizer.py`, 4 `viz.py` files). Fixed execution module import path (no `__init__.py`). Condensed per-field contract listings and verbose service narratives while preserving all actionable content.
 
 ---
 
@@ -305,3 +305,4 @@ See Completed Items table for full details on all 25 completed items.
 | Real-Time Data — P8 Cluster C (P8.3) | 2026-02-25 | Free real-time quotes via Alpaca (US/IEX), Twelve Data (US+Canada/TSX), yfinance fallback; composite provider with priority fallback + Canadian symbol routing; thread-safe TTL cache; 3-tab dashboard page 11; 92 new tests; 1653 total tests |
 | Factor Analytics — P8 Cluster D (P8.4) | 2026-02-25 | OLS factor regression with CAPM/FF3/FF5/CUSTOM auto-detection; return attribution decomposition; systematic/idiosyncratic risk decomposition; 5 Plotly chart functions; 3-tab dashboard page 12; 96 new tests; 1749 total tests |
 | Roadmap optimization — P9 kickoff (P9.1 partial) | 2026-02-25 | Trimmed verbose P5–P7 sections (~700 lines → ~50 lines); added Priority 9 section; updated status header |
+| AGENTS.md optimization — P9.1 complete (P9.1) | 2026-02-25 | 818 → 447 lines (45% reduction); accuracy fixes (13 strategies, 1752 tests, missing modules, import path); 6 missing Key Entry Points rows added |
