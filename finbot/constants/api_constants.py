@@ -114,6 +114,12 @@ ALPHA_VANTAGE_RAPI_FUNCTIONS = {
     "HT_PHASOR",
 }
 
+# Alpaca Market Data API constants
+ALPACA_DATA_BASE_URL = "https://data.alpaca.markets"
+
+# Twelve Data API constants
+TWELVEDATA_BASE_URL = "https://api.twelvedata.com"
+
 # AlphaVantage API constants
 ALPHA_VANTAGE_API_BASE_URL = "https://www.alphavantage.co/query"
 ALPHA_VANTAGE_API_FUNCTIONS = {
