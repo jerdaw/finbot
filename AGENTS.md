@@ -12,6 +12,7 @@ Finbot is a financial data collection, simulation, and backtesting platform that
 - **Cost models** and **corporate actions** handling for realistic backtests
 - **Walk-forward analysis** and **market regime detection** for robust strategy evaluation
 - **Experiment tracking** with snapshots, batch observability, and dashboard comparison
+- **Real-time market data** from Alpaca, Twelve Data, and yfinance with composite fallback
 - Health economics analysis (QALY simulation, cost-effectiveness, treatment optimization)
 - Interactive Streamlit web dashboard
 
@@ -444,6 +445,21 @@ Standalone portfolio analysis modules that work on any returns or price series. 
 
 **Contracts** (`finbot/core/contracts/portfolio_analytics.py`): `RollingMetricsResult`, `BenchmarkComparisonResult`, `DrawdownPeriod`, `DrawdownAnalysisResult`, `DiversificationResult` — all frozen dataclasses with `__post_init__` validation.
 
+##### `finbot/services/realtime_data/` — Real-Time Market Data
+
+Multi-provider real-time quote system for US and Canadian equities. Uses plain REST (no vendor SDKs) via the existing `RequestHandler`.
+
+- **`_providers/alpaca_provider.py`**: Alpaca IEX feed — `data.alpaca.markets/v2/stocks/snapshots` for US equities.
+- **`_providers/twelvedata_provider.py`**: Twelve Data — `api.twelvedata.com/quote` for US + Canadian (TSX/TSXV) equities. Transforms `.TO`/`.V` suffixes to `:TSX`/`:TSXV`.
+- **`_providers/yfinance_provider.py`**: yfinance fallback — always available (no API key), wraps `yf.Ticker().history()`.
+- **`composite_provider.py`**: Priority routing with fallback: Canadian symbols → Twelve Data → yfinance; US symbols → Alpaca → Twelve Data → yfinance. Skips unavailable providers silently.
+- **`quote_cache.py`**: Thread-safe TTL cache (`threading.Lock`, default 15s TTL).
+- **`viz.py`**: Three Plotly visualisation functions (quote table, sparkline, provider status bar).
+
+**Contracts** (`finbot/core/contracts/realtime_data.py`): `Quote`, `QuoteBatch`, `ProviderStatus`, `QuoteProvider` (StrEnum), `Exchange` (StrEnum) — all frozen dataclasses with `__post_init__` validation.
+
+**Protocol** (`finbot/core/contracts/interfaces.py`): `RealtimeQuoteProvider` — `get_quote()`, `get_quotes()`, `is_available()`.
+
 ##### `finbot/utils/` — Utility Library (~176 files)
 
 **Data collection** (`data_collection_utils/`):
@@ -506,6 +522,9 @@ Required for data collection features (loaded lazily via `APIKeyManager`):
 ```bash
 export DYNACONF_ENV=development  # or production
 export ALPHA_VANTAGE_API_KEY=your_key
+export ALPACA_API_KEY=your_key            # Real-time US quotes (IEX feed)
+export ALPACA_SECRET_KEY=your_secret      # Alpaca secret key
+export TWELVEDATA_API_KEY=your_key        # Real-time US + Canada quotes
 export NASDAQ_DATA_LINK_API_KEY=your_key
 export US_BUREAU_OF_LABOR_STATISTICS_API_KEY=your_key
 export GOOGLE_FINANCE_SERVICE_ACCOUNT_CREDENTIALS_PATH=/path/to/credentials.json
@@ -540,7 +559,7 @@ Create `.env` file in `finbot/config/` (excluded by `.gitignore`).
 | **Infrastructure** | |
 | `scripts/update_daily.py` | Daily data update + simulation pipeline |
 | `finbot/cli/main.py` | CLI entry point (`finbot simulate/backtest/optimize/update/status/dashboard`) |
-| `finbot/dashboard/app.py` | Streamlit dashboard entry point (9 pages) |
+| `finbot/dashboard/app.py` | Streamlit dashboard entry point (11 pages) |
 | **Other Services** | |
 | `finbot/services/health_economics/qaly_simulator.py` | QALY Monte Carlo simulation |
 | `finbot/services/health_economics/cost_effectiveness.py` | Cost-effectiveness analysis (ICER/NMB/CEAC) |
@@ -557,6 +576,13 @@ Create `.env` file in `finbot/config/` (excluded by `.gitignore`).
 | `finbot/services/portfolio_analytics/drawdown.py` | Drawdown period detection + underwater curve |
 | `finbot/services/portfolio_analytics/correlation.py` | HHI, effective N, diversification ratio |
 | `finbot/core/contracts/portfolio_analytics.py` | Portfolio analytics result contracts |
+| **Real-Time Data** | |
+| `finbot/services/realtime_data/composite_provider.py` | Multi-provider quote fetcher with fallback + caching |
+| `finbot/services/realtime_data/quote_cache.py` | Thread-safe TTL cache for quotes |
+| `finbot/services/realtime_data/_providers/alpaca_provider.py` | Alpaca IEX feed (US equities) |
+| `finbot/services/realtime_data/_providers/twelvedata_provider.py` | Twelve Data (US + Canada/TSX) |
+| `finbot/services/realtime_data/_providers/yfinance_provider.py` | yfinance fallback (always available) |
+| `finbot/core/contracts/realtime_data.py` | Quote, QuoteBatch, ProviderStatus contracts |
 
 ## Code Style
 

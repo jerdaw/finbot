@@ -44,6 +44,21 @@ def get_us_bureau_of_labor_statistics_api_key() -> str:
     return _api_key_manager.get_key("US_BUREAU_OF_LABOR_STATISTICS_API_KEY")
 
 
+def get_alpaca_api_key() -> str:
+    """Get Alpaca API key from environment."""
+    return _api_key_manager.get_key("ALPACA_API_KEY")
+
+
+def get_alpaca_secret_key() -> str:
+    """Get Alpaca secret key from environment."""
+    return _api_key_manager.get_key("ALPACA_SECRET_KEY")
+
+
+def get_twelvedata_api_key() -> str:
+    """Get Twelve Data API key from environment."""
+    return _api_key_manager.get_key("TWELVEDATA_API_KEY")
+
+
 def get_google_finance_service_account_credentials_path() -> str:
     """Get Google Finance service account credentials path from environment."""
     return _api_key_manager.get_key("GOOGLE_FINANCE_SERVICE_ACCOUNT_CREDENTIALS_PATH")

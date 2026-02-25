@@ -1,14 +1,14 @@
 # Finbot Roadmap
 
 **Created:** 2026-02-10
-**Last Updated:** 2026-02-24
-**Status:** Priority 0-7 complete. Priority 8 Clusters A (Risk Analytics) and B (Portfolio Analytics) complete (2026-02-24).
+**Last Updated:** 2026-02-25
+**Status:** Priority 0-7 complete. Priority 8 Clusters A-C complete (Risk Analytics, Portfolio Analytics, Real-Time Data) (2026-02-25).
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
 
 See Completed Items table below and git history for details on implemented features.
 
-**Current Plan Record:** None active. Last plan: `docs/planning/archive/IMPLEMENTATION_PLAN_11_P8_PORTFOLIO_ANALYTICS_CLUSTER_B.md` (completed 2026-02-24)
+**Current Plan Record:** None active. Last plan: `docs/planning/archive/IMPLEMENTATION_PLAN_12_P8_REALTIME_DATA_CLUSTER_C.md` (completed 2026-02-25)
 
 ---
 
@@ -835,10 +835,30 @@ New priority tier defined 2026-02-17 to maximize project impact and visibility w
 
 **What Was Done:** Added standalone portfolio analytics as `finbot/services/portfolio_analytics/`. Four computation modules (rolling, benchmark, drawdown, correlation), a visualisation module, and a 4-tab dashboard page. No new dependencies required. None of this duplicates existing quantstats output — it adds multi-period drawdown decomposition, rolling time-series metrics, relative benchmark statistics, and portfolio-level diversification measures.
 
+### P8.3 Real-Time Data — Cluster C ✓
+
+**Status:** ✅ COMPLETED (2026-02-25)
+
+- [x] `finbot/core/contracts/realtime_data.py` — `Quote`, `QuoteBatch`, `ProviderStatus`, `QuoteProvider` (StrEnum), `Exchange` (StrEnum)
+- [x] `finbot/core/contracts/interfaces.py` — Added `RealtimeQuoteProvider` Protocol
+- [x] `finbot/services/realtime_data/_providers/alpaca_provider.py` — Alpaca REST client (IEX feed)
+- [x] `finbot/services/realtime_data/_providers/twelvedata_provider.py` — Twelve Data REST client (US + Canada)
+- [x] `finbot/services/realtime_data/_providers/yfinance_provider.py` — yfinance fallback
+- [x] `finbot/services/realtime_data/composite_provider.py` — priority-based fallback + Canadian symbol routing
+- [x] `finbot/services/realtime_data/quote_cache.py` — thread-safe TTL cache
+- [x] `finbot/services/realtime_data/viz.py` — 3 Plotly chart functions (Wong palette)
+- [x] `finbot/dashboard/pages/11_realtime_quotes.py` — 3-tab dashboard (Live Quotes, Watchlist, Provider Status)
+- [x] API infrastructure: resource groups, rate limiters, API registrations for Alpaca + Twelve Data
+- [x] 92 new tests across 5 test files; 1561 → 1653 total
+- [x] mypy strict coverage for new modules
+
+**What Was Done:** Added free real-time quote functionality using Alpaca (US, IEX feed), Twelve Data (US + Canada/TSX), and yfinance (fallback) as `finbot/services/realtime_data/`. Three individual providers, a composite provider with priority-based fallback and Canadian symbol routing, a thread-safe TTL cache, and a 3-tab dashboard page. No new dependencies — all REST via existing `RequestHandler`. Zero vendor SDKs.
+
 ### P8 Remaining / Future
 
-- [ ] Cluster C (factor models) — future
-- Items 18-19 from P7 (options overlay, real-time data) — blocked on cost/data
+- [ ] Cluster D (factor models) — future
+- Item 18 from P7 (options overlay) — blocked on cost/data
+- Phase 2 real-time: WebSocket streaming, live order execution, intraday bar caching — deferred
 
 ---
 
@@ -955,3 +975,4 @@ New priority tier defined 2026-02-17 to maximize project impact and visibility w
 | Autonomous workstreams — docstring coverage (WS4) | 2026-02-24 | Added Google-style docstrings to nautilus adapter (~37 methods), api_manager/logger (~60 items), backtesting strategies/analyzers/brokers (~55 items); interrogate threshold raised 55% to 73%; actual coverage 75.6% |
 | Risk Analytics — P8 Cluster A (P8.1) | 2026-02-24 | Standalone VaR/CVaR (3 methods), parametric stress testing (4 crisis scenarios), Kelly criterion (single + multi-asset); 74 new tests; dashboard page 9; 1472 total tests |
 | Portfolio Analytics — P8 Cluster B (P8.2) | 2026-02-24 | Rolling metrics (Sharpe/vol/beta), benchmark comparison (alpha/beta/R²/TE/IR/capture), drawdown period detection, correlation/diversification (HHI/effective-N/DR); 89 new tests; dashboard page 10; 1561 total tests |
+| Real-Time Data — P8 Cluster C (P8.3) | 2026-02-25 | Free real-time quotes via Alpaca (US/IEX), Twelve Data (US+Canada/TSX), yfinance fallback; composite provider with priority fallback + Canadian symbol routing; thread-safe TTL cache; 3-tab dashboard page 11; 92 new tests; 1653 total tests |

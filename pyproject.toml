@@ -285,6 +285,15 @@ disallow_incomplete_defs = true
 
 [[tool.mypy.overrides]]
 module = [
+    "finbot.core.contracts.realtime_data",
+    "finbot.services.realtime_data",
+    "finbot.services.realtime_data.*",
+]
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+[[tool.mypy.overrides]]
+module = [
     "finbot.libs.api_manager.*",
     "finbot.libs.logger.*",
 ]
