@@ -35,7 +35,7 @@ uv run python scripts/update_daily.py
 
 ## Current Delivery Status (2026-02-24)
 
-Backtesting/live-readiness transition is **Epics E0-E6 complete** (adapter-first path). Priority 7 complete (25/27 active items).
+Backtesting/live-readiness transition is **Epics E0-E6 complete** (adapter-first path). Priority 7 complete (25/27 active items). **Priority 8 Cluster A (Risk Analytics) complete.**
 
 ### Priority 6: Backtesting-to-Live Readiness (100% Complete)
 
@@ -413,6 +413,25 @@ Entry point: `BacktestRunner` in `backtest_runner.py`
 - **`check_data_freshness.py`**: Scan directories and report freshness status
 - **`validate_dataframe.py`**: Lightweight DataFrame validation (empty, schema, duplicates, nulls)
 
+##### `finbot/services/risk_analytics/` — Standalone Risk Analytics
+
+Standalone risk analysis modules that work on any returns or price series, independent of the backtesting engine. Three major capabilities:
+
+- **`var.py`**: Value at Risk and Conditional VaR (Expected Shortfall)
+  - Three methods: historical (empirical percentile), parametric (normal distribution), Monte Carlo
+  - Square-root-of-time scaling for multi-day horizons
+  - `var_backtest()`: expanding-window violation analysis with calibration check
+- **`stress.py`**: Parametric stress testing with named crisis scenarios
+  - `SCENARIOS`: four built-in scenarios (2008 Financial Crisis, COVID-19, Dot-Com Bubble, Black Monday 1987)
+  - Linear interpolation synthetic price paths (shock phase + recovery phase)
+  - Custom scenarios via `StressScenario` dataclass
+- **`kelly.py`**: Kelly criterion position sizing
+  - Single-asset: discrete Kelly formula from win rate + win/loss ratio or raw returns
+  - Multi-asset: continuous matrix Kelly `f* = Σ⁻¹ μ`, weights clipped `[0,1]` and normalised
+- **`viz.py`**: Six Plotly visualisation functions (VaR distribution, VaR comparison, stress path, stress comparison, Kelly fractions, Kelly correlation heatmap)
+
+**Contracts** (`finbot/core/contracts/risk_analytics.py`): `VaRMethod`, `VaRResult`, `CVaRResult`, `VaRBacktestResult`, `StressScenario`, `StressTestResult`, `KellyResult`, `MultiAssetKellyResult` — all frozen dataclasses with `__post_init__` validation.
+
 ##### `finbot/utils/` — Utility Library (~176 files)
 
 **Data collection** (`data_collection_utils/`):
@@ -509,12 +528,17 @@ Create `.env` file in `finbot/config/` (excluded by `.gitignore`).
 | **Infrastructure** | |
 | `scripts/update_daily.py` | Daily data update + simulation pipeline |
 | `finbot/cli/main.py` | CLI entry point (`finbot simulate/backtest/optimize/update/status/dashboard`) |
-| `finbot/dashboard/app.py` | Streamlit dashboard entry point (6 pages) |
+| `finbot/dashboard/app.py` | Streamlit dashboard entry point (9 pages) |
 | **Other Services** | |
 | `finbot/services/health_economics/qaly_simulator.py` | QALY Monte Carlo simulation |
 | `finbot/services/health_economics/cost_effectiveness.py` | Cost-effectiveness analysis (ICER/NMB/CEAC) |
 | `finbot/services/health_economics/scenarios/` | Clinical scenarios: cancer screening, hypertension, vaccine |
 | `finbot/services/data_quality/check_data_freshness.py` | Data freshness monitoring |
+| **Risk Analytics** | |
+| `finbot/services/risk_analytics/var.py` | VaR / CVaR (historical, parametric, Monte Carlo) |
+| `finbot/services/risk_analytics/stress.py` | Parametric stress testing (4 built-in scenarios) |
+| `finbot/services/risk_analytics/kelly.py` | Kelly criterion (single + multi-asset) |
+| `finbot/core/contracts/risk_analytics.py` | Risk analytics result contracts |
 
 ## Code Style
 

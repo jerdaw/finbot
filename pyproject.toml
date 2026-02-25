@@ -267,6 +267,15 @@ disallow_incomplete_defs = true
 
 [[tool.mypy.overrides]]
 module = [
+    "finbot.core.contracts.risk_analytics",
+    "finbot.services.risk_analytics",
+    "finbot.services.risk_analytics.*",
+]
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+[[tool.mypy.overrides]]
+module = [
     "finbot.libs.api_manager.*",
     "finbot.libs.logger.*",
 ]
