@@ -37,13 +37,13 @@ uv run python scripts/update_daily.py
 
 ## Current Delivery Status (2026-02-25)
 
-**P0-P8 complete. 1749 tests. P9 active.**
+**P0-P9 complete. 1769 tests.**
 
 - **P5** (97.8%): OMSAS/CanMEDS improvements — 44/45 items (item 42 blocked on external resources)
 - **P6** (100%): Backtesting-to-live readiness — Epics E0-E6 complete; ADR-011 confirmed **Defer**
 - **P7** (93%): External impact & advanced capabilities — 25/27 active items
 - **P8** (100%): Risk Analytics, Portfolio Analytics, Real-Time Data, Factor Analytics
-- **P9** (active): Agent tooling optimizations
+- **P9** (100%): Agent tooling optimizations — P9.1 AGENTS.md optimization, P9.2 autonomous wrap-up
 
 **Tracking docs:** `docs/planning/roadmap.md`, `docs/planning/backtesting-live-readiness-backlog.md`, `docs/planning/priority-5-6-completion-status.md`, `docs/adr/ADR-011-nautilus-decision.md`
 
@@ -343,7 +343,7 @@ uv run pytest -k test_simulation
 uv run pytest --cov=finbot tests/
 ```
 
-**Test structure**: `tests/unit/` contains 1749 tests across 50+ files covering imports, simulation math, finance utils, all 13 strategies, health economics, order lifecycle, latency, risk controls, checkpoints, cost models, corporate actions, walk-forward, regime detection, dashboard charts, risk analytics, portfolio analytics, real-time data, and factor analytics. `tests/integration/` reserved for future integration tests.
+**Test structure**: `tests/unit/` contains 1769 tests across 50+ files covering imports, simulation math, finance utils, all 13 strategies, health economics, order lifecycle, latency, risk controls, checkpoints, cost models, corporate actions, walk-forward, regime detection, dashboard charts, risk analytics, portfolio analytics, real-time data, and factor analytics. `tests/integration/` reserved for future integration tests.
 
 ## Documentation
 

@@ -2,17 +2,31 @@
 
 **Created:** 2026-02-10
 **Last Updated:** 2026-02-25
-**Status:** Priority 0-9 complete (1752 tests). Roadmap clean.
+**Status:** Priority 0-9 complete (1769 tests). Roadmap clean.
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
 
 See Completed Items table below and git history for details on implemented features.
 
-**Current Plan Record:** None active. Last plan: P9.1 AGENTS.md optimization (completed 2026-02-25, no separate plan file — single-file edit)
+**Current Plan Record:** None active. Last plan: P9.2 Autonomous Wrap-Up (completed 2026-02-25)
 
 ---
 
 ## Priority 9: Agent Tooling
+
+### P9.2 Autonomous Wrap-Up ✓
+
+**Status:** ✅ COMPLETED (2026-02-25)
+
+- [x] Fix 3 mypy errors in `12_factor_analytics.py` (`call-overload`, two `unreachable` guards)
+- [x] Mock-based unit tests for `get_fred_data` (10 tests, 2 classes)
+- [x] Mock-based unit tests for `get_history` in `test_yfinance_utils.py` (7 tests)
+- [x] Extend dashboard home page to link all 12 pages (7-column row2)
+- [x] Bump docstring coverage 79.5% → 80.0% (docstrings for `CollectionTrackerBase`, `APIKeyManager`, `HostSystem`, `FredTracker`, `FundTracker`)
+
+**What Was Done:** Closed all remaining open deferred items. Fixed mypy `unused-ignore` and `unreachable` errors in factor analytics dashboard page. Added 17 new mock-based unit tests. Added second navigation row to dashboard home page. Added ~35 Google-style docstrings across 5 files to hit 80.0% interrogate threshold. 1752 → 1769 tests.
+
+---
 
 ### P9.1 Optimize AGENTS.md / CLAUDE.md ✓
 
@@ -42,7 +56,7 @@ All 3 items complete. Expanded test coverage (18 → 262 tests, 34.57% coverage)
 - [x] Add tests for `backtest_batch`: parallel execution, result aggregation — P7.23 complete (11 tests)
 - [x] Add tests for `rebalance_optimizer` — P7.23 complete (5 tests)
 - [ ] Add tests for `approximate_overnight_libor` (requires FRED data)
-- [ ] Add tests for data collection utilities: `get_history`, `get_fred_data` (requires mock API responses)
+- [x] Add tests for data collection utilities: `get_history`, `get_fred_data` — P9.2 complete (10 + 7 mock-based tests)
 
 *Completed deferred items:* integration tests (P7.2), coverage 60%+ target (P7.2 → 61.63%), blog posts (P7.5–7.7).
 
@@ -306,3 +320,4 @@ See Completed Items table for full details on all 25 completed items.
 | Factor Analytics — P8 Cluster D (P8.4) | 2026-02-25 | OLS factor regression with CAPM/FF3/FF5/CUSTOM auto-detection; return attribution decomposition; systematic/idiosyncratic risk decomposition; 5 Plotly chart functions; 3-tab dashboard page 12; 96 new tests; 1749 total tests |
 | Roadmap optimization — P9 kickoff (P9.1 partial) | 2026-02-25 | Trimmed verbose P5–P7 sections (~700 lines → ~50 lines); added Priority 9 section; updated status header |
 | AGENTS.md optimization — P9.1 complete (P9.1) | 2026-02-25 | 818 → 447 lines (45% reduction); accuracy fixes (13 strategies, 1752 tests, missing modules, import path); 6 missing Key Entry Points rows added |
+| Autonomous wrap-up — P9.2 complete (P9.2) | 2026-02-25 | mypy fix in 12_factor_analytics.py; 17 new mock-based tests (get_fred_data + get_history); dashboard home page 12-page nav; docstring coverage 79.5% → 80.0%; 1769 total tests |
