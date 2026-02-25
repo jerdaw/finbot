@@ -854,9 +854,23 @@ New priority tier defined 2026-02-17 to maximize project impact and visibility w
 
 **What Was Done:** Added free real-time quote functionality using Alpaca (US, IEX feed), Twelve Data (US + Canada/TSX), and yfinance (fallback) as `finbot/services/realtime_data/`. Three individual providers, a composite provider with priority-based fallback and Canadian symbol routing, a thread-safe TTL cache, and a 3-tab dashboard page. No new dependencies — all REST via existing `RequestHandler`. Zero vendor SDKs.
 
+### P8.4 Factor Analytics — Cluster D ✓
+
+**Status:** ✅ COMPLETED (2026-02-25)
+
+- [x] `finbot/core/contracts/factor_analytics.py` — `FactorModelType` (StrEnum), `FactorRegressionResult`, `FactorAttributionResult`, `FactorRiskResult`
+- [x] `finbot/services/factor_analytics/factor_regression.py` — OLS regression, CAPM/FF3/FF5/CUSTOM auto-detection, rolling R²
+- [x] `finbot/services/factor_analytics/factor_attribution.py` — per-factor return contribution decomposition
+- [x] `finbot/services/factor_analytics/factor_risk.py` — systematic/idiosyncratic variance, marginal contributions
+- [x] `finbot/services/factor_analytics/viz.py` — 5 Plotly chart functions (Wong palette)
+- [x] `finbot/dashboard/pages/12_factor_analytics.py` — 3-tab dashboard (Factor Regression, Return Attribution, Risk Decomposition)
+- [x] 96 new tests across 5 test files; 1653 → 1749 total
+- [x] mypy strict coverage for new modules
+
+**What Was Done:** Added Fama-French-style multi-factor model analysis as `finbot/services/factor_analytics/`. Three computation modules (regression, attribution, risk), a visualisation module, and a 3-tab dashboard page. OLS via `np.linalg.lstsq` with `pinv` fallback for near-singular matrices. Auto-detects model type from column names. No new dependencies required.
+
 ### P8 Remaining / Future
 
-- [ ] Cluster D (factor models) — future
 - Item 18 from P7 (options overlay) — blocked on cost/data
 - Phase 2 real-time: WebSocket streaming, live order execution, intraday bar caching — deferred
 
@@ -976,3 +990,4 @@ New priority tier defined 2026-02-17 to maximize project impact and visibility w
 | Risk Analytics — P8 Cluster A (P8.1) | 2026-02-24 | Standalone VaR/CVaR (3 methods), parametric stress testing (4 crisis scenarios), Kelly criterion (single + multi-asset); 74 new tests; dashboard page 9; 1472 total tests |
 | Portfolio Analytics — P8 Cluster B (P8.2) | 2026-02-24 | Rolling metrics (Sharpe/vol/beta), benchmark comparison (alpha/beta/R²/TE/IR/capture), drawdown period detection, correlation/diversification (HHI/effective-N/DR); 89 new tests; dashboard page 10; 1561 total tests |
 | Real-Time Data — P8 Cluster C (P8.3) | 2026-02-25 | Free real-time quotes via Alpaca (US/IEX), Twelve Data (US+Canada/TSX), yfinance fallback; composite provider with priority fallback + Canadian symbol routing; thread-safe TTL cache; 3-tab dashboard page 11; 92 new tests; 1653 total tests |
+| Factor Analytics — P8 Cluster D (P8.4) | 2026-02-25 | OLS factor regression with CAPM/FF3/FF5/CUSTOM auto-detection; return attribution decomposition; systematic/idiosyncratic risk decomposition; 5 Plotly chart functions; 3-tab dashboard page 12; 96 new tests; 1749 total tests |

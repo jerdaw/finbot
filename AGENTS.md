@@ -36,7 +36,7 @@ uv run python scripts/update_daily.py
 
 ## Current Delivery Status (2026-02-24)
 
-Backtesting/live-readiness transition is **Epics E0-E6 complete** (adapter-first path). Priority 7 complete (25/27 active items). **Priority 8 Cluster A (Risk Analytics) complete. Priority 8 Cluster B (Portfolio Analytics) complete.**
+Backtesting/live-readiness transition is **Epics E0-E6 complete** (adapter-first path). Priority 7 complete (25/27 active items). **Priority 8 Clusters A–D complete** (Risk Analytics, Portfolio Analytics, Real-Time Data, Factor Analytics).
 
 ### Priority 6: Backtesting-to-Live Readiness (100% Complete)
 
@@ -460,6 +460,21 @@ Multi-provider real-time quote system for US and Canadian equities. Uses plain R
 
 **Protocol** (`finbot/core/contracts/interfaces.py`): `RealtimeQuoteProvider` — `get_quote()`, `get_quotes()`, `is_available()`.
 
+##### `finbot/services/factor_analytics/` — Fama-French-Style Factor Analytics
+
+Standalone multi-factor model modules. Accept returns arrays/DataFrames and compute — no data fetching. Three major capabilities:
+
+- **`factor_regression.py`**: OLS regression of portfolio returns on factor returns.
+  - `compute_factor_regression()`: loadings, annualized alpha, R², adj-R², residual std, t-stats, p-values.
+  - Auto-detects `FactorModelType` from column names: `Mkt-RF` → CAPM; `Mkt-RF/SMB/HML` → FF3; + `RMW/CMA` → FF5; otherwise CUSTOM.
+  - `compute_rolling_r_squared()`: sliding-window R² time series; NaN for first `window-1` bars.
+  - Uses `np.linalg.lstsq` + `np.linalg.pinv` fallback for near-singular factor matrices.
+- **`factor_attribution.py`**: Return attribution — per-factor contribution = `loading * sum(factor_returns)`; alpha contribution = `(daily_alpha) * n_obs`; residual = total − explained.
+- **`factor_risk.py`**: Variance decomposition — systematic = `beta.T @ Sigma_f @ beta`; idiosyncratic = clamped residual; per-factor marginal contributions sum to systematic variance.
+- **`viz.py`**: Five Plotly visualisation functions (factor loadings bars with CI, attribution bars, systematic/idiosyncratic donut, rolling R² line, factor correlation heatmap).
+
+**Contracts** (`finbot/core/contracts/factor_analytics.py`): `FactorModelType` (StrEnum), `FactorRegressionResult`, `FactorAttributionResult`, `FactorRiskResult` — all frozen dataclasses with `__post_init__` validation.
+
 ##### `finbot/utils/` — Utility Library (~176 files)
 
 **Data collection** (`data_collection_utils/`):
@@ -559,7 +574,7 @@ Create `.env` file in `finbot/config/` (excluded by `.gitignore`).
 | **Infrastructure** | |
 | `scripts/update_daily.py` | Daily data update + simulation pipeline |
 | `finbot/cli/main.py` | CLI entry point (`finbot simulate/backtest/optimize/update/status/dashboard`) |
-| `finbot/dashboard/app.py` | Streamlit dashboard entry point (11 pages) |
+| `finbot/dashboard/app.py` | Streamlit dashboard entry point (12 pages) |
 | **Other Services** | |
 | `finbot/services/health_economics/qaly_simulator.py` | QALY Monte Carlo simulation |
 | `finbot/services/health_economics/cost_effectiveness.py` | Cost-effectiveness analysis (ICER/NMB/CEAC) |
@@ -583,6 +598,11 @@ Create `.env` file in `finbot/config/` (excluded by `.gitignore`).
 | `finbot/services/realtime_data/_providers/twelvedata_provider.py` | Twelve Data (US + Canada/TSX) |
 | `finbot/services/realtime_data/_providers/yfinance_provider.py` | yfinance fallback (always available) |
 | `finbot/core/contracts/realtime_data.py` | Quote, QuoteBatch, ProviderStatus contracts |
+| **Factor Analytics** | |
+| `finbot/services/factor_analytics/factor_regression.py` | OLS factor regression + rolling R² |
+| `finbot/services/factor_analytics/factor_attribution.py` | Per-factor return contribution decomposition |
+| `finbot/services/factor_analytics/factor_risk.py` | Systematic/idiosyncratic variance decomposition |
+| `finbot/core/contracts/factor_analytics.py` | FactorModelType, FactorRegressionResult, FactorAttributionResult, FactorRiskResult |
 
 ## Code Style
 

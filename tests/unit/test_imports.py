@@ -205,3 +205,47 @@ def test_import_nautilus_adapter():
     from finbot.adapters.nautilus import NautilusAdapter
 
     assert NautilusAdapter is not None
+
+
+def test_import_factor_analytics():
+    from finbot.services.factor_analytics import (
+        compute_factor_attribution,
+        compute_factor_regression,
+        compute_factor_risk,
+        compute_rolling_r_squared,
+    )
+
+    assert callable(compute_factor_regression)
+    assert callable(compute_factor_attribution)
+    assert callable(compute_factor_risk)
+    assert callable(compute_rolling_r_squared)
+
+
+def test_import_factor_analytics_contracts():
+    from finbot.core.contracts.factor_analytics import (
+        FactorAttributionResult,
+        FactorModelType,
+        FactorRegressionResult,
+        FactorRiskResult,
+    )
+
+    assert FactorModelType is not None
+    assert FactorRegressionResult is not None
+    assert FactorAttributionResult is not None
+    assert FactorRiskResult is not None
+
+
+def test_import_factor_analytics_viz():
+    from finbot.services.factor_analytics.viz import (
+        plot_factor_attribution,
+        plot_factor_correlation,
+        plot_factor_loadings,
+        plot_factor_risk_decomposition,
+        plot_rolling_r_squared,
+    )
+
+    assert callable(plot_factor_loadings)
+    assert callable(plot_factor_attribution)
+    assert callable(plot_factor_risk_decomposition)
+    assert callable(plot_rolling_r_squared)
+    assert callable(plot_factor_correlation)
