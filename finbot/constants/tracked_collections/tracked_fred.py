@@ -105,27 +105,84 @@ class FredData:
 
 
 class FredTracker(CollectionTrackerBase):
+    """Tracker for FRED economic time-series symbols.
+
+    Extends :class:`CollectionTrackerBase` with FRED-specific query methods
+    such as filtering by start-date range, category, frequency, and seasonal
+    adjustment flag.
+
+    Args:
+        csv_path: Path to the ``tracked_fred.csv`` manifest.  Defaults to
+            ``TRACKED_COLLECTIONS_DIR / "tracked_fred.csv"``.
+    """
+
     def __init__(self, csv_path: Path = TRACKED_COLLECTIONS_DIR / "tracked_fred.csv") -> None:
+        """Initialise and load the FRED symbol manifest.
+
+        Args:
+            csv_path: Path to the CSV manifest file.
+        """
         super().__init__(Path(csv_path))
 
     def get_start_date_range(self, min_date: datetime.date, max_date: datetime.date) -> pd.DataFrame:
+        """Return rows whose series start date falls within *[min_date, max_date]*.
+
+        Args:
+            min_date: Inclusive lower bound for the series start date.
+            max_date: Inclusive upper bound for the series start date.
+
+        Returns:
+            Filtered DataFrame of matching FRED series.
+        """
         return self.df[
             (self.df["start_date"] >= min_date.strftime("%Y-%m-%d"))
             & (self.df["start_date"] <= max_date.strftime("%Y-%m-%d"))
         ]
 
     def get_start_date_before_or_on(self, target_date: datetime.date) -> pd.DataFrame:
+        """Return rows whose series start date is on or before *target_date*.
+
+        Args:
+            target_date: Inclusive upper bound for the series start date.
+
+        Returns:
+            Filtered DataFrame of matching FRED series.
+        """
         return self.get_start_date_range(datetime.date.min, target_date)
 
     def get_categories(self, category: str | list[str]) -> pd.DataFrame:
+        """Return rows matching the given economic category or categories.
+
+        Args:
+            category: A single category string or a list of category strings.
+
+        Returns:
+            Filtered DataFrame of matching FRED series.
+        """
         categories = [category] if isinstance(category, str) else category
         return self.df[self.df["category"].isin(categories)]
 
     def get_frequencies(self, frequency: str | list[str]) -> pd.DataFrame:
+        """Return rows matching the given update frequency or frequencies.
+
+        Args:
+            frequency: A single frequency string (e.g. ``"monthly"``) or a list.
+
+        Returns:
+            Filtered DataFrame of matching FRED series.
+        """
         frequencies = [frequency] if isinstance(frequency, str) else frequency
         return self.df[self.df["frequency"].isin(frequencies)]
 
     def get_seasonally_adjusted(self, seasonally_adjusted: bool | list[bool]) -> pd.DataFrame:
+        """Return rows with the specified seasonal-adjustment flag(s).
+
+        Args:
+            seasonally_adjusted: ``True``, ``False``, or a list of both.
+
+        Returns:
+            Filtered DataFrame of matching FRED series.
+        """
         seasonally_adjusted = [seasonally_adjusted] if isinstance(seasonally_adjusted, bool) else seasonally_adjusted
         return self.df[self.df["seasonally_adjusted"].isin(seasonally_adjusted)]
 

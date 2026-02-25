@@ -27,6 +27,13 @@ def _generate_impersistent_host_id() -> str:
 
 @dataclass
 class HostSystem:
+    """Snapshot of the current host's hardware and network configuration.
+
+    All fields default to auto-detected values via ``platform``, ``psutil``,
+    and ``socket``.  Instantiate with no arguments to capture the current
+    host, or pass keyword arguments to describe a hypothetical host.
+    """
+
     hostname: str = field(default_factory=lambda: socket.gethostname())
     ip_address: str = field(default_factory=lambda: socket.gethostbyname(socket.gethostname()))
     operating_system: str = field(default_factory=lambda: f"{platform.system()} {platform.release()}")
@@ -85,6 +92,7 @@ class HostSystem:
         return ", ".join(active_interfaces) if active_interfaces else "None"
 
     def __str__(self) -> str:
+        """Return a single-line human-readable summary of the host configuration."""
         return (
             f"Host ID: {self.host_identifier}, "
             f"Hostname: {self.hostname}, IP Address: {self.ip_address}, "

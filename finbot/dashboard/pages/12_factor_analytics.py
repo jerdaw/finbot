@@ -52,7 +52,7 @@ def _load_returns(ticker: str, start: str, end: str) -> np.ndarray | None:
 def _load_factor_data(uploaded_file: object) -> pd.DataFrame | None:
     """Parse uploaded CSV into a factor returns DataFrame."""
     try:
-        df = pd.read_csv(uploaded_file)  # type: ignore[arg-type]
+        df = pd.read_csv(uploaded_file)  # type: ignore[call-overload]
         # Drop date column if present
         for col_name in ("Date", "date", "DATE"):
             if col_name in df.columns:
@@ -172,7 +172,7 @@ with tab2:
 
     if run_attr:
         if reg_result is None:
-            st.error("Run a factor regression first (Tab 1).")
+            st.error("Run a factor regression first (Tab 1).")  # type: ignore[unreachable]
             st.stop()
 
         if factor_file is None:
@@ -232,7 +232,7 @@ with tab3:
 
     if run_risk:
         if reg_result is None:
-            st.error("Run a factor regression first (Tab 1).")
+            st.error("Run a factor regression first (Tab 1).")  # type: ignore[unreachable]
             st.stop()
 
         if factor_file is None:

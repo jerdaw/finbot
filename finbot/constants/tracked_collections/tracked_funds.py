@@ -122,59 +122,178 @@ class FundData:
 
 
 class FundTracker(CollectionTrackerBase):
+    """Tracker for ETF/fund symbols.
+
+    Extends :class:`CollectionTrackerBase` with fund-specific query methods
+    such as filtering by leverage multiple, MER, inception date, index,
+    asset region, category, sector, and issuer.
+
+    Args:
+        csv_path: Path to the ``tracked_funds.csv`` manifest.  Defaults to
+            ``TRACKED_COLLECTIONS_DIR / "tracked_funds.csv"``.
+    """
+
     def __init__(self, csv_path: Path = TRACKED_COLLECTIONS_DIR / "tracked_funds.csv") -> None:
+        """Initialise and load the fund symbol manifest.
+
+        Args:
+            csv_path: Path to the CSV manifest file.
+        """
         super().__init__(Path(csv_path))
 
     def get_leverage_range(self, min_leverage: float, max_leverage: float) -> pd.DataFrame:
+        """Return funds whose leverage multiple falls within *[min_leverage, max_leverage]*.
+
+        Args:
+            min_leverage: Inclusive lower bound for the leverage multiple.
+            max_leverage: Inclusive upper bound for the leverage multiple.
+
+        Returns:
+            Filtered DataFrame of matching funds.
+        """
         return self.df[
             (self.df["leverage_multiple"].astype(float) >= min_leverage)
             & (self.df["leverage_multiple"].astype(float) <= max_leverage)
         ]
 
     def get_unlevered(self) -> pd.DataFrame:
+        """Return funds with a leverage multiple of exactly 1x (unlevered).
+
+        Returns:
+            Filtered DataFrame of unlevered funds.
+        """
         return self.get_leverage_range(1, 1)
 
     def get_levered(self) -> pd.DataFrame:
+        """Return funds with a leverage multiple other than 1x (levered).
+
+        Returns:
+            Filtered DataFrame of levered funds.
+        """
         unlevered = self.get_unlevered()
         return self.df[~self.df["symbol"].isin(unlevered["symbol"])]
 
     def get_levered_with_reset_period(self, reset_period: str) -> pd.DataFrame:
+        """Return levered funds with the specified leverage reset period.
+
+        Args:
+            reset_period: Reset period string (e.g. ``"daily"``).
+
+        Returns:
+            Filtered DataFrame of matching levered funds.
+        """
         levered = self.get_levered()
         return levered[levered["leverage_reset_period"] == reset_period]
 
     def get_mer_range(self, min_mer: float, max_mer: float) -> pd.DataFrame:
+        """Return funds whose MER falls within *[min_mer, max_mer]*.
+
+        Args:
+            min_mer: Inclusive lower bound for the MER (as a float percentage).
+            max_mer: Inclusive upper bound for the MER (as a float percentage).
+
+        Returns:
+            Filtered DataFrame of matching funds.
+        """
         return self.df[(self.df["mer"].astype(float) >= min_mer) & (self.df["mer"].astype(float) <= max_mer)]
 
     def get_inception_date_range(self, min_date: datetime.date, max_date: datetime.date) -> pd.DataFrame:
+        """Return funds whose inception date falls within *[min_date, max_date]*.
+
+        Args:
+            min_date: Inclusive lower bound for the inception date.
+            max_date: Inclusive upper bound for the inception date.
+
+        Returns:
+            Filtered DataFrame of matching funds.
+        """
         return self.df[
             (self.df["inception_date"] >= min_date.strftime("%Y-%m-%d"))
             & (self.df["inception_date"] <= max_date.strftime("%Y-%m-%d"))
         ]
 
     def get_inception_date_before_or_on(self, target_date: datetime.date) -> pd.DataFrame:
+        """Return funds with an inception date on or before *target_date*.
+
+        Args:
+            target_date: Inclusive upper bound for the inception date.
+
+        Returns:
+            Filtered DataFrame of matching funds.
+        """
         return self.get_inception_date_range(datetime.date.min, target_date)
 
     def get_matching_indeces(self, index: str | list[str]) -> pd.DataFrame:
+        """Return funds tracking the given underlying index or indices.
+
+        Args:
+            index: A single index string or a list of index strings.
+
+        Returns:
+            Filtered DataFrame of matching funds.
+        """
         indices = [index] if isinstance(index, str) else index
         return self.df[self.df["underlying_index"].isin(indices)]
 
     def get_asset_regions(self, asset_region: str | list[str]) -> pd.DataFrame:
+        """Return funds from the specified asset region(s).
+
+        Args:
+            asset_region: A single region string or a list of region strings.
+
+        Returns:
+            Filtered DataFrame of matching funds.
+        """
         asset_regions = [asset_region] if isinstance(asset_region, str) else asset_region
         return self.df[self.df["asset_region"].isin(asset_regions)]
 
     def get_categories(self, category: str | list[str]) -> pd.DataFrame:
+        """Return funds in the given fund category or categories.
+
+        Args:
+            category: A single category string or a list of category strings.
+
+        Returns:
+            Filtered DataFrame of matching funds.
+        """
         categories = [category] if isinstance(category, str) else category
         return self.df[self.df["category"].isin(categories)]
 
     def get_sectors(self, sector: str | list[str]) -> pd.DataFrame:
+        """Return funds focused on the specified sector(s).
+
+        Args:
+            sector: A single sector string or a list of sector strings.
+
+        Returns:
+            Filtered DataFrame of matching funds.
+        """
         sector = [sector] if isinstance(sector, str) else sector
         return self.df[self.df["sector"].isin(sector)]
 
     def get_issuers(self, issuer: str | list[str]) -> pd.DataFrame:
+        """Return funds issued by the specified issuer(s).
+
+        Args:
+            issuer: A single issuer string or a list of issuer strings.
+
+        Returns:
+            Filtered DataFrame of matching funds.
+        """
         issuers = [issuer] if isinstance(issuer, str) else issuer
         return self.df[self.df["issuer"].isin(issuers)]
 
     def validate_entries(self, symbols: str | list[str] | None = None) -> None:
+        """Re-validate stored entries by constructing :class:`FundData` objects.
+
+        Args:
+            symbols: Symbol or list of symbols to validate.  Validates all
+                tracked symbols when ``None``.
+
+        Raises:
+            ValueError: If any stored field fails :class:`FundData` validation.
+            TypeError: If any stored field has an unexpected type.
+        """
         if symbols is None:
             symbols = self.get_all_symbols()
         symbols = [symbols] if isinstance(symbols, str) else symbols

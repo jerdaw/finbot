@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import datetime
+from unittest.mock import patch
 
 import pandas as pd
 import pytest
@@ -102,6 +103,64 @@ class TestPrepParamsYF:
     def test_invalid_request_type_raises(self):
         with pytest.raises(ValueError, match="request_type"):
             _prep_params("SPY", datetime.date(2020, 1, 1), None, "1d", "invalid")
+
+
+class TestGetHistory:
+    """Tests for get_history() with get_yfinance_base patched."""
+
+    @pytest.fixture(autouse=True)
+    def _mock_base(self) -> None:
+        self._df = pd.DataFrame({"Close": [100.0, 101.0, 102.0]})
+        patcher = patch("finbot.utils.data_collection_utils.yfinance.get_history.get_yfinance_base")
+        self.mock_base = patcher.start()
+        self.mock_base.return_value = self._df
+        yield
+        patcher.stop()
+
+    def _call(self, symbols="SPY", **kwargs):  # type: ignore[no-untyped-def]
+        from finbot.utils.data_collection_utils.yfinance.get_history import get_history
+
+        return get_history(symbols=symbols, **kwargs)
+
+    def test_returns_base_result_unchanged(self) -> None:
+        result = self._call()
+        assert result is self._df
+
+    def test_injects_request_type_history(self) -> None:
+        self._call()
+        _, call_kwargs = self.mock_base.call_args
+        assert call_kwargs["request_type"] == "history"
+
+    def test_passes_single_string_symbol(self) -> None:
+        self._call(symbols="AAPL")
+        _, call_kwargs = self.mock_base.call_args
+        assert call_kwargs["symbols"] == "AAPL"
+
+    def test_passes_list_of_symbols(self) -> None:
+        self._call(symbols=["SPY", "QQQ"])
+        _, call_kwargs = self.mock_base.call_args
+        assert call_kwargs["symbols"] == ["SPY", "QQQ"]
+
+    def test_forwards_start_date_kwarg(self) -> None:
+        import datetime
+
+        start = datetime.date(2020, 1, 1)
+        self._call(start_date=start)
+        _, call_kwargs = self.mock_base.call_args
+        assert call_kwargs["start_date"] == start
+
+    def test_forwards_end_date_kwarg(self) -> None:
+        import datetime
+
+        end = datetime.date(2022, 12, 31)
+        self._call(end_date=end)
+        _, call_kwargs = self.mock_base.call_args
+        assert call_kwargs["end_date"] == end
+
+    def test_forwards_check_update_kwarg(self) -> None:
+        self._call(check_update=True)
+        _, call_kwargs = self.mock_base.call_args
+        assert call_kwargs["check_update"] is True
 
 
 class TestFilterYfinanceData:
