@@ -36,6 +36,15 @@ col3.page_link("pages/3_optimizer.py", label="DCA Optimizer", icon="⚙️")
 col4.page_link("pages/4_monte_carlo.py", label="Monte Carlo", icon="🎲")
 col5.page_link("pages/5_data_status.py", label="Data Status", icon="🗄️")
 
+row2 = st.columns(7)
+row2[0].page_link("pages/6_health_economics.py", label="Health Econ", icon="🏥")
+row2[1].page_link("pages/7_experiments.py", label="Experiments", icon="🧪")
+row2[2].page_link("pages/8_walkforward.py", label="Walk-Forward", icon="🔁")
+row2[3].page_link("pages/9_risk_analytics.py", label="Risk Analytics", icon="⚠️")
+row2[4].page_link("pages/10_portfolio_analytics.py", label="Portfolio", icon="📊")
+row2[5].page_link("pages/11_realtime_quotes.py", label="Realtime Quotes", icon="📡")
+row2[6].page_link("pages/12_factor_analytics.py", label="Factor Analytics", icon="🔢")
+
 # Data freshness summary
 st.markdown("---")
 st.markdown("### Data Status Summary")
