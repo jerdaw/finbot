@@ -3,6 +3,12 @@
 from finbot.core.contracts.batch import BatchItemResult, BatchRun, BatchStatus, ErrorCategory
 from finbot.core.contracts.checkpoint import CHECKPOINT_VERSION, ExecutionCheckpoint
 from finbot.core.contracts.costs import CostEvent, CostModel, CostSummary, CostType
+from finbot.core.contracts.factor_analytics import (
+    FactorAttributionResult,
+    FactorModelType,
+    FactorRegressionResult,
+    FactorRiskResult,
+)
 from finbot.core.contracts.interfaces import (
     BacktestEngine,
     ExecutionSimulator,
@@ -111,6 +117,10 @@ __all__ = [
     "ExecutionCheckpoint",
     "ExecutionSimulator",
     "ExposureLimitRule",
+    "FactorAttributionResult",
+    "FactorModelType",
+    "FactorRegressionResult",
+    "FactorRiskResult",
     "FillEvent",
     "KellyResult",
     "LatencyConfig",
