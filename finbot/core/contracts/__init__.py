@@ -3,7 +3,13 @@
 from finbot.core.contracts.batch import BatchItemResult, BatchRun, BatchStatus, ErrorCategory
 from finbot.core.contracts.checkpoint import CHECKPOINT_VERSION, ExecutionCheckpoint
 from finbot.core.contracts.costs import CostEvent, CostModel, CostSummary, CostType
-from finbot.core.contracts.interfaces import BacktestEngine, ExecutionSimulator, MarketDataProvider, PortfolioStateStore
+from finbot.core.contracts.interfaces import (
+    BacktestEngine,
+    ExecutionSimulator,
+    MarketDataProvider,
+    PortfolioStateStore,
+    RealtimeQuoteProvider,
+)
 from finbot.core.contracts.latency import LATENCY_FAST, LATENCY_INSTANT, LATENCY_NORMAL, LATENCY_SLOW, LatencyConfig
 from finbot.core.contracts.missing_data import DEFAULT_MISSING_DATA_POLICY, MissingDataPolicy
 from finbot.core.contracts.models import (
@@ -26,6 +32,7 @@ from finbot.core.contracts.portfolio_analytics import (
     DrawdownPeriod,
     RollingMetricsResult,
 )
+from finbot.core.contracts.realtime_data import Exchange, ProviderStatus, Quote, QuoteBatch, QuoteProvider
 from finbot.core.contracts.regime import MarketRegime, RegimeConfig, RegimeDetector, RegimeMetrics, RegimePeriod
 from finbot.core.contracts.risk import (
     DrawdownLimitRule,
@@ -100,6 +107,7 @@ __all__ = [
     "DrawdownLimitRule",
     "DrawdownPeriod",
     "ErrorCategory",
+    "Exchange",
     "ExecutionCheckpoint",
     "ExecutionSimulator",
     "ExposureLimitRule",
@@ -121,6 +129,11 @@ __all__ = [
     "PortfolioSnapshot",
     "PortfolioStateStore",
     "PositionLimitRule",
+    "ProviderStatus",
+    "Quote",
+    "QuoteBatch",
+    "QuoteProvider",
+    "RealtimeQuoteProvider",
     "RegimeConfig",
     "RegimeDetector",
     "RegimeMetrics",

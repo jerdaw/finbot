@@ -14,6 +14,7 @@ from finbot.core.contracts.models import (
     OrderRequest,
     PortfolioSnapshot,
 )
+from finbot.core.contracts.realtime_data import Quote
 
 
 @runtime_checkable
@@ -55,3 +56,17 @@ class BacktestEngine(Protocol):
 
     def run(self, request: BacktestRunRequest) -> BacktestRunResult:
         """Execute a backtest and return canonical run results."""
+
+
+@runtime_checkable
+class RealtimeQuoteProvider(Protocol):
+    """Provides real-time price quotes for securities."""
+
+    def get_quote(self, symbol: str) -> Quote:
+        """Return a single quote for *symbol*."""
+
+    def get_quotes(self, symbols: list[str]) -> dict[str, Quote]:
+        """Return quotes for multiple symbols keyed by ticker."""
+
+    def is_available(self) -> bool:
+        """Return True if the provider is configured and reachable."""
