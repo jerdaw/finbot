@@ -104,6 +104,7 @@ jobs:
           ignore-unfixed: true
           vuln-type: "os,library"
           severity: "CRITICAL,HIGH"
+          trivyignores: ".trivyignore.example"
 
   test-matrix:
     name: Test (Python ${{ matrix.python-version }})
