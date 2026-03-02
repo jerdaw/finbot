@@ -26,9 +26,12 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Build Docker image
+        id: build_image
+        continue-on-error: true
         run: docker build -t finbot:security-${{ github.sha }} .
 
       - name: Run Trivy vulnerability scanner on image (SARIF)
+        if: steps.build_image.outcome == 'success'
         uses: aquasecurity/trivy-action@97e0b3872f55f89b95b2f65b3dbab56962816478 # v0.34.1
         with:
           image-ref: "finbot:security-${{ github.sha }}"
@@ -40,6 +43,7 @@ jobs:
           trivyignores: ".trivyignore.example"
 
       - name: Run Trivy vulnerability scanner on image (JSON)
+        if: steps.build_image.outcome == 'success'
         uses: aquasecurity/trivy-action@97e0b3872f55f89b95b2f65b3dbab56962816478 # v0.34.1
         with:
           image-ref: "finbot:security-${{ github.sha }}"
@@ -52,29 +56,40 @@ jobs:
 
       - name: Summarize vulnerability counts
         id: vuln_summary
+        env:
+          BUILD_OUTCOME: ${{ steps.build_image.outcome }}
         run: |
           set -euo pipefail
 
-          critical_count="$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity == "CRITICAL")] | length' trivy-report.json)"
-          high_count="$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity == "HIGH")] | length' trivy-report.json)"
+          if [[ "$BUILD_OUTCOME" == "success" ]]; then
+            critical_count="$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity == "CRITICAL")] | length' trivy-report.json)"
+            high_count="$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity == "HIGH")] | length' trivy-report.json)"
+            scan_status="scanned"
+          else
+            critical_count="0"
+            high_count="0"
+            scan_status="build_failed"
+          fi
 
           echo "critical_count=${critical_count}" >> "$GITHUB_OUTPUT"
           echo "high_count=${high_count}" >> "$GITHUB_OUTPUT"
+          echo "scan_status=${scan_status}" >> "$GITHUB_OUTPUT"
 
           {
             echo "### Scheduled Docker Security Summary"
+            echo "- Scan status: ${scan_status}"
             echo "- Critical: ${critical_count}"
             echo "- High: ${high_count}"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload Trivy results to GitHub Security tab
-        if: always()
+        if: always() && steps.build_image.outcome == 'success'
         uses: github/codeql-action/upload-sarif@60d8f0d1f1f8c8d07ef53bd027032705d414ec28 # v3
         with:
           sarif_file: "trivy-results.sarif"
 
       - name: Upload security artifacts
-        if: always()
+        if: always() && steps.build_image.outcome == 'success'
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: docker-security-monitor-report
@@ -85,10 +100,15 @@ jobs:
 
       - name: Fail when CRITICAL or HIGH vulnerabilities are present
         env:
+          BUILD_OUTCOME: ${{ steps.build_image.outcome }}
           CRITICAL_COUNT: ${{ steps.vuln_summary.outputs.critical_count }}
           HIGH_COUNT: ${{ steps.vuln_summary.outputs.high_count }}
         run: |
           set -euo pipefail
+          if [[ "$BUILD_OUTCOME" != "success" ]]; then
+            echo "Docker image build failed; security scan could not run."
+            exit 1
+          fi
           if (( CRITICAL_COUNT > 0 || HIGH_COUNT > 0 )); then
             echo "Detected ${CRITICAL_COUNT} CRITICAL and ${HIGH_COUNT} HIGH vulnerabilities."
             exit 1
@@ -98,8 +118,9 @@ jobs:
         if: failure()
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         env:
-          CRITICAL_COUNT: ${{ steps.vuln_summary.outputs.critical_count || 'unknown' }}
-          HIGH_COUNT: ${{ steps.vuln_summary.outputs.high_count || 'unknown' }}
+          SCAN_STATUS: ${{ steps.vuln_summary.outputs.scan_status || 'unknown' }}
+          CRITICAL_COUNT: ${{ steps.vuln_summary.outputs.critical_count || '0' }}
+          HIGH_COUNT: ${{ steps.vuln_summary.outputs.high_count || '0' }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         with:
           script: |
@@ -109,6 +130,7 @@ jobs:
               "Automated scheduled Docker security scan detected vulnerabilities.",
               "",
               `- Detected at: ${timestamp}`,
+              `- Scan status: ${process.env.SCAN_STATUS}`,
               `- Critical: ${process.env.CRITICAL_COUNT}`,
               `- High: ${process.env.HIGH_COUNT}`,
               `- Workflow run: ${process.env.RUN_URL}`,
