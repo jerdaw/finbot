@@ -97,7 +97,7 @@ jobs:
         run: docker build -t finbot:ci .
 
       - name: Run Trivy scan
-        uses: aquasecurity/trivy-action@0.33.1
+        uses: aquasecurity/trivy-action@0.34.1
         with:
           image-ref: "finbot:ci"
           format: "table"
