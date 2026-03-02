@@ -48,3 +48,15 @@ bureau_of_labour_statistics_api_2_resource_group = APIResourceGroup(
     rate_limit=RateLimiter(rate_limits=[RateLimitItemPerSecond(50, 10), RateLimitItemPerDay(500)]),
     retry_strategy_kwargs=DEFAULT_HTTPX_RETRY_KWARGS,
 )
+
+alpaca_api_resource_group = APIResourceGroup(
+    identifier="alpaca_api_resource_group",
+    rate_limit=RateLimiter(rate_limits="200/minute"),
+    retry_strategy_kwargs=DEFAULT_HTTPX_RETRY_KWARGS,
+)
+
+twelvedata_api_resource_group = APIResourceGroup(
+    identifier="twelvedata_api_resource_group",
+    rate_limit=RateLimiter(rate_limits=[RateLimitItemPerMinute(8), RateLimitItemPerDay(800)]),
+    retry_strategy_kwargs=DEFAULT_HTTPX_RETRY_KWARGS,
+)

@@ -31,6 +31,71 @@ jobs:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Wait for core CI checks to pass
+        if: |
+          steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
+          steps.metadata.outputs.update-type == 'version-update:semver-minor'
+        run: |
+          set -euo pipefail
+
+          timeout_seconds=1800
+          interval_seconds=15
+          elapsed=0
+
+          core_checks=(
+            "Lint and Format"
+            "Type Check"
+            "Test (Python 3.11)"
+            "Test (Python 3.12)"
+            "Test (Python 3.13)"
+            "Backtest Parity Gate"
+            "Performance Regression"
+          )
+
+          while true; do
+            checks_json="$(gh pr checks "$PR_URL" --json name,bucket,workflow)"
+            missing=0
+            pending=0
+            failed=0
+
+            for check_name in "${core_checks[@]}"; do
+              bucket="$(jq -r --arg name "$check_name" '.[] | select(.workflow == "CI" and .name == $name) | .bucket' <<<"$checks_json")"
+
+              if [[ -z "$bucket" ]]; then
+                missing=1
+                continue
+              fi
+
+              if [[ "$bucket" == "pending" ]]; then
+                pending=1
+              elif [[ "$bucket" != "pass" ]]; then
+                failed=1
+                echo "Core CI check '$check_name' status is '$bucket'"
+              fi
+            done
+
+            if [[ "$failed" -eq 1 ]]; then
+              echo "One or more core CI checks failed; not enabling auto-merge."
+              exit 1
+            fi
+
+            if [[ "$missing" -eq 0 && "$pending" -eq 0 ]]; then
+              echo "All core CI checks passed."
+              break
+            fi
+
+            if (( elapsed >= timeout_seconds )); then
+              echo "Timed out waiting for core CI checks to complete."
+              exit 1
+            fi
+
+            sleep "$interval_seconds"
+            elapsed=$((elapsed + interval_seconds))
+          done
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Enable auto-merge for patch and minor updates
         if: |
           steps.metadata.outputs.update-type == 'version-update:semver-patch' ||

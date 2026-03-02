@@ -1,5 +1,5 @@
 # Stage 1: Install dependencies
-FROM python:3.13-slim AS builder
+FROM python:3.12-slim AS builder
 
 # Prevent Python from writing .pyc files and enable unbuffered output
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -7,6 +7,14 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 # Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+# Fallback build toolchain for packages that may not have prebuilt wheels.
+# Keeping this in the builder stage avoids bloating the runtime image.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    gfortran \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -17,7 +25,7 @@ COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev --no-install-project
 
 # Stage 2: Runtime image
-FROM python:3.13-slim AS runtime
+FROM python:3.12-slim AS runtime
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
