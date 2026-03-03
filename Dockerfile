@@ -24,6 +24,9 @@ COPY pyproject.toml uv.lock ./
 # Install dependencies into a virtual environment
 RUN uv sync --frozen --no-dev --no-install-project
 
+# Keep pip on a patched version to avoid known container CVEs.
+RUN uv pip install --python /app/.venv/bin/python pip==26.0
+
 # Stage 2: Runtime image
 FROM python:3.12-slim AS runtime
 
@@ -31,6 +34,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     DYNACONF_ENV=development \
     PATH="/app/.venv/bin:$PATH"
+
+# Patch system pip in the runtime image to address Trivy-reported CVEs.
+RUN python -m pip install --no-cache-dir --upgrade pip==26.0
 
 # Create non-root user
 RUN groupadd --gid 1000 finbot && \
