@@ -35,6 +35,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     DYNACONF_ENV=development \
     PATH="/app/.venv/bin:$PATH"
 
+# Patch system pip in the runtime image to address Trivy-reported CVEs.
+RUN python -m pip install --no-cache-dir --upgrade pip==26.0
+
 # Create non-root user
 RUN groupadd --gid 1000 finbot && \
     useradd --uid 1000 --gid finbot --create-home finbot
