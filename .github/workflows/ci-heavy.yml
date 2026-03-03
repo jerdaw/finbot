@@ -50,12 +50,14 @@ jobs:
         run: uv sync --no-dev
 
       - name: Security scan with bandit
-        run: uv run bandit -r finbot/ -ll
+        run: |
+          uv pip install bandit
+          uv run --no-dev bandit -r finbot/ -ll
 
       - name: Vulnerability scan with pip-audit
         run: |
           uv pip install pip-audit
-          uv run pip-audit
+          uv run --no-dev pip-audit
 
   dependency-license-audit:
     name: Dependency License Audit
