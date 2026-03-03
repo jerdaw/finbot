@@ -24,6 +24,9 @@ COPY pyproject.toml uv.lock ./
 # Install dependencies into a virtual environment
 RUN uv sync --frozen --no-dev --no-install-project
 
+# Keep pip on a patched version to avoid known container CVEs.
+RUN /app/.venv/bin/python -m pip install --no-cache-dir --upgrade pip==26.0
+
 # Stage 2: Runtime image
 FROM python:3.12-slim AS runtime
 
