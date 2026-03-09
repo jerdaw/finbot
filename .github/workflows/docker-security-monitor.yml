@@ -32,7 +32,7 @@ jobs:
 
       - name: Run Trivy vulnerability scanner on image (SARIF)
         if: steps.build_image.outcome == 'success'
-        uses: aquasecurity/trivy-action@97e0b3872f55f89b95b2f65b3dbab56962816478 # v0.34.1
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
         with:
           image-ref: "finbot:security-${{ github.sha }}"
           format: "sarif"
@@ -44,7 +44,7 @@ jobs:
 
       - name: Run Trivy vulnerability scanner on image (JSON)
         if: steps.build_image.outcome == 'success'
-        uses: aquasecurity/trivy-action@97e0b3872f55f89b95b2f65b3dbab56962816478 # v0.34.1
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
         with:
           image-ref: "finbot:security-${{ github.sha }}"
           format: "json"
