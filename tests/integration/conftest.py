@@ -11,6 +11,26 @@ import pandas as pd
 import pytest
 
 
+@pytest.fixture(autouse=True)
+def mock_offline_libor_for_fund_simulator(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Use deterministic, network-free LIBOR data in integration tests.
+
+    `fund_simulator()` defaults to `approximate_overnight_libor()`, which fetches
+    live FRED/yfinance data. That creates flaky CI failures from transient network
+    timeouts. This fixture replaces that call with a static synthetic series that
+    spans all test dates.
+    """
+
+    def _fake_approximate_overnight_libor(*, save: bool = True) -> pd.Series:
+        idx = pd.DatetimeIndex(["1900-01-01", "2100-01-01"])
+        return pd.Series([4.5, 4.5], index=idx, name="Yield")
+
+    monkeypatch.setattr(
+        "finbot.services.simulation.fund_simulator.approximate_overnight_libor",
+        _fake_approximate_overnight_libor,
+    )
+
+
 @pytest.fixture
 def integration_fixtures_dir() -> Path:
     """Return path to integration test fixtures directory."""
