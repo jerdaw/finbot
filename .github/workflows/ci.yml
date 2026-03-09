@@ -212,7 +212,7 @@ jobs:
         run: docker build -t finbot:${{ github.sha }} .
 
       - name: Run Trivy vulnerability scanner on Dockerfile
-        uses: aquasecurity/trivy-action@97e0b3872f55f89b95b2f65b3dbab56962816478 # v0.34.1
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
         with:
           scan-type: 'config'
           scan-ref: 'Dockerfile'
@@ -222,7 +222,7 @@ jobs:
           trivyignores: '.trivyignore.example'
 
       - name: Run Trivy vulnerability scanner on image
-        uses: aquasecurity/trivy-action@97e0b3872f55f89b95b2f65b3dbab56962816478 # v0.34.1
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
         with:
           image-ref: 'finbot:${{ github.sha }}'
           format: 'sarif'
@@ -240,7 +240,7 @@ jobs:
 
       - name: Run Trivy vulnerability scanner for summary
         if: always()
-        uses: aquasecurity/trivy-action@97e0b3872f55f89b95b2f65b3dbab56962816478 # v0.34.1
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
         with:
           image-ref: 'finbot:${{ github.sha }}'
           format: 'table'
@@ -249,7 +249,7 @@ jobs:
 
       - name: Generate detailed security report
         if: always()
-        uses: aquasecurity/trivy-action@97e0b3872f55f89b95b2f65b3dbab56962816478 # v0.34.1
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
         with:
           image-ref: 'finbot:${{ github.sha }}'
           format: 'json'
