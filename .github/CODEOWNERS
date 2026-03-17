@@ -7,8 +7,8 @@
 # Syntax: path/to/directory @github-username
 # See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
-# Default owner for everything in the repo
-* @jerdaw
+# Intentionally avoid a catch-all owner so dependency automation touching
+# root files like uv.lock doesn't generate code-owner review requests.
 
 # Core Architecture & Contracts
 # Live trading contracts, schemas, versioning, migration logic
@@ -60,11 +60,9 @@
 
 # Infrastructure & Automation
 # CI/CD, scripts, Docker, dependency management
-/.github/ @jerdaw
 /scripts/ @jerdaw
 /Dockerfile @jerdaw
 /Makefile @jerdaw
-/pyproject.toml @jerdaw
 
 # Project Documentation
 # README, contributing guide, license, project instructions
