@@ -24,10 +24,11 @@ See Completed Items table below and git history for details on implemented featu
 - [x] Prevent repeated auto-approval notifications on Dependabot `synchronize` events
 - [x] Document the human-only authorship tradeoff for automated merges
 
-**What Was Done:** Tightened `.github/dependabot.yml`, scoped `.github/CODEOWNERS` to avoid review-request spam on dependency-only PRs, created the missing `dependencies`, `python`, and `github-actions` labels in GitHub, and updated the Dependabot auto-merge workflow to require an explicit human-owned PAT before enabling fully automatic merges. This preserves the project's human-only authorship policy while still auto-approving low-risk updates.
+**What Was Done:** Tightened `.github/dependabot.yml`, scoped `.github/CODEOWNERS` to avoid review-request spam on dependency-only PRs, created the missing `dependencies`, `python`, and `github-actions` labels in GitHub, and reduced the Dependabot workflow to auto-approval only. Audit follow-up confirmed GitHub-side merging of Dependabot PRs preserves bot authorship in commit history, so low-risk bot PRs now stay manual unless replayed onto a human-authored branch.
 
 **Remaining (Deferred — Not Blocking):**
-- [ ] Add repository secret `DEPENDABOT_AUTOMERGE_PAT` if fully automatic Dependabot merges are still desired without bot-authored commits in history
+- [ ] Define a protected-branch-compatible human-authored replay workflow for low-risk Dependabot updates if ongoing manual handling becomes burdensome
+- [ ] Evaluate whether historical bot-authored commits on protected `main` should be remediated via a separate history-rewrite effort
 
 ### P9.2 Autonomous Wrap-Up ✓
 
