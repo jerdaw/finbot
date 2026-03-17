@@ -29,12 +29,13 @@ Dependabot is configured to keep dependencies current while limiting notificatio
   - Minor and patch updates are grouped together
   - Major updates are grouped separately for manual review
 
-### Auto-Approval and Auto-Merge
+### Auto-Approval and Merge Policy
 
 - Patch and minor Dependabot PRs are auto-approved by [`dependabot-auto-merge.yml`](../.github/workflows/dependabot-auto-merge.yml).
-- Fully automatic merge is only enabled when repository secret `DEPENDABOT_AUTOMERGE_PAT` is set to a human-owned token.
-- Without that secret, low-risk PRs are still auto-approved but require a human merge to preserve the repository's human-only commit authorship policy.
 - Major updates are labeled `major-update` and left for manual review.
+- GitHub-side PR merges of Dependabot-authored changes preserve bot authorship in commit history, even when a human maintainer triggers the merge.
+- Because this repository requires human-only authorship in commit history, Dependabot PRs are not auto-merged.
+- If a dependency update must land while preserving human authorship, recreate the change on a human-authored branch and merge that branch instead of merging the bot PR directly.
 
 ### Notification Noise Controls
 
@@ -57,7 +58,7 @@ These are usually safe to merge:
 ```bash
 # Review the PR on GitHub
 # Check that CI passes
-# Merge manually unless DEPENDABOT_AUTOMERGE_PAT is configured
+# Recreate or merge via a human-authored branch if commit authorship must remain human-only
 ```
 
 ### 2. Major Version Updates
@@ -152,13 +153,13 @@ ignore:
     versions: ["2.x"]  # Ignore numpy 2.x updates
 ```
 
-### Enable Human-Authored Auto-Merge
+### Preserve Human-Only Authorship
 
-To keep automated merges compliant with the repository's human-only authorship policy:
+GitHub's normal PR merge path keeps Dependabot as the commit author for Dependabot-originated updates. If strict human-only authorship is required:
 
-1. Create a fine-grained personal access token owned by a human maintainer with repository contents and pull request write access.
-2. Save it as repository secret `DEPENDABOT_AUTOMERGE_PAT`.
-3. Dependabot patch/minor PRs will then be auto-approved and auto-merged after required checks pass.
+1. Check out the repository locally on a human-maintained branch.
+2. Recreate or cherry-pick the dependency change into a human-authored commit.
+3. Open and merge that human-authored PR instead of merging the Dependabot PR directly.
 
 ## Troubleshooting
 
@@ -217,7 +218,7 @@ View Dependabot activity:
 1. **Review major updates locally** - Don't rely solely on CI
 2. **Keep CI comprehensive** - Your tests are your safety net
 3. **Use grouped updates** - Minimize PR churn and notification volume
-4. **Use human-owned automation credentials deliberately** - Only if you want fully automatic merges without bot authorship in history
+4. **Use a human-authored replay branch for protected repos** - GitHub-side merging of Dependabot PRs preserves bot authorship
 5. **Pair repo-side reduction with personal notification filters** - GitHub watch settings and Gmail filters matter too
 
 ## Resources
