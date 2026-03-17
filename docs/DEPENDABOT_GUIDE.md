@@ -2,7 +2,7 @@
 
 ## Overview
 
-Dependabot is now configured to automatically create pull requests for dependency updates. This helps keep the project secure and up-to-date with minimal manual effort.
+Dependabot is configured to keep dependencies current while limiting notification noise. Python and GitHub Actions updates are grouped, low-risk updates can be auto-approved, and major updates remain manual.
 
 ## Configuration Details
 
@@ -11,37 +11,42 @@ Dependabot is now configured to automatically create pull requests for dependenc
 ### Python Dependencies
 
 - **Schedule:** Weekly on Monday at 9:00 AM ET
-- **PR Limit:** Maximum 5 open PRs at once
+- **PR Limit:** Maximum 2 open PRs at once
 - **Grouping Strategy:**
   - Minor and patch updates are grouped together (e.g., 1.2.3 → 1.2.4, 1.2.0 → 1.3.0)
-  - Major updates create individual PRs (e.g., 1.x → 2.x) for careful review
+  - Major updates are grouped separately for manual review
 - **Labels:** `dependencies`, `python`
 - **Commit Prefix:** `deps`
 
 ### GitHub Actions
 
 - **Schedule:** Weekly on Monday at 9:00 AM ET
-- **PR Limit:** Maximum 3 open PRs at once
+- **PR Limit:** Maximum 2 open PRs at once
 - **Monitors:** Workflow files in `.github/workflows/`
 - **Labels:** `dependencies`, `github-actions`
 - **Commit Prefix:** `ci`
+- **Grouping Strategy:**
+  - Minor and patch updates are grouped together
+  - Major updates are grouped separately for manual review
+
+### Auto-Approval and Auto-Merge
+
+- Patch and minor Dependabot PRs are auto-approved by [`dependabot-auto-merge.yml`](../.github/workflows/dependabot-auto-merge.yml).
+- Fully automatic merge is only enabled when repository secret `DEPENDABOT_AUTOMERGE_PAT` is set to a human-owned token.
+- Without that secret, low-risk PRs are still auto-approved but require a human merge to preserve the repository's human-only commit authorship policy.
+- Major updates are labeled `major-update` and left for manual review.
+
+### Notification Noise Controls
+
+- Dependency-only PRs touching `uv.lock`, `pyproject.toml`, or `.github/workflows/` are intentionally excluded from CODEOWNERS review requests.
+- GitHub Actions auto-approval only runs on PR open/reopen/ready-for-review events, which avoids repeated approval notifications when Dependabot pushes follow-up commits.
+- Missing Dependabot labels create extra bot comments and email noise. Ensure `dependencies`, `python`, and `github-actions` labels exist in the repository.
 
 ## What to Expect
 
-### First Week After Setup
-
-Once this is pushed to GitHub, Dependabot will scan dependencies and likely create:
-- 1-2 grouped PRs for minor/patch Python updates
-- 3-5 individual PRs for major Python updates (numpy 2.x, pandas 3.0, etc.)
-- 0-1 PRs for GitHub Actions updates
-
-**Total:** ~5-8 PRs in the first week
-
-### Ongoing Weekly Updates
-
-After the initial wave, expect:
-- 0-2 PRs per week for Python dependencies
-- 0-1 PRs per week for GitHub Actions
+Expect up to two active version-update PRs per ecosystem:
+- One grouped patch/minor PR
+- One grouped major-update PR
 
 ## How to Handle Dependabot PRs
 
@@ -52,7 +57,7 @@ These are usually safe to merge:
 ```bash
 # Review the PR on GitHub
 # Check that CI passes
-# If CI passes, merge via GitHub UI
+# Merge manually unless DEPENDABOT_AUTOMERGE_PAT is configured
 ```
 
 ### 2. Major Version Updates
@@ -78,7 +83,7 @@ Require more careful review:
 # Create a test branch
 git checkout -b test-numpy-2
 
-# Update poetry.lock with the new version
+# Update uv.lock with the new version
 # (Dependabot will have done this in the PR)
 git fetch origin pull/XXX/head:test-numpy-2
 
@@ -91,9 +96,9 @@ uv run pytest tests/
 
 ### 3. GitHub Actions Updates
 
-Usually safe to merge:
-- Check that CI workflow syntax is still valid
-- Ensure no breaking changes in action versions
+These now arrive as grouped patch/minor or grouped major PRs:
+- Patch/minor updates are usually safe after CI passes
+- Major updates still need manual review for breaking workflow changes
 
 ## Reviewing Dependabot PRs
 
@@ -125,7 +130,7 @@ Usually safe to merge:
 If you want more PRs per week, edit `.github/dependabot.yml`:
 
 ```yaml
-open-pull-requests-limit: 10  # Increase from 5
+open-pull-requests-limit: 10  # Increase from the current limit of 2
 ```
 
 ### Change Schedule
@@ -147,17 +152,13 @@ ignore:
     versions: ["2.x"]  # Ignore numpy 2.x updates
 ```
 
-### Auto-merge Minor Updates
+### Enable Human-Authored Auto-Merge
 
-For fully automated minor updates (not recommended initially):
+To keep automated merges compliant with the repository's human-only authorship policy:
 
-```yaml
-auto-merge:
-  - update-type: "semver:patch"
-  - update-type: "semver:minor"
-```
-
-⚠️ **Warning:** Only enable auto-merge after you're confident in your test coverage.
+1. Create a fine-grained personal access token owned by a human maintainer with repository contents and pull request write access.
+2. Save it as repository secret `DEPENDABOT_AUTOMERGE_PAT`.
+3. Dependabot patch/minor PRs will then be auto-approved and auto-merged after required checks pass.
 
 ## Troubleshooting
 
@@ -174,6 +175,21 @@ auto-merge:
 1. Lower `open-pull-requests-limit`
 2. Change schedule to monthly
 3. Add problematic packages to ignore list
+4. Verify GitHub Actions minor/patch updates are grouped
+
+### Too Many Emails
+
+**Common causes:**
+1. CODEOWNERS review requests on dependency-only PRs
+2. Missing labels causing Dependabot comment spam
+3. Repeated workflow approvals on `synchronize` events
+4. Personal GitHub/Gmail notification settings
+
+**Repository-side fixes already in place:**
+1. No catch-all CODEOWNERS owner for `uv.lock`
+2. No `.github/` or `pyproject.toml` CODEOWNERS entry for dependency-only PRs
+3. Existing Dependabot labels created in the repo
+4. Auto-approval workflow no longer reruns on `synchronize`
 
 ### PRs Conflict with Each Other
 
@@ -198,11 +214,11 @@ View Dependabot activity:
 
 ## Best Practices
 
-1. **Review PRs promptly** - Don't let them pile up
-2. **Test major updates locally** - Don't rely solely on CI
-3. **Read changelogs** - Understand what's changing
-4. **Keep CI comprehensive** - Your tests are your safety net
-5. **Group reviews** - Review multiple dependency PRs together once a week
+1. **Review major updates locally** - Don't rely solely on CI
+2. **Keep CI comprehensive** - Your tests are your safety net
+3. **Use grouped updates** - Minimize PR churn and notification volume
+4. **Use human-owned automation credentials deliberately** - Only if you want fully automatic merges without bot authorship in history
+5. **Pair repo-side reduction with personal notification filters** - GitHub watch settings and Gmail filters matter too
 
 ## Resources
 

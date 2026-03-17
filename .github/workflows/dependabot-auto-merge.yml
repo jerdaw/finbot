@@ -2,7 +2,7 @@ name: Dependabot Auto-Merge
 
 on:
   pull_request_target:
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [opened, reopened, ready_for_review]
 
 concurrency:
   group: dependabot-auto-merge-${{ github.event.pull_request.number }}
@@ -48,18 +48,25 @@ jobs:
       - name: Enable auto-merge for patch and minor updates
         if: |
           steps.metadata.outcome == 'success' &&
+          secrets.DEPENDABOT_AUTOMERGE_PAT != '' &&
           (
             steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
             steps.metadata.outputs.update-type == 'version-update:semver-minor'
           )
-        run: gh pr merge "$PR_URL" --auto --squash
+        run: |
+          gh pr merge "$PR_URL" \
+            --auto \
+            --squash \
+            --subject "${{ github.event.pull_request.title }}" \
+            --body "Auto-merged after required CI checks passed."
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.DEPENDABOT_AUTOMERGE_PAT }}
 
       - name: Update branch if behind after enabling auto-merge
         if: |
           steps.metadata.outcome == 'success' &&
+          secrets.DEPENDABOT_AUTOMERGE_PAT != '' &&
           (
             steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
             steps.metadata.outputs.update-type == 'version-update:semver-minor'
@@ -71,7 +78,7 @@ jobs:
           fi
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.DEPENDABOT_AUTOMERGE_PAT }}
 
       - name: Label major updates for manual review
         if: |
