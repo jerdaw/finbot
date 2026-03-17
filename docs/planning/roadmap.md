@@ -1,7 +1,7 @@
 # Finbot Roadmap
 
 **Created:** 2026-02-10
-**Last Updated:** 2026-02-25
+**Last Updated:** 2026-03-16
 **Status:** Priority 0-9 complete (1769 tests). Roadmap clean.
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
@@ -13,6 +13,21 @@ See Completed Items table below and git history for details on implemented featu
 ---
 
 ## Priority 9: Agent Tooling
+
+### P9.3 Dependabot Noise Reduction and Authorship Guardrails ✓
+
+**Status:** ✅ COMPLETED (2026-03-16)
+
+- [x] Reduce Dependabot PR fan-out by grouping GitHub Actions patch/minor updates and lowering open PR limits
+- [x] Stop dependency-only CODEOWNERS review requests for `uv.lock`, `pyproject.toml`, and workflow-only bot PRs
+- [x] Create missing Dependabot labels to prevent noisy bot error comments
+- [x] Prevent repeated auto-approval notifications on Dependabot `synchronize` events
+- [x] Document the human-only authorship tradeoff for automated merges
+
+**What Was Done:** Tightened `.github/dependabot.yml`, scoped `.github/CODEOWNERS` to avoid review-request spam on dependency-only PRs, created the missing `dependencies`, `python`, and `github-actions` labels in GitHub, and updated the Dependabot auto-merge workflow to require an explicit human-owned PAT before enabling fully automatic merges. This preserves the project's human-only authorship policy while still auto-approving low-risk updates.
+
+**Remaining (Deferred — Not Blocking):**
+- [ ] Add repository secret `DEPENDABOT_AUTOMERGE_PAT` if fully automatic Dependabot merges are still desired without bot-authored commits in history
 
 ### P9.2 Autonomous Wrap-Up ✓
 
@@ -207,6 +222,7 @@ See Completed Items table for full details on all 25 completed items.
 
 | Item | Completed | Notes |
 |------|-----------|-------|
+| Dependabot noise reduction and authorship guardrails (9.3) | 2026-03-16 | Grouped GitHub Actions patch/minor updates, removed dependency-only CODEOWNERS review requests, created missing Dependabot labels, reduced duplicate approval noise, and required a human PAT for fully automatic merges |
 | Fix logger code duplication (0.1) | 2026-02-10 | Consolidated to `libs/logger/utils.py`, changed `InfoFilter` to `NonErrorFilter` |
 | Fix import-time side effects (0.2) | 2026-02-10 | Converted to lazy function `get_alpha_vantage_rapi_headers()` |
 | Fix dangerous error handling (0.3) | 2026-02-10 | Replaced 8 bare `except Exception:` blocks with specific exceptions |
