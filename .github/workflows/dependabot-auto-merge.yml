@@ -1,4 +1,4 @@
-name: Dependabot Auto-Merge
+name: Dependabot Auto-Approve
 
 on:
   pull_request_target:
@@ -13,8 +13,8 @@ permissions:
   pull-requests: write
 
 jobs:
-  auto-merge:
-    name: Auto-merge dependabot PRs
+  auto-approve:
+    name: Auto-approve dependabot PRs
     runs-on: ubuntu-latest
     if: |
       (
@@ -44,41 +44,6 @@ jobs:
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Enable auto-merge for patch and minor updates
-        if: |
-          steps.metadata.outcome == 'success' &&
-          secrets.DEPENDABOT_AUTOMERGE_PAT != '' &&
-          (
-            steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
-            steps.metadata.outputs.update-type == 'version-update:semver-minor'
-          )
-        run: |
-          gh pr merge "$PR_URL" \
-            --auto \
-            --squash \
-            --subject "${{ github.event.pull_request.title }}" \
-            --body "Auto-merged after required CI checks passed."
-        env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.DEPENDABOT_AUTOMERGE_PAT }}
-
-      - name: Update branch if behind after enabling auto-merge
-        if: |
-          steps.metadata.outcome == 'success' &&
-          secrets.DEPENDABOT_AUTOMERGE_PAT != '' &&
-          (
-            steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
-            steps.metadata.outputs.update-type == 'version-update:semver-minor'
-          )
-        run: |
-          merge_state="$(gh pr view "$PR_URL" --json mergeStateStatus --jq '.mergeStateStatus')"
-          if [[ "$merge_state" == "BEHIND" ]]; then
-            gh pr update-branch "$PR_URL"
-          fi
-        env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.DEPENDABOT_AUTOMERGE_PAT }}
 
       - name: Label major updates for manual review
         if: |
