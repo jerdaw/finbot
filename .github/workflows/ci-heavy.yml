@@ -79,12 +79,7 @@ jobs:
         run: uv sync
 
       - name: Generate third-party licenses report
-        run: |
-          uv run --with pip-licenses pip-licenses \
-            --format=markdown \
-            --with-urls \
-            --with-description \
-            --output-file THIRD_PARTY_LICENSES.md
+        run: uv run pip-licenses --from=mixed --with-authors --with-urls --with-description --format=markdown --order=name --output-file=THIRD_PARTY_LICENSES.md.tmp
 
       - name: Verify licenses report is committed
         run: git diff --exit-code THIRD_PARTY_LICENSES.md
