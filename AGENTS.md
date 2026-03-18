@@ -18,7 +18,6 @@ Finbot is a financial data collection, simulation, and backtesting platform that
 - Health economics analysis (QALY simulation, cost-effectiveness, treatment optimization)
 - Interactive Streamlit web dashboard
 
-
 Python `>=3.11,<3.15`. Uses **uv** for dependency management.
 
 ## Quick Start
@@ -115,6 +114,7 @@ All packages live under the single `finbot/` namespace:
 - `tracked_collections/`: CSV manifests of tracked funds, FRED symbols, MSCI indexes
 
 #### `finbot/libs/` — Core Infrastructure
+
 - **`api_manager/`**: Central API registry with `APIResourceGroup` for rate limits/retry
   - Supports FRED, Alpha Vantage, NASDAQ Data Link, Google Finance, BLS APIs
 - **`logger/`**: Queue-based async logging
@@ -141,6 +141,7 @@ from finbot.services.execution.checkpoint_manager import CheckpointManager
 - **`order_registry.py`**: Order lookup and lifecycle queries
 - **`pending_actions.py`**: Time-based action queue with O(log n) binary search insertion for latency simulation
 - **`risk_checker.py`**: Position limits, exposure limits, drawdown limits, kill-switch
+
 - **`checkpoint_manager.py`**: Create/save/load/restore state checkpoints (`checkpoints/{simulator_id}/{timestamp}.json`)
 - **`checkpoint_serialization.py`**: JSON-safe serialization (Decimal→string, datetime→ISO)
 
@@ -369,6 +370,7 @@ GitHub Actions (`.github/workflows/ci.yml`) on push/PR to main:
 - Tests: `pytest --cov` on Python 3.11, 3.12, 3.13
 - Parity gate: Golden strategy tests (GS-01, GS-02, GS-03)
 - Performance regression: benchmarks vs `tests/performance/baseline.json` (fails if >20% slower)
+
 - Update baseline: `uv run python tests/performance/benchmark_runner.py --update-baseline`
 
 ## Architecture Decisions
@@ -436,11 +438,13 @@ See `docs/adr/` for architectural decision records:
 - **Don't:** Include AI assistants (Claude, Gemini, Codex, ChatGPT, Copilot, etc.) in author, co-author, or contributor fields
 - **Don't:** Add "AI-generated" or "Created with AI" notices in code, docs, or commit messages
 - **Rationale:** Commits represent human accountability. AI tools are instruments, not authors.
+
 - **Scope:** Applies to all commits and documentation attribution (README, ADRs, research, planning, changelogs, release notes)
 
 ### Agent File Sync
 
 - `AGENTS.md` is canonical for agent instructions.
+
 - `CLAUDE.md` and `GEMINI.md` must be symlinks to `AGENTS.md`.
 
 ## See Also
