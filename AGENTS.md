@@ -4,6 +4,7 @@
 
 Finbot is a financial data collection, simulation, and backtesting platform that consolidates:
 - Modern infrastructure (Dynaconf config, queue-based logging, API management)
+
 - **Engine-agnostic execution system** with orders, latency simulation, risk controls, and state checkpoints
 - Comprehensive backtesting engine (Backtrader-based with 13 strategies)
 - **Typed contracts** for portable backtests with versioning, serialization, and migration
@@ -16,6 +17,7 @@ Finbot is a financial data collection, simulation, and backtesting platform that
 - **Standalone analytics**: risk (VaR/CVaR, stress testing, Kelly), portfolio (rolling, benchmark, drawdown, diversification), factor (Fama-French regression, attribution, risk decomposition)
 - Health economics analysis (QALY simulation, cost-effectiveness, treatment optimization)
 - Interactive Streamlit web dashboard
+
 
 Python `>=3.11,<3.15`. Uses **uv** for dependency management.
 
@@ -35,7 +37,7 @@ uv run pytest
 uv run python scripts/update_daily.py
 ```
 
-## Current Delivery Status (2026-02-25)
+## Current Delivery Status (2026-03-17)
 
 **P0-P9 complete. 1769 tests.**
 
@@ -100,11 +102,13 @@ from finbot.libs.api_manager import api_manager                  # Singleton API
 All packages live under the single `finbot/` namespace:
 
 #### `finbot/config/` — Configuration Layer
+
 - **Dynaconf-based** environment-aware YAML files (`development.yaml`, `production.yaml`)
 - **APIKeyManager**: Lazy-loaded API keys from env vars (no import failures when keys missing)
 - Set `DYNACONF_ENV=development|production` to switch environments
 
 #### `finbot/constants/` — Application Constants
+
 - `path_constants.py`: All data directory paths (auto-creates missing dirs)
 - `api_constants.py`: API URLs and endpoints
 - `datetime_constants.py`, `networking_constants.py`, etc.
@@ -230,6 +234,7 @@ Standalone multi-factor model modules. Accept returns arrays/DataFrames — no d
 - **`multithreading_utils/`**: Thread pool configuration
 
 #### `scripts/` — Automation Scripts
+
 - **`update_daily.py`**: Daily data update pipeline — fetches prices/FRED/Shiller, re-runs all simulations
 
 ### Data Storage

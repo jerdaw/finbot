@@ -21,6 +21,7 @@ See Completed Items table below and git history for details on implemented featu
 **What Was Done:** Tightened `.github/dependabot.yml`, scoped `.github/CODEOWNERS` to avoid review-request spam on dependency-only PRs, created the missing `dependencies`, `python`, and `github-actions` labels in GitHub, and reduced the Dependabot workflow to auto-approval only. Audit follow-up confirmed GitHub-side merging of Dependabot PRs preserves bot authorship in commit history, so low-risk bot PRs now stay manual unless replayed onto a human-authored branch.
 
 **Remaining (Deferred — Not Blocking):**
+
 - [ ] Define a protected-branch-compatible human-authored replay workflow for low-risk Dependabot updates if ongoing manual handling becomes burdensome
 - [ ] Evaluate whether historical bot-authored commits on protected `main` should be remediated via a separate history-rewrite effort
 
@@ -56,6 +57,7 @@ All 6 items complete. Fixed logger duplication, import-time side effects, danger
 All 3 items complete. Expanded test coverage (18 → 262 tests, 34.57% coverage), created 5 example notebooks with findings, and produced 3 research summaries.
 
 **Remaining (Deferred — Not Blocking):**
+
 - [x] Add tests for `bond_ladder_simulator` end-to-end — P7.23 complete (23 tests, synthetic yield data)
 - [x] Add tests for `backtest_batch`: parallel execution, result aggregation — P7.23 complete (11 tests)
 - [x] Add tests for `rebalance_optimizer` — P7.23 complete (5 tests)
@@ -69,6 +71,7 @@ All 3 items complete. Expanded test coverage (18 → 262 tests, 34.57% coverage)
 All 6 items complete. Added CLI interface (4 commands), fixed code smells, refactored fund simulations to data-driven config, improved git history (CHANGELOG.md), completed incomplete components, added Makefile.
 
 **Remaining (Deferred — Not Blocking):**
+
 - [ ] Apply data-driven config pattern to `sim_specific_bond_indexes.py` (only 3 functions, not worth refactoring)
 
 *Completed deferred items:* conventional commits (P5.36 — commitlint hook + guide added).
@@ -78,6 +81,7 @@ All 6 items complete. Added CLI interface (4 commands), fixed code smells, refac
 All 7 items complete. Improved documentation (160 module docstrings, MkDocs site, ADRs), strengthened type safety (146 → 0 mypy errors), added performance benchmarks, improved CI/CD pipeline, improved pre-commit hooks, modernized pyproject.toml metadata, consolidated package layout.
 
 **Remaining (Deferred — Not Blocking):**
+
 - [x] Enable stricter mypy settings (`disallow_untyped_defs`, etc.) — P7.1 audit complete; phased roadmap in `docs/planning/mypy-phase1-audit-report.md`
 
 *Completed deferred items:* py.typed marker (P5.2.11), SHA pinning for CI (2026-02-17), scheduled CI (P7.3).
@@ -87,6 +91,7 @@ All 7 items complete. Improved documentation (160 module docstrings, MkDocs site
 All 6 items complete. Added containerization, Streamlit web dashboard (6 pages), health economics extension (QALY simulator, CEA, treatment optimizer), additional strategies (DualMomentum, RiskParity, multi-asset Monte Carlo, inflation-adjusted returns), migrated from Poetry to uv, added data quality/observability.
 
 **Remaining (Deferred — Not Blocking):**
+
 - [ ] Add options overlay strategy (covered calls, protective puts) — requires options pricing model, Greeks calculations, and options chain data
 - [ ] Investigate epidemiological backtesting — not feasible with Backtrader (finance-specific); would need purpose-built SIR/SEIR simulator
 
@@ -97,6 +102,7 @@ All 6 items complete. Added containerization, Streamlit web dashboard (6 pages),
 All 44/45 items complete (item 42 deferred pending design approval). Focus: OMSAS/CanMEDS-aligned improvements across 7 categories — governance & professionalism, quality & reliability, documentation, health economics, ethics & security, testing, and professional polish.
 
 **Remaining deferred:**
+
 - Item 42: Project logo/branding — pending human-approved SVG concept or brand guide.
 
 See Completed Items table for full details on all 44 completed items.
@@ -110,6 +116,7 @@ All 30 items complete (item 76 formally deferred 2026-02-23). Focus: adapter-fir
 **Outcome:** Backtrader confirmed as primary engine (ADR-011 **Defer**). Nautilus adapter and native-only extraction code preserved for future live-trading use. See `docs/adr/ADR-011-nautilus-decision.md`.
 
 **Deferred:**
+
 - Item 76 (native-only Nautilus valuation parity closure) — formally deferred 2026-02-23; vision-aligned closure per ADR-011.
 
 See Completed Items table for full details on all 30 completed items.
@@ -121,12 +128,14 @@ See Completed Items table for full details on all 30 completed items.
 25/27 active items complete. Focus: external visibility, medical school application readiness, advanced capabilities (walk-forward viz, regime-adaptive strategy, Pareto optimizer, hypothesis testing, health economics scenarios).
 
 **On Hold (require user recording/design):**
+
 - Item 8: Record "Finbot Overview" video (5-minute screencast)
 - Item 9: Create project poster (36×48 academic PDF)
 - Item 20: Video tutorial series (3 videos: Setup, Backtesting, Dashboard)
 - Items 25, 27: "Getting Started" + "Contributing Guide" screen-recording videos
 
 **Deferred to Priority 8:**
+
 - Items 18–19 (options overlay, real-time data) — completed in P8 Cluster C; options overlay still blocked on data.
 
 See Completed Items table for full details on all 25 completed items.
@@ -210,7 +219,7 @@ See Completed Items table for full details on all 25 completed items.
 ## Completed Items (All Priorities)
 
 | Item | Completed | Notes |
-|------|-----------|-------|
+| :--- | :--- | :--- |
 | Dependabot noise reduction and authorship guardrails (9.3) | 2026-03-16 | Grouped GitHub Actions patch/minor updates, removed dependency-only CODEOWNERS review requests, created missing Dependabot labels, reduced duplicate approval noise, and required a human PAT for fully automatic merges |
 | Fix logger code duplication (0.1) | 2026-02-10 | Consolidated to `libs/logger/utils.py`, changed `InfoFilter` to `NonErrorFilter` |
 | Fix import-time side effects (0.2) | 2026-02-10 | Converted to lazy function `get_alpha_vantage_rapi_headers()` |
