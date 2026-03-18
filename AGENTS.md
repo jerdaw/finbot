@@ -4,6 +4,7 @@
 
 Finbot is a financial data collection, simulation, and backtesting platform that consolidates:
 - Modern infrastructure (Dynaconf config, queue-based logging, API management)
+
 - **Engine-agnostic execution system** with orders, latency simulation, risk controls, and state checkpoints
 - Comprehensive backtesting engine (Backtrader-based with 13 strategies)
 - **Typed contracts** for portable backtests with versioning, serialization, and migration
@@ -35,7 +36,7 @@ uv run pytest
 uv run python scripts/update_daily.py
 ```
 
-## Current Delivery Status (2026-02-25)
+## Current Delivery Status (2026-03-17)
 
 **P0-P9 complete. 1769 tests.**
 
@@ -100,17 +101,20 @@ from finbot.libs.api_manager import api_manager                  # Singleton API
 All packages live under the single `finbot/` namespace:
 
 #### `finbot/config/` — Configuration Layer
+
 - **Dynaconf-based** environment-aware YAML files (`development.yaml`, `production.yaml`)
 - **APIKeyManager**: Lazy-loaded API keys from env vars (no import failures when keys missing)
 - Set `DYNACONF_ENV=development|production` to switch environments
 
 #### `finbot/constants/` — Application Constants
+
 - `path_constants.py`: All data directory paths (auto-creates missing dirs)
 - `api_constants.py`: API URLs and endpoints
 - `datetime_constants.py`, `networking_constants.py`, etc.
 - `tracked_collections/`: CSV manifests of tracked funds, FRED symbols, MSCI indexes
 
 #### `finbot/libs/` — Core Infrastructure
+
 - **`api_manager/`**: Central API registry with `APIResourceGroup` for rate limits/retry
   - Supports FRED, Alpha Vantage, NASDAQ Data Link, Google Finance, BLS APIs
 - **`logger/`**: Queue-based async logging
@@ -137,6 +141,7 @@ from finbot.services.execution.checkpoint_manager import CheckpointManager
 - **`order_registry.py`**: Order lookup and lifecycle queries
 - **`pending_actions.py`**: Time-based action queue with O(log n) binary search insertion for latency simulation
 - **`risk_checker.py`**: Position limits, exposure limits, drawdown limits, kill-switch
+
 - **`checkpoint_manager.py`**: Create/save/load/restore state checkpoints (`checkpoints/{simulator_id}/{timestamp}.json`)
 - **`checkpoint_serialization.py`**: JSON-safe serialization (Decimal→string, datetime→ISO)
 
@@ -230,6 +235,7 @@ Standalone multi-factor model modules. Accept returns arrays/DataFrames — no d
 - **`multithreading_utils/`**: Thread pool configuration
 
 #### `scripts/` — Automation Scripts
+
 - **`update_daily.py`**: Daily data update pipeline — fetches prices/FRED/Shiller, re-runs all simulations
 
 ### Data Storage
@@ -364,6 +370,7 @@ GitHub Actions (`.github/workflows/ci.yml`) on push/PR to main:
 - Tests: `pytest --cov` on Python 3.11, 3.12, 3.13
 - Parity gate: Golden strategy tests (GS-01, GS-02, GS-03)
 - Performance regression: benchmarks vs `tests/performance/baseline.json` (fails if >20% slower)
+
 - Update baseline: `uv run python tests/performance/benchmark_runner.py --update-baseline`
 
 ## Architecture Decisions
@@ -431,11 +438,13 @@ See `docs/adr/` for architectural decision records:
 - **Don't:** Include AI assistants (Claude, Gemini, Codex, ChatGPT, Copilot, etc.) in author, co-author, or contributor fields
 - **Don't:** Add "AI-generated" or "Created with AI" notices in code, docs, or commit messages
 - **Rationale:** Commits represent human accountability. AI tools are instruments, not authors.
+
 - **Scope:** Applies to all commits and documentation attribution (README, ADRs, research, planning, changelogs, release notes)
 
 ### Agent File Sync
 
 - `AGENTS.md` is canonical for agent instructions.
+
 - `CLAUDE.md` and `GEMINI.md` must be symlinks to `AGENTS.md`.
 
 ## See Also
