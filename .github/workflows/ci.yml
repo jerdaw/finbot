@@ -6,13 +6,11 @@ on:
     paths-ignore:
       - "docs/**"
       - "docs_site/**"
-      - "*.md"
   pull_request:
     branches: [main]
     paths-ignore:
       - "docs/**"
       - "docs_site/**"
-      - "*.md"
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
