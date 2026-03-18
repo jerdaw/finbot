@@ -38,6 +38,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 # Patch system pip in the runtime image to address Trivy-reported CVEs.
 RUN python -m pip install --no-cache-dir --upgrade pip==26.0
 
+# Apply system security updates
+RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
+
 # Create non-root user
 RUN groupadd --gid 1000 finbot && \
     useradd --uid 1000 --gid finbot --create-home finbot
