@@ -3,8 +3,16 @@ name: CI
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - "docs/**"
+      - "docs_site/**"
+      - "*.md"
   pull_request:
     branches: [main]
+    paths-ignore:
+      - "docs/**"
+      - "docs_site/**"
+      - "*.md"
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -108,7 +116,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.11", "3.12", "3.13"]
+        python-version: ["3.13"]
 
     steps:
       - name: Checkout code
@@ -214,48 +222,48 @@ jobs:
       - name: Run Trivy vulnerability scanner on Dockerfile
         uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
         with:
-          scan-type: 'config'
-          scan-ref: 'Dockerfile'
-          format: 'table'
-          exit-code: '0'
-          severity: 'CRITICAL,HIGH,MEDIUM,LOW'
-          trivyignores: '.trivyignore.example'
+          scan-type: "config"
+          scan-ref: "Dockerfile"
+          format: "table"
+          exit-code: "0"
+          severity: "CRITICAL,HIGH,MEDIUM,LOW"
+          trivyignores: ".trivyignore.example"
 
       - name: Run Trivy vulnerability scanner on image
         uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
         with:
-          image-ref: 'finbot:${{ github.sha }}'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          severity: 'CRITICAL,HIGH,MEDIUM,LOW'
-          exit-code: '1'
+          image-ref: "finbot:${{ github.sha }}"
+          format: "sarif"
+          output: "trivy-results.sarif"
+          severity: "CRITICAL,HIGH,MEDIUM,LOW"
+          exit-code: "1"
           ignore-unfixed: true
-          trivyignores: '.trivyignore.example'
+          trivyignores: ".trivyignore.example"
 
       - name: Upload Trivy results to GitHub Security tab
         if: always()
         uses: github/codeql-action/upload-sarif@b1bff81932f5cdfc8695c7752dcee935dcd061c8 # v4.33.0
         with:
-          sarif_file: 'trivy-results.sarif'
+          sarif_file: "trivy-results.sarif"
 
       - name: Run Trivy vulnerability scanner for summary
         if: always()
         uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
         with:
-          image-ref: 'finbot:${{ github.sha }}'
-          format: 'table'
-          severity: 'CRITICAL,HIGH,MEDIUM,LOW'
-          trivyignores: '.trivyignore.example'
+          image-ref: "finbot:${{ github.sha }}"
+          format: "table"
+          severity: "CRITICAL,HIGH,MEDIUM,LOW"
+          trivyignores: ".trivyignore.example"
 
       - name: Generate detailed security report
         if: always()
         uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
         with:
-          image-ref: 'finbot:${{ github.sha }}'
-          format: 'json'
-          output: 'trivy-report.json'
-          severity: 'CRITICAL,HIGH,MEDIUM,LOW'
-          trivyignores: '.trivyignore.example'
+          image-ref: "finbot:${{ github.sha }}"
+          format: "json"
+          output: "trivy-report.json"
+          severity: "CRITICAL,HIGH,MEDIUM,LOW"
+          trivyignores: ".trivyignore.example"
 
       - name: Upload security report
         if: always()

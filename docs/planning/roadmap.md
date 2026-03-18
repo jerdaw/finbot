@@ -18,12 +18,6 @@ See Completed Items table below and git history for details on implemented featu
 
 **Status:** ✅ COMPLETED (2026-03-16)
 
-- [x] Reduce Dependabot PR fan-out by grouping GitHub Actions patch/minor updates and lowering open PR limits
-- [x] Stop dependency-only CODEOWNERS review requests for `uv.lock`, `pyproject.toml`, and workflow-only bot PRs
-- [x] Create missing Dependabot labels to prevent noisy bot error comments
-- [x] Prevent repeated auto-approval notifications on Dependabot `synchronize` events
-- [x] Document the human-only authorship tradeoff for automated merges
-
 **What Was Done:** Tightened `.github/dependabot.yml`, scoped `.github/CODEOWNERS` to avoid review-request spam on dependency-only PRs, created the missing `dependencies`, `python`, and `github-actions` labels in GitHub, and reduced the Dependabot workflow to auto-approval only. Audit follow-up confirmed GitHub-side merging of Dependabot PRs preserves bot authorship in commit history, so low-risk bot PRs now stay manual unless replayed onto a human-authored branch.
 
 **Remaining (Deferred — Not Blocking):**
@@ -33,12 +27,6 @@ See Completed Items table below and git history for details on implemented featu
 ### P9.2 Autonomous Wrap-Up ✓
 
 **Status:** ✅ COMPLETED (2026-02-25)
-
-- [x] Fix 3 mypy errors in `12_factor_analytics.py` (`call-overload`, two `unreachable` guards)
-- [x] Mock-based unit tests for `get_fred_data` (10 tests, 2 classes)
-- [x] Mock-based unit tests for `get_history` in `test_yfinance_utils.py` (7 tests)
-- [x] Extend dashboard home page to link all 12 pages (7-column row2)
-- [x] Bump docstring coverage 79.5% → 80.0% (docstrings for `CollectionTrackerBase`, `APIKeyManager`, `HostSystem`, `FredTracker`, `FundTracker`)
 
 **What Was Done:** Closed all remaining open deferred items. Fixed mypy `unused-ignore` and `unreachable` errors in factor analytics dashboard page. Added 17 new mock-based unit tests. Added second navigation row to dashboard home page. Added ~35 Google-style docstrings across 5 files to hit 80.0% interrogate threshold. 1752 → 1769 tests.
 
