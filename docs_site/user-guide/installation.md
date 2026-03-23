@@ -23,15 +23,21 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 git clone https://github.com/jerdaw/finbot.git
 cd finbot
 
-# Install dependencies (creates .venv automatically)
-uv sync
+# Install the full contributor environment (creates .venv automatically)
+uv sync --all-extras
+
+# Minimal CLI/runtime only
+# uv sync
 
 # Activate environment (optional, but recommended)
 source .venv/bin/activate  # On Linux/Mac
 .venv\Scripts\activate     # On Windows
 
+# Set environment
+export DYNACONF_ENV=development
+
 # Verify installation
-finbot --version
+DYNACONF_ENV=development finbot --version
 python -c "import finbot; print('Success!')"
 ```
 
@@ -53,11 +59,17 @@ source venv/bin/activate
 # Activate (Windows)
 venv\Scripts\activate
 
-# Install package
-pip install -e .
+# Install the full contributor environment
+pip install -e '.[dashboard,web,nautilus,notebooks]'
+
+# Minimal CLI/runtime only
+# pip install -e .
+
+# Set environment
+export DYNACONF_ENV=development
 
 # Verify
-finbot --version
+DYNACONF_ENV=development finbot --version
 ```
 
 ## Post-Installation
@@ -74,16 +86,25 @@ echo 'export DYNACONF_ENV=development' >> ~/.bashrc
 
 ### Install Optional Dependencies
 
-For development:
+For development and local CI parity:
+
+```bash
+uv sync --all-extras
+```
+
+For a minimal runtime install:
 
 ```bash
 uv sync
 ```
 
-For documentation building:
+Install a specific optional surface only when you need it:
 
 ```bash
-uv sync
+uv sync --extra dashboard
+uv sync --extra web
+uv sync --extra nautilus
+uv sync --extra notebooks
 ```
 
 ### Verify Installation
@@ -91,10 +112,10 @@ uv sync
 Run the test suite:
 
 ```bash
-uv run pytest -v
+DYNACONF_ENV=development uv run pytest -v
 ```
 
-Expected: All 80 tests pass.
+Expected: the suite completes without failures.
 
 ## Troubleshooting
 

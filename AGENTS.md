@@ -23,8 +23,11 @@ Python `>=3.11,<3.15`. Uses **uv** for dependency management.
 ## Quick Start
 
 ```bash
-# Install
-uv sync
+# Install full contributor environment
+uv sync --all-extras
+
+# Minimal runtime only
+# uv sync
 
 # Set environment
 export DYNACONF_ENV=development
@@ -36,21 +39,34 @@ uv run pytest
 uv run python scripts/update_daily.py
 ```
 
-## Current Delivery Status (2026-03-17)
+## Install Surfaces
 
-**P0-P9 complete. 1769 tests.**
+- Base `uv sync` installs the core CLI/runtime dependency set only.
+- Optional extras: `dashboard`, `web`, `nautilus`, `notebooks`.
+- Repo contributors should use `uv sync --all-extras`.
+- The root `Dockerfile` builds the CLI image by default; dashboard and API images opt into extras explicitly.
+
+## Current Delivery Status (2026-03-23)
+
+**P0-P9 complete. 1771 passing tests.**
 
 - **P5** (97.8%): OMSAS/CanMEDS improvements — 44/45 items (item 42 blocked on external resources)
 - **P6** (100%): Backtesting-to-live readiness — Epics E0-E6 complete; ADR-011 confirmed **Defer**
 - **P7** (93%): External impact & advanced capabilities — 25/27 active items
 - **P8** (100%): Risk Analytics, Portfolio Analytics, Real-Time Data, Factor Analytics
-- **P9** (100%): Agent tooling optimizations — P9.1 AGENTS.md optimization, P9.2 autonomous wrap-up
+- **P9** (100%): Agent tooling and runtime hardening — P9.1-P9.4 complete
 
 **Tracking docs:** `docs/planning/roadmap.md`, `docs/planning/backtesting-live-readiness-backlog.md`, `docs/planning/priority-5-6-completion-status.md`, `docs/adr/ADR-011-nautilus-decision.md`
 
 ## Common Commands
 
 ```bash
+# Install surfaces
+uv sync                     # minimal CLI/runtime install
+uv sync --all-extras        # contributor/full repo install
+uv sync --extra dashboard   # add Streamlit dashboard support
+uv sync --extra web         # add FastAPI backend support
+
 # Code quality
 uv run ruff check . --fix    # lint + autofix
 uv run ruff format .         # format
@@ -67,9 +83,11 @@ uv run pytest -k test_import              # tests matching pattern
 
 # Docker
 make docker-build                # build image
+make docker-dashboard            # run dashboard container
 make docker-run CMD="status"     # run any CLI command
 make docker-update               # run daily update pipeline
 make docker-test                 # run tests in container
+./scripts/run_docker_security_scan.sh   # build + scan CLI and API images locally
 ```
 
 ## Architecture
@@ -349,7 +367,7 @@ uv run pytest -k test_simulation
 uv run pytest --cov=finbot tests/
 ```
 
-**Test structure**: `tests/unit/` contains 1769 tests across 50+ files covering imports, simulation math, finance utils, all 13 strategies, health economics, order lifecycle, latency, risk controls, checkpoints, cost models, corporate actions, walk-forward, regime detection, dashboard charts, risk analytics, portfolio analytics, real-time data, and factor analytics. `tests/integration/` reserved for future integration tests.
+**Test structure**: `tests/unit/` contains 1771 passing tests across 50+ files covering imports, simulation math, finance utils, all 13 strategies, health economics, order lifecycle, latency, risk controls, checkpoints, cost models, corporate actions, walk-forward, regime detection, dashboard charts, risk analytics, portfolio analytics, real-time data, and factor analytics. `tests/integration/` reserved for future integration tests.
 
 ## Documentation
 

@@ -10,22 +10,32 @@ permissions:
 
 jobs:
   docker-security-gate:
-    name: Docker Security Gate
+    name: Docker Security Gate (${{ matrix.image.name }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - name: cli
+            dockerfile: Dockerfile
+            tag: finbot-cli
+          - name: api
+            dockerfile: web/Dockerfile.backend
+            tag: finbot-api
 
     steps:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Build Docker image
-        run: docker build -t finbot:release-${{ github.sha }} .
+        run: docker build -t ${{ matrix.image.tag }}:release-${{ github.sha }} -f ${{ matrix.image.dockerfile }} .
 
-      - name: Block release on CRITICAL Docker vulnerabilities
+      - name: Block release on HIGH/CRITICAL Docker vulnerabilities
         uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
         with:
-          image-ref: 'finbot:release-${{ github.sha }}'
+          image-ref: '${{ matrix.image.tag }}:release-${{ github.sha }}'
           format: 'table'
-          severity: 'CRITICAL'
+          severity: 'CRITICAL,HIGH'
           exit-code: '1'
           ignore-unfixed: true
           trivyignores: '.trivyignore.example'
@@ -45,7 +55,7 @@ jobs:
         run: uv python install 3.13
 
       - name: Install dependencies
-        run: uv sync
+        run: uv sync --all-extras
 
       - name: Build package
         run: uv build
