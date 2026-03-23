@@ -1,17 +1,15 @@
 #!/bin/bash
 # Docker Security Scan Script
-# Runs Trivy security scanner on finbot Docker image
+# Runs Trivy security scanner on Finbot CLI and API Docker images
 # Usage: ./scripts/run_docker_security_scan.sh [tag]
 
-set -e
+set -euo pipefail
 
 TAG="${1:-latest}"
-IMAGE_NAME="finbot:${TAG}"
 TIMESTAMP=$(date +%Y-%m-%d)
 REPORT_DIR="docs/security"
-BASELINE_FILE="${REPORT_DIR}/baseline-scan-${TIMESTAMP}.txt"
-JSON_FILE="${REPORT_DIR}/trivy-report-${TIMESTAMP}.json"
-SARIF_FILE="${REPORT_DIR}/trivy-results-${TIMESTAMP}.sarif"
+CLI_IMAGE_NAME="finbot-cli:${TAG}"
+API_IMAGE_NAME="finbot-api:${TAG}"
 
 # Colors for output
 RED='\033[0;31m'
@@ -21,58 +19,73 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 echo -e "${BLUE}=== Finbot Docker Security Scanner ===${NC}"
-echo -e "Image: ${IMAGE_NAME}"
+echo -e "CLI image: ${CLI_IMAGE_NAME}"
+echo -e "API image: ${API_IMAGE_NAME}"
 echo -e "Date: ${TIMESTAMP}"
 echo ""
 
-# Create report directory if it doesn't exist
 mkdir -p "${REPORT_DIR}"
 
-# Step 1: Build Docker image
-echo -e "${BLUE}Step 1: Building Docker image...${NC}"
-docker build -t "${IMAGE_NAME}" .
-echo -e "${GREEN}✓ Image built successfully${NC}"
-echo ""
+scan_image() {
+    local image_label="$1"
+    local image_name="$2"
+    local dockerfile_path="$3"
+    local baseline_file="${REPORT_DIR}/baseline-scan-${image_label}-${TIMESTAMP}.txt"
+    local json_file="${REPORT_DIR}/trivy-report-${image_label}-${TIMESTAMP}.json"
+    local sarif_file="${REPORT_DIR}/trivy-results-${image_label}-${TIMESTAMP}.sarif"
 
-# Step 2: Scan Dockerfile configuration
-echo -e "${BLUE}Step 2: Scanning Dockerfile configuration...${NC}"
-docker run --rm -v "$(pwd):/app" aquasec/trivy config /app/Dockerfile
-echo -e "${GREEN}✓ Dockerfile scan complete${NC}"
-echo ""
+    echo -e "${BLUE}Building ${image_label} image...${NC}"
+    docker build -t "${image_name}" -f "${dockerfile_path}" .
+    echo -e "${GREEN}✓ ${image_label} image built successfully${NC}"
+    echo ""
 
-# Step 3: Scan image for vulnerabilities (table format)
-echo -e "${BLUE}Step 3: Scanning image for vulnerabilities (table format)...${NC}"
-docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-  aquasec/trivy image --severity CRITICAL,HIGH,MEDIUM,LOW \
-  "${IMAGE_NAME}" | tee "${BASELINE_FILE}"
-echo -e "${GREEN}✓ Image scan complete${NC}"
-echo -e "Report saved to: ${BASELINE_FILE}"
-echo ""
+    echo -e "${BLUE}Scanning ${dockerfile_path} configuration...${NC}"
+    docker run --rm -v "$(pwd):/app" aquasec/trivy config "/app/${dockerfile_path}"
+    echo -e "${GREEN}✓ ${image_label} Dockerfile scan complete${NC}"
+    echo ""
 
-# Step 4: Generate JSON report
-echo -e "${BLUE}Step 4: Generating JSON report...${NC}"
-docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-  aquasec/trivy image --format json --output /dev/stdout \
-  "${IMAGE_NAME}" > "${JSON_FILE}"
-echo -e "${GREEN}✓ JSON report generated${NC}"
-echo -e "Report saved to: ${JSON_FILE}"
-echo ""
+    echo -e "${BLUE}Scanning ${image_label} image for vulnerabilities (table format)...${NC}"
+    docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+      aquasec/trivy image --severity CRITICAL,HIGH,MEDIUM,LOW \
+      "${image_name}" | tee "${baseline_file}"
+    echo -e "${GREEN}✓ ${image_label} image scan complete${NC}"
+    echo -e "Report saved to: ${baseline_file}"
+    echo ""
 
-# Step 5: Generate SARIF report (for GitHub Security)
-echo -e "${BLUE}Step 5: Generating SARIF report...${NC}"
-docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-  aquasec/trivy image --format sarif --output /dev/stdout \
-  "${IMAGE_NAME}" > "${SARIF_FILE}"
-echo -e "${GREEN}✓ SARIF report generated${NC}"
-echo -e "Report saved to: ${SARIF_FILE}"
-echo ""
+    echo -e "${BLUE}Generating ${image_label} JSON report...${NC}"
+    docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+      aquasec/trivy image --format json --output /dev/stdout \
+      "${image_name}" > "${json_file}"
+    echo -e "${GREEN}✓ ${image_label} JSON report generated${NC}"
+    echo -e "Report saved to: ${json_file}"
+    echo ""
 
-# Step 6: Summary statistics
-echo -e "${BLUE}Step 6: Generating summary...${NC}"
-CRITICAL_COUNT=$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity=="CRITICAL")] | length' "${JSON_FILE}")
-HIGH_COUNT=$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity=="HIGH")] | length' "${JSON_FILE}")
-MEDIUM_COUNT=$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity=="MEDIUM")] | length' "${JSON_FILE}")
-LOW_COUNT=$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity=="LOW")] | length' "${JSON_FILE}")
+    echo -e "${BLUE}Generating ${image_label} SARIF report...${NC}"
+    docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+      aquasec/trivy image --format sarif --output /dev/stdout \
+      "${image_name}" > "${sarif_file}"
+    echo -e "${GREEN}✓ ${image_label} SARIF report generated${NC}"
+    echo -e "Report saved to: ${sarif_file}"
+    echo ""
+}
+
+scan_image "cli" "${CLI_IMAGE_NAME}" "Dockerfile"
+scan_image "api" "${API_IMAGE_NAME}" "web/Dockerfile.backend"
+
+echo -e "${BLUE}Generating combined summary...${NC}"
+CLI_CRITICAL_COUNT=$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity=="CRITICAL")] | length' "${REPORT_DIR}/trivy-report-cli-${TIMESTAMP}.json")
+CLI_HIGH_COUNT=$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity=="HIGH")] | length' "${REPORT_DIR}/trivy-report-cli-${TIMESTAMP}.json")
+CLI_MEDIUM_COUNT=$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity=="MEDIUM")] | length' "${REPORT_DIR}/trivy-report-cli-${TIMESTAMP}.json")
+CLI_LOW_COUNT=$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity=="LOW")] | length' "${REPORT_DIR}/trivy-report-cli-${TIMESTAMP}.json")
+API_CRITICAL_COUNT=$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity=="CRITICAL")] | length' "${REPORT_DIR}/trivy-report-api-${TIMESTAMP}.json")
+API_HIGH_COUNT=$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity=="HIGH")] | length' "${REPORT_DIR}/trivy-report-api-${TIMESTAMP}.json")
+API_MEDIUM_COUNT=$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity=="MEDIUM")] | length' "${REPORT_DIR}/trivy-report-api-${TIMESTAMP}.json")
+API_LOW_COUNT=$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity=="LOW")] | length' "${REPORT_DIR}/trivy-report-api-${TIMESTAMP}.json")
+
+CRITICAL_COUNT=$((CLI_CRITICAL_COUNT + API_CRITICAL_COUNT))
+HIGH_COUNT=$((CLI_HIGH_COUNT + API_HIGH_COUNT))
+MEDIUM_COUNT=$((CLI_MEDIUM_COUNT + API_MEDIUM_COUNT))
+LOW_COUNT=$((CLI_LOW_COUNT + API_LOW_COUNT))
 TOTAL_COUNT=$((CRITICAL_COUNT + HIGH_COUNT + MEDIUM_COUNT + LOW_COUNT))
 
 echo ""
@@ -83,12 +96,16 @@ echo -e "${YELLOW}  HIGH:     ${HIGH_COUNT}${NC}"
 echo -e "${YELLOW}  MEDIUM:   ${MEDIUM_COUNT}${NC}"
 echo -e "  LOW:      ${LOW_COUNT}"
 echo ""
+echo -e "By image:"
+echo -e "  CLI -> CRITICAL: ${CLI_CRITICAL_COUNT}, HIGH: ${CLI_HIGH_COUNT}, MEDIUM: ${CLI_MEDIUM_COUNT}, LOW: ${CLI_LOW_COUNT}"
+echo -e "  API -> CRITICAL: ${API_CRITICAL_COUNT}, HIGH: ${API_HIGH_COUNT}, MEDIUM: ${API_MEDIUM_COUNT}, LOW: ${API_LOW_COUNT}"
+echo ""
 
-# Step 7: Check if build should fail
 if [ "${CRITICAL_COUNT}" -gt 0 ] || [ "${HIGH_COUNT}" -gt 0 ]; then
     echo -e "${RED}❌ Build FAILED: CRITICAL or HIGH vulnerabilities detected${NC}"
     echo -e "Review the report and remediate before deploying:"
-    echo -e "  ${BASELINE_FILE}"
+    echo -e "  ${REPORT_DIR}/baseline-scan-cli-${TIMESTAMP}.txt"
+    echo -e "  ${REPORT_DIR}/baseline-scan-api-${TIMESTAMP}.txt"
     exit 1
 else
     echo -e "${GREEN}✅ Build PASSED: No CRITICAL or HIGH vulnerabilities detected${NC}"
@@ -100,8 +117,11 @@ fi
 
 echo ""
 echo -e "${BLUE}=== Reports Generated ===${NC}"
-echo -e "  Table:  ${BASELINE_FILE}"
-echo -e "  JSON:   ${JSON_FILE}"
-echo -e "  SARIF:  ${SARIF_FILE}"
+echo -e "  CLI Table:  ${REPORT_DIR}/baseline-scan-cli-${TIMESTAMP}.txt"
+echo -e "  CLI JSON:   ${REPORT_DIR}/trivy-report-cli-${TIMESTAMP}.json"
+echo -e "  CLI SARIF:  ${REPORT_DIR}/trivy-results-cli-${TIMESTAMP}.sarif"
+echo -e "  API Table:  ${REPORT_DIR}/baseline-scan-api-${TIMESTAMP}.txt"
+echo -e "  API JSON:   ${REPORT_DIR}/trivy-report-api-${TIMESTAMP}.json"
+echo -e "  API SARIF:  ${REPORT_DIR}/trivy-results-api-${TIMESTAMP}.sarif"
 echo ""
 echo -e "${GREEN}Scan complete!${NC}"

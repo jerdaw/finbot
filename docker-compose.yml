@@ -25,7 +25,10 @@ services:
 
   # Streamlit web dashboard
   finbot-dashboard:
-    build: .
+    build:
+      context: .
+      args:
+        FINBOT_EXTRAS: dashboard
     container_name: finbot-dashboard
     entrypoint: ["python", "-m", "streamlit", "run", "finbot/dashboard/app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
     command: []

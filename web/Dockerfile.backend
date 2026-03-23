@@ -1,21 +1,60 @@
-FROM python:3.13-slim
+FROM python:3.12-slim AS builder
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
 # Install uv
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+# Fallback build toolchain for packages that may not have prebuilt wheels.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    gfortran \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy dependency files first for caching
 COPY pyproject.toml uv.lock ./
 
 # Install dependencies
-RUN uv sync --frozen --group web --no-dev
+RUN uv sync --frozen --extra web --no-dev --no-install-project
+
+# Keep pip on a patched version to avoid known container CVEs.
+RUN uv pip install --python /app/.venv/bin/python pip==26.0
+
+FROM python:3.12-slim AS runtime
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    DYNACONF_ENV=development \
+    PATH="/app/.venv/bin:$PATH"
+
+# Patch system pip in the runtime image to address Trivy-reported CVEs.
+RUN python -m pip install --no-cache-dir --upgrade pip==26.0
+
+# Apply system security updates
+RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN groupadd --gid 1000 finbot && \
+    useradd --uid 1000 --gid finbot --create-home finbot
+
+WORKDIR /app
+
+# Copy virtual environment from builder
+COPY --from=builder /app/.venv .venv
 
 # Copy application code
 COPY finbot/ finbot/
 COPY web/backend/ web/backend/
 COPY web/__init__.py web/__init__.py
 
+RUN mkdir -p finbot/data && chown -R finbot:finbot /app
+
+USER finbot
+
 EXPOSE 8000
 
-CMD ["uv", "run", "uvicorn", "web.backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python", "-m", "uvicorn", "web.backend.main:app", "--host", "0.0.0.0", "--port", "8000"]

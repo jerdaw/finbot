@@ -8,7 +8,7 @@ Finbot uses [Dynaconf](https://www.dynaconf.com/) for environment-aware configur
 
 ## Configuration Files
 
-Located in `config/` directory:
+Located in `finbot/config/`:
 
 - `settings.yaml`: Base settings (all environments)
 - `development.yaml`: Development overrides
@@ -30,7 +30,7 @@ export DYNACONF_ENV=production
 ### Threading
 
 ```yaml
-# config/development.yaml
+# finbot/config/development.yaml
 threading:
   min_threads: 1
   max_threads: null  # Auto-detect
@@ -49,10 +49,10 @@ logging:
 
 ## API Keys
 
-Store API keys in `config/.env`:
+Store API keys in `finbot/config/.env`:
 
 ```bash
-# config/.env
+# finbot/config/.env
 ALPHA_VANTAGE_API_KEY=your_key_here
 NASDAQ_DATA_LINK_API_KEY=your_key_here
 US_BUREAU_OF_LABOR_STATISTICS_API_KEY=your_key_here
@@ -66,7 +66,7 @@ Keys are loaded lazily (only when needed).
 Access settings in code:
 
 ```python
-from config import settings, settings_accessors
+from finbot.config import settings, settings_accessors
 
 # Get threading config
 max_threads = settings_accessors.MAX_THREADS

@@ -1,6 +1,6 @@
 # Finbot Frequently Asked Questions
 
-**Last updated:** 2026-02-17
+**Last updated:** 2026-03-23
 
 ---
 
@@ -10,7 +10,7 @@
 
 Finbot is a quantitative analysis platform for personal finance research. It provides tools for:
 - **Fund simulation**: Model leveraged ETFs (UPRO, TQQQ, TMF, etc.) back to 1950 with realistic costs
-- **Backtesting**: Test 12 investment strategies on historical data with realistic transaction costs
+- **Backtesting**: Test 13 investment strategies on historical data with realistic transaction costs
 - **Portfolio optimization**: Find optimal dollar-cost averaging and rebalancing schedules
 - **Monte Carlo simulation**: Simulate probability distributions of future portfolio outcomes
 - **Health economics**: QALY simulation, cost-effectiveness analysis, treatment optimization
@@ -35,11 +35,11 @@ pip install uv
 git clone https://github.com/jerdaw/finbot.git
 cd finbot
 
-# Install dependencies
-uv sync
+# Install the full contributor environment
+uv sync --all-extras
 
 # Verify installation
-uv run finbot --help
+DYNACONF_ENV=development uv run finbot --help
 ```
 
 See [docs_site/user-guide/installation.md](../../docs_site/user-guide/installation.md) for full details.
@@ -72,7 +72,7 @@ Yahoo Finance (yfinance) and FRED data work without API keys for most purposes.
 
 ### Q: What strategies are included?
 
-12 built-in strategies:
+13 built-in strategies:
 1. `NoRebalance` — Buy and hold
 2. `Rebalance` — Periodic portfolio rebalancing
 3. `SmaCrossover` — Single SMA crossover
@@ -85,6 +85,7 @@ Yahoo Finance (yfinance) and FRED data work without API keys for most purposes.
 10. `SmaRebalMix` — Combined SMA + rebalancing
 11. `DualMomentum` — Absolute + relative momentum with safe-asset fallback
 12. `RiskParity` — Inverse-volatility weighting with rebalancing
+13. `RegimeAdaptive` — Regime-aware strategy switching
 
 ---
 
@@ -291,14 +292,15 @@ Parquet files in Finbot are readable by pandas, Polars, Arrow, R, Spark, and any
 
 ### Q: How is the CI/CD pipeline structured?
 
-7 jobs run on every push/PR to main:
+Core CI coverage runs on every push/PR to main:
 1. **Lint**: `ruff check` (code style, imports, security patterns)
 2. **Format**: `ruff format --check`
 3. **Type check**: `mypy finbot/`
 4. **Security**: `bandit` + `pip-audit`
-5. **Test**: `pytest` across Python 3.11, 3.12, 3.13 (866 tests, 61.6% coverage)
+5. **Test**: `pytest` across Python 3.11, 3.12, and 3.13
 6. **Parity gate**: Golden strategy results match between Backtrader and Nautilus within 1bp
 7. **Performance**: Benchmark fund_simulator and backtest_adapter; fails if >20% slower than baseline
+8. **Docker security**: separate CLI and API image scans fail on HIGH/CRITICAL findings
 
 ---
 
