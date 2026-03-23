@@ -21,8 +21,11 @@ Professional web application for Finbot's financial simulation, backtesting, and
 ### Development (local)
 
 ```bash
+# Install backend/frontend extras once
+uv sync --extra web --extra dashboard
+
 # Terminal 1: Start backend API
-DYNACONF_ENV=development uv run uvicorn web.backend.main:app --reload --port 8000
+DYNACONF_ENV=development uv run --extra web uvicorn web.backend.main:app --reload --port 8000
 
 # Terminal 2: Start frontend dev server
 cd web/frontend

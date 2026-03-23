@@ -14,7 +14,7 @@ High-level analysis and simulation services:
   - `BacktestRunner`: Main orchestrator for running backtests
   - `run_backtest`, `backtest_batch`: Single and parallel backtest execution
   - `compute_stats`: Performance metrics calculation
-  - `strategies/`: 10 trading strategies
+  - `strategies/`: 13 trading strategies
   - `rebalance_optimizer`: Portfolio rebalancing optimization
 
 - **Simulation** (`simulation/`): Financial instrument simulators

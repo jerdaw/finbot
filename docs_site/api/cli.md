@@ -14,17 +14,24 @@ The CLI is built with Click and provides:
 
 ## Installation
 
-The CLI is installed automatically with finbot:
+The core CLI is installed automatically with finbot:
 
 ```bash
 uv sync
 ```
 
+Optional surfaces use extras:
+
+```bash
+uv sync --extra dashboard  # required for `finbot dashboard`
+uv sync --extra web        # backend/API support
+```
+
 ## Global Options
 
 ```bash
-finbot --help
-finbot --version
+DYNACONF_ENV=development finbot --help
+DYNACONF_ENV=development finbot --version
 ```
 
 ## Commands
@@ -148,7 +155,7 @@ finbot backtest --strategy Rebalance --tickers SPY TLT --start 2010-01-01
 - `--output PATH`: Save results to file
 
 **Available strategies:**
-Rebalance, NoRebalance, SMACrossover, SMACrossoverDouble, SMACrossoverTriple, MACDSingle, MACDDual, DipBuySMA, DipBuyStdev, SMARebalMix, DualMomentum, RiskParity
+Rebalance, NoRebalance, SMACrossover, SMACrossoverDouble, SMACrossoverTriple, MACDSingle, MACDDual, DipBuySMA, DipBuyStdev, SMARebalMix, DualMomentum, RiskParity, RegimeAdaptive
 
 **Example with parameters:**
 ```bash
@@ -281,7 +288,7 @@ finbot dashboard
 ```
 
 **Dashboard features:**
-- **6 pages**: Overview, Simulations, Backtesting, Optimizer, Monte Carlo, Data Status, Health Economics
+- **12 task-focused pages plus the home page**: simulations, backtesting, optimizer, Monte Carlo, data status, health economics, experiments, walk-forward, risk analytics, portfolio analytics, real-time quotes, and factor analytics
 - **Interactive charts**: Plotly visualizations
 - **Parameter controls**: Sliders, dropdowns, date pickers
 - **Real-time updates**: Rerun analyses with new parameters
@@ -291,6 +298,7 @@ finbot dashboard
 - Launches on http://localhost:8501
 - Opens browser automatically
 - Streamlit serves from `finbot/dashboard/app.py`
+- If Streamlit is missing, the command exits with an install hint for `uv sync --extra dashboard` or `pip install 'finbot[dashboard]'`
 
 ## Examples
 
