@@ -3350,31 +3350,39 @@
 
 <h1 id="docker-security-scanning-guide">Docker Security Scanning Guide<a class="headerlink" href="#docker-security-scanning-guide" title="Permanent link">&para;</a></h1>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>This guide documents the automated Docker container security scanning process for Finbot. We use <a href="https://trivy.dev/">Trivy</a> by Aqua Security to scan both the Dockerfile configuration and the built Docker images for vulnerabilities in base images, OS packages, and Python dependencies.</p>
+<p>This guide documents the automated Docker container security scanning process for Finbot. We use <a href="https://trivy.dev/">Trivy</a> by Aqua Security to scan both Python container images:</p>
+<ul>
+<li>the root CLI image from <code>Dockerfile</code></li>
+<li>the API image from <code>web/Dockerfile.backend</code></li>
+</ul>
+<p>The scans cover Dockerfile configuration, base images, OS packages, and Python dependencies.</p>
 <h2 id="scanning-process">Scanning Process<a class="headerlink" href="#scanning-process" title="Permanent link">&para;</a></h2>
 <h3 id="automated-ci-scanning">Automated CI Scanning<a class="headerlink" href="#automated-ci-scanning" title="Permanent link">&para;</a></h3>
-<p>The <code>docker-security-scan</code> job in <code>.github/workflows/ci.yml</code> runs on every push and pull request to the main branch. It performs:</p>
+<p>The <code>docker-security-scan</code> job in <code>.github/workflows/ci.yml</code> runs on every push and pull request to the main branch. It performs the same scan flow for both the CLI and API images:</p>
 <ol>
 <li><strong>Dockerfile Configuration Scan</strong>: Checks Dockerfile for misconfigurations and security issues</li>
 <li><strong>Image Vulnerability Scan</strong>: Scans the built image for CVEs in:</li>
-<li>Base image (python:3.13-slim)</li>
+<li>Base image (python:3.12-slim)</li>
 <li>OS packages (Debian)</li>
 <li>Python packages (from uv.lock)</li>
 <li><strong>SARIF Upload</strong>: Sends results to GitHub Security tab for tracking</li>
 <li><strong>Artifact Upload</strong>: Stores detailed reports as CI artifacts</li>
 </ol>
 <h3 id="scan-execution-steps">Scan Execution Steps<a class="headerlink" href="#scan-execution-steps" title="Permanent link">&para;</a></h3>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># 1. Build the Docker image</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="l l-Scalar l-Scalar-Plain">docker build -t finbot:${{ github.sha }} .</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="l l-Scalar l-Scalar-Plain"># 2. Scan Dockerfile configuration</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="l l-Scalar l-Scalar-Plain">trivy config Dockerfile</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="l l-Scalar l-Scalar-Plain"># 3. Scan built image for vulnerabilities</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="l l-Scalar l-Scalar-Plain">trivy image finbot:${{ github.sha }}</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="l l-Scalar l-Scalar-Plain"># 4. Upload results to GitHub Security</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="l l-Scalar l-Scalar-Plain"># 5. Generate and store detailed reports</span>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># 1. Build the Docker images</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="l l-Scalar l-Scalar-Plain">docker build -t finbot-cli:${{ github.sha }} -f Dockerfile .</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="l l-Scalar l-Scalar-Plain">docker build -t finbot-api:${{ github.sha }} -f web/Dockerfile.backend .</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="l l-Scalar l-Scalar-Plain"># 2. Scan Dockerfile configuration</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="l l-Scalar l-Scalar-Plain">trivy config Dockerfile</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="l l-Scalar l-Scalar-Plain">trivy config web/Dockerfile.backend</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="l l-Scalar l-Scalar-Plain"># 3. Scan built images for vulnerabilities</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="l l-Scalar l-Scalar-Plain">trivy image finbot-cli:${{ github.sha }}</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="l l-Scalar l-Scalar-Plain">trivy image finbot-api:${{ github.sha }}</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="l l-Scalar l-Scalar-Plain"># 4. Upload results to GitHub Security</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="l l-Scalar l-Scalar-Plain"># 5. Generate and store detailed reports</span>
 </span></code></pre></div>
 <h3 id="severity-levels">Severity Levels<a class="headerlink" href="#severity-levels" title="Permanent link">&para;</a></h3>
 <p>Trivy categorizes vulnerabilities into severity levels:</p>
@@ -3418,24 +3426,30 @@
 <h2 id="understanding-scan-results">Understanding Scan Results<a class="headerlink" href="#understanding-scan-results" title="Permanent link">&para;</a></h2>
 <h3 id="viewing-results">Viewing Results<a class="headerlink" href="#viewing-results" title="Permanent link">&para;</a></h3>
 <p><strong>In GitHub Actions:</strong>
-1. Go to Actions tab → Select workflow run → Click "docker-security-scan" job
+1. Go to Actions tab → Select workflow run → Click the <code>docker-security-scan (cli)</code> or <code>docker-security-scan (api)</code> job
 2. Expand scan steps to see table output
-3. Download "docker-security-report" artifact for detailed JSON/SARIF reports</p>
+3. Download the <code>docker-security-report-cli</code> or <code>docker-security-report-api</code> artifact for detailed JSON/SARIF reports</p>
 <p><strong>In GitHub Security:</strong>
 1. Go to Security tab → Code scanning alerts → Trivy
 2. View detailed CVE information, affected packages, and remediation advice</p>
 <p><strong>Locally:</strong>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Scan Dockerfile configuration</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/app<span class="w"> </span>aquasec/trivy<span class="w"> </span>config<span class="w"> </span>/app/Dockerfile
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># Build and scan image</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>finbot:local<span class="w"> </span>.
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span>/var/run/docker.sock:/var/run/docker.sock<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span>aquasec/trivy<span class="w"> </span>image<span class="w"> </span>finbot:local
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="c1"># Generate JSON report</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span>/var/run/docker.sock:/var/run/docker.sock<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">  </span>aquasec/trivy<span class="w"> </span>image<span class="w"> </span>-f<span class="w"> </span>json<span class="w"> </span>-o<span class="w"> </span>trivy-report.json<span class="w"> </span>finbot:local
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/app<span class="w"> </span>aquasec/trivy<span class="w"> </span>config<span class="w"> </span>/app/web/Dockerfile.backend
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1"># Build and scan CLI image</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>finbot-cli:local<span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span>/var/run/docker.sock:/var/run/docker.sock<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span>aquasec/trivy<span class="w"> </span>image<span class="w"> </span>finbot-cli:local
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="c1"># Build and scan API image</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>finbot-api:local<span class="w"> </span>-f<span class="w"> </span>web/Dockerfile.backend<span class="w"> </span>.
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span>/var/run/docker.sock:/var/run/docker.sock<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">  </span>aquasec/trivy<span class="w"> </span>image<span class="w"> </span>finbot-api:local
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="c1"># Generate JSON report</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span>/var/run/docker.sock:/var/run/docker.sock<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">  </span>aquasec/trivy<span class="w"> </span>image<span class="w"> </span>-f<span class="w"> </span>json<span class="w"> </span>-o<span class="w"> </span>trivy-report-cli.json<span class="w"> </span>finbot-cli:local
 </span></code></pre></div></p>
 <h3 id="report-format">Report Format<a class="headerlink" href="#report-format" title="Permanent link">&para;</a></h3>
 <p><strong>Table Format (Console Output)</strong>:
@@ -3464,14 +3478,14 @@
 <h4 id="1-review-scan-results">1. Review Scan Results<a class="headerlink" href="#1-review-scan-results" title="Permanent link">&para;</a></h4>
 <p>Check the CI job output or GitHub Security tab for findings:
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Download artifact from CI</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>gh<span class="w"> </span>run<span class="w"> </span>download<span class="w"> </span>&lt;run-id&gt;<span class="w"> </span>-n<span class="w"> </span>docker-security-report
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>gh<span class="w"> </span>run<span class="w"> </span>download<span class="w"> </span>&lt;run-id&gt;<span class="w"> </span>-n<span class="w"> </span>docker-security-report-cli
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># View JSON report locally</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>cat<span class="w"> </span>trivy-report.json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.Results[] | select(.Vulnerabilities)&#39;</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>cat<span class="w"> </span>trivy-report-cli.json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.Results[] | select(.Vulnerabilities)&#39;</span>
 </span></code></pre></div></p>
 <h4 id="2-identify-vulnerability-source">2. Identify Vulnerability Source<a class="headerlink" href="#2-identify-vulnerability-source" title="Permanent link">&para;</a></h4>
 <p>Vulnerabilities come from three sources:</p>
-<p><strong>A. Base Image (python:3.13-slim)</strong>
+<p><strong>A. Base Image (python:3.12-slim)</strong>
 - CVEs in the Python base image or Debian OS packages
 - Solution: Update to newer base image tag</p>
 <p><strong>B. OS Packages</strong>
@@ -3483,13 +3497,13 @@
 <h4 id="3-update-base-image">3. Update Base Image<a class="headerlink" href="#3-update-base-image" title="Permanent link">&para;</a></h4>
 <p>If vulnerability is in the base image:</p>
 <div class="language-dockerfile highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c"># Current</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">FROM</span><span class="w"> </span><span class="s">python:3.13-slim</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">builder</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">FROM</span><span class="w"> </span><span class="s">python:3.12-slim</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">builder</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
 </span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c"># Updated (use latest patch)</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="k">FROM</span><span class="w"> </span><span class="s">python:3.13.2-slim</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">builder</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="k">FROM</span><span class="w"> </span><span class="s">python:3.12.11-slim</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">builder</span>
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
 </span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c"># Or try newer minor version</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="k">FROM</span><span class="w"> </span><span class="s">python:3.14-slim</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">builder</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="k">FROM</span><span class="w"> </span><span class="s">python:3.12-slim</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">builder</span>
 </span></code></pre></div>
 <p>Check <a href="https://hub.docker.com/_/python">Python Docker Hub</a> for latest secure tags.</p>
 <h4 id="4-update-python-dependencies">4. Update Python Dependencies<a class="headerlink" href="#4-update-python-dependencies" title="Permanent link">&para;</a></h4>
@@ -3504,8 +3518,8 @@
 </span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>git<span class="w"> </span>diff<span class="w"> </span>uv.lock
 </span></code></pre></div>
 <p>Then rebuild the Docker image and rescan:
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>finbot:patched<span class="w"> </span>.
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>trivy<span class="w"> </span>image<span class="w"> </span>finbot:patched
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>finbot-cli:patched<span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>trivy<span class="w"> </span>image<span class="w"> </span>finbot-cli:patched
 </span></code></pre></div></p>
 <h4 id="5-update-os-packages-advanced">5. Update OS Packages (Advanced)<a class="headerlink" href="#5-update-os-packages-advanced" title="Permanent link">&para;</a></h4>
 <p>If vulnerability is in Debian packages and not fixed by base image update, you may need to:</p>
@@ -3532,35 +3546,35 @@
 <h3 id="testing-changes">Testing Changes<a class="headerlink" href="#testing-changes" title="Permanent link">&para;</a></h3>
 <p>After remediation:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Rebuild image</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>finbot:fixed<span class="w"> </span>.
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>finbot-cli:fixed<span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
 </span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
 </span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># Run Trivy scan</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>trivy<span class="w"> </span>image<span class="w"> </span>finbot:fixed
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>trivy<span class="w"> </span>image<span class="w"> </span>finbot-cli:fixed
 </span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>
 </span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="c1"># Verify no CRITICAL/HIGH vulnerabilities</span>
-</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>trivy<span class="w"> </span>image<span class="w"> </span>--severity<span class="w"> </span>CRITICAL,HIGH<span class="w"> </span>finbot:fixed
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>trivy<span class="w"> </span>image<span class="w"> </span>--severity<span class="w"> </span>CRITICAL,HIGH<span class="w"> </span>finbot-cli:fixed
 </span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>
 </span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="c1"># Test image functionality</span>
-</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>finbot:fixed<span class="w"> </span>--help
-</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>finbot:fixed<span class="w"> </span>status
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>finbot-cli:fixed<span class="w"> </span>--help
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>finbot-cli:fixed<span class="w"> </span>status
 </span></code></pre></div>
 <h2 id="base-image-update-strategy">Base Image Update Strategy<a class="headerlink" href="#base-image-update-strategy" title="Permanent link">&para;</a></h2>
 <h3 id="current-base-image">Current Base Image<a class="headerlink" href="#current-base-image" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>Image</strong>: <code>python:3.13-slim</code></li>
+<li><strong>Image</strong>: <code>python:3.12-slim</code></li>
 <li><strong>OS</strong>: Debian 13 (Trixie/Sid)</li>
-<li><strong>Python</strong>: 3.13.x</li>
+<li><strong>Python</strong>: 3.12.x</li>
 <li><strong>Size</strong>: ~140 MB</li>
 </ul>
 <h3 id="update-frequency">Update Frequency<a class="headerlink" href="#update-frequency" title="Permanent link">&para;</a></h3>
 <p><strong>Recommended schedule</strong>:
-- <strong>Weekly</strong>: Check for new patch versions (3.13.1 → 3.13.2)
+- <strong>Weekly</strong>: Check for new patch versions (3.12.1 → 3.12.2)
 - <strong>Monthly</strong>: Review security advisories and force update if needed
 - <strong>Immediate</strong>: For CRITICAL vulnerabilities with available fixes</p>
 <p><strong>Automated checks</strong>:
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Check current image digest</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>docker<span class="w"> </span>pull<span class="w"> </span>python:3.13-slim
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>docker<span class="w"> </span>inspect<span class="w"> </span>python:3.13-slim<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.[0].Id&#39;</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>docker<span class="w"> </span>pull<span class="w"> </span>python:3.12-slim
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>docker<span class="w"> </span>inspect<span class="w"> </span>python:3.12-slim<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.[0].Id&#39;</span>
 </span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
 </span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="c1"># Compare with tracked digest in CI</span>
 </span></code></pre></div></p>
@@ -3569,17 +3583,17 @@
 <li>
 <p><strong>Test new image locally</strong>:
    <div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># Update Dockerfile</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>FROM<span class="w"> </span>python:3.13.2-slim<span class="w"> </span>AS<span class="w"> </span>builder
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>FROM<span class="w"> </span>python:3.12.11-slim<span class="w"> </span>AS<span class="w"> </span>builder
 </span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
 </span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="c1"># Build and test</span>
-</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>finbot:test<span class="w"> </span>.
-</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>finbot:test<span class="w"> </span>status
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>finbot-cli:test<span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>finbot-cli:test<span class="w"> </span>status
 </span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/
 </span></code></pre></div></p>
 </li>
 <li>
 <p><strong>Run security scan</strong>:
-   <div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>trivy<span class="w"> </span>image<span class="w"> </span>finbot:test
+   <div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>trivy<span class="w"> </span>image<span class="w"> </span>finbot-cli:test
 </span></code></pre></div></p>
 </li>
 <li>
@@ -3587,7 +3601,7 @@
    <div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>update-base-image
 </span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="c1"># Edit Dockerfile</span>
 </span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>git<span class="w"> </span>add<span class="w"> </span>Dockerfile
-</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Update Python base image to 3.13.2-slim for security patches&quot;</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Update Python base image to 3.12.11-slim for security patches&quot;</span>
 </span></code></pre></div></p>
 </li>
 <li>
@@ -3598,7 +3612,7 @@
 <li>Merge if all checks pass</li>
 </ol>
 <h3 id="alternative-base-images">Alternative Base Images<a class="headerlink" href="#alternative-base-images" title="Permanent link">&para;</a></h3>
-<p>If <code>python:3.13-slim</code> has persistent security issues, consider:</p>
+<p>If <code>python:3.12-slim</code> has persistent security issues, consider:</p>
 <table>
 <thead>
 <tr>
@@ -3609,12 +3623,12 @@
 </thead>
 <tbody>
 <tr>
-<td><code>python:3.13-alpine</code></td>
+<td><code>python:3.12-alpine</code></td>
 <td>Smaller size, musl libc (fewer CVEs)</td>
 <td>Compatibility issues, slower builds</td>
 </tr>
 <tr>
-<td><code>python:3.13-bookworm</code></td>
+<td><code>python:3.12-bookworm</code></td>
 <td>Debian stable (slower updates)</td>
 <td>Larger size, older packages</td>
 </tr>
@@ -3636,18 +3650,18 @@
 <h3 id="additional-recommendations">Additional Recommendations<a class="headerlink" href="#additional-recommendations" title="Permanent link">&para;</a></h3>
 <p>🔒 <strong>Scan images before deployment</strong>:
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># In production pipeline</span>
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>trivy<span class="w"> </span>image<span class="w"> </span>--severity<span class="w"> </span>CRITICAL,HIGH<span class="w"> </span>--exit-code<span class="w"> </span><span class="m">1</span><span class="w"> </span>finbot:<span class="si">${</span><span class="nv">VERSION</span><span class="si">}</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>trivy<span class="w"> </span>image<span class="w"> </span>--severity<span class="w"> </span>CRITICAL,HIGH<span class="w"> </span>--exit-code<span class="w"> </span><span class="m">1</span><span class="w"> </span>finbot-cli:<span class="si">${</span><span class="nv">VERSION</span><span class="si">}</span>
 </span></code></pre></div></p>
 <p>🔒 <strong>Sign and verify images</strong>:
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1"># Sign with cosign (future enhancement)</span>
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>cosign<span class="w"> </span>sign<span class="w"> </span>finbot:<span class="si">${</span><span class="nv">VERSION</span><span class="si">}</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>cosign<span class="w"> </span>sign<span class="w"> </span>finbot-cli:<span class="si">${</span><span class="nv">VERSION</span><span class="si">}</span>
 </span></code></pre></div></p>
 <p>🔒 <strong>Use specific tags, not <code>:latest</code></strong>:
 <div class="language-dockerfile highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c"># Bad</span>
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="k">FROM</span><span class="w"> </span><span class="s">python:3.13-slim</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="k">FROM</span><span class="w"> </span><span class="s">python:3.12-slim</span>
 </span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
 </span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="c"># Good</span>
-</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="k">FROM</span><span class="w"> </span><span class="s">python:3.13.2-slim@sha256:abc123...</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="k">FROM</span><span class="w"> </span><span class="s">python:3.12.11-slim@sha256:abc123...</span>
 </span></code></pre></div></p>
 <p>🔒 <strong>Enable Docker Content Trust</strong>:
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">DOCKER_CONTENT_TRUST</span><span class="o">=</span><span class="m">1</span>
@@ -3655,12 +3669,12 @@
 <p>🔒 <strong>Regular dependency updates</strong>:
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1"># Monthly audit</span>
 </span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>uv<span class="w"> </span>lock<span class="w"> </span>--upgrade
-</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>trivy<span class="w"> </span>image<span class="w"> </span>finbot:dev
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>trivy<span class="w"> </span>image<span class="w"> </span>finbot-cli:dev
 </span></code></pre></div></p>
 <h2 id="ci-configuration-reference">CI Configuration Reference<a class="headerlink" href="#ci-configuration-reference" title="Permanent link">&para;</a></h2>
 <h3 id="job-configuration">Job Configuration<a class="headerlink" href="#job-configuration" title="Permanent link">&para;</a></h3>
 <div class="language-yaml highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nt">docker-security-scan</span><span class="p">:</span>
-</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Docker Security Scan</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Docker Security Scan (cli/api)</span>
 </span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">  </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
 </span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>
 </span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="w">  </span><span class="nt">steps</span><span class="p">:</span>
@@ -3668,14 +3682,14 @@
 </span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="w">      </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v6</span>
 </span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a>
 </span><span id="__span-19-9"><a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Build Docker image</span>
-</span><span id="__span-19-10"><a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a><span class="w">      </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker build -t finbot:${{ github.sha }} .</span>
+</span><span id="__span-19-10"><a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a><span class="w">      </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker build -t finbot-cli:${{ github.sha }} -f Dockerfile .</span>
 </span><span id="__span-19-11"><a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a>
 </span><span id="__span-19-12"><a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run Trivy scanner</span>
 </span><span id="__span-19-13"><a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a><span class="w">      </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aquasecurity/trivy-action@0.29.0</span>
 </span><span id="__span-19-14"><a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a><span class="w">      </span><span class="nt">with</span><span class="p">:</span>
-</span><span id="__span-19-15"><a id="__codelineno-19-15" name="__codelineno-19-15" href="#__codelineno-19-15"></a><span class="w">        </span><span class="nt">image-ref</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;finbot:${{</span><span class="nv"> </span><span class="s">github.sha</span><span class="nv"> </span><span class="s">}}&#39;</span>
+</span><span id="__span-19-15"><a id="__codelineno-19-15" name="__codelineno-19-15" href="#__codelineno-19-15"></a><span class="w">        </span><span class="nt">image-ref</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;finbot-cli:${{</span><span class="nv"> </span><span class="s">github.sha</span><span class="nv"> </span><span class="s">}}&#39;</span>
 </span><span id="__span-19-16"><a id="__codelineno-19-16" name="__codelineno-19-16" href="#__codelineno-19-16"></a><span class="w">        </span><span class="nt">format</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;sarif&#39;</span>
-</span><span id="__span-19-17"><a id="__codelineno-19-17" name="__codelineno-19-17" href="#__codelineno-19-17"></a><span class="w">        </span><span class="nt">output</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;trivy-results.sarif&#39;</span>
+</span><span id="__span-19-17"><a id="__codelineno-19-17" name="__codelineno-19-17" href="#__codelineno-19-17"></a><span class="w">        </span><span class="nt">output</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;trivy-results-cli.sarif&#39;</span>
 </span><span id="__span-19-18"><a id="__codelineno-19-18" name="__codelineno-19-18" href="#__codelineno-19-18"></a><span class="w">        </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;CRITICAL,HIGH,MEDIUM,LOW&#39;</span>
 </span><span id="__span-19-19"><a id="__codelineno-19-19" name="__codelineno-19-19" href="#__codelineno-19-19"></a><span class="w">        </span><span class="nt">exit-code</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;1&#39;</span><span class="w">           </span><span class="c1"># Fail on CRITICAL/HIGH</span>
 </span><span id="__span-19-20"><a id="__codelineno-19-20" name="__codelineno-19-20" href="#__codelineno-19-20"></a><span class="w">        </span><span class="nt">ignore-unfixed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">     </span><span class="c1"># Skip unfixable CVEs</span>
@@ -3683,7 +3697,7 @@
 </span><span id="__span-19-22"><a id="__codelineno-19-22" name="__codelineno-19-22" href="#__codelineno-19-22"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Upload to GitHub Security</span>
 </span><span id="__span-19-23"><a id="__codelineno-19-23" name="__codelineno-19-23" href="#__codelineno-19-23"></a><span class="w">      </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github/codeql-action/upload-sarif@v3</span>
 </span><span id="__span-19-24"><a id="__codelineno-19-24" name="__codelineno-19-24" href="#__codelineno-19-24"></a><span class="w">      </span><span class="nt">with</span><span class="p">:</span>
-</span><span id="__span-19-25"><a id="__codelineno-19-25" name="__codelineno-19-25" href="#__codelineno-19-25"></a><span class="w">        </span><span class="nt">sarif_file</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;trivy-results.sarif&#39;</span>
+</span><span id="__span-19-25"><a id="__codelineno-19-25" name="__codelineno-19-25" href="#__codelineno-19-25"></a><span class="w">        </span><span class="nt">sarif_file</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;trivy-results-cli.sarif&#39;</span>
 </span></code></pre></div>
 <h3 id="configuration-options">Configuration Options<a class="headerlink" href="#configuration-options" title="Permanent link">&para;</a></h3>
 <table>
@@ -3749,7 +3763,7 @@
 </span></code></pre></div></p>
 <p><strong>Issue</strong>: SARIF upload fails
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="c1"># Solution: Check SARIF file size (max 10MB)</span>
-</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>ls<span class="w"> </span>-lh<span class="w"> </span>trivy-results.sarif
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>ls<span class="w"> </span>-lh<span class="w"> </span>trivy-results-cli.sarif
 </span></code></pre></div></p>
 <h3 id="debug-commands">Debug Commands<a class="headerlink" href="#debug-commands" title="Permanent link">&para;</a></h3>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="c1"># Run verbose scan</span>
@@ -3766,18 +3780,18 @@
 </span></code></pre></div>
 <h2 id="initial-security-report">Initial Security Report<a class="headerlink" href="#initial-security-report" title="Permanent link">&para;</a></h2>
 <h3 id="baseline-scan-2026-02-17">Baseline Scan (2026-02-17)<a class="headerlink" href="#baseline-scan-2026-02-17" title="Permanent link">&para;</a></h3>
-<p><strong>Image</strong>: <code>finbot:local</code> built from commit <code>d07c3e9</code></p>
+<p><strong>Image</strong>: <code>finbot-cli:local</code> built from commit <code>d07c3e9</code></p>
 <p><strong>Base Image</strong>:
-- <code>python:3.13-slim</code>
+- <code>python:3.12-slim</code>
 - Debian 13 (Trixie/Sid)
 - Last updated: 2026-02-XX</p>
 <p><strong>Scan Summary</strong>:
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="c1"># Run scan to generate baseline</span>
-</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>finbot:baseline<span class="w"> </span>.
-</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>trivy<span class="w"> </span>image<span class="w"> </span>finbot:baseline<span class="w"> </span>&gt;<span class="w"> </span>docs/security/baseline-scan-2026-02-17.txt
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>finbot-cli:baseline<span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>trivy<span class="w"> </span>image<span class="w"> </span>finbot-cli:baseline<span class="w"> </span>&gt;<span class="w"> </span>docs/security/baseline-scan-2026-02-17.txt
 </span></code></pre></div></p>
 <p><strong>Expected Results</strong>:
-- Python 3.13 is actively maintained (no major CVEs expected)
+- Python 3.12 is actively maintained (no major CVEs expected)
 - Debian Trixie/Sid receives regular security updates
 - Python dependencies managed via <code>uv.lock</code> (pinned versions)</p>
 <p><strong>Next Actions</strong>:

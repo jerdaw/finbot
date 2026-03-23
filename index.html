@@ -2748,12 +2748,12 @@
 <ul>
 <li><strong>Data Collection</strong>: Automated fetching from Yahoo Finance, FRED, Alpha Vantage, Google Finance, and more</li>
 <li><strong>Simulation</strong>: Fund simulators (leveraged ETFs), bond ladders, Monte Carlo risk analysis</li>
-<li><strong>Backtesting</strong>: 10 trading strategies with comprehensive performance metrics using Backtrader</li>
+<li><strong>Backtesting</strong>: 13 trading strategies with comprehensive performance metrics using Backtrader</li>
 </ul>
 <h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
 <h3 id="production-ready-backtesting-engine">📊 Production-Ready Backtesting Engine<a class="headerlink" href="#production-ready-backtesting-engine" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>12 built-in strategies</strong>: Rebalance, NoRebalance, SMA Crossovers, MACD, Dip Buying, Dual Momentum, Risk Parity, and more</li>
+<li><strong>13 built-in strategies</strong>: Rebalance, NoRebalance, SMA Crossovers, MACD, Dip Buying, Dual Momentum, Risk Parity, Regime Adaptive, and more</li>
 <li><strong>Performance metrics</strong>: CAGR, Sharpe ratio, Sortino ratio, Calmar ratio, Max drawdown, Win rate, Kelly criterion</li>
 <li><strong>Engine-agnostic contracts</strong>: Swap Backtrader for NautilusTrader without code changes</li>
 <li><strong>100% parity testing</strong>: CI gate prevents regressions on golden strategies</li>
@@ -2789,11 +2789,11 @@
 <h3 id="production-ready-infrastructure">🛠️ Production-Ready Infrastructure<a class="headerlink" href="#production-ready-infrastructure" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>CLI interface</strong>: <code>finbot simulate</code>, <code>finbot backtest</code>, <code>finbot optimize</code>, <code>finbot update</code>, <code>finbot dashboard</code></li>
-<li><strong>Web Dashboard</strong>: Interactive Streamlit app with 8 pages (simulations, backtesting, experiments, etc.)</li>
-<li><strong>Comprehensive CI/CD</strong>: 7 CI jobs across Python 3.11/3.12/3.13 (lint, type-check, security, test, docs, parity, performance)</li>
+<li><strong>Web Dashboard</strong>: Interactive Streamlit app with 12 task-focused pages plus the home page</li>
+<li><strong>Comprehensive CI/CD</strong>: Python 3.11/3.12/3.13 validation plus separate CLI/API Docker security scanning</li>
 <li><strong>Queue-based logging</strong>: Non-blocking async logging with JSON output and audit trails</li>
 <li><strong>Security scanning</strong>: bandit, pip-audit, trivy container scanning, OpenSSF Scorecard</li>
-<li><strong>Test coverage</strong>: 866 tests (59.20% coverage) with property-based testing</li>
+<li><strong>Test coverage</strong>: Comprehensive unit, integration, property, and validation coverage</li>
 <li><strong>Dynaconf configuration</strong>: Environment-aware YAML config (development, production)</li>
 <li><strong>Comprehensive utilities</strong>: 160+ utility functions across 15 categories</li>
 </ul>
@@ -2803,14 +2803,17 @@
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/jerdaw/finbot.git
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nb">cd</span><span class="w"> </span>finbot
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># Install with uv</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>uv<span class="w"> </span>sync
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># Install the full contributor environment</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>uv<span class="w"> </span>sync<span class="w"> </span>--all-extras
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># Set environment</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="nb">export</span><span class="w"> </span><span class="nv">DYNACONF_ENV</span><span class="o">=</span>development
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># Minimal runtime only</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1"># uv sync</span>
 </span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1"># Run tests</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1"># Set environment</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="nb">export</span><span class="w"> </span><span class="nv">DYNACONF_ENV</span><span class="o">=</span>development
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="c1"># Run tests</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest
 </span></code></pre></div>
 <h3 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h3>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Simulate a leveraged fund</span>

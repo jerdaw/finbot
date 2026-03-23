@@ -2928,8 +2928,8 @@
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/jerdaw/finbot.git
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nb">cd</span><span class="w"> </span>finbot
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># Install with dev dependencies</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>uv<span class="w"> </span>sync
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># Install the full contributor environment</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>uv<span class="w"> </span>sync<span class="w"> </span>--all-extras
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
 </span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># Install pre-commit hooks</span>
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>uv<span class="w"> </span>run<span class="w"> </span>pre-commit<span class="w"> </span>install
@@ -2938,6 +2938,8 @@
 </span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="c1"># Run tests</span>
 </span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest
 </span></code></pre></div>
+<p>Use plain <code>uv sync</code> only when you intentionally want the minimal CLI/runtime surface without the
+optional dashboard, API, Nautilus, or notebook dependencies.</p>
 <h2 id="code-quality">Code Quality<a class="headerlink" href="#code-quality" title="Permanent link">&para;</a></h2>
 <h3 id="linting-and-formatting">Linting and Formatting<a class="headerlink" href="#linting-and-formatting" title="Permanent link">&para;</a></h3>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Run all checks</span>
@@ -2990,6 +2992,8 @@
 <li>Push to your fork</li>
 <li>Create pull request</li>
 </ol>
+<p>Only human authors, co-authors, and contributors may appear in commit metadata, documentation, or
+release notes. Do not attribute commits or docs to AI assistants.</p>
 <h2 id="commit-messages">Commit Messages<a class="headerlink" href="#commit-messages" title="Permanent link">&para;</a></h2>
 <p>We follow the <a href="https://www.conventionalcommits.org/">Conventional Commits</a> specification. Commit messages are automatically validated by a pre-commit hook.</p>
 <h3 id="format">Format<a class="headerlink" href="#format" title="Permanent link">&para;</a></h3>

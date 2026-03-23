@@ -1065,6 +1065,72 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#8-experiments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Experiments
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-walk-forward" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Walk-Forward
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10-risk-analytics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Risk Analytics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#11-portfolio-analytics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Portfolio Analytics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-real-time-quotes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Real-Time Quotes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-factor-analytics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Factor Analytics
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2928,6 +2994,72 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#8-experiments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Experiments
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-walk-forward" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Walk-Forward
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10-risk-analytics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Risk Analytics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#11-portfolio-analytics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Portfolio Analytics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-real-time-quotes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Real-Time Quotes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-factor-analytics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Factor Analytics
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3191,27 +3323,30 @@
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
 <p>The dashboard offers:</p>
 <ul>
-<li><strong>6 specialized pages</strong>: Overview, Simulations, Backtesting, Optimizer, Monte Carlo, Data Status, Health Economics</li>
+<li><strong>12 task-focused pages plus the home page</strong>: Simulations, Backtesting, Optimizer, Monte Carlo, Data Status, Health Economics, Experiments, Walk-Forward, Risk Analytics, Portfolio Analytics, Real-Time Quotes, and Factor Analytics</li>
 <li><strong>Interactive charts</strong>: Plotly visualizations with zoom, pan, hover</li>
 <li><strong>Parameter controls</strong>: Sliders, dropdowns, date pickers for easy configuration</li>
 <li><strong>Real-time results</strong>: Instant updates when parameters change</li>
 <li><strong>Export functionality</strong>: Download results as CSV or images</li>
 </ul>
 <h2 id="launching-the-dashboard">Launching the Dashboard<a class="headerlink" href="#launching-the-dashboard" title="Permanent link">&para;</a></h2>
+<p>Install dashboard support first:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>uv<span class="w"> </span>sync<span class="w"> </span>--extra<span class="w"> </span>dashboard
+</span></code></pre></div>
 <h3 id="command-line">Command Line<a class="headerlink" href="#command-line" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Launch dashboard</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>finbot<span class="w"> </span>dashboard
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Or directly with Streamlit</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>uv<span class="w"> </span>run<span class="w"> </span>streamlit<span class="w"> </span>run<span class="w"> </span>finbot/dashboard/app.py
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Launch dashboard</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>finbot<span class="w"> </span>dashboard
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># Or directly with Streamlit</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>uv<span class="w"> </span>run<span class="w"> </span>--extra<span class="w"> </span>dashboard<span class="w"> </span>streamlit<span class="w"> </span>run<span class="w"> </span>finbot/dashboard/app.py
 </span></code></pre></div>
 <p><strong>Default:</strong> Opens browser at http://localhost:8501</p>
 <h3 id="docker">Docker<a class="headerlink" href="#docker" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Launch dashboard in Docker container</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>make<span class="w"> </span>docker-dashboard
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># Or with docker-compose</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>docker-compose<span class="w"> </span>up<span class="w"> </span>dashboard
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Launch dashboard in Docker container</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>make<span class="w"> </span>docker-dashboard
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Or with docker compose</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>finbot-dashboard
 </span></code></pre></div>
 <p><strong>Access:</strong> http://localhost:8501</p>
 <h2 id="dashboard-module">Dashboard Module<a class="headerlink" href="#dashboard-module" title="Permanent link">&para;</a></h2>
@@ -3391,7 +3526,45 @@
 <p><strong>Charts:</strong>
 - Cost-effectiveness plane (scatter plot)
 - CEAC (cost-effectiveness acceptability curve)
-- Distribution histograms (cost, QALYs, ICER, NMB)
+- Distribution histograms (cost, QALYs, ICER, NMB)</p>
+<h3 id="8-experiments">8. Experiments<a class="headerlink" href="#8-experiments" title="Permanent link">&para;</a></h3>
+<p><strong>Location:</strong> <code>finbot/dashboard/pages/7_experiments.py</code></p>
+<p><strong>Features:</strong>
+- Experiment registry browsing
+- Snapshot-aware comparisons
+- Batch observability summaries
+- Reproducibility metadata inspection</p>
+<h3 id="9-walk-forward">9. Walk-Forward<a class="headerlink" href="#9-walk-forward" title="Permanent link">&para;</a></h3>
+<p><strong>Location:</strong> <code>finbot/dashboard/pages/8_walkforward.py</code></p>
+<p><strong>Features:</strong>
+- Walk-forward analysis visualisation
+- Fold-by-fold performance inspection
+- Regime overlays and stability review</p>
+<h3 id="10-risk-analytics">10. Risk Analytics<a class="headerlink" href="#10-risk-analytics" title="Permanent link">&para;</a></h3>
+<p><strong>Location:</strong> <code>finbot/dashboard/pages/9_risk_analytics.py</code></p>
+<p><strong>Features:</strong>
+- VaR/CVaR analysis
+- Parametric stress testing
+- Kelly sizing charts and tables</p>
+<h3 id="11-portfolio-analytics">11. Portfolio Analytics<a class="headerlink" href="#11-portfolio-analytics" title="Permanent link">&para;</a></h3>
+<p><strong>Location:</strong> <code>finbot/dashboard/pages/10_portfolio_analytics.py</code></p>
+<p><strong>Features:</strong>
+- Rolling performance metrics
+- Benchmark comparison
+- Drawdown decomposition
+- Correlation and diversification views</p>
+<h3 id="12-real-time-quotes">12. Real-Time Quotes<a class="headerlink" href="#12-real-time-quotes" title="Permanent link">&para;</a></h3>
+<p><strong>Location:</strong> <code>finbot/dashboard/pages/11_realtime_quotes.py</code></p>
+<p><strong>Features:</strong>
+- Multi-provider quote lookup
+- Watchlist support
+- Provider health/status display</p>
+<h3 id="13-factor-analytics">13. Factor Analytics<a class="headerlink" href="#13-factor-analytics" title="Permanent link">&para;</a></h3>
+<p><strong>Location:</strong> <code>finbot/dashboard/pages/12_factor_analytics.py</code></p>
+<p><strong>Features:</strong>
+- CAPM/FF3/FF5 regression analysis
+- Return attribution
+- Factor risk decomposition
 - Tornado diagram (sensitivity analysis)</p>
 <p><strong>Metrics displayed:</strong>
 - ICER (<span class="arithmatex">\(/QALY)
@@ -3420,11 +3593,11 @@
 <ol>
 <li>
 <p>Create file in <code>finbot/dashboard/pages/</code>:
-   <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># finbot/dashboard/pages/7_my_page.py</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">streamlit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">st</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;My Custom Page&quot;</span><span class="p">)</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Page content here&quot;</span><span class="p">)</span>
+   <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># finbot/dashboard/pages/7_my_page.py</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">streamlit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">st</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;My Custom Page&quot;</span><span class="p">)</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Page content here&quot;</span><span class="p">)</span>
 </span></code></pre></div></p>
 </li>
 <li>
@@ -3436,16 +3609,16 @@
 </ol>
 <h3 id="styling">Styling<a class="headerlink" href="#styling" title="Permanent link">&para;</a></h3>
 <p>The dashboard uses Streamlit's default Material Design theme with custom tweaks:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Custom CSS in app.py</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="s2">    &lt;style&gt;</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="s2">    .stMetric {</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="s2">        background-color: #f0f2f6;</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="s2">        padding: 10px;</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="s2">        border-radius: 5px;</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="s2">    }</span>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="s2">    &lt;/style&gt;</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="s2">&quot;&quot;&quot;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Custom CSS in app.py</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="s2">    &lt;style&gt;</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="s2">    .stMetric {</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="s2">        background-color: #f0f2f6;</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="s2">        padding: 10px;</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="s2">        border-radius: 5px;</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="s2">    }</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="s2">    &lt;/style&gt;</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="s2">&quot;&quot;&quot;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span></code></pre></div>
 <h2 id="performance">Performance<a class="headerlink" href="#performance" title="Permanent link">&para;</a></h2>
 <p>Dashboard optimizations:</p>
@@ -3495,14 +3668,14 @@
 </ol>
 <h2 id="deployment">Deployment<a class="headerlink" href="#deployment" title="Permanent link">&para;</a></h2>
 <h3 id="local-development">Local Development<a class="headerlink" href="#local-development" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Development mode (auto-reload)</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>uv<span class="w"> </span>run<span class="w"> </span>streamlit<span class="w"> </span>run<span class="w"> </span>finbot/dashboard/app.py<span class="w"> </span>--server.runOnSave<span class="w"> </span><span class="nb">true</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Development mode (auto-reload)</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>uv<span class="w"> </span>run<span class="w"> </span>streamlit<span class="w"> </span>run<span class="w"> </span>finbot/dashboard/app.py<span class="w"> </span>--server.runOnSave<span class="w"> </span><span class="nb">true</span>
 </span></code></pre></div>
 <h3 id="production-docker">Production (Docker)<a class="headerlink" href="#production-docker" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Build and run with docker-compose</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>docker-compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>dashboard
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># Access at http://localhost:8501</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Build and run with docker-compose</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>docker-compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>dashboard
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># Access at http://localhost:8501</span>
 </span></code></pre></div>
 <h3 id="streamlit-cloud-future">Streamlit Cloud (Future)<a class="headerlink" href="#streamlit-cloud-future" title="Permanent link">&para;</a></h3>
 <ol>
@@ -3520,29 +3693,29 @@
 </ul>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
 <h3 id="dashboard-wont-start">Dashboard won't start<a class="headerlink" href="#dashboard-wont-start" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Check Streamlit installation</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>uv<span class="w"> </span>run<span class="w"> </span>streamlit<span class="w"> </span>--version
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># Check for port conflicts</span>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>lsof<span class="w"> </span>-i<span class="w"> </span>:8501
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
-</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1"># Try different port</span>
-</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>uv<span class="w"> </span>run<span class="w"> </span>streamlit<span class="w"> </span>run<span class="w"> </span>finbot/dashboard/app.py<span class="w"> </span>--server.port<span class="w"> </span><span class="m">8502</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Check Streamlit installation</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>uv<span class="w"> </span>run<span class="w"> </span>streamlit<span class="w"> </span>--version
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># Check for port conflicts</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>lsof<span class="w"> </span>-i<span class="w"> </span>:8501
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="c1"># Try different port</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>uv<span class="w"> </span>run<span class="w"> </span>streamlit<span class="w"> </span>run<span class="w"> </span>finbot/dashboard/app.py<span class="w"> </span>--server.port<span class="w"> </span><span class="m">8502</span>
 </span></code></pre></div>
 <h3 id="slow-performance">Slow performance<a class="headerlink" href="#slow-performance" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Clear Streamlit cache</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>uv<span class="w"> </span>run<span class="w"> </span>streamlit<span class="w"> </span>cache<span class="w"> </span>clear
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># Reduce simulation complexity (fewer trials, shorter horizon)</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="c1"># Check data file sizes (large parquet files slow loading)</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Clear Streamlit cache</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>uv<span class="w"> </span>run<span class="w"> </span>streamlit<span class="w"> </span>cache<span class="w"> </span>clear
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># Reduce simulation complexity (fewer trials, shorter horizon)</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="c1"># Check data file sizes (large parquet files slow loading)</span>
 </span></code></pre></div>
 <h3 id="page-not-updating">Page not updating<a class="headerlink" href="#page-not-updating" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Force rerun: Press &#39;R&#39; in browser</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="c1"># Check browser console for errors (F12 → Console tab)</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="c1"># Restart dashboard: Ctrl+C, then relaunch</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Force rerun: Press &#39;R&#39; in browser</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="c1"># Check browser console for errors (F12 → Console tab)</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="c1"># Restart dashboard: Ctrl+C, then relaunch</span>
 </span></code></pre></div>
 <h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
 <ul>
