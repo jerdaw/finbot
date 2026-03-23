@@ -19,94 +19,209 @@ jobs:
   monitor:
     name: Scheduled Docker Security Scan
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
 
     steps:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
-      - name: Build Docker image
-        id: build_image
+      - name: Build CLI Docker image
+        id: build_cli_image
         continue-on-error: true
-        run: docker build -t finbot:security-${{ github.sha }} .
+        run: docker build -t finbot-cli:security-${{ github.sha }} -f Dockerfile .
 
-      - name: Run Trivy vulnerability scanner on image (SARIF)
-        if: steps.build_image.outcome == 'success'
+      - name: Build API Docker image
+        id: build_api_image
+        continue-on-error: true
+        run: docker build -t finbot-api:security-${{ github.sha }} -f web/Dockerfile.backend .
+
+      - name: Run Trivy vulnerability scanner on CLI image (SARIF)
+        if: steps.build_cli_image.outcome == 'success'
         uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
         with:
-          image-ref: "finbot:security-${{ github.sha }}"
+          image-ref: "finbot-cli:security-${{ github.sha }}"
           format: "sarif"
-          output: "trivy-results.sarif"
-          severity: "CRITICAL,HIGH,MEDIUM,LOW"
-          exit-code: "0"
-          ignore-unfixed: true
-          trivyignores: ".trivyignore.example"
-
-      - name: Run Trivy vulnerability scanner on image (JSON)
-        if: steps.build_image.outcome == 'success'
-        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
-        with:
-          image-ref: "finbot:security-${{ github.sha }}"
-          format: "json"
-          output: "trivy-report.json"
+          output: "trivy-results-cli.sarif"
           severity: "CRITICAL,HIGH"
           exit-code: "0"
           ignore-unfixed: true
           trivyignores: ".trivyignore.example"
 
-      - name: Summarize vulnerability counts
+      - name: Run Trivy vulnerability scanner on CLI image (JSON)
+        if: steps.build_cli_image.outcome == 'success'
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
+        with:
+          image-ref: "finbot-cli:security-${{ github.sha }}"
+          format: "json"
+          output: "trivy-report-cli.json"
+          severity: "CRITICAL,HIGH"
+          exit-code: "0"
+          ignore-unfixed: true
+          trivyignores: ".trivyignore.example"
+
+      - name: Run Trivy vulnerability scanner on API image (SARIF)
+        if: steps.build_api_image.outcome == 'success'
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
+        with:
+          image-ref: "finbot-api:security-${{ github.sha }}"
+          format: "sarif"
+          output: "trivy-results-api.sarif"
+          severity: "CRITICAL,HIGH"
+          exit-code: "0"
+          ignore-unfixed: true
+          trivyignores: ".trivyignore.example"
+
+      - name: Run Trivy vulnerability scanner on API image (JSON)
+        if: steps.build_api_image.outcome == 'success'
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
+        with:
+          image-ref: "finbot-api:security-${{ github.sha }}"
+          format: "json"
+          output: "trivy-report-api.json"
+          severity: "CRITICAL,HIGH"
+          exit-code: "0"
+          ignore-unfixed: true
+          trivyignores: ".trivyignore.example"
+
+      - name: Summarize vulnerability counts and findings
         id: vuln_summary
         env:
-          BUILD_OUTCOME: ${{ steps.build_image.outcome }}
+          CLI_BUILD_OUTCOME: ${{ steps.build_cli_image.outcome }}
+          API_BUILD_OUTCOME: ${{ steps.build_api_image.outcome }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           set -euo pipefail
 
-          if [[ "$BUILD_OUTCOME" == "success" ]]; then
-            critical_count="$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity == "CRITICAL")] | length' trivy-report.json)"
-            high_count="$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity == "HIGH")] | length' trivy-report.json)"
-            scan_status="scanned"
-          else
-            critical_count="0"
-            high_count="0"
-            scan_status="build_failed"
+          DETECTED_AT="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+
+          summarize_image() {
+            local build_outcome="$1"
+            local report_file="$2"
+            local critical_var_name="$3"
+            local high_var_name="$4"
+            local status_var_name="$5"
+
+            if [[ "$build_outcome" == "success" ]]; then
+              local critical_count
+              local high_count
+              critical_count="$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity == "CRITICAL")] | length' "$report_file")"
+              high_count="$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity == "HIGH")] | length' "$report_file")"
+              printf -v "$critical_var_name" '%s' "$critical_count"
+              printf -v "$high_var_name" '%s' "$high_count"
+              printf -v "$status_var_name" '%s' "scanned"
+            else
+              printf -v "$critical_var_name" '%s' "0"
+              printf -v "$high_var_name" '%s' "0"
+              printf -v "$status_var_name" '%s' "build_failed"
+            fi
+          }
+
+          append_findings() {
+            local image_name="$1"
+            local status="$2"
+            local report_file="$3"
+            local critical_count="$4"
+            local high_count="$5"
+
+            {
+              echo "### ${image_name} Image"
+              echo "- Scan status: ${status}"
+              echo "- Critical: ${critical_count}"
+              echo "- High: ${high_count}"
+            } >> docker-security-issue-body.md
+
+            if [[ "$status" == "build_failed" ]]; then
+              echo "- Findings: image build failed before scanning" >> docker-security-issue-body.md
+            elif (( critical_count > 0 || high_count > 0 )); then
+              jq -r '
+                .Results[]?.Vulnerabilities[]?
+                | select(.Severity == "CRITICAL" or .Severity == "HIGH")
+                | "- `\(.PkgName)` \(.InstalledVersion) -> \(.FixedVersion // "no fix published") (\(.Severity), \(.VulnerabilityID))"
+              ' "$report_file" >> docker-security-issue-body.md
+            else
+              echo "- Findings: none" >> docker-security-issue-body.md
+            fi
+
+            echo "" >> docker-security-issue-body.md
+          }
+
+          summarize_image "$CLI_BUILD_OUTCOME" "trivy-report-cli.json" cli_critical_count cli_high_count cli_scan_status
+          summarize_image "$API_BUILD_OUTCOME" "trivy-report-api.json" api_critical_count api_high_count api_scan_status
+
+          critical_count="$((cli_critical_count + api_critical_count))"
+          high_count="$((cli_high_count + api_high_count))"
+          any_build_failed="false"
+
+          if [[ "$cli_scan_status" == "build_failed" || "$api_scan_status" == "build_failed" ]]; then
+            any_build_failed="true"
           fi
+
+          {
+            echo "Automated scheduled Docker security scan detected vulnerabilities."
+            echo ""
+            echo "- Detected at: ${DETECTED_AT}"
+            echo "- Workflow run: ${RUN_URL}"
+            echo "- Critical: ${critical_count}"
+            echo "- High: ${high_count}"
+            echo ""
+          } > docker-security-issue-body.md
+
+          append_findings "CLI" "$cli_scan_status" "trivy-report-cli.json" "$cli_critical_count" "$cli_high_count"
+          append_findings "API" "$api_scan_status" "trivy-report-api.json" "$api_critical_count" "$api_high_count"
+
+          echo "This issue is managed by workflow automation and is updated in place." >> docker-security-issue-body.md
 
           echo "critical_count=${critical_count}" >> "$GITHUB_OUTPUT"
           echo "high_count=${high_count}" >> "$GITHUB_OUTPUT"
-          echo "scan_status=${scan_status}" >> "$GITHUB_OUTPUT"
+          echo "cli_scan_status=${cli_scan_status}" >> "$GITHUB_OUTPUT"
+          echo "api_scan_status=${api_scan_status}" >> "$GITHUB_OUTPUT"
+          echo "any_build_failed=${any_build_failed}" >> "$GITHUB_OUTPUT"
+          echo "detected_at=${DETECTED_AT}" >> "$GITHUB_OUTPUT"
 
           {
             echo "### Scheduled Docker Security Summary"
-            echo "- Scan status: ${scan_status}"
+            echo "- CLI scan status: ${cli_scan_status}"
+            echo "- API scan status: ${api_scan_status}"
             echo "- Critical: ${critical_count}"
             echo "- High: ${high_count}"
+            echo ""
+            cat docker-security-issue-body.md
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Upload Trivy results to GitHub Security tab
-        if: always() && steps.build_image.outcome == 'success'
+      - name: Upload CLI Trivy results to GitHub Security tab
+        if: always() && steps.build_cli_image.outcome == 'success'
         uses: github/codeql-action/upload-sarif@b1bff81932f5cdfc8695c7752dcee935dcd061c8 # v4.33.0
         with:
-          sarif_file: "trivy-results.sarif"
+          sarif_file: "trivy-results-cli.sarif"
+
+      - name: Upload API Trivy results to GitHub Security tab
+        if: always() && steps.build_api_image.outcome == 'success'
+        uses: github/codeql-action/upload-sarif@b1bff81932f5cdfc8695c7752dcee935dcd061c8 # v4.33.0
+        with:
+          sarif_file: "trivy-results-api.sarif"
 
       - name: Upload security artifacts
-        if: always() && steps.build_image.outcome == 'success'
+        if: always()
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: docker-security-monitor-report
           path: |
-            trivy-results.sarif
-            trivy-report.json
+            trivy-results-cli.sarif
+            trivy-report-cli.json
+            trivy-results-api.sarif
+            trivy-report-api.json
+            docker-security-issue-body.md
           retention-days: 30
 
-      - name: Fail when CRITICAL or HIGH vulnerabilities are present
+      - name: Fail when image build fails or HIGH/CRITICAL vulnerabilities are present
         env:
-          BUILD_OUTCOME: ${{ steps.build_image.outcome }}
           CRITICAL_COUNT: ${{ steps.vuln_summary.outputs.critical_count }}
           HIGH_COUNT: ${{ steps.vuln_summary.outputs.high_count }}
+          ANY_BUILD_FAILED: ${{ steps.vuln_summary.outputs.any_build_failed }}
         run: |
           set -euo pipefail
-          if [[ "$BUILD_OUTCOME" != "success" ]]; then
-            echo "Docker image build failed; security scan could not run."
+          if [[ "$ANY_BUILD_FAILED" == "true" ]]; then
+            echo "At least one Docker image build failed; security scan could not complete."
             exit 1
           fi
           if (( CRITICAL_COUNT > 0 || HIGH_COUNT > 0 )); then
@@ -118,25 +233,16 @@ jobs:
         if: failure()
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         env:
-          SCAN_STATUS: ${{ steps.vuln_summary.outputs.scan_status || 'unknown' }}
           CRITICAL_COUNT: ${{ steps.vuln_summary.outputs.critical_count || '0' }}
           HIGH_COUNT: ${{ steps.vuln_summary.outputs.high_count || '0' }}
+          DETECTED_AT: ${{ steps.vuln_summary.outputs.detected_at || '' }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          BODY_FILE: docker-security-issue-body.md
         with:
           script: |
+            const fs = require("fs");
             const title = "⚠️ Docker security scan detected HIGH/CRITICAL vulnerabilities";
-            const timestamp = new Date().toISOString();
-            const body = [
-              "Automated scheduled Docker security scan detected vulnerabilities.",
-              "",
-              `- Detected at: ${timestamp}`,
-              `- Scan status: ${process.env.SCAN_STATUS}`,
-              `- Critical: ${process.env.CRITICAL_COUNT}`,
-              `- High: ${process.env.HIGH_COUNT}`,
-              `- Workflow run: ${process.env.RUN_URL}`,
-              "",
-              "This issue is managed by workflow automation and is updated in place."
-            ].join("\n");
+            const body = fs.readFileSync(process.env.BODY_FILE, "utf8");
 
             const requiredLabels = [
               { name: "security", color: "b60205", description: "Security-related findings and hardening work" },
@@ -177,32 +283,21 @@ jobs:
             const labels = requiredLabels.map((label) => label.name);
 
             if (existing) {
-              if (existing.state === "open") {
-                await github.rest.issues.update({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: existing.number,
-                  title,
-                  body,
-                  labels
-                });
-              } else {
-                await github.rest.issues.update({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: existing.number,
-                  state: "open",
-                  title,
-                  body,
-                  labels
-                });
-              }
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                state: "open",
+                title,
+                body,
+                labels
+              });
 
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: existing.number,
-                body: `A failing scan was detected at ${timestamp}. Run: ${process.env.RUN_URL}`
+                body: `A failing scan was detected at ${process.env.DETECTED_AT}. Critical: ${process.env.CRITICAL_COUNT}, High: ${process.env.HIGH_COUNT}. Run: ${process.env.RUN_URL}`
               });
             } else {
               await github.rest.issues.create({
@@ -238,7 +333,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: existing.number,
-              body: `Scheduled Docker security scan passed. Closing issue. Run: ${process.env.RUN_URL}`
+              body: `Scheduled Docker security scan passed for CLI and API images. Closing issue. Run: ${process.env.RUN_URL}`
             });
 
             await github.rest.issues.update({
