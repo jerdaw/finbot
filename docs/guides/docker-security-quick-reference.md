@@ -6,20 +6,25 @@
 # Full automated scan with reports
 ./scripts/run_docker_security_scan.sh
 
-# Manual scan (if Docker available)
-docker build -t finbot:test .
+# Manual CLI scan (if Docker available)
+docker build -t finbot-cli:test -f Dockerfile .
 docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-  aquasec/trivy image finbot:test
+  aquasec/trivy image finbot-cli:test
+
+# Manual API scan
+docker build -t finbot-api:test -f web/Dockerfile.backend .
+docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+  aquasec/trivy image finbot-api:test
 
 # Scan specific severity levels only
 docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-  aquasec/trivy image --severity CRITICAL,HIGH finbot:test
+  aquasec/trivy image --severity CRITICAL,HIGH finbot-cli:test
 ```
 
 ## CI Integration
 
 Security scan runs automatically on every push/PR to main. Check:
-- Actions tab → docker-security-scan job
+- Actions tab → docker-security-scan jobs for `cli` and `api`
 - Security tab → Code scanning alerts
 
 ## Severity Quick Guide
@@ -37,17 +42,17 @@ Security scan runs automatically on every push/PR to main. Check:
 
 ```bash
 # 1. Check latest tag
-docker pull python:3.13-slim
+docker pull python:3.12-slim
 
 # 2. Update Dockerfile
-FROM python:3.13.2-slim AS builder
+FROM python:3.12.11-slim AS builder
 
 # 3. Test
-docker build -t finbot:test .
+docker build -t finbot-cli:test -f Dockerfile .
 ./scripts/run_docker_security_scan.sh test
 
 # 4. Commit
-git commit -am "Update base image to 3.13.2-slim"
+git commit -am "Update base image to 3.12.11-slim"
 ```
 
 ### Update Python Dependencies
@@ -57,7 +62,7 @@ git commit -am "Update base image to 3.13.2-slim"
 uv lock --upgrade
 
 # 2. Rebuild and test
-docker build -t finbot:test .
+docker build -t finbot-cli:test -f Dockerfile .
 ./scripts/run_docker_security_scan.sh test
 
 # 3. Commit
@@ -83,11 +88,11 @@ git commit -m "Ignore CVE-2024-12345 (false positive)"
 ```bash
 # Download latest scan results
 gh run list --workflow=ci.yml --limit 1
-gh run download <run-id> -n docker-security-report
+gh run download <run-id> -n docker-security-report-cli
+gh run download <run-id> -n docker-security-report-api
 
 # Extract and view
-tar -xzf docker-security-report.tar.gz
-cat trivy-report.json | jq '.Results[].Vulnerabilities[]'
+cat trivy-report-cli.json | jq '.Results[].Vulnerabilities[]'
 ```
 
 ## Troubleshooting
@@ -104,6 +109,7 @@ cat trivy-report.json | jq '.Results[].Vulnerabilities[]'
 ```
 .github/workflows/ci.yml          # CI configuration
 Dockerfile                        # Container definition
+web/Dockerfile.backend            # API container definition
 .trivyignore.example              # Ignore pattern template
 scripts/run_docker_security_scan.sh  # Manual scan script
 docs/guides/docker-security-scanning.md  # Full documentation

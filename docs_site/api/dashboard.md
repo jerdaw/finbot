@@ -6,13 +6,19 @@ The Finbot dashboard provides an interactive Streamlit web interface for running
 
 The dashboard offers:
 
-- **6 specialized pages**: Overview, Simulations, Backtesting, Optimizer, Monte Carlo, Data Status, Health Economics
+- **12 task-focused pages plus the home page**: Simulations, Backtesting, Optimizer, Monte Carlo, Data Status, Health Economics, Experiments, Walk-Forward, Risk Analytics, Portfolio Analytics, Real-Time Quotes, and Factor Analytics
 - **Interactive charts**: Plotly visualizations with zoom, pan, hover
 - **Parameter controls**: Sliders, dropdowns, date pickers for easy configuration
 - **Real-time results**: Instant updates when parameters change
 - **Export functionality**: Download results as CSV or images
 
 ## Launching the Dashboard
+
+Install dashboard support first:
+
+```bash
+uv sync --extra dashboard
+```
 
 ### Command Line
 
@@ -21,7 +27,7 @@ The dashboard offers:
 finbot dashboard
 
 # Or directly with Streamlit
-uv run streamlit run finbot/dashboard/app.py
+uv run --extra dashboard streamlit run finbot/dashboard/app.py
 ```
 
 **Default:** Opens browser at http://localhost:8501
@@ -32,8 +38,8 @@ uv run streamlit run finbot/dashboard/app.py
 # Launch dashboard in Docker container
 make docker-dashboard
 
-# Or with docker-compose
-docker-compose up dashboard
+# Or with docker compose
+docker compose up finbot-dashboard
 ```
 
 **Access:** http://localhost:8501
@@ -218,6 +224,62 @@ Main dashboard entry point and app configuration:
 - Cost-effectiveness plane (scatter plot)
 - CEAC (cost-effectiveness acceptability curve)
 - Distribution histograms (cost, QALYs, ICER, NMB)
+
+### 8. Experiments
+
+**Location:** `finbot/dashboard/pages/7_experiments.py`
+
+**Features:**
+- Experiment registry browsing
+- Snapshot-aware comparisons
+- Batch observability summaries
+- Reproducibility metadata inspection
+
+### 9. Walk-Forward
+
+**Location:** `finbot/dashboard/pages/8_walkforward.py`
+
+**Features:**
+- Walk-forward analysis visualisation
+- Fold-by-fold performance inspection
+- Regime overlays and stability review
+
+### 10. Risk Analytics
+
+**Location:** `finbot/dashboard/pages/9_risk_analytics.py`
+
+**Features:**
+- VaR/CVaR analysis
+- Parametric stress testing
+- Kelly sizing charts and tables
+
+### 11. Portfolio Analytics
+
+**Location:** `finbot/dashboard/pages/10_portfolio_analytics.py`
+
+**Features:**
+- Rolling performance metrics
+- Benchmark comparison
+- Drawdown decomposition
+- Correlation and diversification views
+
+### 12. Real-Time Quotes
+
+**Location:** `finbot/dashboard/pages/11_realtime_quotes.py`
+
+**Features:**
+- Multi-provider quote lookup
+- Watchlist support
+- Provider health/status display
+
+### 13. Factor Analytics
+
+**Location:** `finbot/dashboard/pages/12_factor_analytics.py`
+
+**Features:**
+- CAPM/FF3/FF5 regression analysis
+- Return attribution
+- Factor risk decomposition
 - Tornado diagram (sensitivity analysis)
 
 **Metrics displayed:**

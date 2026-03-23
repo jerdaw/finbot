@@ -8,12 +8,12 @@ Finbot consolidates three key areas of quantitative finance:
 
 - **Data Collection**: Automated fetching from Yahoo Finance, FRED, Alpha Vantage, Google Finance, and more
 - **Simulation**: Fund simulators (leveraged ETFs), bond ladders, Monte Carlo risk analysis
-- **Backtesting**: 10 trading strategies with comprehensive performance metrics using Backtrader
+- **Backtesting**: 13 trading strategies with comprehensive performance metrics using Backtrader
 
 ## Key Features
 
 ### 📊 Production-Ready Backtesting Engine
-- **12 built-in strategies**: Rebalance, NoRebalance, SMA Crossovers, MACD, Dip Buying, Dual Momentum, Risk Parity, and more
+- **13 built-in strategies**: Rebalance, NoRebalance, SMA Crossovers, MACD, Dip Buying, Dual Momentum, Risk Parity, Regime Adaptive, and more
 - **Performance metrics**: CAGR, Sharpe ratio, Sortino ratio, Calmar ratio, Max drawdown, Win rate, Kelly criterion
 - **Engine-agnostic contracts**: Swap Backtrader for NautilusTrader without code changes
 - **100% parity testing**: CI gate prevents regressions on golden strategies
@@ -44,11 +44,11 @@ Finbot consolidates three key areas of quantitative finance:
 
 ### 🛠️ Production-Ready Infrastructure
 - **CLI interface**: `finbot simulate`, `finbot backtest`, `finbot optimize`, `finbot update`, `finbot dashboard`
-- **Web Dashboard**: Interactive Streamlit app with 8 pages (simulations, backtesting, experiments, etc.)
-- **Comprehensive CI/CD**: 7 CI jobs across Python 3.11/3.12/3.13 (lint, type-check, security, test, docs, parity, performance)
+- **Web Dashboard**: Interactive Streamlit app with 12 task-focused pages plus the home page
+- **Comprehensive CI/CD**: Python 3.11/3.12/3.13 validation plus separate CLI/API Docker security scanning
 - **Queue-based logging**: Non-blocking async logging with JSON output and audit trails
 - **Security scanning**: bandit, pip-audit, trivy container scanning, OpenSSF Scorecard
-- **Test coverage**: 866 tests (59.20% coverage) with property-based testing
+- **Test coverage**: Comprehensive unit, integration, property, and validation coverage
 - **Dynaconf configuration**: Environment-aware YAML config (development, production)
 - **Comprehensive utilities**: 160+ utility functions across 15 categories
 
@@ -61,8 +61,11 @@ Finbot consolidates three key areas of quantitative finance:
 git clone https://github.com/jerdaw/finbot.git
 cd finbot
 
-# Install with uv
-uv sync
+# Install the full contributor environment
+uv sync --all-extras
+
+# Minimal runtime only
+# uv sync
 
 # Set environment
 export DYNACONF_ENV=development

@@ -1,4 +1,4 @@
-.PHONY: help install update lint format type docstring security test test-cov test-quick clean run-update check all pre-commit docs docs-serve docs-build dashboard dashboard-dev docker-build docker-run docker-status docker-update docker-test docker-clean docker-security-scan test-release changelog
+.PHONY: help install update lint format type docstring security test test-cov test-quick clean run-update check all pre-commit docs docs-serve docs-build dashboard dashboard-dev docker-build docker-dashboard docker-run docker-status docker-update docker-test docker-clean docker-security-scan test-release changelog
 
 # Default target - show help
 help:
@@ -36,6 +36,7 @@ help:
 	@echo ""
 	@echo "Docker:"
 	@echo "  make docker-build          Build Docker image"
+	@echo "  make docker-dashboard      Run dashboard container"
 	@echo "  make docker-run            Run interactive finbot CLI in Docker"
 	@echo "  make docker-status         Show data freshness via Docker"
 	@echo "  make docker-update         Run daily update pipeline in Docker"
@@ -56,11 +57,11 @@ help:
 # Setup & Installation
 install:
 	@echo "Installing dependencies with uv..."
-	uv sync
+	uv sync --all-extras
 
 update:
 	@echo "Updating dependencies..."
-	uv lock --upgrade && uv sync
+	uv lock --upgrade && uv sync --all-extras
 
 # Code Quality
 lint:
@@ -108,11 +109,11 @@ run-update:
 # Dashboard
 dashboard:
 	@echo "Starting Finbot Dashboard at http://localhost:8501..."
-	DYNACONF_ENV=development uv run finbot dashboard
+	DYNACONF_ENV=development uv run --extra dashboard finbot dashboard
 
 dashboard-dev:
 	@echo "Starting Finbot Dashboard in dev mode..."
-	DYNACONF_ENV=development uv run streamlit run finbot/dashboard/app.py --server.runOnSave true
+	DYNACONF_ENV=development uv run --extra dashboard streamlit run finbot/dashboard/app.py --server.runOnSave true
 
 # Documentation
 docs: docs-build docs-serve
@@ -162,8 +163,12 @@ changelog:
 
 # Docker
 docker-build:
-	@echo "Building Docker image..."
+	@echo "Building CLI Docker image..."
 	docker build -t finbot .
+
+docker-dashboard:
+	@echo "Starting dashboard container..."
+	docker compose up finbot-dashboard
 
 docker-run:
 	@echo "Running finbot CLI in Docker..."

@@ -2,17 +2,22 @@
 
 ## Overview
 
-This guide documents the automated Docker container security scanning process for Finbot. We use [Trivy](https://trivy.dev/) by Aqua Security to scan both the Dockerfile configuration and the built Docker images for vulnerabilities in base images, OS packages, and Python dependencies.
+This guide documents the automated Docker container security scanning process for Finbot. We use [Trivy](https://trivy.dev/) by Aqua Security to scan both Python container images:
+
+- the root CLI image from `Dockerfile`
+- the API image from `web/Dockerfile.backend`
+
+The scans cover Dockerfile configuration, base images, OS packages, and Python dependencies.
 
 ## Scanning Process
 
 ### Automated CI Scanning
 
-The `docker-security-scan` job in `.github/workflows/ci.yml` runs on every push and pull request to the main branch. It performs:
+The `docker-security-scan` job in `.github/workflows/ci.yml` runs on every push and pull request to the main branch. It performs the same scan flow for both the CLI and API images:
 
 1. **Dockerfile Configuration Scan**: Checks Dockerfile for misconfigurations and security issues
 2. **Image Vulnerability Scan**: Scans the built image for CVEs in:
-   - Base image (python:3.13-slim)
+   - Base image (python:3.12-slim)
    - OS packages (Debian)
    - Python packages (from uv.lock)
 3. **SARIF Upload**: Sends results to GitHub Security tab for tracking
@@ -21,14 +26,17 @@ The `docker-security-scan` job in `.github/workflows/ci.yml` runs on every push 
 ### Scan Execution Steps
 
 ```yaml
-# 1. Build the Docker image
-docker build -t finbot:${{ github.sha }} .
+# 1. Build the Docker images
+docker build -t finbot-cli:${{ github.sha }} -f Dockerfile .
+docker build -t finbot-api:${{ github.sha }} -f web/Dockerfile.backend .
 
 # 2. Scan Dockerfile configuration
 trivy config Dockerfile
+trivy config web/Dockerfile.backend
 
-# 3. Scan built image for vulnerabilities
-trivy image finbot:${{ github.sha }}
+# 3. Scan built images for vulnerabilities
+trivy image finbot-cli:${{ github.sha }}
+trivy image finbot-api:${{ github.sha }}
 
 # 4. Upload results to GitHub Security
 # 5. Generate and store detailed reports
@@ -59,9 +67,9 @@ The scan is configured with `ignore-unfixed: true`, which means:
 ### Viewing Results
 
 **In GitHub Actions:**
-1. Go to Actions tab → Select workflow run → Click "docker-security-scan" job
+1. Go to Actions tab → Select workflow run → Click the `docker-security-scan (cli)` or `docker-security-scan (api)` job
 2. Expand scan steps to see table output
-3. Download "docker-security-report" artifact for detailed JSON/SARIF reports
+3. Download the `docker-security-report-cli` or `docker-security-report-api` artifact for detailed JSON/SARIF reports
 
 **In GitHub Security:**
 1. Go to Security tab → Code scanning alerts → Trivy
@@ -71,15 +79,21 @@ The scan is configured with `ignore-unfixed: true`, which means:
 ```bash
 # Scan Dockerfile configuration
 docker run --rm -v $(pwd):/app aquasec/trivy config /app/Dockerfile
+docker run --rm -v $(pwd):/app aquasec/trivy config /app/web/Dockerfile.backend
 
-# Build and scan image
-docker build -t finbot:local .
+# Build and scan CLI image
+docker build -t finbot-cli:local -f Dockerfile .
 docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-  aquasec/trivy image finbot:local
+  aquasec/trivy image finbot-cli:local
+
+# Build and scan API image
+docker build -t finbot-api:local -f web/Dockerfile.backend .
+docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+  aquasec/trivy image finbot-api:local
 
 # Generate JSON report
 docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-  aquasec/trivy image -f json -o trivy-report.json finbot:local
+  aquasec/trivy image -f json -o trivy-report-cli.json finbot-cli:local
 ```
 
 ### Report Format
@@ -118,17 +132,17 @@ Total: 5 (CRITICAL: 1, HIGH: 2, MEDIUM: 2, LOW: 0)
 Check the CI job output or GitHub Security tab for findings:
 ```bash
 # Download artifact from CI
-gh run download <run-id> -n docker-security-report
+gh run download <run-id> -n docker-security-report-cli
 
 # View JSON report locally
-cat trivy-report.json | jq '.Results[] | select(.Vulnerabilities)'
+cat trivy-report-cli.json | jq '.Results[] | select(.Vulnerabilities)'
 ```
 
 #### 2. Identify Vulnerability Source
 
 Vulnerabilities come from three sources:
 
-**A. Base Image (python:3.13-slim)**
+**A. Base Image (python:3.12-slim)**
 - CVEs in the Python base image or Debian OS packages
 - Solution: Update to newer base image tag
 
@@ -146,13 +160,13 @@ If vulnerability is in the base image:
 
 ```dockerfile
 # Current
-FROM python:3.13-slim AS builder
+FROM python:3.12-slim AS builder
 
 # Updated (use latest patch)
-FROM python:3.13.2-slim AS builder
+FROM python:3.12.11-slim AS builder
 
 # Or try newer minor version
-FROM python:3.14-slim AS builder
+FROM python:3.12-slim AS builder
 ```
 
 Check [Python Docker Hub](https://hub.docker.com/_/python) for latest secure tags.
@@ -174,8 +188,8 @@ git diff uv.lock
 
 Then rebuild the Docker image and rescan:
 ```bash
-docker build -t finbot:patched .
-trivy image finbot:patched
+docker build -t finbot-cli:patched -f Dockerfile .
+trivy image finbot-cli:patched
 ```
 
 #### 5. Update OS Packages (Advanced)
@@ -216,40 +230,40 @@ After remediation:
 
 ```bash
 # Rebuild image
-docker build -t finbot:fixed .
+docker build -t finbot-cli:fixed -f Dockerfile .
 
 # Run Trivy scan
-trivy image finbot:fixed
+trivy image finbot-cli:fixed
 
 # Verify no CRITICAL/HIGH vulnerabilities
-trivy image --severity CRITICAL,HIGH finbot:fixed
+trivy image --severity CRITICAL,HIGH finbot-cli:fixed
 
 # Test image functionality
-docker run --rm finbot:fixed --help
-docker run --rm finbot:fixed status
+docker run --rm finbot-cli:fixed --help
+docker run --rm finbot-cli:fixed status
 ```
 
 ## Base Image Update Strategy
 
 ### Current Base Image
 
-- **Image**: `python:3.13-slim`
+- **Image**: `python:3.12-slim`
 - **OS**: Debian 13 (Trixie/Sid)
-- **Python**: 3.13.x
+- **Python**: 3.12.x
 - **Size**: ~140 MB
 
 ### Update Frequency
 
 **Recommended schedule**:
-- **Weekly**: Check for new patch versions (3.13.1 → 3.13.2)
+- **Weekly**: Check for new patch versions (3.12.1 → 3.12.2)
 - **Monthly**: Review security advisories and force update if needed
 - **Immediate**: For CRITICAL vulnerabilities with available fixes
 
 **Automated checks**:
 ```bash
 # Check current image digest
-docker pull python:3.13-slim
-docker inspect python:3.13-slim | jq '.[0].Id'
+docker pull python:3.12-slim
+docker inspect python:3.12-slim | jq '.[0].Id'
 
 # Compare with tracked digest in CI
 ```
@@ -259,17 +273,17 @@ docker inspect python:3.13-slim | jq '.[0].Id'
 1. **Test new image locally**:
    ```bash
    # Update Dockerfile
-   FROM python:3.13.2-slim AS builder
+   FROM python:3.12.11-slim AS builder
 
    # Build and test
-   docker build -t finbot:test .
-   docker run --rm finbot:test status
+   docker build -t finbot-cli:test -f Dockerfile .
+   docker run --rm finbot-cli:test status
    uv run pytest tests/
    ```
 
 2. **Run security scan**:
    ```bash
-   trivy image finbot:test
+   trivy image finbot-cli:test
    ```
 
 3. **Update Dockerfile**:
@@ -277,7 +291,7 @@ docker inspect python:3.13-slim | jq '.[0].Id'
    git checkout -b update-base-image
    # Edit Dockerfile
    git add Dockerfile
-   git commit -m "Update Python base image to 3.13.2-slim for security patches"
+   git commit -m "Update Python base image to 3.12.11-slim for security patches"
    ```
 
 4. **Create PR and verify CI**:
@@ -287,12 +301,12 @@ docker inspect python:3.13-slim | jq '.[0].Id'
 
 ### Alternative Base Images
 
-If `python:3.13-slim` has persistent security issues, consider:
+If `python:3.12-slim` has persistent security issues, consider:
 
 | Image | Pros | Cons |
 |-------|------|------|
-| `python:3.13-alpine` | Smaller size, musl libc (fewer CVEs) | Compatibility issues, slower builds |
-| `python:3.13-bookworm` | Debian stable (slower updates) | Larger size, older packages |
+| `python:3.12-alpine` | Smaller size, musl libc (fewer CVEs) | Compatibility issues, slower builds |
+| `python:3.12-bookworm` | Debian stable (slower updates) | Larger size, older packages |
 | `gcr.io/distroless/python3` | Minimal attack surface | More complex build, limited tooling |
 
 ## Security Best Practices
@@ -311,22 +325,22 @@ If `python:3.13-slim` has persistent security issues, consider:
 🔒 **Scan images before deployment**:
 ```bash
 # In production pipeline
-trivy image --severity CRITICAL,HIGH --exit-code 1 finbot:${VERSION}
+trivy image --severity CRITICAL,HIGH --exit-code 1 finbot-cli:${VERSION}
 ```
 
 🔒 **Sign and verify images**:
 ```bash
 # Sign with cosign (future enhancement)
-cosign sign finbot:${VERSION}
+cosign sign finbot-cli:${VERSION}
 ```
 
 🔒 **Use specific tags, not `:latest`**:
 ```dockerfile
 # Bad
-FROM python:3.13-slim
+FROM python:3.12-slim
 
 # Good
-FROM python:3.13.2-slim@sha256:abc123...
+FROM python:3.12.11-slim@sha256:abc123...
 ```
 
 🔒 **Enable Docker Content Trust**:
@@ -338,7 +352,7 @@ export DOCKER_CONTENT_TRUST=1
 ```bash
 # Monthly audit
 uv lock --upgrade
-trivy image finbot:dev
+trivy image finbot-cli:dev
 ```
 
 ## CI Configuration Reference
@@ -347,7 +361,7 @@ trivy image finbot:dev
 
 ```yaml
 docker-security-scan:
-  name: Docker Security Scan
+  name: Docker Security Scan (cli/api)
   runs-on: ubuntu-latest
 
   steps:
@@ -355,14 +369,14 @@ docker-security-scan:
       uses: actions/checkout@v6
 
     - name: Build Docker image
-      run: docker build -t finbot:${{ github.sha }} .
+      run: docker build -t finbot-cli:${{ github.sha }} -f Dockerfile .
 
     - name: Run Trivy scanner
       uses: aquasecurity/trivy-action@0.29.0
       with:
-        image-ref: 'finbot:${{ github.sha }}'
+        image-ref: 'finbot-cli:${{ github.sha }}'
         format: 'sarif'
-        output: 'trivy-results.sarif'
+        output: 'trivy-results-cli.sarif'
         severity: 'CRITICAL,HIGH,MEDIUM,LOW'
         exit-code: '1'           # Fail on CRITICAL/HIGH
         ignore-unfixed: true     # Skip unfixable CVEs
@@ -370,7 +384,7 @@ docker-security-scan:
     - name: Upload to GitHub Security
       uses: github/codeql-action/upload-sarif@v3
       with:
-        sarif_file: 'trivy-results.sarif'
+        sarif_file: 'trivy-results-cli.sarif'
 ```
 
 ### Configuration Options
@@ -411,7 +425,7 @@ with:
 **Issue**: SARIF upload fails
 ```bash
 # Solution: Check SARIF file size (max 10MB)
-ls -lh trivy-results.sarif
+ls -lh trivy-results-cli.sarif
 ```
 
 ### Debug Commands
@@ -434,22 +448,22 @@ trivy clean --all
 
 ### Baseline Scan (2026-02-17)
 
-**Image**: `finbot:local` built from commit `d07c3e9`
+**Image**: `finbot-cli:local` built from commit `d07c3e9`
 
 **Base Image**:
-- `python:3.13-slim`
+- `python:3.12-slim`
 - Debian 13 (Trixie/Sid)
 - Last updated: 2026-02-XX
 
 **Scan Summary**:
 ```bash
 # Run scan to generate baseline
-docker build -t finbot:baseline .
-trivy image finbot:baseline > docs/security/baseline-scan-2026-02-17.txt
+docker build -t finbot-cli:baseline -f Dockerfile .
+trivy image finbot-cli:baseline > docs/security/baseline-scan-2026-02-17.txt
 ```
 
 **Expected Results**:
-- Python 3.13 is actively maintained (no major CVEs expected)
+- Python 3.12 is actively maintained (no major CVEs expected)
 - Debian Trixie/Sid receives regular security updates
 - Python dependencies managed via `uv.lock` (pinned versions)
 

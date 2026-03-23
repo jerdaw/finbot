@@ -6,8 +6,6 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
 
 concurrency:
   group: ci-heavy-${{ github.ref }}
@@ -29,7 +27,7 @@ jobs:
         run: uv python install 3.13
 
       - name: Install dependencies
-        run: uv sync
+        run: uv sync --all-extras
 
       - name: Check docstring coverage with interrogate
         run: uv run interrogate finbot/
@@ -49,17 +47,13 @@ jobs:
         run: uv python install 3.13
 
       - name: Install dependencies
-        run: uv sync --no-dev
+        run: uv sync --all-extras --no-dev
 
       - name: Security scan with bandit
-        run: |
-          uv pip install bandit
-          uv run --no-dev bandit -r finbot/ -ll
+        run: uv run --all-extras --no-dev --with bandit bandit -r finbot/ -ll
 
       - name: Vulnerability scan with pip-audit
-        run: |
-          uv pip install pip-audit
-          uv run --no-dev pip-audit
+        run: uv run --all-extras --no-dev --with pip-audit pip-audit --local
 
   dependency-license-audit:
     name: Dependency License Audit
@@ -76,7 +70,7 @@ jobs:
         run: uv python install 3.13
 
       - name: Install dependencies
-        run: uv sync
+        run: uv sync --all-extras
 
       - name: Generate third-party licenses report
         run: |
@@ -90,20 +84,30 @@ jobs:
         run: git diff --exit-code THIRD_PARTY_LICENSES.md
 
   docker-security-scan:
-    name: Docker Security Scan
+    name: Docker Security Scan (${{ matrix.image.name }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - name: cli
+            dockerfile: Dockerfile
+            tag: finbot-cli
+          - name: api
+            dockerfile: web/Dockerfile.backend
+            tag: finbot-api
 
     steps:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Build Docker image
-        run: docker build -t finbot:ci .
+        run: docker build -t ${{ matrix.image.tag }}:ci -f ${{ matrix.image.dockerfile }} .
 
       - name: Run Trivy scan
         uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
         with:
-          image-ref: "finbot:ci"
+          image-ref: "${{ matrix.image.tag }}:ci"
           format: "table"
           ignore-unfixed: true
           vuln-type: "os,library"
@@ -129,7 +133,7 @@ jobs:
         run: uv python install ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: uv sync
+        run: uv sync --all-extras
 
       - name: Run tests with coverage
         env:
@@ -158,7 +162,7 @@ jobs:
         run: uv python install 3.13
 
       - name: Install dependencies
-        run: uv sync
+        run: uv sync --all-extras
 
       - name: Run full parity suite
         env:

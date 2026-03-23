@@ -8,7 +8,7 @@ Finbot is a comprehensive platform for:
 
 - **Data Collection**: Automated fetching from 6+ data sources
 - **Simulation**: Model leveraged ETFs, bond ladders, and Monte Carlo scenarios
-- **Backtesting**: Test 10 trading strategies with detailed performance metrics
+- **Backtesting**: Test 13 trading strategies with detailed performance metrics
 - **Optimization**: Find optimal portfolios using DCA and rebalancing strategies
 
 ## Installation
@@ -26,8 +26,11 @@ Finbot is a comprehensive platform for:
 git clone https://github.com/jerdaw/finbot.git
 cd finbot
 
-# Install dependencies
-uv sync
+# Install the full contributor environment
+uv sync --all-extras
+
+# Minimal CLI/runtime only
+# uv sync
 
 # Activate virtual environment (optional, uv creates .venv automatically)
 source .venv/bin/activate  # On Linux/Mac
@@ -37,7 +40,7 @@ source .venv/bin/activate  # On Linux/Mac
 export DYNACONF_ENV=development
 
 # Verify installation
-finbot --version
+DYNACONF_ENV=development finbot --version
 ```
 
 ### Install with pip
@@ -51,21 +54,27 @@ cd finbot
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-# Install in editable mode
-pip install -e .
+# Install the full contributor environment
+pip install -e '.[dashboard,web,nautilus,notebooks]'
+
+# Minimal CLI/runtime only
+# pip install -e .
+
+# Set environment
+export DYNACONF_ENV=development
 
 # Verify installation
-finbot --version
+DYNACONF_ENV=development finbot --version
 ```
 
 ## Configuration
 
 ### Environment Setup
 
-Finbot uses Dynaconf for environment-aware configuration. Create a `.env` file in the `config/` directory:
+Finbot uses Dynaconf for environment-aware configuration. Create a `.env` file in the `finbot/config/` directory:
 
 ```bash
-# config/.env
+# finbot/config/.env
 DYNACONF_ENV=development
 
 # Optional: API keys for data collection
@@ -79,14 +88,14 @@ GOOGLE_FINANCE_SERVICE_ACCOUNT_CREDENTIALS_PATH=/path/to/credentials.json
 
 Finbot loads settings from YAML files based on `DYNACONF_ENV`:
 
-- `config/settings.yaml`: Base settings (shared across all environments)
-- `config/development.yaml`: Development-specific settings
-- `config/production.yaml`: Production-specific settings
+- `finbot/config/settings.yaml`: Base settings (shared across all environments)
+- `finbot/config/development.yaml`: Development-specific settings
+- `finbot/config/production.yaml`: Production-specific settings
 
 Example development configuration:
 
 ```yaml
-# config/development.yaml
+# finbot/config/development.yaml
 threading:
   min_threads: 1
   max_threads: null  # Auto-detect CPU cores
@@ -105,16 +114,16 @@ Verify your installation by running the test suite:
 
 ```bash
 # Run all tests
-uv run pytest
+DYNACONF_ENV=development uv run pytest
 
 # Run with verbose output
-uv run pytest -v
+DYNACONF_ENV=development uv run pytest -v
 
 # Run specific test file
-uv run pytest tests/unit/test_imports.py
+DYNACONF_ENV=development uv run pytest tests/unit/test_imports.py
 ```
 
-Expected output: `80 passed` (all tests should pass)
+Expected output: the suite completes without failures.
 
 ### 2. Update Data
 
@@ -174,7 +183,7 @@ finbot backtest --strategy Rebalance --asset SPY,TLT \
 finbot backtest --help
 ```
 
-Available strategies: Rebalance, NoRebalance, SMACrossover, SMACrossoverDouble, SMACrossoverTriple, MACDSingle, MACDDual, DipBuySMA, DipBuyStdev, SMARebalMix
+Available strategies: Rebalance, NoRebalance, SMACrossover, SMACrossoverDouble, SMACrossoverTriple, MACDSingle, MACDDual, DipBuySMA, DipBuyStdev, SMARebalMix, DualMomentum, RiskParity, RegimeAdaptive
 
 ### 5. Optimize a Portfolio
 
@@ -275,16 +284,16 @@ print(f"Expected Sharpe: {results.iloc[0]['sharpe']:.2f}")
 If you see import errors, ensure you've installed all dependencies:
 
 ```bash
-uv sync
+uv sync --all-extras
 # or
-pip install -e .
+pip install -e '.[dashboard,web,nautilus,notebooks]'
 ```
 
 ### API Key Errors
 
 If data collection fails with "OSError: API key not found":
 
-1. Create `config/.env` file
+1. Create `finbot/config/.env` file
 2. Add the relevant API key (see Configuration section)
 3. Restart your shell / reload environment
 
@@ -321,7 +330,7 @@ If you plan to contribute:
 
 ```bash
 # Install dev dependencies
-uv sync
+uv sync --all-extras
 
 # Install pre-commit hooks
 uv run pre-commit install

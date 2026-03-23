@@ -4,13 +4,15 @@ on:
   push:
     branches: [main]
     paths-ignore:
-      - "docs/**"
-      - "docs_site/**"
+      - 'docs/**'
+      - 'docs_site/**'
+      - '*.md'
   pull_request:
     branches: [main]
     paths-ignore:
-      - "docs/**"
-      - "docs_site/**"
+      - 'docs/**'
+      - 'docs_site/**'
+      - '*.md'
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -32,7 +34,7 @@ jobs:
         run: uv python install 3.13
 
       - name: Install dependencies
-        run: uv sync
+        run: uv sync --all-extras
 
       - name: Lint with ruff
         run: uv run ruff check . --exclude notebooks/
@@ -55,7 +57,7 @@ jobs:
         run: uv python install 3.13
 
       - name: Install dependencies
-        run: uv sync
+        run: uv sync --all-extras
 
       - name: Type check with mypy
         run: uv run mypy finbot/
@@ -75,7 +77,7 @@ jobs:
         run: uv python install 3.13
 
       - name: Install dependencies
-        run: uv sync
+        run: uv sync --all-extras
 
       - name: Check docstring coverage with interrogate
         run: uv run interrogate finbot/
@@ -96,16 +98,14 @@ jobs:
         run: uv python install 3.13
 
       - name: Install dependencies
-        run: uv sync
+        run: uv sync --all-extras
 
       - name: Security scan with bandit
-        run: uv run bandit -r finbot/ -ll
+        run: uv run --all-extras bandit -r finbot/ -ll
         continue-on-error: true
 
       - name: Vulnerability scan with pip-audit
-        run: |
-          uv pip install pip-audit
-          uv run pip-audit
+        run: uv run --all-extras --with pip-audit pip-audit --local
         continue-on-error: true
 
   test:
@@ -114,7 +114,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.13"]
+        python-version: ["3.11", "3.12", "3.13"]
 
     steps:
       - name: Checkout code
@@ -127,7 +127,7 @@ jobs:
         run: uv python install ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: uv sync
+        run: uv sync --all-extras
 
       - name: Run tests with coverage
         env:
@@ -156,7 +156,7 @@ jobs:
         run: uv python install 3.13
 
       - name: Install dependencies
-        run: uv sync
+        run: uv sync --all-extras
 
       - name: Run parity tests for golden strategies
         env:
@@ -189,7 +189,7 @@ jobs:
         run: uv python install 3.13
 
       - name: Install dependencies
-        run: uv sync
+        run: uv sync --all-extras
 
       - name: Run performance benchmarks
         env:
@@ -207,21 +207,31 @@ jobs:
           retention-days: 30
 
   docker-security-scan:
-    name: Docker Security Scan
+    name: Docker Security Scan (${{ matrix.image.name }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - name: cli
+            dockerfile: Dockerfile
+            tag: finbot-cli
+          - name: api
+            dockerfile: web/Dockerfile.backend
+            tag: finbot-api
 
     steps:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Build Docker image
-        run: docker build -t finbot:${{ github.sha }} .
+        run: docker build -t ${{ matrix.image.tag }}:${{ github.sha }} -f ${{ matrix.image.dockerfile }} .
 
       - name: Run Trivy vulnerability scanner on Dockerfile
         uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
         with:
           scan-type: "config"
-          scan-ref: "Dockerfile"
+          scan-ref: "${{ matrix.image.dockerfile }}"
           format: "table"
           exit-code: "0"
           severity: "CRITICAL,HIGH,MEDIUM,LOW"
@@ -230,10 +240,10 @@ jobs:
       - name: Run Trivy vulnerability scanner on image
         uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
         with:
-          image-ref: "finbot:${{ github.sha }}"
+          image-ref: "${{ matrix.image.tag }}:${{ github.sha }}"
           format: "sarif"
-          output: "trivy-results.sarif"
-          severity: "CRITICAL,HIGH,MEDIUM,LOW"
+          output: "trivy-results-${{ matrix.image.name }}.sarif"
+          severity: "CRITICAL,HIGH"
           exit-code: "1"
           ignore-unfixed: true
           trivyignores: ".trivyignore.example"
@@ -242,13 +252,13 @@ jobs:
         if: always()
         uses: github/codeql-action/upload-sarif@b1bff81932f5cdfc8695c7752dcee935dcd061c8 # v4.33.0
         with:
-          sarif_file: "trivy-results.sarif"
+          sarif_file: "trivy-results-${{ matrix.image.name }}.sarif"
 
       - name: Run Trivy vulnerability scanner for summary
         if: always()
         uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
         with:
-          image-ref: "finbot:${{ github.sha }}"
+          image-ref: "${{ matrix.image.tag }}:${{ github.sha }}"
           format: "table"
           severity: "CRITICAL,HIGH,MEDIUM,LOW"
           trivyignores: ".trivyignore.example"
@@ -257,18 +267,18 @@ jobs:
         if: always()
         uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
         with:
-          image-ref: "finbot:${{ github.sha }}"
+          image-ref: "${{ matrix.image.tag }}:${{ github.sha }}"
           format: "json"
-          output: "trivy-report.json"
-          severity: "CRITICAL,HIGH,MEDIUM,LOW"
+          output: "trivy-report-${{ matrix.image.name }}.json"
+          severity: "CRITICAL,HIGH"
           trivyignores: ".trivyignore.example"
 
       - name: Upload security report
         if: always()
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
-          name: docker-security-report
+          name: docker-security-report-${{ matrix.image.name }}
           path: |
-            trivy-results.sarif
-            trivy-report.json
+            trivy-results-${{ matrix.image.name }}.sarif
+            trivy-report-${{ matrix.image.name }}.json
           retention-days: 30
