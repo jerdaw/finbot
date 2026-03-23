@@ -7,6 +7,10 @@ to --help flags without errors. They do NOT test full execution paths
 
 from __future__ import annotations
 
+import subprocess
+import sys
+from importlib import import_module
+
 import pytest
 from click.testing import CliRunner
 
@@ -170,6 +174,42 @@ class TestDashboardCommand:
         assert result.exit_code == 0
         assert "dashboard" in result.output.lower()
         assert "streamlit" in result.output.lower() or "web" in result.output.lower()
+
+    def test_dashboard_missing_streamlit_shows_install_hint(self, runner, monkeypatch):
+        """Test dashboard command shows an install hint when Streamlit is unavailable."""
+        dashboard_module = import_module("finbot.cli.commands.dashboard")
+        monkeypatch.setattr(dashboard_module, "find_spec", lambda _: None)
+
+        def fail_subprocess_run(*args, **kwargs):
+            raise AssertionError("subprocess.run should not be called when Streamlit is missing")
+
+        monkeypatch.setattr(dashboard_module.subprocess, "run", fail_subprocess_run)
+
+        result = runner.invoke(cli, ["dashboard"], env={"FINBOT_SKIP_DISCLAIMER": "1"})
+
+        assert result.exit_code == 1
+        assert "Streamlit is not installed" in result.output
+        assert "uv sync --extra dashboard" in result.output
+        assert "finbot[dashboard]" in result.output
+
+    def test_dashboard_runs_streamlit_when_available(self, runner, monkeypatch):
+        """Test dashboard command launches Streamlit when the optional dependency is available."""
+        dashboard_module = import_module("finbot.cli.commands.dashboard")
+        monkeypatch.setattr(dashboard_module, "find_spec", lambda _: object())
+        calls: list[list[str]] = []
+
+        def fake_subprocess_run(cmd: list[str], check: bool) -> subprocess.CompletedProcess[str]:
+            calls.append(cmd)
+            return subprocess.CompletedProcess(cmd, 0)
+
+        monkeypatch.setattr(dashboard_module.subprocess, "run", fake_subprocess_run)
+
+        result = runner.invoke(cli, ["dashboard", "--port", "9000"], env={"FINBOT_SKIP_DISCLAIMER": "1"})
+
+        assert result.exit_code == 0
+        assert calls
+        assert calls[0][:3] == [sys.executable, "-m", "streamlit"]
+        assert "--server.port" in calls[0]
 
 
 class TestCLIIntegration:

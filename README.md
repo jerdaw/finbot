@@ -65,6 +65,15 @@ This repository consolidates three years of development across three repositorie
 # Install dependencies
 make install
 
+# Minimal runtime install
+uv sync
+
+# Optional surfaces
+uv sync --extra dashboard
+uv sync --extra web
+uv sync --extra nautilus
+uv sync --extra notebooks
+
 # Set environment
 export DYNACONF_ENV=development
 
@@ -125,7 +134,7 @@ Planning and handoff docs:
 Run finbot without installing Python or uv:
 
 ```bash
-# Build image
+# Build CLI image
 make docker-build
 
 # Check data freshness
@@ -136,6 +145,9 @@ make docker-update
 
 # Run any CLI command
 make docker-run CMD="simulate --fund UPRO --start 2020-01-01"
+
+# Run dashboard and API containers
+docker compose up finbot-dashboard finbot-api
 ```
 
 Data is persisted in a Docker volume (`finbot-data`). API keys are loaded from `finbot/config/.env`.

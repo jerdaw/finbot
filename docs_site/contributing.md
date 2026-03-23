@@ -9,8 +9,8 @@ Thank you for your interest in contributing to Finbot! This guide will help you 
 git clone https://github.com/jerdaw/finbot.git
 cd finbot
 
-# Install with dev dependencies
-uv sync
+# Install the full contributor environment
+uv sync --all-extras
 
 # Install pre-commit hooks
 uv run pre-commit install
@@ -19,6 +19,9 @@ uv run pre-commit install --hook-type commit-msg
 # Run tests
 uv run pytest
 ```
+
+Use plain `uv sync` only when you intentionally want the minimal CLI/runtime surface without the
+optional dashboard, API, Nautilus, or notebook dependencies.
 
 ## Code Quality
 
@@ -82,6 +85,9 @@ uv run pytest tests/unit/test_finance_utils.py -v
 5. Commit with descriptive message
 6. Push to your fork
 7. Create pull request
+
+Only human authors, co-authors, and contributors may appear in commit metadata, documentation, or
+release notes. Do not attribute commits or docs to AI assistants.
 
 ## Commit Messages
 

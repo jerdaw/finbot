@@ -1,6 +1,8 @@
 # Stage 1: Install dependencies
 FROM python:3.12-slim AS builder
 
+ARG FINBOT_EXTRAS=""
+
 # Prevent Python from writing .pyc files and enable unbuffered output
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
@@ -22,7 +24,18 @@ WORKDIR /app
 COPY pyproject.toml uv.lock ./
 
 # Install dependencies into a virtual environment
-RUN uv sync --frozen --no-dev --no-install-project
+RUN set -eux; \
+    extra_args=""; \
+    if [ -n "${FINBOT_EXTRAS}" ]; then \
+        old_ifs="$IFS"; \
+        IFS=','; \
+        for extra in ${FINBOT_EXTRAS}; do \
+            extra_args="${extra_args} --extra ${extra}"; \
+        done; \
+        IFS="$old_ifs"; \
+    fi; \
+    # shellcheck disable=SC2086
+    uv sync --frozen --no-dev --no-install-project $extra_args
 
 # Keep pip on a patched version to avoid known container CVEs.
 RUN uv pip install --python /app/.venv/bin/python pip==26.0
@@ -53,7 +66,7 @@ COPY --from=builder /app/.venv .venv
 # Copy source code
 COPY finbot/ finbot/
 COPY scripts/ scripts/
-COPY Makefile pyproject.toml ./
+COPY DISCLAIMER.md Makefile pyproject.toml ./
 
 # Create data directory (will be mounted as volume)
 RUN mkdir -p finbot/data && chown -R finbot:finbot /app
@@ -61,5 +74,5 @@ RUN mkdir -p finbot/data && chown -R finbot:finbot /app
 USER finbot
 
 # Default command: show help
-ENTRYPOINT ["finbot"]
+ENTRYPOINT ["python", "-m", "finbot.cli.main"]
 CMD ["--help"]
