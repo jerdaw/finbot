@@ -46,7 +46,7 @@ uv run python scripts/update_daily.py
 - Repo contributors should use `uv sync --all-extras`.
 - The root `Dockerfile` builds the CLI image by default; dashboard and API images opt into extras explicitly.
 
-## Current Delivery Status (2026-03-23)
+## Current Delivery Status (2026-03-27)
 
 **P0-P9 complete. 1771 passing tests.**
 
@@ -55,6 +55,7 @@ uv run python scripts/update_daily.py
 - **P7** (93%): External impact & advanced capabilities — 25/27 active items
 - **P8** (100%): Risk Analytics, Portfolio Analytics, Real-Time Data, Factor Analytics
 - **P9** (100%): Agent tooling and runtime hardening — P9.1-P9.4 complete
+- **P10** (in progress): Next.js frontend — 12 pages complete, 4 backend routers added (ADR-015)
 
 **Tracking docs:** `docs/planning/roadmap.md`, `docs/planning/backtesting-live-readiness-backlog.md`, `docs/planning/priority-5-6-completion-status.md`, `docs/adr/ADR-011-nautilus-decision.md`
 
@@ -80,6 +81,11 @@ uv run pre-commit run --all-files
 uv run pytest tests/ -v                    # all tests with verbose output
 uv run pytest tests/unit/ -v              # unit tests only
 uv run pytest -k test_import              # tests matching pattern
+
+# Web application (Next.js + FastAPI)
+cd web/frontend && npm install && npm run dev   # frontend on :3000
+DYNACONF_ENV=development uv run uvicorn web.backend.main:app --reload  # backend on :8000
+cd web/frontend && npx tsc --noEmit             # type-check frontend
 
 # Docker
 make docker-build                # build image
@@ -256,6 +262,25 @@ Standalone multi-factor model modules. Accept returns arrays/DataFrames — no d
 
 - **`update_daily.py`**: Daily data update pipeline — fetches prices/FRED/Shiller, re-runs all simulations
 
+#### `web/backend/` — FastAPI API Server
+
+Entry point: `web/backend/main.py` (mounted at `/api/`). Requires `uv sync --extra web`.
+
+- **`main.py`**: FastAPI app with CORS, 12 routers registered
+- **`routers/`**: 12 endpoint modules — `backtesting`, `data_status`, `experiments`, `factor_analytics`, `health_economics`, `monte_carlo`, `optimizer`, `portfolio_analytics`, `realtime_quotes`, `risk_analytics`, `simulations`, `walkforward`
+- **`schemas/`**: Pydantic request/response models for each router
+- **`services/serializers.py`**: `sanitize_value()` (NaN/Inf→None), `dataframe_to_records()`
+
+#### `web/frontend/` — Next.js Frontend
+
+Next.js 16 App Router with React 19, Tailwind CSS v4, shadcn/ui, Recharts, Framer Motion, Zustand.
+
+- **`src/app/`**: 12 pages — simulations, backtesting, optimizer, monte-carlo, walk-forward, experiments, risk-analytics, portfolio-analytics, factor-analytics, realtime-quotes, data-status, health-economics
+- **`src/lib/`**: Foundation utilities — `utils.ts` (cn), `api.ts` (apiGet/apiPost), `format.ts` (number formatters), `constants.ts` (nav items, chart colors)
+- **`src/components/`**: Reusable components — `layout/` (sidebar, command-palette, header), `common/` (stat-card, chart-card, data-table, tool-layout, config-panel, empty-state, inline-error, heatmap, metric-badge), `charts/` (recharts-wrappers, line-chart-wrapper, drawdown-chart, lightweight-chart)
+- **`src/stores/`**: Zustand stores — `sidebar-store.ts`, `watchlist-store.ts` (localStorage-persisted)
+- **`src/types/api.ts`**: TypeScript interfaces for all API request/response types
+
 ### Data Storage
 
 All data stored as **parquet** files under `finbot/data/` (configured in `finbot/constants/path_constants.py`): `simulations/`, `backtests/`, `price_histories/`, `longtermtrends_data/`, `fred_data/`, `yfinance_data/`, `google_finance_data/`, `shiller_data/`, `alpha_vantage_data/`, `bls_data/`, `responses/`.
@@ -309,6 +334,11 @@ Create `.env` file in `finbot/config/` (excluded by `.gitignore`).
 | `scripts/update_daily.py` | Daily data update + simulation pipeline |
 | `finbot/cli/main.py` | CLI entry point (`finbot simulate/backtest/optimize/update/status/dashboard`) |
 | `finbot/dashboard/app.py` | Streamlit dashboard entry point (12 pages) |
+| **Web Application** | |
+| `web/backend/main.py` | FastAPI API server (12 routers, 34 endpoints) |
+| `web/frontend/src/app/` | Next.js frontend (12 pages) |
+| `web/frontend/src/lib/api.ts` | HTTP client (apiGet/apiPost with timeout + error handling) |
+| `web/frontend/src/lib/constants.ts` | Navigation items, chart colors, shared constants |
 | **Other Services** | |
 | `finbot/services/health_economics/qaly_simulator.py` | QALY Monte Carlo simulation |
 | `finbot/services/health_economics/cost_effectiveness.py` | Cost-effectiveness analysis (ICER/NMB/CEAC) |

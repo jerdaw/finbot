@@ -249,3 +249,67 @@ def test_import_factor_analytics_viz():
     assert callable(plot_factor_risk_decomposition)
     assert callable(plot_rolling_r_squared)
     assert callable(plot_factor_correlation)
+
+
+# ---- Web Backend Routers ----
+
+
+def test_import_web_backend_main():
+    from web.backend.main import app
+
+    assert app is not None
+
+
+def test_import_web_backend_router_risk_analytics():
+    from web.backend.routers.risk_analytics import router
+
+    assert router is not None
+
+
+def test_import_web_backend_router_portfolio_analytics():
+    from web.backend.routers.portfolio_analytics import router
+
+    assert router is not None
+
+
+def test_import_web_backend_router_realtime_quotes():
+    from web.backend.routers.realtime_quotes import router
+
+    assert router is not None
+
+
+def test_import_web_backend_router_factor_analytics():
+    from web.backend.routers.factor_analytics import router
+
+    assert router is not None
+
+
+# ---- Web Backend Schemas ----
+
+
+def test_import_web_backend_schemas_risk_analytics():
+    from web.backend.schemas.risk_analytics import VaRRequest, VaRResponse
+
+    assert VaRRequest is not None
+    assert VaRResponse is not None
+
+
+def test_import_web_backend_schemas_portfolio_analytics():
+    from web.backend.schemas.portfolio_analytics import RollingMetricsRequest, RollingMetricsResponse
+
+    assert RollingMetricsRequest is not None
+    assert RollingMetricsResponse is not None
+
+
+def test_import_web_backend_schemas_realtime_quotes():
+    from web.backend.schemas.realtime_quotes import QuotesRequest, QuotesResponse
+
+    assert QuotesRequest is not None
+    assert QuotesResponse is not None
+
+
+def test_import_web_backend_schemas_factor_analytics():
+    from web.backend.schemas.factor_analytics import FactorRegressionRequest, FactorRegressionResponse
+
+    assert FactorRegressionRequest is not None
+    assert FactorRegressionResponse is not None

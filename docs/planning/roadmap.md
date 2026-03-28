@@ -1,14 +1,14 @@
 # Finbot Roadmap
 
 **Created:** 2026-02-10
-**Last Updated:** 2026-03-23
-**Status:** Priority 0-9 complete (1771 passing tests). Roadmap clean.
+**Last Updated:** 2026-03-27
+**Status:** Priority 0-9 complete (1771 passing tests). P10 in progress.
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
 
 See Completed Items table below and git history for details on implemented features.
 
-**Current Plan Record:** None active. Last archived plan: Runtime Surface Split and Docker Security Hardening (completed 2026-03-23)
+**Current Plan Record:** None active. Last archived plan: Next.js Frontend Completion (completed 2026-03-27)
 
 ---
 
@@ -51,6 +51,30 @@ See Completed Items table below and git history for details on implemented featu
 - [x] Remove or archive any planning notes that are stale post-P8
 
 **What Was Done:** Optimized AGENTS.md from 818 → 447 lines (45% reduction). Applied accuracy fixes: strategy count 12→13 (added `regime_adaptive`), test count updated to 1752, date corrected. Added 6 missing Key Entry Points rows (`optimization.py`, `hypothesis_testing.py`, `order_registry.py`, `pareto_optimizer.py`, 4 `viz.py` files). Fixed execution module import path (no `__init__.py`). Condensed per-field contract listings and verbose service narratives while preserving all actionable content.
+
+---
+
+## Priority 10: Next.js Frontend
+
+### P10.1 Next.js Frontend Completion ✓
+
+**Status:** ✅ COMPLETED (2026-03-27)
+
+- [x] Foundation: 4 missing `src/lib/` utility files (utils, api, format, constants)
+- [x] Backend: 4 new FastAPI routers with 15 endpoints (risk analytics, portfolio analytics, realtime quotes, factor analytics)
+- [x] Frontend: 4 new multi-tab pages (risk analytics, portfolio analytics, realtime quotes, factor analytics)
+- [x] Components: heatmap, metric-badge, line-chart-wrapper, watchlist-store
+- [x] Polish: Health Economics EmptyState/InlineError, dashboard home links, CSS enhancements
+- [x] TypeScript: 0 type errors, successful production build
+- [x] ADR-015 written
+
+**What Was Done:** Completed the existing Next.js frontend from ~85% to 100%. Created 4 missing `src/lib/` utility files imported by every component. Added 4 FastAPI backend routers (15 endpoints) delegating to existing `finbot/services/` modules. Built 4 new multi-tab pages and 4 supporting components following established patterns. Polished Health Economics page and dashboard home. All 12 pages build and render. See ADR-015.
+
+### P10 Remaining / Future
+
+- [ ] End-to-end Playwright tests for all 12 pages
+- [ ] Responsive mobile testing and fixes
+- [ ] Production deployment configuration (Docker, env vars)
 
 ---
 
@@ -342,3 +366,4 @@ See Completed Items table for full details on all 25 completed items.
 | Roadmap optimization — P9 kickoff (P9.1 partial) | 2026-02-25 | Trimmed verbose P5–P7 sections (~700 lines → ~50 lines); added Priority 9 section; updated status header |
 | AGENTS.md optimization — P9.1 complete (P9.1) | 2026-02-25 | 818 → 447 lines (45% reduction); accuracy fixes (13 strategies, 1752 tests, missing modules, import path); 6 missing Key Entry Points rows added |
 | Autonomous wrap-up — P9.2 complete (P9.2) | 2026-02-25 | mypy fix in 12_factor_analytics.py; 17 new mock-based tests (get_fred_data + get_history); dashboard home page 12-page nav; docstring coverage 79.5% → 80.0%; 1769 total tests |
+| Next.js frontend completion (P10.1) | 2026-03-27 | Completed Next.js frontend: 4 `src/lib/` files, 4 FastAPI routers (15 endpoints), 4 pages (risk/portfolio/factor analytics, realtime quotes), 4 components (heatmap, metric-badge, line-chart-wrapper, watchlist-store), CSS polish, Health Economics cleanup; ADR-015; 0 TS errors, clean build |
