@@ -8,9 +8,13 @@ from web.backend.routers import (
     backtesting,
     data_status,
     experiments,
+    factor_analytics,
     health_economics,
     monte_carlo,
     optimizer,
+    portfolio_analytics,
+    realtime_quotes,
+    risk_analytics,
     simulations,
     walkforward,
 )
@@ -37,6 +41,10 @@ app.include_router(health_economics.router, prefix="/api/health-economics", tags
 app.include_router(experiments.router, prefix="/api/experiments", tags=["experiments"])
 app.include_router(walkforward.router, prefix="/api/walk-forward", tags=["walk-forward"])
 app.include_router(data_status.router, prefix="/api/data-status", tags=["data-status"])
+app.include_router(risk_analytics.router, prefix="/api/risk-analytics", tags=["risk-analytics"])
+app.include_router(portfolio_analytics.router, prefix="/api/portfolio-analytics", tags=["portfolio-analytics"])
+app.include_router(realtime_quotes.router, prefix="/api/realtime-quotes", tags=["realtime-quotes"])
+app.include_router(factor_analytics.router, prefix="/api/factor-analytics", tags=["factor-analytics"])
 
 
 @app.get("/api/health")
