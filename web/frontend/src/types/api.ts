@@ -239,6 +239,292 @@ export interface ExperimentCompareResponse {
   metrics: Record<string, unknown>[];
 }
 
+// --- Risk Analytics ---
+export interface VaRRequest {
+  ticker: string;
+  confidence?: number;
+  horizon_days?: number;
+  portfolio_value?: number | null;
+  start_date?: string;
+  end_date?: string;
+}
+
+export interface VaRResultSchema {
+  var_: number | null;
+  confidence: number;
+  method: string;
+  horizon_days: number;
+  n_observations: number;
+  var_dollars: number | null;
+}
+
+export interface CVaRResultSchema {
+  cvar: number | null;
+  var_: number | null;
+  confidence: number;
+  method: string;
+  n_tail_obs: number;
+  n_observations: number;
+}
+
+export interface VaRResponse {
+  historical: VaRResultSchema;
+  parametric: VaRResultSchema;
+  montecarlo: VaRResultSchema;
+  cvar: CVaRResultSchema;
+}
+
+export interface StressTestRequest {
+  ticker: string;
+  scenarios?: string[];
+  initial_value?: number;
+  start_date?: string;
+  end_date?: string;
+}
+
+export interface StressTestResultSchema {
+  scenario_name: string;
+  initial_value: number;
+  trough_value: number;
+  trough_return: number | null;
+  max_drawdown_pct: number | null;
+  shock_duration_days: number;
+  recovery_days: number;
+  price_path: number[];
+}
+
+export interface StressTestResponse {
+  results: StressTestResultSchema[];
+}
+
+export interface KellyRequest {
+  ticker: string;
+  start_date?: string;
+  end_date?: string;
+}
+
+export interface KellyResponse {
+  full_kelly: number | null;
+  half_kelly: number | null;
+  quarter_kelly: number | null;
+  win_rate: number | null;
+  win_loss_ratio: number | null;
+  expected_value: number | null;
+  is_positive_ev: boolean;
+  n_observations: number;
+}
+
+export interface MultiKellyRequest {
+  tickers: string[];
+  start_date?: string;
+  end_date?: string;
+}
+
+export interface MultiKellyResponse {
+  weights: Record<string, number>;
+  full_kelly_weights: Record<string, number>;
+  half_kelly_weights: Record<string, number>;
+  correlation_matrix: Record<string, Record<string, number>>;
+  asset_results: Record<string, KellyResponse>;
+  n_assets: number;
+  n_observations: number;
+}
+
+export interface VaRBacktestRequest {
+  ticker: string;
+  confidence?: number;
+  method?: string;
+  start_date?: string;
+  end_date?: string;
+}
+
+export interface VaRBacktestResponse {
+  confidence: number;
+  method: string;
+  n_observations: number;
+  n_violations: number;
+  violation_rate: number | null;
+  expected_violation_rate: number;
+  is_calibrated: boolean;
+}
+
+// --- Portfolio Analytics ---
+export interface RollingMetricsRequest {
+  ticker: string;
+  benchmark_ticker?: string;
+  window?: number;
+  risk_free_rate?: number;
+  start_date?: string;
+  end_date?: string;
+}
+
+export interface RollingMetricsResponse {
+  window: number;
+  n_obs: number;
+  sharpe: (number | null)[];
+  volatility: (number | null)[];
+  beta: (number | null)[] | null;
+  dates: string[];
+  mean_sharpe: number | null;
+  mean_vol: number | null;
+  mean_beta: number | null;
+}
+
+export interface BenchmarkRequest {
+  portfolio_ticker: string;
+  benchmark_ticker: string;
+  risk_free_rate?: number;
+  start_date?: string;
+  end_date?: string;
+}
+
+export interface BenchmarkResponse {
+  alpha: number | null;
+  beta: number | null;
+  r_squared: number | null;
+  tracking_error: number | null;
+  information_ratio: number | null;
+  up_capture: number | null;
+  down_capture: number | null;
+  benchmark_name: string;
+  n_observations: number;
+}
+
+export interface DrawdownRequest {
+  ticker: string;
+  top_n?: number;
+  start_date?: string;
+  end_date?: string;
+}
+
+export interface DrawdownPeriodSchema {
+  start_idx: number;
+  trough_idx: number;
+  end_idx: number | null;
+  depth: number;
+  duration_bars: number;
+  recovery_bars: number | null;
+}
+
+export interface DrawdownResponse {
+  periods: DrawdownPeriodSchema[];
+  underwater_curve: (number | null)[];
+  n_periods: number;
+  max_depth: number | null;
+  avg_depth: number | null;
+  avg_duration_bars: number | null;
+  avg_recovery_bars: number | null;
+  current_drawdown: number | null;
+  n_observations: number;
+}
+
+export interface CorrelationRequest {
+  tickers: string[];
+  weights?: Record<string, number>;
+  start_date?: string;
+  end_date?: string;
+}
+
+export interface CorrelationResponse {
+  n_assets: number;
+  weights: Record<string, number>;
+  herfindahl_index: number | null;
+  effective_n: number | null;
+  diversification_ratio: number | null;
+  avg_pairwise_correlation: number | null;
+  correlation_matrix: Record<string, Record<string, number>>;
+  individual_vols: Record<string, number>;
+  portfolio_vol: number | null;
+  n_observations: number;
+}
+
+// --- Real-Time Quotes ---
+export interface QuotesRequest {
+  symbols: string[];
+}
+
+export interface QuoteSchema {
+  symbol: string;
+  price: number;
+  change: number | null;
+  change_percent: number | null;
+  volume: number | null;
+  previous_close: number | null;
+  open: number | null;
+  high: number | null;
+  low: number | null;
+  bid: number | null;
+  ask: number | null;
+  provider: string;
+  timestamp: string;
+}
+
+export interface QuotesResponse {
+  quotes: QuoteSchema[];
+  errors: Record<string, string>;
+}
+
+export interface ProviderStatusSchema {
+  provider: string;
+  is_available: boolean;
+  last_success: string | null;
+  last_error: string | null;
+  total_requests: number;
+  total_errors: number;
+}
+
+export interface ProviderStatusResponse {
+  providers: ProviderStatusSchema[];
+}
+
+// --- Factor Analytics ---
+export interface FactorRegressionRequest {
+  ticker: string;
+  factor_data: Record<string, number>[];
+  factor_names: string[];
+  model_type?: string;
+  start_date?: string;
+  end_date?: string;
+}
+
+export interface FactorRegressionResponse {
+  loadings: Record<string, number | null>;
+  alpha: number | null;
+  r_squared: number | null;
+  adj_r_squared: number | null;
+  residual_std: number | null;
+  t_stats: Record<string, number | null>;
+  p_values: Record<string, number | null>;
+  factor_names: string[];
+  model_type: string;
+  n_observations: number;
+}
+
+export interface FactorAttributionResponse {
+  factor_contributions: Record<string, number | null>;
+  alpha_contribution: number | null;
+  total_return: number | null;
+  explained_return: number | null;
+  residual_return: number | null;
+  factor_names: string[];
+  n_observations: number;
+}
+
+export interface FactorRiskResponse {
+  systematic_variance: number | null;
+  idiosyncratic_variance: number | null;
+  total_variance: number | null;
+  pct_systematic: number | null;
+  marginal_contributions: Record<string, number | null>;
+  factor_names: string[];
+  n_observations: number;
+}
+
+export interface RollingRSquaredResponse {
+  values: (number | null)[];
+  dates: string[];
+}
+
 // --- Data Status ---
 export interface DataSourceInfo {
   name: string;
