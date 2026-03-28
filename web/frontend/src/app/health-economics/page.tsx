@@ -30,6 +30,9 @@ import {
   CardSkeleton,
   TableSkeleton,
 } from "@/components/common/loading-skeleton";
+import { EmptyState } from "@/components/common/empty-state";
+import { InlineError } from "@/components/common/inline-error";
+import { Heart } from "lucide-react";
 import { apiPost } from "@/lib/api";
 import { formatCurrency, formatNumber } from "@/lib/format";
 import type {
@@ -460,11 +463,18 @@ function QALYSimulationTab() {
           </>
         )}
 
-        {!mutation.isPending && !result && (
-          <div className="flex items-center justify-center rounded-xl border border-dashed border-border/50 bg-card/20 py-16 text-sm text-muted-foreground">
-            Configure intervention parameters and click Run to see QALY
-            simulation results.
-          </div>
+        {mutation.isError && !mutation.isPending && (
+          <InlineError
+            message={mutation.error.message}
+            onRetry={handleRun}
+          />
+        )}
+
+        {!mutation.isPending && !result && !mutation.isError && (
+          <EmptyState
+            icon={Heart}
+            message="Configure intervention parameters and click Run to see QALY simulation results."
+          />
         )}
       </div>
     </div>
@@ -757,11 +767,18 @@ function CostEffectivenessTab() {
         </>
       )}
 
-      {!mutation.isPending && !result && (
-        <div className="flex items-center justify-center rounded-xl border border-dashed border-border/50 bg-card/20 py-16 text-sm text-muted-foreground">
-          Configure two interventions and click Run CEA to compare
-          cost-effectiveness.
-        </div>
+      {mutation.isError && !mutation.isPending && (
+        <InlineError
+          message={mutation.error.message}
+          onRetry={handleRun}
+        />
+      )}
+
+      {!mutation.isPending && !result && !mutation.isError && (
+        <EmptyState
+          icon={Heart}
+          message="Configure two interventions and click Run CEA to compare cost-effectiveness."
+        />
       )}
     </div>
   );
@@ -980,11 +997,18 @@ function TreatmentOptimizerTab() {
           </>
         )}
 
-        {!mutation.isPending && !result && (
-          <div className="flex items-center justify-center rounded-xl border border-dashed border-border/50 bg-card/20 py-16 text-sm text-muted-foreground">
-            Configure dose parameters and click Optimize Schedule to find the
-            optimal treatment schedule.
-          </div>
+        {mutation.isError && !mutation.isPending && (
+          <InlineError
+            message={mutation.error.message}
+            onRetry={handleRun}
+          />
+        )}
+
+        {!mutation.isPending && !result && !mutation.isError && (
+          <EmptyState
+            icon={Heart}
+            message="Configure dose parameters and click Optimize Schedule to find the optimal treatment schedule."
+          />
         )}
       </div>
     </div>
@@ -1194,10 +1218,10 @@ function ClinicalScenariosTab() {
       )}
 
       {!isRunning && results.length === 0 && (
-        <div className="flex items-center justify-center rounded-xl border border-dashed border-border/50 bg-card/20 py-16 text-sm text-muted-foreground">
-          Click Run All Scenarios to evaluate pre-configured clinical
-          scenarios.
-        </div>
+        <EmptyState
+          icon={Heart}
+          message="Click Run All Scenarios to evaluate pre-configured clinical scenarios."
+        />
       )}
     </div>
   );

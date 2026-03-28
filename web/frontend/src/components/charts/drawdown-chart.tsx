@@ -50,7 +50,7 @@ export function DrawdownChart({ data, height = 200 }: DrawdownChartProps) {
         />
         <RTooltip
           contentStyle={TOOLTIP_STYLE}
-          formatter={(v?: number) => [`${((v ?? 0) * 100).toFixed(2)}%`, "Drawdown"]}
+          formatter={(v: unknown) => [`${((Number(v) || 0) * 100).toFixed(2)}%`, "Drawdown"]}
         />
         <Area
           type="monotone"

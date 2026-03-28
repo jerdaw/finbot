@@ -9,9 +9,13 @@ import {
   Database,
   FlaskConical,
   Heart,
+  Layers,
   LineChart,
+  PieChart,
+  Shield,
   Shuffle,
   TrendingUp,
+  Zap,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StatCard } from "@/components/common/stat-card";
@@ -28,6 +32,10 @@ const FEATURED_LINKS = [
 const MORE_LINKS = [
   { label: "Optimizer", href: "/optimizer", icon: TrendingUp, description: "Optimize DCA parameters", color: "from-amber-500/10 to-amber-600/5", iconColor: "text-amber-400" },
   { label: "Walk-Forward", href: "/walk-forward", icon: BarChart3, description: "Out-of-sample validation", color: "from-cyan-500/10 to-cyan-600/5", iconColor: "text-cyan-400" },
+  { label: "Risk Analytics", href: "/risk-analytics", icon: Shield, description: "VaR, stress testing, and Kelly criterion", color: "from-red-500/10 to-red-600/5", iconColor: "text-red-400" },
+  { label: "Portfolio Analytics", href: "/portfolio-analytics", icon: PieChart, description: "Rolling metrics, benchmark, drawdown", color: "from-sky-500/10 to-sky-600/5", iconColor: "text-sky-400" },
+  { label: "Factor Analytics", href: "/factor-analytics", icon: Layers, description: "Multi-factor regression and attribution", color: "from-violet-500/10 to-violet-600/5", iconColor: "text-violet-400" },
+  { label: "Real-Time Quotes", href: "/realtime-quotes", icon: Zap, description: "Live pricing from multiple providers", color: "from-yellow-500/10 to-yellow-600/5", iconColor: "text-yellow-400" },
   { label: "Health Economics", href: "/health-economics", icon: Heart, description: "QALY and cost-effectiveness", color: "from-rose-500/10 to-rose-600/5", iconColor: "text-rose-400" },
   { label: "Experiments", href: "/experiments", icon: FlaskConical, description: "Compare backtest runs", color: "from-indigo-500/10 to-indigo-600/5", iconColor: "text-indigo-400" },
   { label: "Data Status", href: "/data-status", icon: Database, description: "Monitor data freshness", color: "from-teal-500/10 to-teal-600/5", iconColor: "text-teal-400" },
@@ -174,7 +182,7 @@ export default function DashboardPage() {
         <p className="mb-4 text-xs font-medium tracking-wider text-muted-foreground uppercase">
           More Tools
         </p>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {MORE_LINKS.map((link) => (
             <ToolCard key={link.href} link={link} />
           ))}
