@@ -61,7 +61,7 @@ Static Analysis Results Interchange Format for GitHub Security:
 
 Reports are automatically generated on every CI run and uploaded as artifacts:
 1. Go to Actions → Select workflow run
-2. Download `docker-security-report-cli` and `docker-security-report-api`
+2. Download `docker-security-monitor-report`
 3. Extract and review reports
 
 ## Report Retention

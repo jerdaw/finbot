@@ -67,9 +67,9 @@ The scan is configured with `ignore-unfixed: true`, which means:
 ### Viewing Results
 
 **In GitHub Actions:**
-1. Go to Actions tab → Select workflow run → Click the `docker-security-scan (cli)` or `docker-security-scan (api)` job
+1. Go to Actions tab → Select the Docker security workflow run
 2. Expand scan steps to see table output
-3. Download the `docker-security-report-cli` or `docker-security-report-api` artifact for detailed JSON/SARIF reports
+3. Download the `docker-security-monitor-report` artifact for detailed JSON/SARIF reports
 
 **In GitHub Security:**
 1. Go to Security tab → Code scanning alerts → Trivy
