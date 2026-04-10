@@ -33,7 +33,7 @@ All workflow files (`.github/workflows/*.yml`) use SHA-pinned actions with versi
   uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
 - name: Install uv
-  uses: astral-sh/setup-uv@d0d8abe699bfb85fec6de9f7adb5ae17292296ff # v6
+  uses: astral-sh/setup-uv@cec208311dfd045dd5311c1add060b2062131d57 # v8.0.0
 ```
 
 ### Pinned Actions
@@ -41,15 +41,17 @@ All workflow files (`.github/workflows/*.yml`) use SHA-pinned actions with versi
 | Action | Version | SHA (first 8 chars) |
 |--------|---------|---------------------|
 | `actions/checkout` | v6 | `de0fac2e` |
-| `actions/checkout` | v4 | `34e11487` |
-| `astral-sh/setup-uv` | v6 | `d0d8abe6` |
+| `actions/setup-python` | v5.1.0 | `f677139b` |
+| `astral-sh/setup-uv` | v8.0.0 | `cec20831` |
 | `codecov/codecov-action` | v5 | `671740ac` |
-| `actions/upload-artifact` | v4 | `ea165f8d` |
-| `actions/download-artifact` | v4 | `d3f86a10` |
-| `aquasecurity/trivy-action` | 0.29.0 | `18f2510e` |
-| `github/codeql-action/upload-sarif` | v3 | `60d8f0d1` |
-| `softprops/action-gh-release` | v2 | `a06a81a0` |
-| `ossf/scorecard-action` | v2.4.0 | `ff5dd892` |
+| `actions/upload-artifact` | v7.0.0 | `bbbca2dd` |
+| `actions/download-artifact` | v8.0.1 | `3e5f45b2` |
+| `actions/github-script` | v8.0.0 | `ed597411` |
+| `dependabot/fetch-metadata` | v2 | `21025c70` |
+| `aquasecurity/trivy-action` | v0.34.1 | `57a97c7e` |
+| `github/codeql-action/upload-sarif` | v4.35.1 | `c10b8064` |
+| `softprops/action-gh-release` | v2 | `153bb8e0` |
+| `ossf/scorecard-action` | v2.4.3 | `4eaacf05` |
 
 ## Updating Actions
 

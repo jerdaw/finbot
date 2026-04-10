@@ -25,8 +25,8 @@ Automated GitHub Actions workflow for creating releases with a single git tag co
 - Detects prereleases based on tag pattern (alpha/beta/rc)
 - Uploads build artifacts to release
 - Uses official GitHub Actions marketplace actions:
-  - `actions/checkout@v4`
-  - `actions/upload-artifact@v4` / `actions/download-artifact@v4`
+  - `actions/checkout@v6`
+  - `actions/upload-artifact@v7` / `actions/download-artifact@v8`
   - `softprops/action-gh-release@v2`
 
 ### 2. `docs/guides/release-process.md`
@@ -199,13 +199,13 @@ The `GITHUB_TOKEN` is automatically provided by GitHub Actions.
 ## Dependencies
 
 **GitHub Actions**:
-- `actions/checkout@v4` - Check out repository code
-- `actions/upload-artifact@v4` - Upload build artifacts between jobs
-- `actions/download-artifact@v4` - Download artifacts in release job
+- `actions/checkout@v6` - Check out repository code
+- `actions/upload-artifact@v7` - Upload build artifacts between jobs
+- `actions/download-artifact@v8` - Download artifacts in release job
 - `softprops/action-gh-release@v2` - Create GitHub release
 
 **Build Tools**:
-- `uv` - Python package manager (installed via `astral-sh/setup-uv@v6`)
+- `uv` - Python package manager (installed via `astral-sh/setup-uv@v8`)
 - Python 3.13 (for building)
 
 ## Troubleshooting

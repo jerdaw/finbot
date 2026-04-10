@@ -127,21 +127,21 @@ jobs:
               echo "- Scan status: ${status}"
               echo "- Critical: ${critical_count}"
               echo "- High: ${high_count}"
-            } >> docker-security-issue-body.md
+            } >> docker-security-summary.md
 
             if [[ "$status" == "build_failed" ]]; then
-              echo "- Findings: image build failed before scanning" >> docker-security-issue-body.md
+              echo "- Findings: image build failed before scanning" >> docker-security-summary.md
             elif (( critical_count > 0 || high_count > 0 )); then
               jq -r '
                 .Results[]?.Vulnerabilities[]?
                 | select(.Severity == "CRITICAL" or .Severity == "HIGH")
                 | "- `\(.PkgName)` \(.InstalledVersion) -> \(.FixedVersion // "no fix published") (\(.Severity), \(.VulnerabilityID))"
-              ' "$report_file" >> docker-security-issue-body.md
+              ' "$report_file" >> docker-security-summary.md
             else
-              echo "- Findings: none" >> docker-security-issue-body.md
+              echo "- Findings: none" >> docker-security-summary.md
             fi
 
-            echo "" >> docker-security-issue-body.md
+            echo "" >> docker-security-summary.md
           }
 
           summarize_image "$CLI_BUILD_OUTCOME" "trivy-report-cli.json" cli_critical_count cli_high_count cli_scan_status
@@ -163,7 +163,7 @@ jobs:
             echo "- Critical: ${critical_count}"
             echo "- High: ${high_count}"
             echo ""
-          } > docker-security-issue-body.md
+          } > docker-security-summary.md
 
           append_findings "CLI" "$cli_scan_status" "trivy-report-cli.json" "$cli_critical_count" "$cli_high_count"
           append_findings "API" "$api_scan_status" "trivy-report-api.json" "$api_critical_count" "$api_high_count"
@@ -182,19 +182,19 @@ jobs:
             echo "- Critical: ${critical_count}"
             echo "- High: ${high_count}"
             echo ""
-            cat docker-security-issue-body.md
+            cat docker-security-summary.md
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload CLI Trivy results to GitHub Security tab
         if: always() && steps.build_cli_image.outcome == 'success'
-        uses: github/codeql-action/upload-sarif@38697555549f1db7851b81482ff19f1fa5c4fedc # v4.34.1
+        uses: github/codeql-action/upload-sarif@c10b8064de6f491fea524254123dbe5e09572f13 # v4.35.1
         with:
           sarif_file: "trivy-results-cli.sarif"
           category: "trivy-cli"
 
       - name: Upload API Trivy results to GitHub Security tab
         if: always() && steps.build_api_image.outcome == 'success'
-        uses: github/codeql-action/upload-sarif@38697555549f1db7851b81482ff19f1fa5c4fedc # v4.34.1
+        uses: github/codeql-action/upload-sarif@c10b8064de6f491fea524254123dbe5e09572f13 # v4.35.1
         with:
           sarif_file: "trivy-results-api.sarif"
           category: "trivy-api"
@@ -209,7 +209,7 @@ jobs:
             trivy-report-cli.json
             trivy-results-api.sarif
             trivy-report-api.json
-            docker-security-issue-body.md
+            docker-security-summary.md
           retention-days: 30
 
       - name: Fail when image build fails or HIGH/CRITICAL vulnerabilities are present

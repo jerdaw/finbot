@@ -372,7 +372,7 @@ docker-security-scan:
       run: docker build -t finbot-cli:${{ github.sha }} -f Dockerfile .
 
     - name: Run Trivy scanner
-      uses: aquasecurity/trivy-action@0.29.0
+      uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
       with:
         image-ref: 'finbot-cli:${{ github.sha }}'
         format: 'sarif'
@@ -382,7 +382,7 @@ docker-security-scan:
         ignore-unfixed: true     # Skip unfixable CVEs
 
     - name: Upload to GitHub Security
-      uses: github/codeql-action/upload-sarif@v3
+      uses: github/codeql-action/upload-sarif@c10b8064de6f491fea524254123dbe5e09572f13 # v4.35.1
       with:
         sarif_file: 'trivy-results-cli.sarif'
 ```
