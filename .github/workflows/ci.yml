@@ -224,31 +224,35 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
+      - name: Install Trivy
+        uses: aquasecurity/setup-trivy@3fb12ec12f41e471780db15c232d5dd185dcb514 # v0.2.6
+        with:
+          cache: false
+          version: v0.69.3
+
       - name: Build Docker image
         run: docker build -t ${{ matrix.image.tag }}:${{ github.sha }} -f ${{ matrix.image.dockerfile }} .
 
       - name: Run Trivy vulnerability scanner on Dockerfile
-        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
-        with:
-          scan-type: "config"
-          scan-ref: "${{ matrix.image.dockerfile }}"
-          format: "table"
-          exit-code: "0"
-          severity: "CRITICAL,HIGH,MEDIUM,LOW"
-          trivyignores: ".trivyignore.example"
+        run: >
+          trivy config
+          --severity CRITICAL,HIGH,MEDIUM,LOW
+          --exit-code 0
+          --ignorefile .trivyignore.example
+          ${{ matrix.image.dockerfile }}
 
       - name: Run Trivy vulnerability scanner on image
-        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
-        with:
-          image-ref: "${{ matrix.image.tag }}:${{ github.sha }}"
-          format: "sarif"
-          output: "trivy-results-${{ matrix.image.name }}.sarif"
-          pkg-types: "library"
-          severity: "CRITICAL,HIGH"
-          exit-code: "1"
-          ignore-unfixed: true
-          limit-severities-for-sarif: true
-          trivyignores: ".trivyignore.example"
+        run: >
+          trivy image
+          --scanners vuln
+          --pkg-types library
+          --format sarif
+          --output trivy-results-${{ matrix.image.name }}.sarif
+          --severity CRITICAL,HIGH
+          --exit-code 1
+          --ignore-unfixed
+          --ignorefile .trivyignore.example
+          ${{ matrix.image.tag }}:${{ github.sha }}
 
       - name: Upload Trivy results to GitHub Security tab
         if: always()
@@ -258,24 +262,27 @@ jobs:
 
       - name: Run Trivy vulnerability scanner for summary
         if: always()
-        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
-        with:
-          image-ref: "${{ matrix.image.tag }}:${{ github.sha }}"
-          format: "table"
-          pkg-types: "os,library"
-          severity: "CRITICAL,HIGH,MEDIUM,LOW"
-          trivyignores: ".trivyignore.example"
+        run: >
+          trivy image
+          --scanners vuln
+          --pkg-types os,library
+          --format table
+          --severity CRITICAL,HIGH,MEDIUM,LOW
+          --ignorefile .trivyignore.example
+          ${{ matrix.image.tag }}:${{ github.sha }}
 
       - name: Generate detailed security report
         if: always()
-        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
-        with:
-          image-ref: "${{ matrix.image.tag }}:${{ github.sha }}"
-          format: "json"
-          output: "trivy-report-${{ matrix.image.name }}.json"
-          pkg-types: "os,library"
-          severity: "CRITICAL,HIGH"
-          trivyignores: ".trivyignore.example"
+        run: >
+          trivy image
+          --scanners vuln
+          --pkg-types os,library
+          --format json
+          --output trivy-report-${{ matrix.image.name }}.json
+          --severity CRITICAL,HIGH
+          --ignore-unfixed
+          --ignorefile .trivyignore.example
+          ${{ matrix.image.tag }}:${{ github.sha }}
 
       - name: Upload security report
         if: always()

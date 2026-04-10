@@ -24,6 +24,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
+      - name: Install Trivy
+        uses: aquasecurity/setup-trivy@3fb12ec12f41e471780db15c232d5dd185dcb514 # v0.2.6
+        with:
+          cache: false
+          version: v0.69.3
+
       - name: Build CLI Docker image
         id: build_cli_image
         continue-on-error: true
@@ -36,57 +42,59 @@ jobs:
 
       - name: Run Trivy vulnerability scanner on CLI image (SARIF)
         if: steps.build_cli_image.outcome == 'success'
-        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
-        with:
-          image-ref: "finbot-cli:security-${{ github.sha }}"
-          format: "sarif"
-          output: "trivy-results-cli.sarif"
-          pkg-types: "os,library"
-          severity: "CRITICAL,HIGH"
-          exit-code: "0"
-          ignore-unfixed: true
-          limit-severities-for-sarif: true
-          trivyignores: ".trivyignore.example"
+        run: >
+          trivy image
+          --scanners vuln
+          --pkg-types os,library
+          --format sarif
+          --output trivy-results-cli.sarif
+          --severity CRITICAL,HIGH
+          --exit-code 0
+          --ignore-unfixed
+          --ignorefile .trivyignore.example
+          finbot-cli:security-${{ github.sha }}
 
       - name: Run Trivy vulnerability scanner on CLI image (JSON)
         if: steps.build_cli_image.outcome == 'success'
-        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
-        with:
-          image-ref: "finbot-cli:security-${{ github.sha }}"
-          format: "json"
-          output: "trivy-report-cli.json"
-          pkg-types: "os,library"
-          severity: "CRITICAL,HIGH"
-          exit-code: "0"
-          ignore-unfixed: true
-          trivyignores: ".trivyignore.example"
+        run: >
+          trivy image
+          --scanners vuln
+          --pkg-types os,library
+          --format json
+          --output trivy-report-cli.json
+          --severity CRITICAL,HIGH
+          --exit-code 0
+          --ignore-unfixed
+          --ignorefile .trivyignore.example
+          finbot-cli:security-${{ github.sha }}
 
       - name: Run Trivy vulnerability scanner on API image (SARIF)
         if: steps.build_api_image.outcome == 'success'
-        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
-        with:
-          image-ref: "finbot-api:security-${{ github.sha }}"
-          format: "sarif"
-          output: "trivy-results-api.sarif"
-          pkg-types: "os,library"
-          severity: "CRITICAL,HIGH"
-          exit-code: "0"
-          ignore-unfixed: true
-          limit-severities-for-sarif: true
-          trivyignores: ".trivyignore.example"
+        run: >
+          trivy image
+          --scanners vuln
+          --pkg-types os,library
+          --format sarif
+          --output trivy-results-api.sarif
+          --severity CRITICAL,HIGH
+          --exit-code 0
+          --ignore-unfixed
+          --ignorefile .trivyignore.example
+          finbot-api:security-${{ github.sha }}
 
       - name: Run Trivy vulnerability scanner on API image (JSON)
         if: steps.build_api_image.outcome == 'success'
-        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
-        with:
-          image-ref: "finbot-api:security-${{ github.sha }}"
-          format: "json"
-          output: "trivy-report-api.json"
-          pkg-types: "os,library"
-          severity: "CRITICAL,HIGH"
-          exit-code: "0"
-          ignore-unfixed: true
-          trivyignores: ".trivyignore.example"
+        run: >
+          trivy image
+          --scanners vuln
+          --pkg-types os,library
+          --format json
+          --output trivy-report-api.json
+          --severity CRITICAL,HIGH
+          --exit-code 0
+          --ignore-unfixed
+          --ignorefile .trivyignore.example
+          finbot-api:security-${{ github.sha }}
 
       - name: Summarize vulnerability counts and findings
         id: vuln_summary
