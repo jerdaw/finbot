@@ -59,7 +59,7 @@ Trivy categorizes vulnerabilities into severity levels:
 | **MEDIUM** | Moderate security risk requiring attention | ⚠️ Warning/report only |
 | **LOW** | Minor security risk or hardening opportunity | ⚠️ Warning/report only |
 
-**Note**: Push CI is configured to fail on CRITICAL and HIGH library vulnerabilities (`vuln-type: 'library'`, `exit-code: '1'`). OS-package findings from the Debian/Python base image are still captured in JSON artifacts and in the scheduled monitor, but they do not block every push.
+**Note**: Push CI is configured to fail on CRITICAL and HIGH library vulnerabilities (`pkg-types: 'library'`, `exit-code: '1'`). OS-package findings from the Debian/Python base image are still captured in JSON artifacts and in the scheduled monitor, but they do not block every push.
 
 ### Ignore Unfixed Vulnerabilities
 
@@ -382,12 +382,13 @@ docker-security-scan:
       uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
       with:
         image-ref: 'finbot-cli:${{ github.sha }}'
-        vuln-type: 'library'
+        pkg-types: 'library'
         format: 'sarif'
         output: 'trivy-results-cli.sarif'
         severity: 'CRITICAL,HIGH'
         exit-code: '1'           # Fail on CRITICAL/HIGH library findings
         ignore-unfixed: true     # Skip unfixable CVEs
+        limit-severities-for-sarif: true
 
     - name: Upload to GitHub Security
       uses: github/codeql-action/upload-sarif@c10b8064de6f491fea524254123dbe5e09572f13 # v4.35.1
