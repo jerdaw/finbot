@@ -59,7 +59,7 @@ Trivy categorizes vulnerabilities into severity levels:
 | **MEDIUM** | Moderate security risk requiring attention | ⚠️ Warning/report only |
 | **LOW** | Minor security risk or hardening opportunity | ⚠️ Warning/report only |
 
-**Note**: Push CI is configured to fail on CRITICAL and HIGH library vulnerabilities (`pkg-types: 'library'`, `exit-code: '1'`). OS-package findings from the Debian/Python base image are still captured in JSON artifacts and in the scheduled monitor, but they do not block every push.
+**Note**: Push CI is configured to fail on CRITICAL and HIGH library vulnerabilities by running `trivy image --pkg-types library --exit-code 1`. OS-package findings from the Debian/Python base image are still captured in JSON artifacts and in the scheduled monitor, but they do not block every push.
 
 ### Ignore Unfixed Vulnerabilities
 
@@ -378,17 +378,24 @@ docker-security-scan:
     - name: Build Docker image
       run: docker build -t finbot-cli:${{ github.sha }} -f Dockerfile .
 
-    - name: Run Trivy scanner
-      uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
+    - name: Install Trivy
+      uses: aquasecurity/setup-trivy@3fb12ec12f41e471780db15c232d5dd185dcb514 # v0.2.6
       with:
-        image-ref: 'finbot-cli:${{ github.sha }}'
-        pkg-types: 'library'
-        format: 'sarif'
-        output: 'trivy-results-cli.sarif'
-        severity: 'CRITICAL,HIGH'
-        exit-code: '1'           # Fail on CRITICAL/HIGH library findings
-        ignore-unfixed: true     # Skip unfixable CVEs
-        limit-severities-for-sarif: true
+        cache: false
+        version: v0.69.3
+
+    - name: Run Trivy scanner
+      run: >
+        trivy image
+        --scanners vuln
+        --pkg-types library
+        --format sarif
+        --output trivy-results-cli.sarif
+        --severity CRITICAL,HIGH
+        --exit-code 1           # Fail on CRITICAL/HIGH library findings
+        --ignore-unfixed        # Skip unfixable CVEs
+        --ignorefile .trivyignore.example
+        finbot-cli:${{ github.sha }}
 
     - name: Upload to GitHub Security
       uses: github/codeql-action/upload-sarif@c10b8064de6f491fea524254123dbe5e09572f13 # v4.35.1
