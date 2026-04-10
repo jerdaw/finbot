@@ -7,7 +7,7 @@ This guide documents the automated Docker container security scanning process fo
 - the root CLI image from `Dockerfile`
 - the API image from `web/Dockerfile.backend`
 
-The scans cover Dockerfile configuration, base images, OS packages, and Python dependencies.
+The scans cover Dockerfile configuration, base images, OS packages, and Python dependencies. The repository uses separate push-time and scheduled workflows so daily CI remains actionable while still tracking broader container risk.
 
 ## Scanning Process
 
@@ -16,12 +16,18 @@ The scans cover Dockerfile configuration, base images, OS packages, and Python d
 The `docker-security-scan` job in `.github/workflows/ci.yml` runs on every push and pull request to the main branch. It performs the same scan flow for both the CLI and API images:
 
 1. **Dockerfile Configuration Scan**: Checks Dockerfile for misconfigurations and security issues
-2. **Image Vulnerability Scan**: Scans the built image for CVEs in:
-   - Base image (python:3.12-slim)
-   - OS packages (Debian)
-   - Python packages (from uv.lock)
-3. **SARIF Upload**: Sends results to GitHub Security tab for tracking
-4. **Artifact Upload**: Stores detailed reports as CI artifacts
+2. **Push-Time Library Gate**: Scans the built image for HIGH/CRITICAL library vulnerabilities and fails CI only for those findings
+3. **SARIF Upload**: Sends the push-time gated findings to GitHub Security tab for tracking
+4. **Artifact Upload**: Stores detailed reports as CI artifacts, including broader OS and library findings for review
+
+### Scheduled Docker Security Monitoring
+
+The `Docker Security Monitor` workflow in `.github/workflows/docker-security-monitor.yml` runs weekly and on manual dispatch. It scans the same CLI and API images, uploads SARIF and JSON artifacts, and fails when HIGH/CRITICAL OS or library findings are present.
+
+This split is intentional:
+
+- Push CI should block on vulnerabilities that are usually remediable in-repo.
+- The scheduled monitor should continue to surface upstream Debian or base-image churn without turning every push into a race against transient distro advisories.
 
 ### Scan Execution Steps
 
@@ -34,26 +40,26 @@ docker build -t finbot-api:${{ github.sha }} -f web/Dockerfile.backend .
 trivy config Dockerfile
 trivy config web/Dockerfile.backend
 
-# 3. Scan built images for vulnerabilities
-trivy image finbot-cli:${{ github.sha }}
-trivy image finbot-api:${{ github.sha }}
+# 3. Gate push CI on image library vulnerabilities
+trivy image --vuln-type library finbot-cli:${{ github.sha }}
+trivy image --vuln-type library finbot-api:${{ github.sha }}
 
-# 4. Upload results to GitHub Security
-# 5. Generate and store detailed reports
+# 4. Upload push-time gated results to GitHub Security
+# 5. Generate and store detailed OS + library reports
 ```
 
 ### Severity Levels
 
 Trivy categorizes vulnerabilities into severity levels:
 
-| Severity | Description | CI Behavior |
-|----------|-------------|-------------|
-| **CRITICAL** | Immediate security risk requiring urgent action | ❌ Fails CI build |
-| **HIGH** | Significant security risk requiring prompt action | ❌ Fails CI build |
-| **MEDIUM** | Moderate security risk requiring attention | ⚠️ Warning (does not fail) |
-| **LOW** | Minor security risk or hardening opportunity | ⚠️ Warning (does not fail) |
+| Severity | Description | Push CI Behavior |
+|----------|-------------|------------------|
+| **CRITICAL** | Immediate security risk requiring urgent action | ❌ Fails CI build for library findings |
+| **HIGH** | Significant security risk requiring prompt action | ❌ Fails CI build for library findings |
+| **MEDIUM** | Moderate security risk requiring attention | ⚠️ Warning/report only |
+| **LOW** | Minor security risk or hardening opportunity | ⚠️ Warning/report only |
 
-**Note**: The CI is configured to fail on CRITICAL and HIGH vulnerabilities (`exit-code: '1'`), but continues on MEDIUM and LOW to avoid blocking development on minor issues.
+**Note**: Push CI is configured to fail on CRITICAL and HIGH library vulnerabilities (`vuln-type: 'library'`, `exit-code: '1'`). OS-package findings from the Debian/Python base image are still captured in JSON artifacts and in the scheduled monitor, but they do not block every push.
 
 ### Ignore Unfixed Vulnerabilities
 
@@ -67,9 +73,9 @@ The scan is configured with `ignore-unfixed: true`, which means:
 ### Viewing Results
 
 **In GitHub Actions:**
-1. Go to Actions tab → Select the Docker security workflow run
+1. Go to Actions tab → Select either the `CI` run for push-time gating or `Docker Security Monitor` for the weekly full-image report
 2. Expand scan steps to see table output
-3. Download the `docker-security-monitor-report` artifact for detailed JSON/SARIF reports
+3. Download the `docker-security-report-*` or `docker-security-monitor-report` artifact for detailed JSON/SARIF reports
 
 **In GitHub Security:**
 1. Go to Security tab → Code scanning alerts → Trivy
@@ -144,11 +150,11 @@ Vulnerabilities come from three sources:
 
 **A. Base Image (python:3.12-slim)**
 - CVEs in the Python base image or Debian OS packages
-- Solution: Update to newer base image tag
+- Solution: Update to newer base image tag or wait for upstream image refresh if no patched package is available yet
 
 **B. OS Packages**
 - Debian packages installed in the container
-- Solution: Update Dockerfile to install patched versions
+- Solution: Update Dockerfile to install patched versions when practical; otherwise track the issue in the scheduled monitor until upstream publishes a fix
 
 **C. Python Dependencies**
 - Packages from `pyproject.toml` and `uv.lock`
@@ -295,7 +301,8 @@ docker inspect python:3.12-slim | jq '.[0].Id'
    ```
 
 4. **Create PR and verify CI**:
-   - CI will run full security scan
+   - CI will run the push-time library gate plus artifact/report generation
+   - Review the scheduled monitor or downloaded JSON artifact for OS-level findings
    - Review GitHub Security tab for changes
    - Merge if all checks pass
 
@@ -375,10 +382,11 @@ docker-security-scan:
       uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.34.1
       with:
         image-ref: 'finbot-cli:${{ github.sha }}'
+        vuln-type: 'library'
         format: 'sarif'
         output: 'trivy-results-cli.sarif'
-        severity: 'CRITICAL,HIGH,MEDIUM,LOW'
-        exit-code: '1'           # Fail on CRITICAL/HIGH
+        severity: 'CRITICAL,HIGH'
+        exit-code: '1'           # Fail on CRITICAL/HIGH library findings
         ignore-unfixed: true     # Skip unfixable CVEs
 
     - name: Upload to GitHub Security
@@ -493,7 +501,8 @@ _(Update this table as vulnerabilities are discovered and remediated)_
 ### Related Documentation
 
 - `Dockerfile`: Multi-stage build configuration
-- `.github/workflows/ci.yml`: CI pipeline with security scanning
+- `.github/workflows/ci.yml`: Push/PR CI pipeline with library-gated Docker scanning and full-image artifacts
+- `.github/workflows/docker-security-monitor.yml`: Scheduled full-image Docker security monitor for OS + library findings
 - `docs/guides/pre-commit-hooks-usage.md`: Pre-commit security checks
 - `pyproject.toml`: Python dependency specifications
 
@@ -505,6 +514,6 @@ _(Update this table as vulnerabilities are discovered and remediated)_
 
 ---
 
-**Last Updated**: 2026-02-17
-**Document Version**: 1.0
-**Reviewed By**: Initial creation
+**Last Updated**: 2026-04-10
+**Document Version**: 1.1
+**Reviewed By**: Project maintainer
