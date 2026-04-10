@@ -243,6 +243,7 @@ jobs:
           image-ref: "${{ matrix.image.tag }}:${{ github.sha }}"
           format: "sarif"
           output: "trivy-results-${{ matrix.image.name }}.sarif"
+          vuln-type: "library"
           severity: "CRITICAL,HIGH"
           exit-code: "1"
           ignore-unfixed: true
@@ -260,6 +261,7 @@ jobs:
         with:
           image-ref: "${{ matrix.image.tag }}:${{ github.sha }}"
           format: "table"
+          vuln-type: "os,library"
           severity: "CRITICAL,HIGH,MEDIUM,LOW"
           trivyignores: ".trivyignore.example"
 
@@ -270,6 +272,7 @@ jobs:
           image-ref: "${{ matrix.image.tag }}:${{ github.sha }}"
           format: "json"
           output: "trivy-report-${{ matrix.image.name }}.json"
+          vuln-type: "os,library"
           severity: "CRITICAL,HIGH"
           trivyignores: ".trivyignore.example"
 

@@ -51,8 +51,10 @@ on, while production/runtime installs stay minimal by default.
 ### Security scanning is per image, not per repository-wide image
 
 CI and scheduled security workflows build and scan the CLI and API images independently and report
-findings per image. Workflow summaries and uploaded artifacts keep actionable package-level detail
-without depending on a repeatedly reopened GitHub issue thread.
+findings per image. Push CI gates on library vulnerabilities that are typically remediable within the
+repository, while the scheduled monitor continues to report broader OS and base-image findings.
+Workflow summaries and uploaded artifacts keep actionable package-level detail without depending on a
+repeatedly reopened GitHub issue thread.
 
 ## Consequences
 
@@ -62,6 +64,7 @@ without depending on a repeatedly reopened GitHub issue thread.
 - Lower vulnerability exposure for deployments that do not need dashboard or API dependencies.
 - Clearer packaging model for local installs, Docker builds, and CI.
 - Security findings become actionable because they identify the affected image and package surface.
+- Push CI is less likely to fail on transient upstream Debian churn that is not yet fixable in-repo.
 
 **Negative:**
 
@@ -69,3 +72,5 @@ without depending on a repeatedly reopened GitHub issue thread.
 - CI and contributor installs are slightly more explicit because full-repo workflows must use
   `--all-extras`.
 - There are now multiple runtime surfaces to keep documented and tested.
+- Some OS-level container findings may be visible in the scheduled monitor before they are practical to
+  remediate in push-time CI.
