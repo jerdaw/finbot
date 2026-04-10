@@ -51,8 +51,8 @@ on, while production/runtime installs stay minimal by default.
 ### Security scanning is per image, not per repository-wide image
 
 CI and scheduled security workflows build and scan the CLI and API images independently and report
-findings per image. Automated issue updates include actionable package-level detail instead of only
-aggregate counts.
+findings per image. Workflow summaries and uploaded artifacts keep actionable package-level detail
+without depending on a repeatedly reopened GitHub issue thread.
 
 ## Consequences
 

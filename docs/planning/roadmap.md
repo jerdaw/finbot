@@ -1,7 +1,7 @@
 # Finbot Roadmap
 
 **Created:** 2026-02-10
-**Last Updated:** 2026-03-27
+**Last Updated:** 2026-04-09
 **Status:** Priority 0-9 complete (1771 passing tests). P10 in progress.
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
@@ -18,7 +18,7 @@ See Completed Items table below and git history for details on implemented featu
 
 **Status:** ✅ COMPLETED (2026-03-23)
 
-**What Was Done:** Split the package into a core runtime plus explicit `dashboard`, `web`, `nautilus`, and `notebooks` extras; regenerated `uv.lock`; made the root Docker image CLI-first with opt-in extras; updated the backend image to install the `web` extra; added a clean dashboard install hint; updated contributor/docs workflows to use `--all-extras`; and reworked Docker security automation to build and scan CLI and API images separately with actionable managed-issue details. Added ADR-014 and archived the implementation record.
+**What Was Done:** Split the package into a core runtime plus explicit `dashboard`, `web`, `nautilus`, and `notebooks` extras; regenerated `uv.lock`; made the root Docker image CLI-first with opt-in extras; updated the backend image to install the `web` extra; added a clean dashboard install hint; updated contributor/docs workflows to use `--all-extras`; and reworked Docker security automation to build and scan CLI and API images separately with actionable per-image summaries in workflow artifacts and the GitHub Security tab instead of reopening an issue thread on every run. Added ADR-014 and archived the implementation record.
 
 ### P9.3 Dependabot Noise Reduction and Authorship Guardrails ✓
 
@@ -29,7 +29,8 @@ See Completed Items table below and git history for details on implemented featu
 **Remaining (Deferred — Not Blocking):**
 
 - [ ] Define a protected-branch-compatible human-authored replay workflow for low-risk Dependabot updates if ongoing manual handling becomes burdensome
-- [ ] Remediate historical non-human commit authorship on protected `main` via a coordinated history-rewrite effort or documented cutover plan (2026-03-23 audit confirmed existing `dependabot[bot]`, `github-actions[bot]`, and `CI User` commits)
+- [ ] Remediate historical non-human commit authorship on protected `main` via a coordinated history-rewrite effort or documented cutover plan (2026-04-09 audit confirmed existing `dependabot[bot]`, blank-author, and `CI User` commits)
+- [ ] Review broad dependency batches and major GitHub Action upgrades as human-authored replay changes instead of merging bot-authored PRs directly
 
 ### P9.2 Autonomous Wrap-Up ✓
 
@@ -250,7 +251,7 @@ See Completed Items table for full details on all 25 completed items.
 
 | Item | Completed | Notes |
 | :--- | :--- | :--- |
-| Runtime surface split and Docker security hardening (P9.4) | 2026-03-23 | Split core/runtime vs optional extras (`dashboard`, `web`, `nautilus`, `notebooks`), made the root Docker image CLI-first, updated the backend image to install the `web` extra, added per-image CLI/API Docker security scanning and issue details, and archived the implementation record with ADR-014 |
+| Runtime surface split and Docker security hardening (P9.4) | 2026-03-23 | Split core/runtime vs optional extras (`dashboard`, `web`, `nautilus`, `notebooks`), made the root Docker image CLI-first, updated the backend image to install the `web` extra, added per-image CLI/API Docker security scanning, and later reduced scheduled-monitor notification churn by keeping findings in workflow artifacts/Security tab instead of issue-thread updates |
 | Dependabot noise reduction and authorship guardrails (9.3) | 2026-03-16 | Grouped GitHub Actions patch/minor updates, removed dependency-only CODEOWNERS review requests, created missing Dependabot labels, reduced duplicate approval noise, and required a human PAT for fully automatic merges |
 | Fix logger code duplication (0.1) | 2026-02-10 | Consolidated to `libs/logger/utils.py`, changed `InfoFilter` to `NonErrorFilter` |
 | Fix import-time side effects (0.2) | 2026-02-10 | Converted to lazy function `get_alpha_vantage_rapi_headers()` |
