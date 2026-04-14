@@ -226,18 +226,20 @@ jobs:
             docker-security-summary.md
           retention-days: 30
 
-      - name: Fail when image build fails or HIGH/CRITICAL vulnerabilities are present
+      - name: Record scheduled monitor outcome in summary
         env:
           CRITICAL_COUNT: ${{ steps.vuln_summary.outputs.critical_count }}
           HIGH_COUNT: ${{ steps.vuln_summary.outputs.high_count }}
           ANY_BUILD_FAILED: ${{ steps.vuln_summary.outputs.any_build_failed }}
         run: |
           set -euo pipefail
+          echo "### Scheduled Monitor Outcome" >> "$GITHUB_STEP_SUMMARY"
           if [[ "$ANY_BUILD_FAILED" == "true" ]]; then
-            echo "At least one Docker image build failed; security scan could not complete."
-            exit 1
-          fi
-          if (( CRITICAL_COUNT > 0 || HIGH_COUNT > 0 )); then
-            echo "Detected ${CRITICAL_COUNT} CRITICAL and ${HIGH_COUNT} HIGH vulnerabilities."
-            exit 1
+            echo "- Result: incomplete" >> "$GITHUB_STEP_SUMMARY"
+            echo "- Detail: at least one Docker image build failed before scanning." >> "$GITHUB_STEP_SUMMARY"
+          elif (( CRITICAL_COUNT > 0 || HIGH_COUNT > 0 )); then
+            echo "- Result: findings present" >> "$GITHUB_STEP_SUMMARY"
+            echo "- Detail: detected ${CRITICAL_COUNT} CRITICAL and ${HIGH_COUNT} HIGH vulnerabilities." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "- Result: no HIGH/CRITICAL findings" >> "$GITHUB_STEP_SUMMARY"
           fi

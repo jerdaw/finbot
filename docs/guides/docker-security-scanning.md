@@ -22,12 +22,12 @@ The `docker-security-scan` job in `.github/workflows/ci.yml` runs on every push 
 
 ### Scheduled Docker Security Monitoring
 
-The `Docker Security Monitor` workflow in `.github/workflows/docker-security-monitor.yml` runs weekly and on manual dispatch. It scans the same CLI and API images, uploads SARIF and JSON artifacts, and fails when HIGH/CRITICAL OS or library findings are present.
+The `Docker Security Monitor` workflow in `.github/workflows/docker-security-monitor.yml` runs weekly and on manual dispatch. It scans the same CLI and API images, uploads SARIF and JSON artifacts, and records HIGH/CRITICAL OS or library findings in the run summary, artifacts, and GitHub Security tab without failing the scheduled run.
 
 This split is intentional:
 
 - Push CI should block on vulnerabilities that are usually remediable in-repo.
-- The scheduled monitor should continue to surface upstream Debian or base-image churn without turning every push into a race against transient distro advisories.
+- The scheduled monitor should continue to surface upstream Debian or base-image churn without turning every push or weekly report into a reactive maintenance interrupt.
 
 ### Scan Execution Steps
 
@@ -59,7 +59,7 @@ Trivy categorizes vulnerabilities into severity levels:
 | **MEDIUM** | Moderate security risk requiring attention | ⚠️ Warning/report only |
 | **LOW** | Minor security risk or hardening opportunity | ⚠️ Warning/report only |
 
-**Note**: Push CI is configured to fail on CRITICAL and HIGH library vulnerabilities by running `trivy image --pkg-types library --exit-code 1`. OS-package findings from the Debian/Python base image are still captured in JSON artifacts and in the scheduled monitor, but they do not block every push.
+**Note**: Push CI is configured to fail on CRITICAL and HIGH library vulnerabilities by running `trivy image --pkg-types library --exit-code 1`. OS-package findings from the Debian/Python base image are still captured in JSON artifacts and in the scheduled monitor, but they do not block every push and do not fail the weekly monitor run.
 
 ### Ignore Unfixed Vulnerabilities
 
