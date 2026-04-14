@@ -49,15 +49,18 @@ class DCAParameters:
 TrialKey = tuple[int, float, int, int, int]
 TrialMetrics = tuple[float, float, float, float, float, float]
 MPResult = tuple[TrialKey | None, TrialMetrics | None]
+DEFAULT_DCA_DURATIONS = tuple(round(value) for value in (1, 5, 252 / 12, 252 / 4, 252 / 2, 252, 252 * 2, 252 * 3))
+DEFAULT_DCA_STEPS = tuple(round(value) for value in (1, 5, 10, 252 / 12, 252 / 4))
+DEFAULT_TRIAL_DURATIONS = tuple(round(value) for value in (252 * 3, 252 * 5))
 
 
 def dca_optimizer(
     price_history: pd.Series,
     ticker: str | None = None,
     ratio_range: tuple = (1, 1.5, 2, 3, 5, 10),
-    dca_durations: tuple = tuple(round(n) for n in (1, 5, 252 / 12, 252 / 4, 252 / 2, 252, 252 * 2, 252 * 3)),
-    dca_steps: tuple = tuple(round(n) for n in (1, 5, 10, 252 / 12, 252 / 4)),
-    trial_durations: tuple = tuple(round(n) for n in (252 * 3, 252 * 5)),
+    dca_durations: tuple = DEFAULT_DCA_DURATIONS,
+    dca_steps: tuple = DEFAULT_DCA_STEPS,
+    trial_durations: tuple = DEFAULT_TRIAL_DURATIONS,
     starting_cash: float = 1000,
     start_step: int = 5,
     save_df: bool = True,

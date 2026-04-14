@@ -81,9 +81,7 @@ def np_linear_interpolation(arr: np.ndarray, inplace: bool = False) -> np.ndarra
 
 
 if __name__ == "__main__":
-    from numpy import NaN
-
-    orig = np.array([NaN, 1, 1, NaN, NaN, 2, 2, NaN, 0])
+    orig = np.array([np.nan, 1, 1, np.nan, np.nan, 2, 2, np.nan, 0])
     print(np_linear_interpolation(orig))
     print(orig)
     np_linear_interpolation(orig, inplace=True)
