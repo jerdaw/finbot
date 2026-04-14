@@ -66,6 +66,12 @@ updates:
     commit-message:
       prefix: "deps"
       include: "scope"
+    # Keep Python runtime minor-version jumps intentional.
+    ignore:
+      - dependency-name: "python"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-major"
     groups:
       minor-and-patch:
         update-types:
@@ -89,6 +95,12 @@ updates:
     commit-message:
       prefix: "deps"
       include: "scope"
+    # Keep Python runtime minor-version jumps intentional.
+    ignore:
+      - dependency-name: "python"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-major"
     groups:
       minor-and-patch:
         update-types:
