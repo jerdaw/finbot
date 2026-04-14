@@ -1,5 +1,5 @@
 # Stage 1: Install dependencies
-FROM python:3.12-slim AS builder
+FROM python:3.14-slim AS builder
 
 ARG FINBOT_EXTRAS=""
 
@@ -41,7 +41,7 @@ RUN set -eux; \
 RUN uv pip install --python /app/.venv/bin/python pip==26.0
 
 # Stage 2: Runtime image
-FROM python:3.12-slim AS runtime
+FROM python:3.14-slim AS runtime
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
