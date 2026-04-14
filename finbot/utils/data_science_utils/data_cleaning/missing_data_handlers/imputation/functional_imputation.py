@@ -81,6 +81,8 @@ directional_imputation (simpler forward/backward fill), seasonal_imputation
 
 from __future__ import annotations
 
+from typing import Literal
+
 import pandas as pd
 
 from finbot.utils.data_science_utils.data_cleaning.missing_data_handlers._missing_data_utils import (
@@ -89,18 +91,22 @@ from finbot.utils.data_science_utils.data_cleaning.missing_data_handlers._missin
     _validate_parameters,
 )
 
+InterpolationMethod = Literal["linear", "polynomial", "spline", "quadratic", "cubic"]
 
-def _apply_interpolation(data: pd.Series, method: str, order: int | None = None) -> pd.Series:
+
+def _apply_interpolation(data: pd.Series, method: InterpolationMethod, order: int | None = None) -> pd.Series:
     if method == "quadratic":
         return data.interpolate(method="polynomial", order=2)
-    elif method == "cubic":
+    if method == "cubic":
         return data.interpolate(method="polynomial", order=3)
-    else:
-        return data.interpolate(method=method, order=order)  # type: ignore[call-overload]
+    return data.interpolate(method=method, order=order)
 
 
 def interpolate_data(
-    data: pd.DataFrame | pd.Series, method: str = "linear", order: int | None = None, inplace: bool = False
+    data: pd.DataFrame | pd.Series,
+    method: InterpolationMethod = "linear",
+    order: int | None = None,
+    inplace: bool = False,
 ) -> pd.DataFrame | pd.Series:
     """
     Interpolates missing values in a DataFrame or Series using various methods.
