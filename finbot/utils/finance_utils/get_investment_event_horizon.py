@@ -58,7 +58,7 @@ def calculate_event_horizon(
     cagr = float(cagr)
 
     if yearly_contribution == 0 and initial_value == 0:
-        return np.NaN
+        return np.nan
 
     portfolio_value = initial_value
     year = 1
