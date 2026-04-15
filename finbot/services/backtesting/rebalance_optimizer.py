@@ -45,12 +45,12 @@ def rebalance_optimizer(**kwargs: Any) -> pd.DataFrame:
             for props in cur_test_props
         ]
         combs = tuple(product(*kwargs_copy.values()))
-        results = process_map(run_backtest, combs, disable=False)
-        results = pd.concat(results, axis=0).reset_index(drop=True)
-        if len(set(results["Start Date"])) > 1:
-            results = avg_stepped_results(results)
-        results.sort_values("CAGR", ascending=False, inplace=True)
-        best = results.iloc[0]["rebal_proportions (p)"]
+        result_frames = process_map(run_backtest, combs, disable=False)
+        results_df = pd.concat(result_frames, axis=0).reset_index(drop=True)
+        if len(set(results_df["Start Date"])) > 1:
+            results_df = avg_stepped_results(results_df)
+        results_df.sort_values("CAGR", ascending=False, inplace=True)
+        best = results_df.iloc[0]["rebal_proportions (p)"]
         best_idx = next(i for i in range(n_stocks) if str(cur_test_props[i]) == best)
         best_ratios[best_idx] += round(sum(best_ratios) * cur_step)
-    return results
+    return results_df

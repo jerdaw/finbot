@@ -28,7 +28,7 @@ Finbot is a comprehensive platform for quantitative financial analysis, combinin
 
 - **Data Collection**: Automated pipelines for Yahoo Finance, FRED, Alpha Vantage, Google Sheets, Shiller datasets, and BLS
 - **Simulation**: Realistic modeling of leveraged ETFs, bond ladders, indexes, and Monte Carlo scenarios
-- **Backtesting**: Engine-agnostic backtesting with 12 strategies, typed contracts, and comprehensive performance metrics
+- **Backtesting**: Engine-agnostic backtesting with 13 strategies, typed contracts, and comprehensive performance metrics
 - **Execution**: Paper trading simulator with realistic latency, risk controls, and state recovery for disaster resilience
 - **Optimization**: Grid-search DCA optimizer and portfolio rebalancing tools
 - **Analysis**: Walk-forward analysis, market regime detection, and research-grade documentation with statistical significance testing
@@ -95,38 +95,32 @@ make run-update
 - `make clean` - Remove cache files and build artifacts
 - `make all` - Run full CI pipeline (check + test)
 
-## Current Implementation Status (2026-02-20)
+## Current Implementation Status (2026-04-15)
 
-Engine-agnostic backtesting system with live-readiness execution simulator complete. Priority 7 in progress.
+Priority 0-9 is complete. Priority 10 remains in progress, but the core Next.js frontend and the latest hardening batch are both landed.
 
-- **Epics E0-E6 Complete** (1063+ tests passing)
-  - ✅ E0: Typed contracts for engine portability
-  - ✅ E1: Backtrader adapter implementation
-  - ✅ E2: A/B parity testing with CI gate
-  - ✅ E3: Cost models, corporate actions, walk-forward analysis, regime detection
-  - ✅ E4: Experiment tracking with reproducible snapshots
-  - ✅ E5: Execution simulator with latency, risk controls, state checkpoints
-  - ✅ **E6**: NautilusTrader pilot hardening + decision gate closure (**Defer** outcome, ADR-011)
-- **CI Status**: Tiered CI active (`ci.yml` for PR/main core gates, `ci-heavy.yml` for scheduled/manual heavy checks)
-- **Priority 7**: Walk-forward viz, regime-adaptive strategy, Pareto optimizer, clinical scenarios, hypothesis testing in progress
+- **P0-P9 Complete**
+  - Engine-agnostic contracts, Backtrader adapter path, parity gates, cost/corporate-action fidelity, walk-forward analysis, regime detection, experiment tracking, execution simulation, and runtime hardening are in place.
+  - Risk analytics, portfolio analytics, real-time quotes, factor analytics, and health economics surfaces are implemented across services and Streamlit.
+- **P10 In Progress**
+  - ✅ P10.1: Next.js frontend completion (12 pages, backend routers, shared UI foundation, ADR-015)
+  - ✅ P10.2: Frontend hardening and audit remediation (frequency-gap fix, lazy host probing, restored mypy baseline, mocked Playwright smoke coverage, frontend CI gate)
+  - ⏳ Remaining: responsive mobile hardening, deeper browser-flow coverage beyond smoke tests, and production deployment configuration
+- **CI Status**
+  - Core Python quality/test gates run on push/PR to `main`
+  - Frontend quality runs typecheck, production build, and Playwright smoke tests when frontend-relevant files change
 
-Key deliverables:
-- Engine-agnostic contracts (`finbot/core/contracts/`)
-- Execution simulator with risk management (`finbot/services/execution/`)
-- Backtrader adapter (`finbot/services/backtesting/adapters/`)
-- Walk-forward and regime detection tools
-- State checkpoint/recovery system
-
-Planning and handoff docs:
-- `docs/planning/backtesting-live-readiness-backlog.md`
+Tracking docs:
 - `docs/planning/roadmap.md`
+- `docs/planning/archive/audit-remediation-and-frontend-hardening-2026-04-15.md`
 - `docs/adr/ADR-011-nautilus-decision.md`
+- `docs/adr/ADR-015-nextjs-frontend-completion.md`
 
 ## Prerequisites
 
 | Requirement | Minimum Version |
 | --- | --- |
-| **Python** | 3.12+ |
+| **Python** | 3.11+ |
 | **uv** | 0.6+ |
 
 ### Docker (Alternative)
@@ -394,7 +388,7 @@ graph TB
 | `finbot/services/experiment/` | **NEW**: Experiment tracking and snapshot management |
 | `finbot/utils/` | 176-file utility library (data collection, finance, pandas, datetime, plotting, etc.) |
 | `finbot/services/simulation/` | Fund, index, bond ladder, Monte Carlo simulators |
-| `finbot/services/backtesting/` | Backtesting engine with 12 strategies, cost tracking, corporate actions, regime detection |
+| `finbot/services/backtesting/` | Backtesting engine with 13 strategies, cost tracking, corporate actions, regime detection |
 | `finbot/services/optimization/` | DCA and rebalance portfolio optimizers |
 | `finbot/cli/` | Click-based CLI with 4 commands (simulate, backtest, optimize, update) |
 | `scripts/` | Daily data update pipeline, baseline generation |

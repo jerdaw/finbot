@@ -75,7 +75,7 @@ def get_expected_frequency_dates(
             adj_freq_dates.append(d)
         else:
             # get the last business date before date
-            lbd = max(bd for bd in all_business_dates if d <= d)  # TODO: Make this more efficient
+            lbd = max(bd for bd in all_business_dates if bd <= d)  # TODO: Make this more efficient
             adj_freq_dates.append(lbd)
 
     return set(adj_freq_dates)

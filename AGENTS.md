@@ -16,7 +16,7 @@ Finbot is a financial data collection, simulation, and backtesting platform that
 - **Real-time market data** from Alpaca, Twelve Data, and yfinance with composite fallback
 - **Standalone analytics**: risk (VaR/CVaR, stress testing, Kelly), portfolio (rolling, benchmark, drawdown, diversification), factor (Fama-French regression, attribution, risk decomposition)
 - Health economics analysis (QALY simulation, cost-effectiveness, treatment optimization)
-- Interactive Streamlit web dashboard
+- Interactive Streamlit dashboard plus an in-progress Next.js web frontend
 
 Python `>=3.11,<3.15`. Uses **uv** for dependency management.
 
@@ -46,18 +46,18 @@ uv run python scripts/update_daily.py
 - Repo contributors should use `uv sync --all-extras`.
 - The root `Dockerfile` builds the CLI image by default; dashboard and API images opt into extras explicitly.
 
-## Current Delivery Status (2026-03-27)
+## Current Delivery Status (2026-04-15)
 
-**P0-P9 complete. 1771 passing tests.**
+**P0-P9 complete. P10 remains in progress.**
 
 - **P5** (97.8%): OMSAS/CanMEDS improvements — 44/45 items (item 42 blocked on external resources)
 - **P6** (100%): Backtesting-to-live readiness — Epics E0-E6 complete; ADR-011 confirmed **Defer**
 - **P7** (93%): External impact & advanced capabilities — 25/27 active items
 - **P8** (100%): Risk Analytics, Portfolio Analytics, Real-Time Data, Factor Analytics
 - **P9** (100%): Agent tooling and runtime hardening — P9.1-P9.4 complete
-- **P10** (in progress): Next.js frontend — 12 pages complete, 4 backend routers added (ADR-015)
+- **P10** (in progress): Next.js frontend — 12 pages complete, frontend hardening batch landed (mocked Playwright smoke coverage, frontend CI gate, audit remediation); responsive/mobile/deployment follow-up remains
 
-**Tracking docs:** `docs/planning/roadmap.md`, `docs/planning/backtesting-live-readiness-backlog.md`, `docs/planning/priority-5-6-completion-status.md`, `docs/adr/ADR-011-nautilus-decision.md`
+**Tracking docs:** `docs/planning/roadmap.md`, `docs/planning/archive/audit-remediation-and-frontend-hardening-2026-04-15.md`, `docs/planning/backtesting-live-readiness-backlog.md`, `docs/planning/priority-5-6-completion-status.md`, `docs/adr/ADR-011-nautilus-decision.md`
 
 ## Common Commands
 
@@ -83,9 +83,11 @@ uv run pytest tests/unit/ -v              # unit tests only
 uv run pytest -k test_import              # tests matching pattern
 
 # Web application (Next.js + FastAPI)
-cd web/frontend && npm install && npm run dev   # frontend on :3000
+cd web/frontend && corepack pnpm install        # install frontend deps (Node 20.9+)
+cd web/frontend && corepack pnpm dev            # frontend on :3000
 DYNACONF_ENV=development uv run uvicorn web.backend.main:app --reload  # backend on :8000
-cd web/frontend && npx tsc --noEmit             # type-check frontend
+cd web/frontend && corepack pnpm typecheck      # type-check frontend
+cd web/frontend && NEXT_PUBLIC_API_URL=http://127.0.0.1:3100/_playwright_api corepack pnpm test:e2e  # mocked browser smoke suite; usually CI-only
 
 # Docker
 make docker-build                # build image
@@ -128,6 +130,7 @@ All packages live under the single `finbot/` namespace:
 
 - **Dynaconf-based** environment-aware YAML files (`development.yaml`, `production.yaml`)
 - **APIKeyManager**: Lazy-loaded API keys from env vars (no import failures when keys missing)
+- **Host metadata**: `finbot.constants.host_constants.get_current_host_info()` provides cached, failure-tolerant host snapshots for settings initialization
 - Set `DYNACONF_ENV=development|production` to switch environments
 
 #### `finbot/constants/` — Application Constants
@@ -280,6 +283,7 @@ Next.js 16 App Router with React 19, Tailwind CSS v4, shadcn/ui, Recharts, Frame
 - **`src/components/`**: Reusable components — `layout/` (sidebar, command-palette, header), `common/` (stat-card, chart-card, data-table, tool-layout, config-panel, empty-state, inline-error, heatmap, metric-badge), `charts/` (recharts-wrappers, line-chart-wrapper, drawdown-chart, lightweight-chart)
 - **`src/stores/`**: Zustand stores — `sidebar-store.ts`, `watchlist-store.ts` (localStorage-persisted)
 - **`src/types/api.ts`**: TypeScript interfaces for all API request/response types
+- **`tests/e2e/`**: Mocked Playwright smoke coverage for `/` plus all 12 app routes and one mobile navigation path
 
 ### Data Storage
 
@@ -397,7 +401,7 @@ uv run pytest -k test_simulation
 uv run pytest --cov=finbot tests/
 ```
 
-**Test structure**: `tests/unit/` contains 1771 passing tests across 50+ files covering imports, simulation math, finance utils, all 13 strategies, health economics, order lifecycle, latency, risk controls, checkpoints, cost models, corporate actions, walk-forward, regime detection, dashboard charts, risk analytics, portfolio analytics, real-time data, and factor analytics. `tests/integration/` reserved for future integration tests.
+**Test structure**: `tests/unit/` contains the fast Python unit suite across imports, simulation math, finance utils, all 13 strategies, health economics, order lifecycle, latency, risk controls, checkpoints, cost models, corporate actions, walk-forward, regime detection, dashboard charts, and analytics modules. `tests/integration/` holds parity/integration coverage. `web/frontend/tests/e2e/` contains mocked Playwright browser smoke tests for the Next.js frontend.
 
 ## Documentation
 
@@ -419,6 +423,7 @@ Source in `docs_site/` (index, user-guide, api, research, contributing, changelo
 
 GitHub Actions (`.github/workflows/ci.yml`) on push/PR to main:
 - Lint (`ruff check`), format (`ruff format --check`), type check (`mypy`), security (`bandit`, `pip-audit`)
+- Frontend quality (`pnpm typecheck`, `pnpm build`, mocked Playwright smoke tests) when frontend-relevant files change
 - Tests: `pytest --cov` on Python 3.11, 3.12, 3.13
 - Parity gate: Golden strategy tests (GS-01, GS-02, GS-03)
 - Performance regression: benchmarks vs `tests/performance/baseline.json` (fails if >20% slower)
@@ -441,6 +446,7 @@ See `docs/adr/` for architectural decision records:
 | Pattern | Implementation | Rationale |
 | --- | --- | --- |
 | **Settings Accessors** | `settings_accessors` module in `finbot/config/` | Lazy accessors for MAX_THREADS and API keys (alpha_vantage, nasdaq_data_link, bls, google_finance) |
+| **Lazy Host Snapshot** | `finbot.constants.host_constants.get_current_host_info()` | Keeps settings import resilient when hostname, psutil, or subprocess probes fail |
 | **Lazy API keys** | `APIKeyManager.get_key()` only loads on first access | Prevents import failures when keys not needed |
 | **Queue-based logging** | `finbot/libs/logger/setup_queue_logging.py` | Non-blocking async logging for performance |
 | **Structured audit logs** | `finbot/libs/audit/audit_logger.py` | Queryable audit trails for compliance and debugging |

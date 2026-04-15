@@ -1,18 +1,96 @@
 import hashlib
+import importlib
 import platform
 import socket
 import subprocess  # nosec
 import uuid
 from dataclasses import dataclass, field
+from functools import lru_cache
+from typing import Any
 
-import psutil
+try:
+    psutil: Any = importlib.import_module("psutil")
+except Exception:  # pragma: no cover - only hit when psutil is unavailable
+    psutil = None
+
+UNAVAILABLE = "Unavailable"
+
+
+def _safe_hostname() -> str:
+    """Return the local hostname without raising."""
+    try:
+        hostname = socket.gethostname()
+    except Exception:
+        return UNAVAILABLE
+    return hostname or UNAVAILABLE
+
+
+def _safe_ip_address() -> str:
+    """Resolve the local hostname without raising."""
+    hostname = _safe_hostname()
+    if hostname == UNAVAILABLE:
+        return UNAVAILABLE
+
+    try:
+        ip_address = socket.gethostbyname(hostname)
+    except Exception:
+        return UNAVAILABLE
+    return ip_address or UNAVAILABLE
+
+
+def _safe_cpu_count(*, logical: bool) -> int:
+    """Return a CPU core count or 0 when unavailable."""
+    if psutil is None:
+        return 0
+
+    try:
+        return psutil.cpu_count(logical=logical) or 0
+    except Exception:
+        return 0
+
+
+def _safe_cpu_speed() -> float:
+    """Return the max CPU speed in MHz or 0 when unavailable."""
+    if psutil is None:
+        return 0.0
+
+    try:
+        frequency = psutil.cpu_freq()
+    except Exception:
+        return 0.0
+
+    return float(frequency.max) if frequency is not None else 0.0
+
+
+def _safe_memory_gb() -> float:
+    """Return total memory in GB or 0 when unavailable."""
+    if psutil is None:
+        return 0.0
+
+    try:
+        return float(psutil.virtual_memory().total / (1024**3))
+    except Exception:
+        return 0.0
+
+
+def _safe_disk_usage_gb(field_name: str) -> float:
+    """Return a disk-usage field in GB or 0 when unavailable."""
+    if psutil is None:
+        return 0.0
+
+    try:
+        usage = psutil.disk_usage("/")
+    except Exception:
+        return 0.0
+
+    return float(getattr(usage, field_name, 0) / (1024**3))
 
 
 def _generate_impersistent_host_id() -> str:
     """Generate a unique host ID based on system attributes."""
     # TODO: Using impersistent host ID. ID may change and cause issues with data consistency.
     system_info = [
-        socket.gethostname(),
+        _safe_hostname(),
         platform.processor(),
         platform.system(),
         platform.release(),
@@ -30,21 +108,21 @@ class HostSystem:
     """Snapshot of the current host's hardware and network configuration.
 
     All fields default to auto-detected values via ``platform``, ``psutil``,
-    and ``socket``.  Instantiate with no arguments to capture the current
-    host, or pass keyword arguments to describe a hypothetical host.
+    and ``socket``. Instantiate with no arguments to capture the current host,
+    or pass keyword arguments to describe a hypothetical host.
     """
 
-    hostname: str = field(default_factory=lambda: socket.gethostname())
-    ip_address: str = field(default_factory=lambda: socket.gethostbyname(socket.gethostname()))
+    hostname: str = field(default_factory=_safe_hostname)
+    ip_address: str = field(default_factory=_safe_ip_address)
     operating_system: str = field(default_factory=lambda: f"{platform.system()} {platform.release()}")
     cpu_name: str = field(default_factory=lambda: HostSystem.get_cpu_name())
-    cpu_cores: int = field(default_factory=lambda: psutil.cpu_count(logical=False) or 0)
-    cpu_threads: int = field(default_factory=lambda: psutil.cpu_count(logical=True) or 0)
-    cpu_speed: float = field(default_factory=lambda: psutil.cpu_freq().max if psutil.cpu_freq() else 0)  # MHz
-    total_memory: float = field(default_factory=lambda: psutil.virtual_memory().total / (1024**3))  # GB
-    disk_storage: float = field(default_factory=lambda: psutil.disk_usage("/").total / (1024**3))  # GB
-    available_storage: float = field(default_factory=lambda: psutil.disk_usage("/").free / (1024**3))  # GB
-    used_storage: float = field(default_factory=lambda: psutil.disk_usage("/").used / (1024**3))  # GB
+    cpu_cores: int = field(default_factory=lambda: _safe_cpu_count(logical=False))
+    cpu_threads: int = field(default_factory=lambda: _safe_cpu_count(logical=True))
+    cpu_speed: float = field(default_factory=_safe_cpu_speed)  # MHz
+    total_memory: float = field(default_factory=_safe_memory_gb)  # GB
+    disk_storage: float = field(default_factory=lambda: _safe_disk_usage_gb("total"))  # GB
+    available_storage: float = field(default_factory=lambda: _safe_disk_usage_gb("free"))  # GB
+    used_storage: float = field(default_factory=lambda: _safe_disk_usage_gb("used"))  # GB
     network_interface: str = field(default_factory=lambda: HostSystem.get_active_network_interface())
     host_identifier: str = field(default_factory=_generate_impersistent_host_id)
 
@@ -59,7 +137,7 @@ class HostSystem:
             elif platform.system() == "Darwin":  # macOS
                 command = ["sysctl", "-n", "machdep.cpu.brand_string"]
             else:
-                return "Unavailable"
+                return UNAVAILABLE
 
             if platform.system() == "Linux":
                 # Using subprocess.run() to replace subprocess.check_output()
@@ -70,23 +148,31 @@ class HostSystem:
                 for line in output.split("\n"):
                     if "Model name" in line:
                         return line.split(":")[1].strip()
-                return "Unavailable"
-            else:
-                # For Windows and macOS, the command does not require parsing the output
-                # This only a small security risk since the command is not user-provided
-                result = subprocess.run(command, text=True, capture_output=True, check=True)  # nosec
-                return result.stdout.strip()
+                return UNAVAILABLE
 
-        except subprocess.CalledProcessError:
-            return "Unavailable"
+            # For Windows and macOS, the command does not require parsing the output
+            # This only a small security risk since the command is not user-provided
+            result = subprocess.run(command, text=True, capture_output=True, check=True)  # nosec
+            return result.stdout.strip() or UNAVAILABLE
+
+        except (OSError, subprocess.CalledProcessError):
+            return UNAVAILABLE
 
     @staticmethod
     def get_active_network_interface() -> str:
         """Identify the currently active network interface."""
+        if psutil is None:
+            return "None"
+
+        try:
+            interfaces = psutil.net_if_addrs().items()
+        except Exception:
+            return "None"
+
         active_interfaces = []
-        for interface, addrs in psutil.net_if_addrs().items():
+        for interface, addrs in interfaces:
             for addr in addrs:
-                if addr.family == socket.AF_INET and not addr.address.startswith("127."):
+                if getattr(addr, "family", None) == socket.AF_INET and not getattr(addr, "address", "").startswith("127."):
                     active_interfaces.append(interface)
                     break  # Only add each interface once
         return ", ".join(active_interfaces) if active_interfaces else "None"
@@ -102,11 +188,27 @@ class HostSystem:
         )
 
 
-CURRENT_HOST_INFO = HostSystem()
+@lru_cache(maxsize=1)
+def get_current_host_info() -> HostSystem:
+    """Return a cached snapshot of the current host."""
+    return HostSystem()
+
+
+def __getattr__(name: str) -> Any:
+    """Provide lazy backward-compatible access to CURRENT_HOST_INFO."""
+    if name == "CURRENT_HOST_INFO":
+        return get_current_host_info()
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+
+def __dir__() -> list[str]:
+    """Expose lazy module attributes in dir() output."""
+    return sorted([*globals().keys(), "CURRENT_HOST_INFO"])
+
 
 if __name__ == "__main__":
     # Example Usage
-    print(CURRENT_HOST_INFO)
+    print(get_current_host_info())
     another_host = HostSystem(
         hostname="AnotherHost",
         ip_address="192.168.1.2",
