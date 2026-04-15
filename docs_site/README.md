@@ -1,6 +1,11 @@
 # Finbot Documentation Site
 
-This directory contains the source files for Finbot's MkDocs documentation site.
+This directory contains the source files for Finbot's current MkDocs 1.x
+documentation site.
+
+It is the live legacy-supported docs path for this repo. Do not treat it as
+the default for new standalone docs work while the shared migration track is
+still evaluating a later-wave replacement.
 
 ## Structure
 
@@ -51,7 +56,7 @@ uv run mkdocs build
 ### Deploy to GitHub Pages
 
 ```bash
-# Build and deploy (requires push access)
+# Build and deploy (requires push access; current legacy-supported path)
 uv run mkdocs gh-deploy
 ```
 

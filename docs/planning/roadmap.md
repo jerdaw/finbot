@@ -1,7 +1,7 @@
 # Finbot Roadmap
 
 **Created:** 2026-02-10
-**Last Updated:** 2026-04-10
+**Last Updated:** 2026-04-15
 **Status:** Priority 0-9 complete (1771 passing tests). P10 in progress.
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
@@ -76,6 +76,18 @@ See Completed Items table below and git history for details on implemented featu
 - [ ] End-to-end Playwright tests for all 12 pages
 - [ ] Responsive mobile testing and fixes
 - [ ] Production deployment configuration (Docker, env vars)
+
+## Priority 11: Documentation Platform Governance
+
+### P11.1 Cross-Repo Docs Platform Decision Track
+
+**Status:** IN PROGRESS (decision track only; no migration started)
+
+- [ ] Keep Finbot on MkDocs 1.x + Material in the short term and do not adopt MkDocs for net-new standalone docs work.
+- [ ] Continue pinning/locking MkDocs below v2 and keep the existing docs build healthy while the ecosystem decision remains open.
+- [ ] Keep Finbot out of the early migration waves; `qquotes`, `visitbrief`, and `waittimecanada` should prove the Zensical path first.
+- [ ] Treat Zensical as the intended MkDocs replacement only if strict/deploy behavior is solid and `mkdocstrings` support matures beyond its current preliminary state.
+- [ ] Re-evaluate Finbot only after the simpler sites have migrated successfully and separate API-doc parity checks pass. If Zensical stalls, use Sphinx + MyST as the mature fallback for any future standalone docs rebuild.
 
 ---
 
