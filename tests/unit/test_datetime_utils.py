@@ -227,6 +227,45 @@ class TestGetMissingUSBusinessDates:
         with pytest.raises(TypeError):
             get_missing_us_business_dates(dates)
 
+    def test_detect_frequency_weekly_returns_missing_anchor_business_day(self):
+        """Weekly gaps should map to the prior business day for the missing anchor."""
+        dates = pd.Series(pd.date_range(start="2024-01-07", end="2024-02-11", freq="W").date)
+        dates = dates[dates != date(2024, 1, 28)]
+
+        missing = get_missing_us_business_dates(dates, detect_frequency=True)
+
+        assert missing == [date(2024, 1, 26)]
+
+    def test_detect_frequency_monthly_handles_end_of_month_alignment(self, monkeypatch: pytest.MonkeyPatch):
+        """Monthly gaps should align to the last business day on or before month end."""
+        import finbot.utils.datetime_utils.get_missing_us_business_dates as missing_dates_module
+
+        dates = pd.Series(pd.date_range(start="2024-01-31", end="2024-07-31", freq="BME").date)
+        dates = dates[dates != date(2024, 6, 28)]
+        monkeypatch.setattr(missing_dates_module, "get_timeseries_frequency", lambda _: relativedelta(months=1))
+
+        missing = get_missing_us_business_dates(
+            dates,
+            start_date=date(2024, 1, 31),
+            end_date=date(2024, 7, 31),
+            detect_frequency=True,
+        )
+
+        assert missing == [date(2024, 6, 28)]
+
+    def test_detect_frequency_yearly_returns_expected_gap(self):
+        """Yearly gaps should align to the last business day on or before year end."""
+        dates = pd.Series([date(2021, 12, 31), date(2022, 12, 31), date(2024, 12, 31)])
+
+        missing = get_missing_us_business_dates(
+            dates,
+            start_date=date(2021, 12, 31),
+            end_date=date(2024, 12, 31),
+            detect_frequency=True,
+        )
+
+        assert missing == [date(2023, 12, 29)]
+
 
 class TestStepDatetimes:
     """Tests for step_datetimes()"""

@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+from typing import Never
+
 import pandas as pd
 import streamlit as st
 
+from finbot.core.contracts.walkforward import WalkForwardResult
 from finbot.dashboard.disclaimer import show_sidebar_accessibility, show_sidebar_disclaimer
 from finbot.services.backtesting.walkforward_viz import (
     build_summary_dataframe,
@@ -25,6 +28,13 @@ st.markdown(
     "Walk-forward testing validates a strategy's out-of-sample robustness by running it "
     "on successive non-overlapping test windows, each trained on prior data only."
 )
+
+
+def _stop_with_info(message: str) -> Never:
+    """Show an info message and stop execution in a mypy-friendly way."""
+    st.info(message)
+    st.stop()
+    raise RuntimeError(message)
 
 # ── Sidebar ──────────────────────────────────────────────────────────────────
 with st.sidebar:
@@ -110,21 +120,20 @@ if run_btn:
         )
 
         with st.spinner("Running walk-forward analysis…"):
-            wf_result = run_walk_forward(adapter, request, config, include_train=include_train)
+            run_wf_result = run_walk_forward(adapter, request, config, include_train=include_train)
 
-        st.success(f"Completed {len(wf_result.windows)} windows.")
-        st.session_state["wf_result"] = wf_result
+        st.success(f"Completed {len(run_wf_result.windows)} windows.")
+        st.session_state["wf_result"] = run_wf_result
 
     except Exception as exc:
         st.error(f"Walk-forward failed: {exc}")
         st.stop()
 
 # ── Visualisation (renders cached or freshly-run result) ─────────────────────
-wf_result = st.session_state.get("wf_result")  # type: ignore[assignment]
+wf_result: WalkForwardResult | None = st.session_state.get("wf_result")
 
 if wf_result is None:
-    st.info("Configure the walk-forward parameters in the sidebar and click **Run Walk-Forward**.")  # type: ignore[unreachable]
-    st.stop()
+    _stop_with_info("Configure the walk-forward parameters in the sidebar and click **Run Walk-Forward**.")
 
 # ── Summary table ─────────────────────────────────────────────────────────────
 st.subheader("Summary Statistics")

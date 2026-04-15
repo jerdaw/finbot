@@ -2,13 +2,13 @@
 
 **Created:** 2026-02-10
 **Last Updated:** 2026-04-15
-**Status:** Priority 0-9 complete (1771 passing tests). P10 in progress.
+**Status:** Priority 0-9 complete. P10 in progress.
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
 
 See Completed Items table below and git history for details on implemented features.
 
-**Current Plan Record:** None active. Last archived plan: Next.js Frontend Completion (completed 2026-03-27)
+**Current Plan Record:** None active. Last archived plan: Audit Remediation and Frontend Hardening (completed 2026-04-15)
 
 ---
 
@@ -71,9 +71,24 @@ See Completed Items table below and git history for details on implemented featu
 
 **What Was Done:** Completed the existing Next.js frontend from ~85% to 100%. Created 4 missing `src/lib/` utility files imported by every component. Added 4 FastAPI backend routers (15 endpoints) delegating to existing `finbot/services/` modules. Built 4 new multi-tab pages and 4 supporting components following established patterns. Polished Health Economics page and dashboard home. All 12 pages build and render. See ADR-015.
 
+### P10.2 Frontend Hardening and Audit Remediation ✓
+
+**Status:** ✅ COMPLETED (2026-04-15)
+
+- [x] Fixed `detect_frequency=True` business-date gap detection for weekly/monthly/yearly scenarios
+- [x] Added regression coverage for frequency-aware missing-date detection
+- [x] Restored clean `uv run mypy finbot/` without broad config relaxation
+- [x] Replaced eager host probing on config import with cached, failure-tolerant lazy access
+- [x] Added frontend scripts for `typecheck` and `test:e2e`
+- [x] Added mocked Playwright smoke coverage for `/` and all 12 Next.js routes, plus one mobile navigation path
+- [x] Added `frontend-quality` CI gate with typecheck, production build, and Playwright smoke execution
+- [x] Scoped frontend CI work to frontend-relevant changes to conserve GitHub Actions minutes on the free tier
+
+**What Was Done:** Closed the audit findings by fixing the frequency-aware datetime comparator bug, adding focused regression tests, replacing import-time host probing with a cached accessor, and restoring a clean mypy baseline in the dashboard and Nautilus adapter surfaces. Added deterministic mocked Playwright smoke coverage for the Next.js app, wired a frontend CI job for typecheck/build/browser smoke validation, and limited that job to frontend-touching changes so the free-tier Actions budget is not spent on Python-only work.
+
 ### P10 Remaining / Future
 
-- [ ] End-to-end Playwright tests for all 12 pages
+- [ ] Expand Playwright from mocked smoke coverage to deeper user workflows and broader browser coverage when GitHub Actions minutes allow
 - [ ] Responsive mobile testing and fixes
 - [ ] Production deployment configuration (Docker, env vars)
 
@@ -380,3 +395,4 @@ See Completed Items table for full details on all 25 completed items.
 | AGENTS.md optimization — P9.1 complete (P9.1) | 2026-02-25 | 818 → 447 lines (45% reduction); accuracy fixes (13 strategies, 1752 tests, missing modules, import path); 6 missing Key Entry Points rows added |
 | Autonomous wrap-up — P9.2 complete (P9.2) | 2026-02-25 | mypy fix in 12_factor_analytics.py; 17 new mock-based tests (get_fred_data + get_history); dashboard home page 12-page nav; docstring coverage 79.5% → 80.0%; 1769 total tests |
 | Next.js frontend completion (P10.1) | 2026-03-27 | Completed Next.js frontend: 4 `src/lib/` files, 4 FastAPI routers (15 endpoints), 4 pages (risk/portfolio/factor analytics, realtime quotes), 4 components (heatmap, metric-badge, line-chart-wrapper, watchlist-store), CSS polish, Health Economics cleanup; ADR-015; 0 TS errors, clean build |
+| Frontend hardening + audit remediation (P10.2) | 2026-04-15 | Fixed frequency-aware missing-date detection, added datetime/config regression tests, made host probing lazy/failure-tolerant, restored clean mypy, added mocked Playwright smoke coverage for `/` + all 12 routes, and added a frontend CI gate scoped to frontend-relevant changes |

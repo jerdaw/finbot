@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Never, TypeVar
+
 import numpy as np
 import pandas as pd
 import streamlit as st
@@ -65,6 +67,44 @@ def _load_factor_data(uploaded_file: object) -> pd.DataFrame | None:
         return None
 
 
+T = TypeVar("T")
+
+
+def _stop_with_error(message: str) -> Never:
+    """Show an error and stop execution in a mypy-friendly way."""
+    st.error(message)
+    st.stop()
+    raise RuntimeError(message)
+
+
+def _stop_with_info(message: str) -> Never:
+    """Show an info message and stop execution in a mypy-friendly way."""
+    st.info(message)
+    st.stop()
+    raise RuntimeError(message)
+
+
+def _require_returns(returns: np.ndarray | None, message: str, *, min_len: int) -> np.ndarray:
+    """Require a returns array with at least the requested length."""
+    if returns is None or len(returns) < min_len:
+        _stop_with_error(message)
+    return returns
+
+
+def _require_factor_data(factor_df: pd.DataFrame | None, message: str, *, min_len: int) -> pd.DataFrame:
+    """Require uploaded factor data with at least the requested length."""
+    if factor_df is None or len(factor_df) < min_len:
+        _stop_with_error(message)
+    return factor_df
+
+
+def _require_result(value: T | None, message: str) -> T:
+    """Require a cached computation result."""
+    if value is None:
+        _stop_with_info(message)
+    return value
+
+
 # ── Tab 1: Factor Regression ──────────────────────────────────────────────────
 with tab1:
     with st.sidebar:
@@ -90,20 +130,21 @@ with tab1:
 
     if run_reg:
         if factor_file is None:
-            st.error("Please upload a factor returns CSV file.")
-            st.stop()
+            _stop_with_error("Please upload a factor returns CSV file.")
 
         from finbot.services.factor_analytics.factor_regression import compute_factor_regression
 
-        port_returns = _load_returns(ticker_reg, str(start_reg), str(end_reg))
-        if port_returns is None or len(port_returns) < 30:
-            st.error(f"Could not load enough return data for {ticker_reg}.")
-            st.stop()
+        port_returns = _require_returns(
+            _load_returns(ticker_reg, str(start_reg), str(end_reg)),
+            f"Could not load enough return data for {ticker_reg}.",
+            min_len=30,
+        )
 
-        factor_df = _load_factor_data(factor_file)
-        if factor_df is None:
-            st.error("Could not parse factor CSV. Ensure numeric columns with >= 30 rows.")
-            st.stop()
+        factor_df = _require_factor_data(
+            _load_factor_data(factor_file),
+            "Could not parse factor CSV. Ensure numeric columns with >= 30 rows.",
+            min_len=30,
+        )
 
         # Align lengths
         min_len = min(len(port_returns), len(factor_df))
@@ -128,9 +169,7 @@ with tab1:
 
         st.session_state["fa_reg_result"] = reg_result
 
-    if reg_result is None:
-        st.info("Upload a factor CSV, configure settings, and click **Run Factor Regression**.")
-        st.stop()
+    reg_result = _require_result(reg_result, "Upload a factor CSV, configure settings, and click **Run Factor Regression**.")
 
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Alpha (ann.)", f"{reg_result.alpha:.2%}")
@@ -171,25 +210,20 @@ with tab2:
         run_attr = st.button("Run Attribution", type="primary", key="fa_run_attr")
 
     if run_attr:
-        if reg_result is None:
-            st.error("Run a factor regression first (Tab 1).")  # type: ignore[unreachable]
-            st.stop()
+        reg_result = _require_result(reg_result, "Run a factor regression first (Tab 1).")
 
         if factor_file is None:
-            st.error("Please upload a factor returns CSV file in Tab 1.")
-            st.stop()
+            _stop_with_error("Please upload a factor returns CSV file in Tab 1.")
 
         from finbot.services.factor_analytics.factor_attribution import compute_factor_attribution
 
-        port_returns = _load_returns(ticker_reg, str(start_reg), str(end_reg))
-        if port_returns is None:
-            st.error("Could not load portfolio returns.")
-            st.stop()
+        port_returns = _require_returns(
+            _load_returns(ticker_reg, str(start_reg), str(end_reg)),
+            "Could not load portfolio returns.",
+            min_len=1,
+        )
 
-        factor_df = _load_factor_data(factor_file)
-        if factor_df is None:
-            st.error("Could not parse factor CSV.")
-            st.stop()
+        factor_df = _require_factor_data(_load_factor_data(factor_file), "Could not parse factor CSV.", min_len=1)
 
         min_len = min(len(port_returns), len(factor_df))
         port_returns = port_returns[:min_len]
@@ -200,9 +234,7 @@ with tab2:
 
         st.session_state["fa_attr_result"] = attr_result
 
-    if attr_result is None:
-        st.info("Run a factor regression first (Tab 1), then click **Run Attribution**.")
-        st.stop()
+    attr_result = _require_result(attr_result, "Run a factor regression first (Tab 1), then click **Run Attribution**.")
 
     col1, col2, col3 = st.columns(3)
     col1.metric("Total Return", f"{attr_result.total_return:.2%}")
@@ -231,25 +263,20 @@ with tab3:
         run_risk = st.button("Run Risk Decomposition", type="primary", key="fa_run_risk")
 
     if run_risk:
-        if reg_result is None:
-            st.error("Run a factor regression first (Tab 1).")  # type: ignore[unreachable]
-            st.stop()
+        reg_result = _require_result(reg_result, "Run a factor regression first (Tab 1).")
 
         if factor_file is None:
-            st.error("Please upload a factor returns CSV file in Tab 1.")
-            st.stop()
+            _stop_with_error("Please upload a factor returns CSV file in Tab 1.")
 
         from finbot.services.factor_analytics.factor_risk import compute_factor_risk
 
-        port_returns = _load_returns(ticker_reg, str(start_reg), str(end_reg))
-        if port_returns is None:
-            st.error("Could not load portfolio returns.")
-            st.stop()
+        port_returns = _require_returns(
+            _load_returns(ticker_reg, str(start_reg), str(end_reg)),
+            "Could not load portfolio returns.",
+            min_len=1,
+        )
 
-        factor_df = _load_factor_data(factor_file)
-        if factor_df is None:
-            st.error("Could not parse factor CSV.")
-            st.stop()
+        factor_df = _require_factor_data(_load_factor_data(factor_file), "Could not parse factor CSV.", min_len=1)
 
         min_len = min(len(port_returns), len(factor_df))
         port_returns = port_returns[:min_len]
@@ -260,9 +287,7 @@ with tab3:
 
         st.session_state["fa_risk_result"] = risk_result
 
-    if risk_result is None:
-        st.info("Run a factor regression first (Tab 1), then click **Run Risk Decomposition**.")
-        st.stop()
+    risk_result = _require_result(risk_result, "Run a factor regression first (Tab 1), then click **Run Risk Decomposition**.")
 
     col1, col2, col3 = st.columns(3)
     col1.metric("Systematic Var", f"{risk_result.systematic_variance:.6f}")

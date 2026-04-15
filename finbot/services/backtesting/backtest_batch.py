@@ -140,11 +140,10 @@ def backtest_batch(**kwargs: Any) -> pd.DataFrame:  # noqa: C901 - Complex param
     print(f"Running {n_combs} backtests...")
 
     if not track_batch:
-        results = process_map(
+        result_frames = process_map(
             run_backtest, combs, total=n_combs, desc="Performing backtests", chunksize=1, smoothing=0.1
         )
-        results = pd.concat(results, axis=0).reset_index(drop=True)
-        return results
+        return pd.concat(result_frames, axis=0).reset_index(drop=True)
 
     assert batch_registry is not None
     configuration = {key: [str(value) for value in values] for key, values in kwargs.items()}

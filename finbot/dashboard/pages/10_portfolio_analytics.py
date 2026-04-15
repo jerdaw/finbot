@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Never, TypeVar
+
 import numpy as np
 import pandas as pd
 import streamlit as st
@@ -49,6 +51,37 @@ def _load_returns(ticker: str, start: str, end: str) -> np.ndarray | None:
         return None
 
 
+T = TypeVar("T")
+
+
+def _stop_with_error(message: str) -> Never:
+    """Show an error and stop execution in a mypy-friendly way."""
+    st.error(message)
+    st.stop()
+    raise RuntimeError(message)
+
+
+def _stop_with_info(message: str) -> Never:
+    """Show an info message and stop execution in a mypy-friendly way."""
+    st.info(message)
+    st.stop()
+    raise RuntimeError(message)
+
+
+def _require_returns(returns: np.ndarray | None, message: str, *, min_len: int) -> np.ndarray:
+    """Require a returns array with at least the requested length."""
+    if returns is None or len(returns) < min_len:
+        _stop_with_error(message)
+    return returns
+
+
+def _require_result(value: T | None, message: str) -> T:
+    """Require a cached computation result."""
+    if value is None:
+        _stop_with_info(message)
+    return value
+
+
 # ── Tab 1: Rolling Metrics ─────────────────────────────────────────────────────
 with tab1:
     with st.sidebar:
@@ -69,9 +102,11 @@ with tab1:
         from finbot.services.portfolio_analytics.rolling import compute_rolling_metrics
 
         returns_roll = _load_returns(ticker_roll, str(start_roll), str(end_roll))
-        if returns_roll is None or len(returns_roll) < 30:
-            st.error("Could not load enough return data. Run the daily update pipeline first.")
-            st.stop()
+        returns_roll = _require_returns(
+            returns_roll,
+            "Could not load enough return data. Run the daily update pipeline first.",
+            min_len=30,
+        )
 
         bench_arr: np.ndarray | None = None
         if bench_roll.strip():
@@ -91,9 +126,7 @@ with tab1:
 
         st.session_state["roll_result"] = roll_result
 
-    if roll_result is None:
-        st.info("Configure settings in the sidebar and click **Compute Rolling Metrics**.")
-        st.stop()
+    roll_result = _require_result(roll_result, "Configure settings in the sidebar and click **Compute Rolling Metrics**.")
 
     valid_sharpe = [x for x in roll_result.sharpe if x == x]  # filter NaN
     valid_vol = [x for x in roll_result.volatility if x == x]
@@ -148,12 +181,8 @@ with tab2:
         p_rets = _load_returns(ticker_port, str(start_bench), str(end_bench))
         b_rets = _load_returns(ticker_bench, str(start_bench), str(end_bench))
 
-        if p_rets is None or len(p_rets) < 30:
-            st.error(f"Could not load enough data for {ticker_port}.")
-            st.stop()
-        if b_rets is None or len(b_rets) < 30:
-            st.error(f"Could not load enough data for {ticker_bench}.")
-            st.stop()
+        p_rets = _require_returns(p_rets, f"Could not load enough data for {ticker_port}.", min_len=30)
+        b_rets = _require_returns(b_rets, f"Could not load enough data for {ticker_bench}.", min_len=30)
 
         min_len = min(len(p_rets), len(b_rets))
         p_rets, b_rets = p_rets[:min_len], b_rets[:min_len]
@@ -168,9 +197,7 @@ with tab2:
         st.session_state["bench_p_rets"] = bench_p_rets
         st.session_state["bench_b_rets"] = bench_b_rets
 
-    if bench_result is None:
-        st.info("Configure settings in the sidebar and click **Run Benchmark Comparison**.")
-        st.stop()
+    bench_result = _require_result(bench_result, "Configure settings in the sidebar and click **Run Benchmark Comparison**.")
 
     col1, col2, col3 = st.columns(3)
     col4, col5, col6 = st.columns(3)
@@ -210,18 +237,14 @@ with tab3:
         from finbot.services.portfolio_analytics.drawdown import compute_drawdown_analysis
 
         returns_dd = _load_returns(ticker_dd, str(start_dd), str(end_dd))
-        if returns_dd is None or len(returns_dd) < 2:
-            st.error("Could not load enough return data.")
-            st.stop()
+        returns_dd = _require_returns(returns_dd, "Could not load enough return data.", min_len=2)
 
         with st.spinner("Analysing drawdowns…"):
             dd_result = compute_drawdown_analysis(returns_dd, top_n=top_n_dd)
 
         st.session_state["dd_result"] = dd_result
 
-    if dd_result is None:
-        st.info("Configure settings in the sidebar and click **Run Drawdown Analysis**.")
-        st.stop()
+    dd_result = _require_result(dd_result, "Configure settings in the sidebar and click **Run Drawdown Analysis**.")
 
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Max Drawdown", f"{dd_result.max_depth:.1%}")
@@ -309,9 +332,7 @@ with tab4:
 
         st.session_state["corr_result"] = corr_result
 
-    if corr_result is None:
-        st.info("Configure settings in the sidebar and click **Run Correlation Analysis**.")
-        st.stop()
+    corr_result = _require_result(corr_result, "Configure settings in the sidebar and click **Run Correlation Analysis**.")
 
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("HHI (Concentration)", f"{corr_result.herfindahl_index:.3f}")

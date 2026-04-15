@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 from itertools import product
+from typing import cast
 
 import numpy as np
 from tqdm.contrib.concurrent import process_map
@@ -37,9 +39,9 @@ def gen_rebal_proportions(
 
     start_prods = product(*ranges[: round(len(ranges) / 2)])
     end_prods = product(*ranges[round(len(ranges) / 2) :])
-    n_prods = np.prod([len(r) for r in ranges])
+    n_prods = int(np.prod([len(r) for r in ranges]))
 
-    prods = product(start_prods, end_prods)
+    prods = cast(Iterable[tuple[tuple[float, ...], tuple[float, ...]]], product(start_prods, end_prods))
     results = tuple(
         n
         for n in process_map(

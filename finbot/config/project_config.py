@@ -6,7 +6,7 @@ because it would conflict with the `config` package.
 import pandas as pd
 from dynaconf import Dynaconf, Validator
 
-from finbot.constants.host_constants import CURRENT_HOST_INFO
+import finbot.constants.host_constants as host_constants
 from finbot.constants.path_constants import CONFIG_DIR
 from finbot.utils.multithreading_utils.get_max_threads import get_max_threads
 
@@ -24,7 +24,7 @@ def validate_settings(settings: Dynaconf) -> None:
 
 def configure_settings(settings: Dynaconf) -> None:
     # Host configuration
-    settings.set("host.host_identifier", CURRENT_HOST_INFO.host_identifier)
+    settings.set("host.host_identifier", host_constants.get_current_host_info().host_identifier)
     settings.set("host.max_threads", get_max_threads(reserved_threads=1))
 
     # Logger configuration

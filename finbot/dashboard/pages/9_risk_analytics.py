@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Never
+
 import numpy as np
 import pandas as pd
 import streamlit as st
@@ -45,6 +47,20 @@ def _load_returns_from_ticker(ticker: str, start: str, end: str) -> np.ndarray |
         return None
 
 
+def _stop_with_error(message: str) -> Never:
+    """Show an error and stop execution in a mypy-friendly way."""
+    st.error(message)
+    st.stop()
+    raise RuntimeError(message)
+
+
+def _require_returns(returns: np.ndarray | None, message: str, *, min_len: int) -> np.ndarray:
+    """Require a returns array with at least the requested length."""
+    if returns is None or len(returns) < min_len:
+        _stop_with_error(message)
+    return returns
+
+
 # ── Tab 1: VaR / CVaR ─────────────────────────────────────────────────────────
 with tab1:
     with st.sidebar:
@@ -71,9 +87,11 @@ with tab1:
         else:
             returns_var = _load_returns_from_ticker(ticker_var, str(start_var), str(end_var))
 
-        if returns_var is None or len(returns_var) < 30:
-            st.error("Could not load enough return data. Run the daily update pipeline first or upload a CSV.")
-            st.stop()
+        returns_var = _require_returns(
+            returns_var,
+            "Could not load enough return data. Run the daily update pipeline first or upload a CSV.",
+            min_len=30,
+        )
 
         pv = portfolio_value if portfolio_value > 0 else None
 
@@ -219,9 +237,11 @@ with tab3:
             else:
                 returns_kelly = _load_returns_from_ticker(ticker_kelly, str(start_kelly), str(end_kelly))
 
-            if returns_kelly is None or len(returns_kelly) < 10:
-                st.error("Not enough return data. Upload a CSV or run the daily pipeline first.")
-                st.stop()
+            returns_kelly = _require_returns(
+                returns_kelly,
+                "Not enough return data. Upload a CSV or run the daily pipeline first.",
+                min_len=10,
+            )
 
             result_k = compute_kelly_from_returns(returns_kelly)
 

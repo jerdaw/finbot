@@ -197,3 +197,9 @@ Thumbs.db
 # MkDocs
 site/
 interrogate_badge.svg
+
+# Frontend tooling artifacts
+node_modules/
+web/frontend/.next/
+web/frontend/playwright-report/
+web/frontend/test-results/
