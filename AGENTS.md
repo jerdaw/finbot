@@ -409,6 +409,10 @@ make docs-build       # build static site
 uv run mkdocs gh-deploy  # deploy to GitHub Pages
 ```
 
+This is the current legacy-supported docs path. Keep Finbot on MkDocs 1.x here
+until the later shared migration wave proves safe `mkdocstrings` and
+`docs_site` parity.
+
 Source in `docs_site/` (index, user-guide, api, research, contributing, changelog). Project docs in `docs/` (adr, guidelines, planning, research, guides). See [ADR-003](docs/adr/ADR-003-add-mkdocs-documentation.md).
 
 ## CI/CD

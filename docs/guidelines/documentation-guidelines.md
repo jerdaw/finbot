@@ -16,6 +16,11 @@ docs_site/          # MkDocs source for generated site
 notebooks/          # Jupyter notebooks with demos
 ```
 
+The docs site remains on MkDocs 1.x in the current wave. Do not start the
+Zensical migration here until the earlier shared waves succeed and separate
+API-doc parity checks prove that the `mkdocstrings` path and `docs_dir:
+docs_site` layout are both safe to migrate.
+
 ## When to Write Documentation
 
 | Change Type | Required Documentation |
