@@ -2,6 +2,10 @@
 
 This runbook verifies and maintains the Finbot MkDocs deployment path.
 
+It documents the current legacy-supported path only. Keep this repo on MkDocs
+1.x until the shared migration track reaches the later `mkdocstrings` /
+`docs_site` parity stage described in `docs/planning/roadmap.md`.
+
 ## Scope
 
 - Workflow: `.github/workflows/docs.yml`
