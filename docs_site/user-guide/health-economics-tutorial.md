@@ -454,11 +454,14 @@ Top 5 Treatment Schedules by NMB:
 
 ## Further Reading
 
+**Context and Scope:**
+- [Health Economics Evidence](../research/health-economics-evidence.md) - What the module is designed to support, and where its limits are
+
 **Methodology:**
-- [Health Economics Methodology](../../research/health-economics-methodology.md) - Full mathematical details, validation, 22 academic references
+- [Health Economics Methodology](../research/health-economics-methodology.md) - Model structure, core equations, standards alignment, and limitations
 
 **Examples:**
-- [Health Economics Notebook](../../notebooks/06_health_economics_demo.ipynb) - Interactive Jupyter notebook with visualizations
+- [Health Economics Notebook](https://github.com/jerdaw/finbot/blob/main/notebooks/06_health_economics_demo.ipynb) - Interactive Jupyter notebook with visualizations
 
 **Guidelines:**
 - **NICE Methods Guide:** [nice.org.uk/process/pmg9](https://www.nice.org.uk/process/pmg9)
@@ -486,8 +489,9 @@ You've learned to:
 **Key Takeaway:** Cost-effectiveness analysis provides a rigorous framework for balancing health benefits against costs, but results are jurisdiction-dependent (different countries have different WTP thresholds) and should inform—not replace—clinical judgment.
 
 **Next Steps:**
-- Explore the [methodology document](../../research/health-economics-methodology.md) for theoretical foundations
-- Run the [Jupyter notebook](../../notebooks/06_health_economics_demo.ipynb) for hands-on practice
+- Review the [evidence page](../research/health-economics-evidence.md) for scope, intended use, and current validation posture
+- Explore the [methodology document](../research/health-economics-methodology.md) for theoretical foundations
+- Run the [Jupyter notebook](https://github.com/jerdaw/finbot/blob/main/notebooks/06_health_economics_demo.ipynb) for hands-on practice
 - Apply to your own clinical scenarios by modifying intervention parameters
 - Consider subgroup analysis (age, risk level, comorbidities) for more nuanced decisions
 

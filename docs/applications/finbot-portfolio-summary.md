@@ -18,7 +18,7 @@ These questions matter. They affect retirement security, healthcare coverage dec
 I built Finbot over three years as an independent research project to answer these questions with the same rigor applied in academic research:
 
 - Vectorized simulation (not approximation) of leveraged ETFs back to 1950
-- Backtest 12 investment strategies with realistic transaction costs, slippage, and corporate action handling
+- Backtest 13 investment strategies with realistic transaction costs, slippage, and corporate action handling
 - Monte Carlo probabilistic sensitivity analysis for both portfolio returns and QALY outcomes
 - Walk-forward analysis and market regime detection to test strategy robustness
 - Cost-effectiveness analysis using ICER, NMB, and CEAC — standard health technology assessment methods
@@ -30,11 +30,11 @@ I built Finbot over three years as an independent research project to answer the
 | Metric | Value |
 |--------|-------|
 | Lines of original Python code | 15,000+ |
-| Automated tests | 866 (all passing) |
-| Code coverage | 61.6% |
-| Documentation pages | 113 |
+| Automated tests | Extensive CI-validated suite |
+| Code coverage | Tracked in CI |
+| Documentation | Extensive published docs and project notes |
 | Research notebooks | 8 |
-| Strategies backtested | 12 |
+| Strategies backtested | 13 current implementations |
 | Fund simulations | 16 (SPY, UPRO, TQQQ, TMF, and more) |
 | CI/CD checks per commit | 7 |
 | Years of data analyzed | 40+ (equity), 50+ (leveraged ETF sim) |
@@ -53,7 +53,7 @@ I built Finbot over three years as an independent research project to answer the
 
 ## Research Findings
 
-The most important finding from 12 strategies and 40 years of data: **simple buy-and-hold with low-cost index funds is extraordinarily hard to beat consistently over long time horizons.** Complex timing strategies occasionally outperform, but not reliably enough to justify the additional complexity, tax drag, or behavioral risk.
+The most important finding from a broad strategy set and decades of data: **simple buy-and-hold with low-cost index funds is extraordinarily hard to beat consistently over long time horizons.** Complex timing strategies occasionally outperform, but not reliably enough to justify the additional complexity, tax drag, or behavioral risk.
 
 This is consistent with academic research on active management — and having tested it rigorously myself makes the evidence far more compelling than reading a paper.
 

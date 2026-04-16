@@ -1,6 +1,7 @@
 # Finbot Web Frontend
 
-Professional web application for Finbot's financial simulation, backtesting, and analysis platform.
+Professional web application for Finbot's financial simulation, backtesting,
+analytics, and health-economics research workflows.
 
 ## Architecture
 
@@ -40,7 +41,7 @@ Open http://localhost:3000
 docker compose up finbot-api finbot-web
 ```
 
-## API Endpoints
+## Representative API Endpoints
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
@@ -59,6 +60,10 @@ docker compose up finbot-api finbot-web
 | `/api/experiments/compare` | POST | Compare experiments |
 | `/api/walk-forward/run` | POST | Walk-forward analysis |
 | `/api/data-status/` | GET | Data freshness |
+| `/api/risk-analytics/var` | POST | VaR and CVaR analysis |
+| `/api/portfolio-analytics/rolling` | POST | Rolling portfolio metrics |
+| `/api/realtime-quotes/quote` | GET | Quote lookup |
+| `/api/factor-analytics/regression` | POST | Factor regression |
 
 Swagger UI available at http://localhost:8000/docs
 
@@ -66,12 +71,16 @@ Swagger UI available at http://localhost:8000/docs
 
 - **Dashboard** (`/`) — Overview with summary stats and quick links
 - **Simulations** (`/simulations`) — Fund simulation with overlay charts
-- **Backtesting** (`/backtesting`) — 12 strategies with dynamic parameter forms
+- **Backtesting** (`/backtesting`) — 13 strategies with dynamic parameter forms
 - **Monte Carlo** (`/monte-carlo`) — Percentile fan charts and histograms
 - **Optimizer** (`/optimizer`) — DCA grid search with heatmaps
 - **Walk-Forward** (`/walk-forward`) — Out-of-sample validation
 - **Health Economics** (`/health-economics`) — QALY, CEA, treatment optimization, clinical scenarios
 - **Experiments** (`/experiments`) — Compare backtest runs
+- **Risk Analytics** (`/risk-analytics`) — VaR, stress, Kelly, and related diagnostics
+- **Portfolio Analytics** (`/portfolio-analytics`) — Rolling metrics, benchmark, drawdown, and diversification views
+- **Factor Analytics** (`/factor-analytics`) — Factor regression, attribution, and risk decomposition
+- **Real-Time Quotes** (`/realtime-quotes`) — Multi-provider market quote view
 - **Data Status** (`/data-status`) — Data freshness monitoring
 
 ## Environment Variables
@@ -93,13 +102,13 @@ web/
     main.py              # FastAPI app
     config.py            # Settings
     dependencies.py      # Shared deps
-    routers/             # 8 API routers
+    routers/             # 12 API routers
     schemas/             # Pydantic request/response models
     services/
       serializers.py     # DataFrame→JSON helpers
   frontend/
     src/
-      app/               # 9 route pages
+      app/               # 13 route pages (dashboard + 12 task pages)
       components/
         layout/          # Sidebar, header, providers
         charts/          # TradingView + Recharts wrappers

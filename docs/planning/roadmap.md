@@ -1,14 +1,14 @@
 # Finbot Roadmap
 
 **Created:** 2026-02-10
-**Last Updated:** 2026-04-15
+**Last Updated:** 2026-04-16
 **Status:** Priority 0-9 complete. P10 in progress.
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on making the project suitable for Ontario medical school admissions (OMSAS/CanMEDS frameworks).
 
 See Completed Items table below and git history for details on implemented features.
 
-**Current Plan Record:** None active. Last archived plan: Audit Remediation and Frontend Hardening (completed 2026-04-15)
+**Current Plan Record:** None active. Last archived plan: Reviewer-Facing Packaging and Docs Alignment (completed 2026-04-16)
 
 ---
 
@@ -86,11 +86,26 @@ See Completed Items table below and git history for details on implemented featu
 
 **What Was Done:** Closed the audit findings by fixing the frequency-aware datetime comparator bug, adding focused regression tests, replacing import-time host probing with a cached accessor, and restoring a clean mypy baseline in the dashboard and Nautilus adapter surfaces. Added deterministic mocked Playwright smoke coverage for the Next.js app, wired a frontend CI job for typecheck/build/browser smoke validation, and limited that job to frontend-touching changes so the free-tier Actions budget is not spent on Python-only work.
 
+### P10.3 Reviewer-Facing Packaging and Docs Alignment ✓
+
+**Status:** ✅ COMPLETED (2026-04-16)
+
+- [x] Repaired the public health-economics evidence and methodology path in the published docs site
+- [x] Added neutral public evidence/context pages and research wrapper pages for health economics, DCA, leveraged ETF simulation, and strategy backtesting
+- [x] Cleaned stale public claims and template leftovers across the root README, web READMEs, notebook index, and application-context docs
+- [x] Reframed the docs home, research hub, frontend metadata, homepage, and navigation taxonomy to surface finance plus health economics more clearly
+- [x] Added a manual public metrics snapshot and an application-materials scope note to reduce future drift
+- [x] Reduced high-signal MkDocs warning sources by restoring missing public wrapper pages for engine selection and selected API surfaces
+
+**What Was Done:** Completed a reviewer-facing packaging pass aimed at trust, legibility, and coherence rather than branding. The public health-economics journey now resolves through live docs pages, stale counts and template content were removed from high-visibility surfaces, the homepage/docs framing now reads as a dual-domain quantitative research platform, and the docs site regained several missing public wrapper pages that had been generating visible navigation debt.
+
 ### P10 Remaining / Future
 
 - [ ] Expand Playwright from mocked smoke coverage to deeper user workflows and broader browser coverage when GitHub Actions minutes allow
+- [ ] Broader MkDocs legacy nav/link warning cleanup outside the reviewer-facing path repaired in P10.3
 - [ ] Responsive mobile testing and fixes
 - [ ] Production deployment configuration (Docker, env vars)
+- [ ] Optional lightweight reviewer/interview visual artifacts after the deployment surface and mobile layout stabilize
 
 ## Priority 11: Documentation Platform Governance
 
@@ -396,3 +411,4 @@ See Completed Items table for full details on all 25 completed items.
 | Autonomous wrap-up — P9.2 complete (P9.2) | 2026-02-25 | mypy fix in 12_factor_analytics.py; 17 new mock-based tests (get_fred_data + get_history); dashboard home page 12-page nav; docstring coverage 79.5% → 80.0%; 1769 total tests |
 | Next.js frontend completion (P10.1) | 2026-03-27 | Completed Next.js frontend: 4 `src/lib/` files, 4 FastAPI routers (15 endpoints), 4 pages (risk/portfolio/factor analytics, realtime quotes), 4 components (heatmap, metric-badge, line-chart-wrapper, watchlist-store), CSS polish, Health Economics cleanup; ADR-015; 0 TS errors, clean build |
 | Frontend hardening + audit remediation (P10.2) | 2026-04-15 | Fixed frequency-aware missing-date detection, added datetime/config regression tests, made host probing lazy/failure-tolerant, restored clean mypy, added mocked Playwright smoke coverage for `/` + all 12 routes, and added a frontend CI gate scoped to frontend-relevant changes |
+| Reviewer-facing packaging and docs alignment (P10.3) | 2026-04-16 | Repaired the public health-economics docs path, added public evidence/methodology and research wrapper pages, cleaned stale reviewer-facing claims across README/docs/frontend surfaces, and reduced high-signal MkDocs navigation debt with targeted public wrapper pages |

@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Finbot Frontend
 
-## Getting Started
+Next.js App Router frontend for Finbot's quantitative research platform.
 
-First, run the development server:
+The frontend exposes 13 routes in total: the dashboard home page plus 12
+task-specific pages spanning simulations, backtesting, analytics, and health
+economics.
+
+## Quick Start
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# From the repository root
+uv sync --extra web --extra dashboard
+
+# Terminal 1: backend API
+DYNACONF_ENV=development uv run --extra web uvicorn web.backend.main:app --reload --port 8000
+
+# Terminal 2: frontend app
+cd web/frontend
+corepack pnpm install
+corepack pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000` after both services are running.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Useful Commands
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+cd web/frontend
 
-## Learn More
+corepack pnpm dev        # local development server
+corepack pnpm typecheck  # TypeScript validation
+corepack pnpm build      # production build
+corepack pnpm test:e2e   # Playwright smoke coverage (requires backend target)
+```
 
-To learn more about Next.js, take a look at the following resources:
+## App Surfaces
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Dashboard home
+- Simulations
+- Backtesting
+- Optimizer
+- Monte Carlo
+- Walk-Forward
+- Experiments
+- Risk Analytics
+- Portfolio Analytics
+- Factor Analytics
+- Real-Time Quotes
+- Data Status
+- Health Economics
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Notes
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- The frontend depends on the FastAPI backend in `web/backend/`.
+- Shared client utilities live in `src/lib/`.
+- Reusable UI components live in `src/components/`.
+- Health-economics and analytics pages are part of the same product surface,
+  not a separate application.

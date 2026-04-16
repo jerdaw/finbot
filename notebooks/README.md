@@ -42,7 +42,7 @@ Runs the DCA (Dollar Cost Averaging) optimizer to find optimal allocation ratios
 ### 3. Backtest Strategy Comparison
 **File:** `03_backtest_strategy_comparison.ipynb`
 
-Compares all 10 implemented backtesting strategies on the same historical dataset with comprehensive performance metrics.
+Compares all 13 implemented backtesting strategies on the same historical dataset with comprehensive performance metrics.
 
 **Strategies Tested:**
 1. Rebalance (periodic portfolio rebalancing)
@@ -55,6 +55,9 @@ Compares all 10 implemented backtesting strategies on the same historical datase
 8. DipBuySMA (buy dips relative to SMA)
 9. DipBuyStdev (buy dips using standard deviation)
 10. SMARebalMix (mixed SMA timing + rebalancing)
+11. DualMomentum (relative-strength rotation)
+12. RiskParity (risk-balanced allocation)
+13. RegimeAdaptive (regime-aware allocation shifts)
 
 **Key Features:**
 - Performance metrics (Total Return, Sharpe, Sortino, Calmar, Max Drawdown, Win Rate)

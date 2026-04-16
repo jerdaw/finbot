@@ -271,7 +271,7 @@ with Pool(num_workers) as pool:
 
 ## See Also
 
-- [Research: DCA Optimization Findings](../../../../research/dca-optimization.md) - Detailed research results
+- [Research: DCA Optimization Findings](../../../research/dca-optimization.md) - Detailed research results
 - [Monte Carlo Simulator](../simulation/monte-carlo.md) - Forward-looking risk analysis
-- [Rebalance Optimizer](../backtesting/rebalance-optimizer.md) - Post-accumulation rebalancing
-- [Performance Benchmarks](../../../../benchmarks.md) - Optimization performance analysis
+- [Trading Strategies](../backtesting/strategies.md) - Related backtesting context
+- [Performance Benchmarks](https://github.com/jerdaw/finbot/blob/main/docs/benchmarks.md) - Optimization performance analysis

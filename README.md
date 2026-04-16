@@ -1,12 +1,11 @@
 # Finbot
 
-**Financial data collection, simulation, and backtesting platform for quantitative analysis**
+**Financial data collection, simulation, backtesting, and health-economics platform for quantitative analysis**
 
 [![CI](https://github.com/jerdaw/finbot/actions/workflows/ci.yml/badge.svg)](https://github.com/jerdaw/finbot/actions/workflows/ci.yml)
 [![Docs](https://github.com/jerdaw/finbot/actions/workflows/docs.yml/badge.svg)](https://github.com/jerdaw/finbot/actions/workflows/docs.yml)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/jerdaw/finbot/badge)](https://securityscorecards.dev/viewer/?uri=github.com/jerdaw/finbot)
 [![codecov](https://codecov.io/gh/jerdaw/finbot/branch/main/graph/badge.svg)](https://codecov.io/gh/jerdaw/finbot)
-[![Docstring Coverage](https://img.shields.io/badge/docstring%20coverage-58.2%25-brightgreen.svg)](https://github.com/jerdaw/finbot)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![uv](https://img.shields.io/badge/uv-0.9+-blue.svg)](https://docs.astral.sh/uv/)
 
@@ -443,9 +442,10 @@ Explore comprehensive analyses demonstrating all major features:
 
 1. **[Fund Simulation Demo](notebooks/01_fund_simulation_demo.ipynb)** - Compare simulated vs actual ETF performance (SPY, UPRO, TQQQ)
 2. **[DCA Optimization Results](notebooks/02_dca_optimization_results.ipynb)** - Find optimal portfolio allocations and timing
-3. **[Backtest Strategy Comparison](notebooks/03_backtest_strategy_comparison.ipynb)** - Compare all 10 strategies with risk-return analysis
+3. **[Backtest Strategy Comparison](notebooks/03_backtest_strategy_comparison.ipynb)** - Compare all 13 strategies with risk-return analysis
 4. **[Monte Carlo Risk Analysis](notebooks/04_monte_carlo_risk_analysis.ipynb)** - Portfolio risk scenarios and VaR analysis
 5. **[Bond Ladder Analysis](notebooks/05_bond_ladder_analysis.ipynb)** - Bond ladder construction and yield curve modeling
+6. **[Health Economics Demo](notebooks/06_health_economics_demo.ipynb)** - QALY simulation, ICER/NMB analysis, and treatment-schedule optimization
 
 Each notebook includes:
 - Setup and data loading
@@ -455,11 +455,12 @@ Each notebook includes:
 
 ## Research Documentation
 
-Three comprehensive research papers (docs/research/):
+Selected research and methodology documents:
 
 - **[Leveraged ETF Simulation Accuracy](docs/research/leveraged-etf-simulation-accuracy.md)** - Tracking error analysis and methodology validation
 - **[DCA Optimization Findings](docs/research/dca-optimization-findings.md)** - Optimal allocations across market regimes
-- **[Strategy Backtest Results](docs/research/strategy-backtest-results.md)** - 10 strategies compared with statistical significance testing
+- **[Strategy Backtest Results](docs/research/strategy-backtest-results.md)** - Backtesting results and statistical analysis
+- **[Health Economics Methodology](docs/research/health-economics-methodology.md)** - QALY simulation, cost-effectiveness analysis, and treatment optimization methodology
 
 ## Limitations and Known Issues
 

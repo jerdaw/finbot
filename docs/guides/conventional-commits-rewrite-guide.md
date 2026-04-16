@@ -201,7 +201,7 @@ git push --force-with-lease origin main
 
 ## Note on Commit Authorship Policy
 
-Per CLAUDE.md commit policy: commits must list only **human authors**. Do not add:
+Per AGENTS.md commit policy: commits must list only **human authors**. Do not add:
 - `Co-Authored-By: <assistant> ...`
 - `AI-Assisted: ...`
 
