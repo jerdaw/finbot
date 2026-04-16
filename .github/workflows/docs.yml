@@ -43,5 +43,10 @@ jobs:
       - name: Build documentation
         run: uv run mkdocs build
 
+      - name: Configure deployment git identity
+        run: |
+          git config user.name "Jeremy Dawson"
+          git config user.email "jeremyjdawson@gmail.com"
+
       - name: Deploy to GitHub Pages
         run: uv run mkdocs gh-deploy --force
