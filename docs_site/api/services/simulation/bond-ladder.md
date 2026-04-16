@@ -350,7 +350,7 @@ ladder = simulate_bond_ladder(
 
 ## See Also
 
-- [Fund Simulator](../fund-simulator.md) - Leveraged ETF simulation
+- [Fund Simulator](fund-simulator.md) - Leveraged ETF simulation
 - [Monte Carlo](monte-carlo.md) - Risk analysis with simulated data
 - [FRED Data Collection](../../utils/data-collection-utils.md#fred) - Yield data retrieval
-- [Example Notebook 05](../../examples/05-bond-ladder.ipynb) - Interactive examples
+- [Example Notebook 05](https://github.com/jerdaw/finbot/blob/main/notebooks/05_bond_ladder_analysis.ipynb) - Interactive examples

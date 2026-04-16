@@ -243,14 +243,9 @@ plot_trials(
 ### Plot Distribution
 
 ```python
-from finbot.services.simulation.monte_carlo.visualization import plot_distribution
+from finbot.services.simulation.monte_carlo.visualization import plot_hist
 
-plot_distribution(
-    results['final_values'],
-    title="Final Value Distribution After 30 Years",
-    xlabel="Final Portfolio Value ($)",
-    initial_value=100000
-)
+plot_hist(results['trials'])
 ```
 
 ## Key Assumptions
@@ -291,7 +286,7 @@ plot_distribution(
 
 ## See Also
 
-- [Research: Monte Carlo Risk Analysis](../../../../research/monte-carlo-analysis.md) - Detailed findings
-- [Notebook: Monte Carlo Demo](../../../../notebooks/04_monte_carlo_risk_analysis.ipynb) - Interactive examples
+- [Research: Monte Carlo Risk Analysis](../../../research/monte-carlo-analysis.md) - Detailed findings
+- [Notebook: Monte Carlo Demo](https://github.com/jerdaw/finbot/blob/main/notebooks/04_monte_carlo_risk_analysis.ipynb) - Interactive examples
 - [Visualization](visualization.md) - Plotting functions
 - [DCA Optimizer](../optimization/dca-optimizer.md) - Complementary optimization approach

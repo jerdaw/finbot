@@ -262,4 +262,4 @@ The simulator uses:
 - [Specific Funds](specific-funds.md) - Pre-configured fund simulations
 - [Bond Ladder](bond-ladder.md) - Bond portfolio simulation
 - [Monte Carlo](monte-carlo.md) - Risk analysis with simulated data
-- [Performance Benchmarks](../../../../benchmarks.md) - Detailed performance analysis
+- [Performance Benchmarks](../../../benchmarks.md) - Detailed performance analysis

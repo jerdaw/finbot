@@ -156,6 +156,6 @@ results = runner.run()
 
 ## See Also
 
-- [run_backtest Function](../../user-guide/api-examples.md#run-backtest) - Single backtest execution
-- [compute_stats Function](../../user-guide/api-examples.md#compute-stats) - Performance metrics
-- [User Guide: Backtesting](../../user-guide/quick-start.md#backtest-a-strategy) - Tutorial
+- [run_backtest Function](run-backtest.md) - Single backtest execution
+- [compute_stats Function](compute-stats.md) - Performance metrics
+- [User Guide: Backtesting](../../../user-guide/backtesting.md) - Tutorial path and entry points

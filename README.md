@@ -94,9 +94,9 @@ make run-update
 - `make clean` - Remove cache files and build artifacts
 - `make all` - Run full CI pipeline (check + test)
 
-## Current Implementation Status (2026-04-15)
+## Current Implementation Status (2026-04-16)
 
-Priority 0-9 is complete. Priority 10 remains in progress, but the core Next.js frontend and the latest hardening batch are both landed.
+Priority 0-9 is complete. Priority 10 remains in progress, but the core Next.js frontend, the hardening batch, and the reviewer-facing packaging/docs-alignment pass are all landed.
 
 - **P0-P9 Complete**
   - Engine-agnostic contracts, Backtrader adapter path, parity gates, cost/corporate-action fidelity, walk-forward analysis, regime detection, experiment tracking, execution simulation, and runtime hardening are in place.
@@ -104,6 +104,7 @@ Priority 0-9 is complete. Priority 10 remains in progress, but the core Next.js 
 - **P10 In Progress**
   - ✅ P10.1: Next.js frontend completion (12 pages, backend routers, shared UI foundation, ADR-015)
   - ✅ P10.2: Frontend hardening and audit remediation (frequency-gap fix, lazy host probing, restored mypy baseline, mocked Playwright smoke coverage, frontend CI gate)
+    - ✅ P10.3: Reviewer-facing packaging and docs alignment (public health-economics evidence path, claim cleanup, docs wrappers, metrics snapshot, and guided tour)
   - ⏳ Remaining: responsive mobile hardening, deeper browser-flow coverage beyond smoke tests, and production deployment configuration
 - **CI Status**
   - Core Python quality/test gates run on push/PR to `main`
@@ -112,6 +113,7 @@ Priority 0-9 is complete. Priority 10 remains in progress, but the core Next.js 
 Tracking docs:
 - `docs/planning/roadmap.md`
 - `docs/planning/archive/audit-remediation-and-frontend-hardening-2026-04-15.md`
+- `docs/planning/archive/reviewer-facing-packaging-and-docs-alignment-2026-04-16.md`
 - `docs/adr/ADR-011-nautilus-decision.md`
 - `docs/adr/ADR-015-nextjs-frontend-completion.md`
 

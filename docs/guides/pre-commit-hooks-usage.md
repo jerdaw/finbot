@@ -43,8 +43,8 @@ These hooks run automatically when you commit and will block the commit if they 
 
 These hooks are available but don't run automatically. They're informational-only since:
 - CI already runs them comprehensively
-- Current codebase has known issues (125 mypy errors, 6 bandit warnings)
-- Running on every commit would be slow and noisy
+- full-repo local runs can still be slower and noisier than per-file checks
+- targeted local validation is usually more useful during day-to-day work
 
 ### mypy - Type Checking
 
@@ -60,7 +60,7 @@ uv run pre-commit run --hook-stage manual mypy --all-files
 DYNACONF_ENV=development uv run mypy finbot/
 ```
 
-**Current state:** 125 type errors in 41 files (see `docs/guides/type-safety-improvement-guide.md`)
+**Current state:** the repository mypy baseline is expected to be clean on the pinned toolchain. Use this hook for targeted file validation or full-repo confirmation.
 
 **When to use:**
 - Before opening a PR (check files you modified)
@@ -82,7 +82,7 @@ uv run pre-commit run --hook-stage manual bandit --all-files
 uv run bandit -c pyproject.toml -r finbot/ libs/
 ```
 
-**Current state:** 6 low-severity warnings (all known and acceptable)
+**Current state:** bandit remains part of CI and is most useful locally when reviewing new file I/O, subprocess, or deserialization changes.
 
 **When to use:**
 - Before opening a PR (check files you modified)

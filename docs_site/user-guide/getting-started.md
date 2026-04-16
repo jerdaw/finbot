@@ -144,6 +144,7 @@ finbot update --skip-simulations
 ```
 
 This will:
+
 - Fetch Yahoo Finance and Google Finance price histories
 - Update FRED economic data
 - Download Shiller datasets
@@ -275,7 +276,7 @@ print(f"Expected Sharpe: {results.iloc[0]['sharpe']:.2f}")
 - **[CLI Reference](cli-reference.md)**: Complete command-line interface documentation
 - **[API Reference](../api/index.md)**: Detailed API documentation for all modules
 - **[Configuration Guide](configuration.md)**: Advanced configuration options
-- **[Example Notebooks](../../notebooks/)**: Jupyter notebooks with analysis examples
+- **[Example Notebooks](https://github.com/jerdaw/finbot/tree/main/notebooks)**: Jupyter notebooks with analysis examples
 
 ## Common Issues
 
@@ -321,7 +322,7 @@ icacls finbot\data /grant Users:F /t
 
 - **Documentation**: [Full API Reference](../api/index.md)
 - **Issues**: [GitHub Issues](https://github.com/jerdaw/finbot/issues)
-- **Examples**: [Jupyter Notebooks](../../notebooks/)
+- **Examples**: [Jupyter Notebooks](https://github.com/jerdaw/finbot/tree/main/notebooks)
 - **Research**: [Published Findings](../research/index.md)
 
 ## Development Setup

@@ -71,8 +71,8 @@ repository into an overt admissions-branded artifact.
 
 ## Follow-Up
 
-- Broader legacy MkDocs nav/link cleanup remains on the roadmap.
-- Optional lightweight screenshots or walkthrough artifacts were deferred until
-  the deployment/mobile surface is more stable.
+- Follow-up cleanup later the same day repaired the remaining broader MkDocs
+  nav/link warnings and added a lightweight public `Project Tour` walkthrough
+  page.
 - Historical non-human commit authorship remains governed by P9.3 and still
   requires a deliberate rewrite or cutover plan rather than an ad hoc cleanup.
