@@ -5,13 +5,13 @@ inside Finbot.
 
 ## Quick Decision Matrix
 
-| Your Goal | Recommended Engine | Why |
-| --- | --- | --- |
-| Pure backtesting only | Backtrader | Mature, stable, and simpler to use |
-| Planning for live trading | NautilusTrader | Live-trading support and more realistic fills |
-| Quick prototyping | Backtrader | Faster setup and gentler learning curve |
-| Cross-validation | Both | Compare behavior across engines |
-| Gradual migration | Both | Keep Backtrader workflows while evaluating Nautilus |
+| Your Goal                 | Recommended Engine | Why                                                 |
+| ------------------------- | ------------------ | --------------------------------------------------- |
+| Pure backtesting only     | Backtrader         | Mature, stable, and simpler to use                  |
+| Planning for live trading | NautilusTrader     | Live-trading support and more realistic fills       |
+| Quick prototyping         | Backtrader         | Faster setup and gentler learning curve             |
+| Cross-validation          | Both               | Compare behavior across engines                     |
+| Gradual migration         | Both               | Keep Backtrader workflows while evaluating Nautilus |
 
 ## Finbot's Current Position
 

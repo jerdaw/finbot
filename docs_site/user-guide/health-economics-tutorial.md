@@ -17,6 +17,7 @@ This tutorial walks through a realistic health economics analysis: comparing tre
 - Make evidence-based formulary and clinical decisions
 
 **Real-world application:** This analysis mirrors decisions made daily by:
+
 - **NICE (UK):** Appraising new diabetes drugs for NHS formulary
 - **CADTH (Canada):** Reviewing for provincial drug coverage
 - **US Payers:** Making formulary tier decisions (preferred vs. non-preferred)
@@ -29,6 +30,7 @@ This tutorial walks through a realistic health economics analysis: comparing tre
 **Patient Population:** Adults aged 45-65 with newly diagnosed Type 2 diabetes (HbA1c 7.5-9%)
 
 **Treatment Options:**
+
 1. **Metformin** (standard of care): Generic, $500/year, modest efficacy
 2. **GLP-1 Receptor Agonist** (newer option): Branded, $10,000/year, greater efficacy
 
@@ -69,6 +71,7 @@ glp1 = HealthIntervention(
 ```
 
 **Parameter sources:**
+
 - Costs: AWP (Average Wholesale Price) databases
 - Utility gains: EQ-5D or SF-6D quality-of-life instruments from trials
 - Mortality: Hazard ratios from cardiovascular outcomes trials (SUSTAIN, LEADER)
@@ -116,12 +119,14 @@ print(f'GLP-1 Agonist: {sim_glp1["mean_qaly"]:.2f} QALYs, ${sim_glp1["mean_cost"
 ```
 
 **Example Output:**
-```
+
+```text
 Metformin:     9.23 QALYs, $3,876
 GLP-1 Agonist: 10.71 QALYs, $78,245
 ```
 
 **Interpretation:**
+
 - Metformin provides 9.23 discounted QALYs over 15 years at low cost
 - GLP-1 provides 1.48 more QALYs but costs $74,369 more
 - Is this trade-off worthwhile?
@@ -149,7 +154,8 @@ print(f'Incremental Cost:  ${cea["icer"]["Incremental Cost"].iloc[0]:,.0f}')
 ```
 
 **Example Output:**
-```
+
+```text
 ICER: $50,249 per QALY
 Incremental QALYs: 1.48
 Incremental Cost:  $74,369
@@ -158,7 +164,8 @@ Incremental Cost:  $74,369
 ### Interpreting the ICER
 
 **ICER Formula:**
-```
+
+```text
 ICER = (Cost_GLP1 - Cost_Metformin) / (QALY_GLP1 - QALY_Metformin)
      = $74,369 / 1.48 QALYs
      = $50,249 per QALY
@@ -166,12 +173,12 @@ ICER = (Cost_GLP1 - Cost_Metformin) / (QALY_GLP1 - QALY_Metformin)
 
 **Compare against international thresholds:**
 
-| Jurisdiction | Threshold | Decision |
-|--------------|-----------|----------|
-| **NICE (UK)** | £20K-£30K/QALY (~$25K-$38K USD) | ✗ Not cost-effective |
-| **CADTH (Canada)** | ~$50K CAD/QALY (~$37K USD) | ✗ Borderline |
-| **US (lower)** | $50K/QALY | ✓ Cost-effective |
-| **US (mid)** | $100K/QALY | ✓✓ Highly cost-effective |
+| Jurisdiction       | Threshold                       | Decision                 |
+| ------------------ | ------------------------------- | ------------------------ |
+| **NICE (UK)**      | £20K-£30K/QALY (~$25K-$38K USD) | ✗ Not cost-effective     |
+| **CADTH (Canada)** | ~$50K CAD/QALY (~$37K USD)      | ✗ Borderline             |
+| **US (lower)**     | $50K/QALY                       | ✓ Cost-effective         |
+| **US (mid)**       | $100K/QALY                      | ✓✓ Highly cost-effective |
 
 **Decision:** GLP-1 agonists are cost-effective in the US but may not be approved in UK/Canada at current prices.
 
@@ -194,7 +201,8 @@ print(f'  At $100K/QALY (US mid):      {ceac_glp1[100_000]:.1%}')
 ```
 
 **Example Output:**
-```
+
+```text
 Probability GLP-1 is Cost-Effective:
   At $25K/QALY (NICE UK):     23.4%
   At $37K/QALY (CADTH Canada): 47.8%
@@ -203,6 +211,7 @@ Probability GLP-1 is Cost-Effective:
 ```
 
 **Interpretation:**
+
 - At NICE threshold ($25K/QALY): Only 23% chance GLP-1 is cost-effective → **Don't approve**
 - At US lower threshold ($50K/QALY): 72% chance cost-effective → **Likely approve**
 - At US mid threshold ($100K/QALY): 98% chance cost-effective → **Definitely approve**
@@ -252,6 +261,7 @@ fig.show()
 ```
 
 **Quadrants:**
+
 - **NE (North-East):** More effective, more costly → Trade-off (most points here)
 - **SE (South-East):** More effective, less costly → Dominant (always adopt)
 - **NW (North-West):** Less effective, more costly → Dominated (never adopt)
@@ -276,18 +286,21 @@ print(f'  GLP-1 Agonist: ${nmb.loc[wtp, "GLP-1 Agonist"]:,.0f}')
 ```
 
 **Example Output:**
-```
+
+```text
 Net Monetary Benefit at $100,000/QALY threshold:
   Metformin:     $919,124
   GLP-1 Agonist: $992,856
 ```
 
 **NMB Formula:**
-```
+
+```text
 NMB = WTP × QALYs - Cost
 ```
 
 **Interpretation:**
+
 - At $100K/QALY, GLP-1 has higher NMB ($992K vs. $919K)
 - **Decision:** Choose GLP-1 (higher NMB = more valuable)
 - NMB difference: $73,732 (value gained from switching to GLP-1)
@@ -299,6 +312,7 @@ NMB = WTP × QALYs - Cost
 ### For Healthcare Payers
 
 **UK (NICE):**
+
 ```python
 if icer_val < 25_000:
     print('Decision: Approve for NHS formulary')
@@ -309,6 +323,7 @@ else:
 ```
 
 **Canada (CADTH):**
+
 ```python
 if icer_val < 37_000:
     print('Decision: Recommend for provincial formularies')
@@ -319,6 +334,7 @@ else:
 ```
 
 **US Payers:**
+
 ```python
 if icer_val < 50_000:
     print('Decision: Include on preferred formulary tier (low copay)')
@@ -331,6 +347,7 @@ else:
 ### For Clinicians
 
 **Shared Decision-Making:**
+
 ```python
 # Check individual patient factors
 high_cv_risk = True  # Patient has cardiovascular risk factors
@@ -346,6 +363,7 @@ else:
 ```
 
 **Population Health:**
+
 - **High-risk patients:** GLP-1 (CV benefits justify cost)
 - **Low-risk patients:** Metformin (cost-effective first-line)
 - **Resource stewardship:** Tiered approach maximizes population health under budget constraint
@@ -383,7 +401,8 @@ for _, row in top5.iterrows():
 ```
 
 **Example Output:**
-```
+
+```text
 Top 5 Treatment Schedules by NMB:
   12 doses/yr × 15 yr  |  ICER: $45,234/QALY  |  NMB: $142,567
   12 doses/yr × 10 yr  |  ICER: $46,891/QALY  |  NMB: $138,234
@@ -397,7 +416,7 @@ Top 5 Treatment Schedules by NMB:
 
 ## Interpreting Results for Different Audiences
 
-### For Clinicians
+### For Clinical Conversations
 
 **Key Message:** "GLP-1 agonists provide 1.5 additional years of quality-adjusted life at a cost of ~$50,000 per QALY gained compared to metformin. This is considered cost-effective in the US (where thresholds are $50K-$150K/QALY) but may not be approved in countries like the UK where thresholds are lower (~$25K/QALY)."
 
@@ -438,6 +457,7 @@ Top 5 Treatment Schedules by NMB:
 ### Appropriate Uses
 
 **✓ Good Uses:**
+
 - Exploring cost-effectiveness trade-offs between treatments
 - Identifying which patients benefit most (high-risk vs. low-risk)
 - Estimating population-level budget impact
@@ -445,6 +465,7 @@ Top 5 Treatment Schedules by NMB:
 - Pedagogical demonstrations for teaching health economics
 
 **✗ Bad Uses:**
+
 - Sole basis for individual treatment decisions (clinical judgment required)
 - Assuming simulated outcomes will match real-world results exactly
 - Ignoring patient preferences, values, and financial circumstances
@@ -455,23 +476,28 @@ Top 5 Treatment Schedules by NMB:
 ## Further Reading
 
 **Context and Scope:**
+
 - [Health Economics Evidence](../research/health-economics-evidence.md) - What the module is designed to support, and where its limits are
 
 **Methodology:**
+
 - [Health Economics Methodology](../research/health-economics-methodology.md) - Model structure, core equations, standards alignment, and limitations
 
 **Examples:**
+
 - [Health Economics Notebook](https://github.com/jerdaw/finbot/blob/main/notebooks/06_health_economics_demo.ipynb) - Interactive Jupyter notebook with visualizations
 
 **Guidelines:**
+
 - **NICE Methods Guide:** [nice.org.uk/process/pmg9](https://www.nice.org.uk/process/pmg9)
 - **CADTH Guidelines:** [cadth.ca/guidelines](https://www.cadth.ca/guidelines-economic-evaluation-health-technologies-canada-4th-edition)
 - **WHO CHOICE:** [who.int/choice](https://www.who.int/choice/publications/p_2003_generalised_cea.pdf)
 - **Second Panel Report (JAMA):** Sanders GD, et al. JAMA 316.10 (2016): 1093-1103
 
 **Academic Texts:**
-- Drummond MF, et al. *Methods for the Economic Evaluation of Health Care Programmes*, 4th ed. Oxford, 2015.
-- Briggs AH, et al. *Decision Modelling for Health Economic Evaluation.* Oxford, 2006.
+
+- Drummond MF, et al. _Methods for the Economic Evaluation of Health Care Programmes_, 4th ed. Oxford, 2015.
+- Briggs AH, et al. _Decision Modelling for Health Economic Evaluation._ Oxford, 2006.
 
 ---
 
@@ -489,6 +515,7 @@ You've learned to:
 **Key Takeaway:** Cost-effectiveness analysis provides a rigorous framework for balancing health benefits against costs, but results are jurisdiction-dependent (different countries have different WTP thresholds) and should inform—not replace—clinical judgment.
 
 **Next Steps:**
+
 - Review the [evidence page](../research/health-economics-evidence.md) for scope, intended use, and current validation posture
 - Explore the [methodology document](../research/health-economics-methodology.md) for theoretical foundations
 - Run the [Jupyter notebook](https://github.com/jerdaw/finbot/blob/main/notebooks/06_health_economics_demo.ipynb) for hands-on practice

@@ -34,10 +34,10 @@ print(stats[["CAGR", "Sharpe", "Max Drawdown"]])
 ## API Reference
 
 ::: finbot.services.backtesting.compute_stats.compute_stats
-    options:
-      show_root_heading: true
-      show_source: true
-      heading_level: 3
+        options:
+            show_root_heading: true
+            show_source: true
+            heading_level: 3
 
 ## See Also
 

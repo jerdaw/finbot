@@ -3,6 +3,7 @@
 ## Repository Overview
 
 Finbot is a financial data collection, simulation, and backtesting platform that consolidates:
+
 - Modern infrastructure (Dynaconf config, queue-based logging, API management)
 
 - **Engine-agnostic execution system** with orders, latency simulation, risk controls, and state checkpoints
@@ -55,7 +56,7 @@ uv run python scripts/update_daily.py
 - **P7** (93%): External impact & advanced capabilities — 25/27 active items
 - **P8** (100%): Risk Analytics, Portfolio Analytics, Real-Time Data, Factor Analytics
 - **P9** (100%): Agent tooling and runtime hardening — P9.1-P9.4 complete
-- **P10** (in progress): Next.js frontend — 12 task pages complete, frontend hardening landed, and reviewer-facing documentation/health-economics packaging improved; responsive/mobile/deployment and broader legacy docs cleanup remain
+- **P10** (in progress): Next.js frontend — 12 task pages complete, frontend hardening landed, and reviewer-facing documentation/health-economics packaging plus broader docs cleanup are complete; responsive/mobile/deployment work remains
 
 **Tracking docs:** `docs/planning/roadmap.md`, `docs/planning/archive/audit-remediation-and-frontend-hardening-2026-04-15.md`, `docs/planning/archive/reviewer-facing-packaging-and-docs-alignment-2026-04-16.md`, `docs/planning/backtesting-live-readiness-backlog.md`, `docs/planning/priority-5-6-completion-status.md`, `docs/adr/ADR-011-nautilus-decision.md`
 
@@ -105,12 +106,14 @@ make docker-test                 # run tests in container
 ### Backtesting Engines
 
 Finbot supports two backtesting engines through a unified adapter interface:
+
 - **Backtrader** (default): Mature, bar-based, great for pure backtesting
 - **NautilusTrader**: Event-driven, realistic fills, built for live trading
 
 **Choosing an engine:** See [docs/guides/choosing-backtest-engine.md](docs/guides/choosing-backtest-engine.md)
 
 **Hybrid approach (recommended):** Use both engines based on use case
+
 - Backtrader for familiar backtesting workflows
 - Nautilus for strategies planned for live trading
 - Decision rationale: [ADR-011](docs/adr/ADR-011-nautilus-decision.md)
@@ -177,6 +180,7 @@ from finbot.services.execution.checkpoint_manager import CheckpointManager
 Entry point: `BacktestRunner` in `backtest_runner.py`
 
 **Key modules:**
+
 - **`backtest_runner.py`**: Main orchestrator, wraps Backtrader's Cerebro engine
 - **`run_backtest.py`**: Single backtest execution
 - **`backtest_batch.py`**: Parallel batch backtesting
@@ -198,17 +202,20 @@ Entry point: `BacktestRunner` in `backtest_runner.py`
 - **`monte_carlo/`**: Single-asset and correlated multi-asset Monte Carlo simulation
 
 #### `finbot/services/optimization/` — Portfolio Optimizers
+
 - **`dca_optimizer.py`**: DCA grid search across ratios, durations, purchase intervals (multiprocessing)
 - **`pareto_optimizer.py`**: Multi-objective Pareto optimization with dashboard integration
 - **`rebalance_optimizer.py`**: Placeholder (see `backtesting/rebalance_optimizer.py` for working version)
 
 #### `finbot/services/health_economics/` — Health Economics Analysis
+
 - **`qaly_simulator.py`**: Monte Carlo QALY simulation with stochastic cost/utility/mortality
 - **`cost_effectiveness.py`**: ICER, NMB, CEAC, cost-effectiveness plane (probabilistic sensitivity analysis)
 - **`treatment_optimizer.py`**: Grid-search treatment schedule optimization (dose frequency x duration)
 - **`scenarios/`**: Clinical scenarios — cancer screening, hypertension, vaccine (3 scenarios composed from above modules)
 
 #### `finbot/services/data_quality/` — Data Quality and Observability
+
 - **`data_source_registry.py`**: Registry of 7 data sources with staleness thresholds
 - **`check_data_freshness.py`**: Scan directories and report freshness status
 - **`validate_dataframe.py`**: Lightweight DataFrame validation (empty, schema, duplicates, nulls)
@@ -422,6 +429,7 @@ Source in `docs_site/` (index, user-guide, api, research, contributing, changelo
 ## CI/CD
 
 GitHub Actions (`.github/workflows/ci.yml`) on push/PR to main:
+
 - Lint (`ruff check`), format (`ruff format --check`), type check (`mypy`), security (`bandit`, `pip-audit`)
 - Frontend quality (`pnpm typecheck`, `pnpm build`, mocked Playwright smoke tests) when frontend-relevant files change
 - Tests: `pytest --cov` on Python 3.11, 3.12, 3.13
@@ -433,6 +441,7 @@ GitHub Actions (`.github/workflows/ci.yml`) on push/PR to main:
 ## Architecture Decisions
 
 See `docs/adr/` for architectural decision records:
+
 - **ADR-001**: Consolidate three repos (finbot, bb, backbetter) into one
   - Drop numba → vectorized numpy + numpy-financial
   - Drop Scrapy → bb's Selenium
