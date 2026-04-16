@@ -820,10 +820,10 @@ def update_polygon_data() -> None:
 
 ### Related Documentation
 
-- [README.md](../../README.md): User-facing quick start
-- [CLI Reference](../../docs_site/docs/user-guide/cli-reference.md): Full CLI documentation
-- [Type Safety Guide](type-safety-improvement-guide.md): Type checking best practices
-- [Pre-commit Hooks Guide](pre-commit-hooks-usage.md): Code quality automation
+- [Project README](https://github.com/jerdaw/finbot/blob/main/README.md): User-facing quick start
+- [CLI Reference](cli-reference.md): Full CLI documentation
+- [Type Safety Guide](../guides/type-safety-improvement-guide.md): Type checking best practices
+- [Pre-commit Hooks Guide](../guides/pre-commit-hooks-usage.md): Code quality automation
 
 ---
 

@@ -100,12 +100,12 @@ finbot status
 # ...
 ```
 
-## Data Source Registry
+## Registry Coverage
 
 The registry tracks 7 data sources:
 
 | Source | Directory | Threshold (days) | Update Frequency |
-|--------|-----------|------------------|------------------|
+| ------ | --------- | ---------------- | ---------------- |
 | **YFinance** | `yfinance_data/` | 1 | Daily |
 | **FRED** | `fred_data/` | 7 | Weekly |
 | **Google Finance** | `google_finance_data/` | 7 | Weekly |
@@ -262,4 +262,4 @@ Potential improvements:
 ## See Also
 
 - [Data Quality & Monitoring Guide](../../user-guide/data-quality-guide.md) - Operations documentation
-- [CLI Reference](../../user-guide/cli-reference.md#status) - `finbot status` command
+- [CLI Reference](../../user-guide/cli-reference.md#finbot-status) - `finbot status` command

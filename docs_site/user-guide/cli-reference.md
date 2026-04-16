@@ -9,6 +9,7 @@ finbot [OPTIONS] COMMAND [ARGS]...
 ```
 
 **Global Options:**
+
 - `--version`: Show version and exit
 - `--verbose`, `-v`: Enable verbose output
 - `--help`: Show help message
@@ -24,9 +25,11 @@ finbot simulate --fund FUND_TICKER [OPTIONS]
 ```
 
 **Required:**
+
 - `--fund TEXT`: Fund ticker (SPY, UPRO, TQQQ, etc.)
 
 **Optional:**
+
 - `--start TEXT`: Start date (YYYY-MM-DD)
 - `--end TEXT`: End date (YYYY-MM-DD)
 - `--output PATH`: Save results (CSV, parquet, JSON)
@@ -54,10 +57,12 @@ finbot backtest --strategy STRATEGY --asset ASSETS [OPTIONS]
 ```
 
 **Required:**
+
 - `--strategy TEXT`: Strategy name (Rebalance, SMACrossover, etc.)
 - `--asset TEXT`: Comma-separated tickers (SPY,TLT)
 
 **Optional:**
+
 - `--start TEXT`: Start date
 - `--end TEXT`: End date
 - `--cash FLOAT`: Starting cash (default: 100000)
@@ -85,10 +90,12 @@ finbot optimize --method METHOD --assets ASSETS [OPTIONS]
 ```
 
 **Required:**
+
 - `--method TEXT`: Optimization method (dca)
 - `--assets TEXT`: Comma-separated tickers
 
 **Optional:**
+
 - `--duration INTEGER`: DCA duration in days
 - `--interval INTEGER`: Purchase interval in days
 - `--ratios TEXT`: Ratio range (start,stop,num)
@@ -115,6 +122,7 @@ finbot update [OPTIONS]
 ```
 
 **Optional:**
+
 - `--dry-run`: Show what would be updated
 - `--skip-prices`: Skip price history updates
 - `--skip-simulations`: Skip simulation updates
@@ -130,6 +138,32 @@ finbot update --dry-run
 
 # Update prices only
 finbot update --skip-simulations
+```
+
+### finbot status
+
+Check data freshness and pipeline health:
+
+```bash
+finbot status [OPTIONS]
+```
+
+**Optional:**
+
+- `--stale-only`: Show only stale data sources
+- `--verbose`, `-v`: Include detailed logging and threshold output
+
+**Examples:**
+
+```bash
+# Show all tracked data sources
+finbot status
+
+# Focus on stale sources only
+finbot status --stale-only
+
+# Show detailed threshold information
+finbot --verbose status
 ```
 
 ## Output Formats

@@ -24,30 +24,30 @@ The health economics module supports:
 Simulates health economic outcomes using Monte Carlo methods:
 
 ::: finbot.services.health_economics.qaly_simulator
-    options:
-      show_root_heading: true
-      show_source: true
-      heading_level: 3
+        options:
+            show_root_heading: true
+            show_source: true
+            heading_level: 3
 
 ### Cost-Effectiveness Analysis
 
 Computes incremental cost-effectiveness ratios and net monetary benefit:
 
 ::: finbot.services.health_economics.cost_effectiveness
-    options:
-      show_root_heading: true
-      show_source: true
-      heading_level: 3
+        options:
+            show_root_heading: true
+            show_source: true
+            heading_level: 3
 
 ### Treatment Optimizer
 
 Optimizes treatment schedules using grid search:
 
 ::: finbot.services.health_economics.treatment_optimizer
-    options:
-      show_root_heading: true
-      show_source: true
-      heading_level: 3
+        options:
+            show_root_heading: true
+            show_source: true
+            heading_level: 3
 
 ## Quick Start
 
@@ -152,6 +152,7 @@ print(f"Expected NMB: ${best['NMB']:,.0f}")
 ### Quality-Adjusted Life Years (QALYs)
 
 QALYs combine:
+
 - **Survival time**: Years of life gained
 - **Quality of life**: Utility scores (0 = death, 1 = perfect health)
 
@@ -188,12 +189,12 @@ willingness-to-pay thresholds.
 
 ## International Thresholds
 
-| Country/Region | Threshold (USD/QALY) | Organization |
-|----------------|----------------------|--------------|
-| **UK** | $25,000 - $37,500 | NICE |
-| **Canada** | $37,500 - $75,000 | CADTH |
-| **US** | $50,000 - $150,000 | Common practice |
-| **WHO** | 1-3× GDP per capita | WHO-CHOICE |
+| Country/Region | Threshold (USD/QALY) | Organization    |
+| -------------- | -------------------- | --------------- |
+| **UK**         | $25,000 - $37,500    | NICE            |
+| **Canada**     | $37,500 - $75,000    | CADTH           |
+| **US**         | $50,000 - $150,000   | Common practice |
+| **WHO**        | 1-3× GDP per capita  | WHO-CHOICE      |
 
 ## Clinical Applications
 

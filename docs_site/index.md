@@ -53,6 +53,7 @@ core:
 ### 🔎 Reviewer-Oriented Entry Points
 - **Health Economics Evidence**: Public context page explaining scope, intended use, and limitations
 - **Health Economics Methodology**: Public summary of model structure, equations, and standards alignment
+- **Project Tour**: Guided reading path for quickly understanding the main public surfaces
 - **Responsible use**: Repository disclaimer and ethics guidance for interpreting outputs conservatively
 
 ### 📈 Data Collection Infrastructure

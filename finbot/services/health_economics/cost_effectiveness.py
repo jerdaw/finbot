@@ -1,10 +1,10 @@
 """Cost-effectiveness analysis (CEA) for comparing health interventions.
 
 Implements standard health economics tools:
-- Incremental Cost-Effectiveness Ratio (ICER)
-- Net Monetary Benefit (NMB)
-- Cost-Effectiveness Acceptability Curves (CEAC)
-- Cost-effectiveness plane scatter data
+- incremental cost-effectiveness ratio analysis
+- net monetary benefit analysis
+- cost-effectiveness acceptability curves
+- cost-effectiveness plane scatter data
 
 Uses probabilistic sensitivity analysis (PSA) via Monte Carlo simulation
 results from the QALY simulator.
@@ -14,7 +14,11 @@ Typical usage:
         sim_results={"Drug A": sim_a, "No Treatment": sim_baseline},
         comparator="No Treatment",
     )
-    print(f"ICER: ${cea['icer']['ICER'].iloc[0]:,.0f}/QALY")
+    row = cea["icer"].iloc[0]
+    print(
+        f"{row['Intervention']}: ${row['Incremental Cost']:,.0f} for "
+        f"{row['Incremental QALYs']:.2f} incremental QALYs"
+    )
 """
 
 from __future__ import annotations
@@ -45,7 +49,7 @@ def cost_effectiveness_analysis(
     Returns
     -------
     dict with keys:
-        ``icer``     : pd.DataFrame — ICER for each intervention vs comparator
+        ``icer``     : pd.DataFrame — incremental ratio table for each intervention vs comparator
         ``nmb``      : pd.DataFrame — mean NMB at each WTP threshold
         ``ceac``     : pd.DataFrame — P(cost-effective) at each WTP threshold
         ``ce_plane`` : dict[str, pd.DataFrame] — (ΔCost, ΔQALY) per intervention
