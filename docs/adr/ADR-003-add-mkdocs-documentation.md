@@ -40,6 +40,7 @@ Finbot had comprehensive module-level docstrings (160 files) but lacked a user-f
 ### Rationale
 
 **MkDocs advantages:**
+
 - Simple Markdown-based (no reStructuredText learning curve)
 - Beautiful Material theme with excellent UX out of the box
 - Fast builds (~2 seconds for entire site)
@@ -49,6 +50,7 @@ Finbot had comprehensive module-level docstrings (160 files) but lacked a user-f
 - Wide Python community adoption
 
 **Material theme advantages:**
+
 - Modern, professional design
 - Dark mode toggle
 - Responsive mobile layout
@@ -57,6 +59,7 @@ Finbot had comprehensive module-level docstrings (160 files) but lacked a user-f
 - Search as you type
 
 **mkdocstrings advantages:**
+
 - Auto-generates API docs from Google-style docstrings
 - Python handler for proper type hint rendering
 - Preserves all docstring information
@@ -64,6 +67,7 @@ Finbot had comprehensive module-level docstrings (160 files) but lacked a user-f
 ### Implementation
 
 **Dependencies added:**
+
 ```toml
 [tool.poetry.group.dev.dependencies]
 mkdocs = "^1.6.1"
@@ -72,7 +76,8 @@ mkdocstrings = {extras = ["python"], version = "^0.27.0"}
 ```
 
 **Structure created:**
-```
+
+```text
 docs_site/
 ├── index.md                 # Home page
 ├── user-guide/             # Installation, quick start, CLI ref, config
@@ -85,12 +90,14 @@ docs_site/
 ```
 
 **Key pages:**
+
 - Index: Project overview, features, quick start
 - User guide: 5 pages (getting-started, installation, quick-start, cli-reference, configuration)
 - API reference: BacktestRunner, Fund Simulator, DCA Optimizer, Monte Carlo, Finance Utils
 - Supporting: Contributing, changelog, research overview
 
 **Makefile integration:**
+
 ```makefile
 docs: docs-build docs-serve
 docs-serve: mkdocs serve
@@ -100,6 +107,7 @@ docs-build: mkdocs build
 ### Consequences
 
 **Positive:**
+
 - Professional documentation site with excellent UX
 - Searchable API reference
 - Fast builds enable rapid iteration
@@ -109,18 +117,21 @@ docs-build: mkdocs build
 - Dark mode support out of the box
 
 **Negative:**
+
 - Additional dev dependency (19 packages)
 - Separate docs_site/ directory alongside docs/
 - Manual API page creation (mkdocstrings had module resolution issues)
 - Static site requires regeneration after code changes
 
 **Neutral:**
+
 - GitHub Pages deployment requires separate branch
 - site/ directory added to .gitignore
 
 ## Implementation Details
 
 **Configuration (`mkdocs.yml`):**
+
 - Material theme with indigo color scheme
 - Dark/light mode toggle
 - Navigation tabs and sections
@@ -129,11 +140,13 @@ docs-build: mkdocs build
 - Markdown extensions (admonitions, code highlighting, tabs, task lists)
 
 **Build process:**
+
 1. `mkdocs build` generates static site to `site/`
 2. `mkdocs serve` runs local dev server on port 8000
 3. `mkdocs gh-deploy` builds and pushes to gh-pages branch
 
 **Documentation workflow:**
+
 1. Write/edit Markdown in docs_site/
 2. Run `make docs-serve` for live preview
 3. Commit changes
@@ -143,16 +156,19 @@ docs-build: mkdocs build
 ## Alternatives Not Chosen
 
 **Sphinx:**
+
 - Pros: Python standard, rst flexibility, extensive extensions
 - Cons: reStructuredText learning curve, slower builds, less modern UX, configuration complexity
 - Reason not chosen: MkDocs simpler and faster, Material theme superior UX
 
 **Docusaurus:**
+
 - Pros: Modern React-based, versioning built-in
 - Cons: Requires Node.js, heavier dependency, less Python-native
 - Reason not chosen: Adds another tech stack, overkill for project size
 
 **GitBook:**
+
 - Pros: Beautiful UI, git-based
 - Cons: Proprietary platform, paid plans for private repos
 - Reason not chosen: Prefer open-source, self-hosted solution
@@ -164,11 +180,11 @@ docs-build: mkdocs build
 
 ## Future Enhancements
 
-- [ ] Auto-deploy docs to GitHub Pages via CI on main branch push
-- [ ] Add more utility API reference pages (datetime, pandas, data science)
+- [x] Auto-deploy docs to GitHub Pages via CI on main branch push
+- [x] Add more utility API reference pages (datetime, pandas, data science)
 - [ ] Add architecture diagrams using Mermaid
 - [ ] Add notebook gallery with example outputs
-- [ ] API reference completeness (currently 6 pages, could expand to 160+)
+- [ ] Expand API reference depth beyond the current public wrapper coverage where deeper module-level docs add value
 - [ ] Investigate mkdocstrings Python handler improvements for better auto-generation
 
 ## References

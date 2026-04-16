@@ -10,6 +10,7 @@ Finbot's quantitative-analysis workflows across finance and health economics.
 Analysis of how well the fund simulator tracks real ETF returns.
 
 **Key Findings:**
+
 - 2-5% tracking error for leveraged funds
 - Suitable for historical backtesting and extension
 - LIBOR approximation accounts for ~1% of error
@@ -21,6 +22,7 @@ Analysis of how well the fund simulator tracks real ETF returns.
 Optimal dollar-cost averaging strategies across multiple portfolios.
 
 **Key Findings:**
+
 - 60/40 SPY/TLT validated for non-leveraged portfolios
 - 45/55 UPRO/TMF optimal for leveraged portfolios
 - 5-year DCA duration balances risk and return
@@ -32,6 +34,7 @@ Optimal dollar-cost averaging strategies across multiple portfolios.
 Foundational comparison of the project's original 10-strategy cohort on S&P 500 data. The live platform now includes additional strategies beyond this initial report.
 
 **Key Findings:**
+
 - Rebalancing outperforms buy-and-hold for multi-asset portfolios
 - SMA crossovers effective in trending markets
 - Transaction costs matter for frequent-trading strategies
@@ -44,6 +47,7 @@ Scope, intended use, and current validation posture for Finbot's public health-
 economics tooling.
 
 **Key Takeaways:**
+
 - Open and inspectable implementation of standard health-economics workflows
 - Educational and research framing, not clinical decision support
 - Clear public path from tutorial to methodology to notebook
@@ -56,6 +60,7 @@ Summary of the model structure, equations, standards alignment, and known
 limitations behind the health-economics module.
 
 **Key Takeaways:**
+
 - Monte Carlo QALY simulation with discounted costs and outcomes
 - ICER, NMB, CEAC, and optimizer workflows are documented publicly
 - Public methodology page now matches the published tutorial path

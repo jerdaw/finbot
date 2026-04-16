@@ -110,10 +110,10 @@ define what kinds of claims the repository can responsibly support.
 The implementation and documentation are informed by standard references such
 as:
 
-- Drummond et al., *Methods for the Economic Evaluation of Health Care
-  Programmes*
-- Briggs, Claxton, and Sculpher, *Decision Modelling for Health Economic
-  Evaluation*
+- Drummond et al., _Methods for the Economic Evaluation of Health Care
+  Programmes_
+- Briggs, Claxton, and Sculpher, _Decision Modelling for Health Economic
+  Evaluation_
 - NICE methods guidance
 - CADTH economic evaluation guidelines
 - WHO CHOICE reference materials
