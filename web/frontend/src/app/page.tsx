@@ -24,9 +24,10 @@ import { apiGet } from "@/lib/api";
 import type { DataStatusResponse, FundInfo, StrategyInfo } from "@/types/api";
 
 const FEATURED_LINKS = [
-  { label: "Backtesting", href: "/backtesting", icon: Activity, description: "Backtest 12 trading strategies on historical data", color: "from-emerald-500/10 to-emerald-600/5", iconColor: "text-emerald-400" },
+  { label: "Backtesting", href: "/backtesting", icon: Activity, description: "Backtest 13 trading strategies on historical data", color: "from-emerald-500/10 to-emerald-600/5", iconColor: "text-emerald-400" },
   { label: "Monte Carlo", href: "/monte-carlo", icon: Shuffle, description: "Probabilistic simulation with percentile fan charts", color: "from-purple-500/10 to-purple-600/5", iconColor: "text-purple-400" },
   { label: "Simulations", href: "/simulations", icon: LineChart, description: "Compare leveraged fund performance with interactive overlays", color: "from-blue-500/10 to-blue-600/5", iconColor: "text-blue-400" },
+  { label: "Health Economics", href: "/health-economics", icon: Heart, description: "Model intervention value with QALY and cost-effectiveness analysis", color: "from-rose-500/10 to-rose-600/5", iconColor: "text-rose-400" },
 ];
 
 const MORE_LINKS = [
@@ -36,7 +37,6 @@ const MORE_LINKS = [
   { label: "Portfolio Analytics", href: "/portfolio-analytics", icon: PieChart, description: "Rolling metrics, benchmark, drawdown", color: "from-sky-500/10 to-sky-600/5", iconColor: "text-sky-400" },
   { label: "Factor Analytics", href: "/factor-analytics", icon: Layers, description: "Multi-factor regression and attribution", color: "from-violet-500/10 to-violet-600/5", iconColor: "text-violet-400" },
   { label: "Real-Time Quotes", href: "/realtime-quotes", icon: Zap, description: "Live pricing from multiple providers", color: "from-yellow-500/10 to-yellow-600/5", iconColor: "text-yellow-400" },
-  { label: "Health Economics", href: "/health-economics", icon: Heart, description: "QALY and cost-effectiveness", color: "from-rose-500/10 to-rose-600/5", iconColor: "text-rose-400" },
   { label: "Experiments", href: "/experiments", icon: FlaskConical, description: "Compare backtest runs", color: "from-indigo-500/10 to-indigo-600/5", iconColor: "text-indigo-400" },
   { label: "Data Status", href: "/data-status", icon: Database, description: "Monitor data freshness", color: "from-teal-500/10 to-teal-600/5", iconColor: "text-teal-400" },
 ];
@@ -109,8 +109,8 @@ export default function DashboardPage() {
             Welcome to <span className="gradient-text">Finbot</span>
           </h2>
           <p className="mt-2 max-w-lg text-sm text-muted-foreground">
-            Financial simulation, backtesting, and analysis platform.
-            Explore strategies, run simulations, and analyze results.
+            Quantitative research platform for financial analysis and health economics.
+            Explore strategies, run simulations, and compare intervention value in one workspace.
           </p>
         </div>
       </div>
@@ -170,7 +170,7 @@ export default function DashboardPage() {
         <p className="mb-4 text-xs font-medium tracking-wider text-muted-foreground uppercase">
           Featured Tools
         </p>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {FEATURED_LINKS.map((link) => (
             <ToolCard key={link.href} link={link} large />
           ))}

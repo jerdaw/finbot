@@ -1273,7 +1273,7 @@ export default function HealthEconomicsPage() {
     <div className="space-y-8">
       <PageHeader
         title="Health Economics"
-        description="QALY simulation, cost-effectiveness analysis, treatment optimization, and clinical scenarios"
+        description="Research tools for modeling medical interventions with QALY simulation, cost-effectiveness analysis, treatment optimization, and reusable clinical scenarios"
       />
 
       <MedicalDisclaimer />

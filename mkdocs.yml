@@ -1,5 +1,5 @@
 site_name: Finbot Documentation
-site_description: Financial data collection, simulation, and backtesting platform
+site_description: Quantitative research platform for financial analysis and health economics
 site_author: Jeremy Dawson
 site_url: https://jerdaw.github.io/finbot/
 
@@ -127,6 +127,8 @@ nav:
       - Leveraged ETF Simulation: research/leveraged-etf-simulation.md
       - DCA Optimization: research/dca-optimization.md
       - Strategy Backtesting: research/strategy-backtesting.md
+      - Health Economics Evidence: research/health-economics-evidence.md
+      - Health Economics Methodology: research/health-economics-methodology.md
   - Development Guides:
       - Docker Security Scanning: guides/docker-security-scanning.md
       - Pre-commit Hooks: guides/pre-commit-hooks-usage.md

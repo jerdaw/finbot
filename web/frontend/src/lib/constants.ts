@@ -24,6 +24,7 @@ export interface NavItem {
 export const NAV_GROUPS = [
   "Analysis",
   "Risk & Portfolio",
+  "Clinical Research",
   "Data & Monitoring",
 ];
 
@@ -42,9 +43,11 @@ export const NAV_ITEMS: NavItem[] = [
   { label: "Factor Analytics", href: "/factor-analytics", icon: Layers, group: "Risk & Portfolio" },
   { label: "Real-Time Quotes", href: "/realtime-quotes", icon: Zap, group: "Risk & Portfolio" },
 
+  // Clinical Research
+  { label: "Health Economics", href: "/health-economics", icon: Heart, group: "Clinical Research" },
+
   // Data & Monitoring
   { label: "Data Status", href: "/data-status", icon: Database, group: "Data & Monitoring" },
-  { label: "Health Economics", href: "/health-economics", icon: Heart, group: "Data & Monitoring" },
 ];
 
 export const CHART_COLORS = {

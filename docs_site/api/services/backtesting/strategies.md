@@ -1,12 +1,12 @@
 # Trading Strategies
 
-The strategies module implements 12 systematic trading strategies spanning portfolio management, timing, momentum, and mean reversion approaches.
+The strategies module implements 13 systematic trading strategies spanning portfolio management, timing, momentum, mean reversion, and regime-aware approaches.
 
 ## Overview
 
 Finbot includes:
 
-- **12 battle-tested strategies**: Rebalance, SMA crossover, MACD, dip buying, dual momentum, risk parity
+- **13 battle-tested strategies**: Rebalance, SMA crossover, MACD, dip buying, dual momentum, risk parity, and regime-adaptive allocation
 - **Backtrader integration**: All strategies compatible with Backtrader framework
 - **Comprehensive backtesting**: Validated across 15 years of S&P 500 data (2009-2024)
 - **Performance metrics**: CAGR, Sharpe, Sortino, Calmar, max drawdown, win rate
@@ -44,6 +44,12 @@ Finbot includes:
 |----------|-------------|----------------|
 | **DipBuySMA** | Buy dips below SMA | `sma_period`, `dip_threshold` |
 | **DipBuyStdev** | Buy dips > N std devs | `lookback_period`, `stdev_threshold` |
+
+### Regime-Aware Strategies
+
+| Strategy | Description | Key Parameters |
+|----------|-------------|----------------|
+| **RegimeAdaptive** | Shift equity/bond allocation by detected market regime | `lookback`, `rebal_interval`, `bull_threshold`, `bear_threshold`, `vol_threshold` |
 
 ## Strategy Modules
 
@@ -106,6 +112,16 @@ Inverse-volatility weighting:
       show_root_heading: true
       show_source: true
       heading_level: 3
+
+### Regime Adaptive
+
+Market-regime-aware allocation shifts:
+
+::: finbot.services.backtesting.strategies.regime_adaptive
+        options:
+            show_root_heading: true
+            show_source: true
+            heading_level: 3
 
 ## Quick Start
 
@@ -384,11 +400,11 @@ uv run pytest tests/unit/test_strategies_parametrized.py -v
 - **Survivorship bias**: Backtests use current index constituents
 - **Regime dependency**: Performance varies by market regime (bull/bear/sideways)
 
-See [Strategy Backtest Results](../../../research/strategy-backtest-results.md) for detailed analysis.
+See [Strategy Backtest Results](../../../research/strategy-backtesting.md) for detailed analysis.
 
 ## See Also
 
 - [BacktestRunner](backtest-runner.md) - Main backtesting orchestrator
 - [Compute Stats](compute-stats.md) - Performance metrics
-- [Strategy Backtest Results](../../../research/strategy-backtest-results.md) - Research documentation
-- [Example Notebook 03](../../../examples/03-backtesting-strategies.ipynb) - Interactive examples
+- [Strategy Backtest Results](../../../research/strategy-backtesting.md) - Research documentation
+- [Strategy Comparison Notebook](https://github.com/jerdaw/finbot/blob/main/notebooks/03_backtest_strategy_comparison.ipynb) - Interactive examples

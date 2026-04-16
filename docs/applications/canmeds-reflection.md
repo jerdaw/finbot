@@ -9,7 +9,7 @@
 
 ## Introduction
 
-Over the past three years, I designed and built Finbot — a quantitative analysis platform for financial research that grew to encompass health economics, systematic backtesting, and Monte Carlo simulation. What started as a personal project to answer "should I rebalance my portfolio?" became a rigorous software engineering effort spanning 15,000+ lines of code, 866 automated tests, and a production-ready system documented to academic standards.
+Over the past three years, I designed and built Finbot — a quantitative analysis platform for financial research that grew to encompass health economics, systematic backtesting, and Monte Carlo simulation. What started as a personal project to answer "should I rebalance my portfolio?" became a rigorous software engineering effort spanning 15,000+ lines of code, a large automated test suite, and a production-ready system documented to academic standards.
 
 This reflection maps that experience to the CanMEDS competency framework, showing how the development of a technical project cultivated physician-ready capacities. My claim is not that building software is equivalent to clinical experience — it clearly is not — but that the systematic, evidence-based thinking required for rigorous quantitative research is the same thinking medicine demands, applied to a different domain.
 
@@ -105,7 +105,7 @@ Scholarship is the competency I have most deliberately cultivated, and the one m
 
 **Primary source engagement**: I read the papers before I wrote the code. The health economics module is grounded in Drummond et al., NICE methodology, and CADTH guidelines. The backtesting module is grounded in academic literature on momentum strategies, risk parity, and market regime detection. The limitations document is grounded in the academic literature on backtesting pitfalls.
 
-**Rigor and reproducibility**: 866 automated tests, 61.63% test coverage, versioned data contracts, snapshot-based reproducibility, and experiment tracking are all tools for making work reproducible and reviewable. Science that can't be replicated isn't science. I built infrastructure that makes every backtest result reproducible from the same data snapshot.
+**Rigor and reproducibility**: A large automated test suite, versioned data contracts, snapshot-based reproducibility, and experiment tracking are all tools for making work reproducible and reviewable. Science that can't be replicated isn't science. I built infrastructure that makes every backtest result reproducible from the same data snapshot.
 
 **Teaching as scholarship**: Writing the three-part health economics tutorial series required me to understand the material well enough to explain it clearly to someone who didn't know it — the best test of understanding. Preparing the "Backtesting Engines Compared" technical article required reviewing the primary documentation of both Backtrader and NautilusTrader, running comparative benchmarks, and synthesizing the results into actionable guidance.
 
@@ -121,7 +121,7 @@ Professionalism in a software project manifests as the standards you maintain ev
 
 **Ethical transparency**: Finbot includes a DISCLAIMER.md that explicitly states it is not financial advice, the SECURITY.md that documents how to report vulnerabilities, and the limitations documentation that details what the system cannot do. These are not legally required. I included them because they are the right thing to do.
 
-**Security standards**: The security posture of Finbot includes: bandit static analysis (SAST) for Python security vulnerabilities, pip-audit for dependency vulnerability scanning, trivy for container scanning, all GitHub Actions pinned to SHA hashes to prevent supply chain attacks, and structured audit logging for all significant operations. The CLAUDE.md file documents a commit authorship policy that ensures transparent attribution. These choices reflect professional accountability.
+**Security standards**: The security posture of Finbot includes: bandit static analysis (SAST) for Python security vulnerabilities, pip-audit for dependency vulnerability scanning, trivy for container scanning, all GitHub Actions pinned to SHA hashes to prevent supply chain attacks, and structured audit logging for all significant operations. The AGENTS.md file documents a commit authorship policy that ensures transparent attribution. These choices reflect professional accountability.
 
 **Long-term thinking**: Choosing parquet over pickle for data serialization meant current storage files weren't readable without migration — but pickle's fragility across Python versions made it a liability for a long-lived project. Choosing to write 866 tests when 0 would have been "faster" meant slower initial development but dramatically faster subsequent iteration. Professional judgment is the willingness to accept short-term costs for long-term reliability.
 

@@ -16,9 +16,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Finbot — Financial Analysis Platform",
+  title: "Finbot — Quantitative Research Platform",
   description:
-    "Financial simulation, backtesting, and analysis platform",
+    "Financial simulation, backtesting, analytics, and health-economics research platform",
 };
 
 export default function RootLayout({

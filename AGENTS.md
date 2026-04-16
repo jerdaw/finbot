@@ -46,7 +46,7 @@ uv run python scripts/update_daily.py
 - Repo contributors should use `uv sync --all-extras`.
 - The root `Dockerfile` builds the CLI image by default; dashboard and API images opt into extras explicitly.
 
-## Current Delivery Status (2026-04-15)
+## Current Delivery Status (2026-04-16)
 
 **P0-P9 complete. P10 remains in progress.**
 
@@ -55,9 +55,9 @@ uv run python scripts/update_daily.py
 - **P7** (93%): External impact & advanced capabilities — 25/27 active items
 - **P8** (100%): Risk Analytics, Portfolio Analytics, Real-Time Data, Factor Analytics
 - **P9** (100%): Agent tooling and runtime hardening — P9.1-P9.4 complete
-- **P10** (in progress): Next.js frontend — 12 pages complete, frontend hardening batch landed (mocked Playwright smoke coverage, frontend CI gate, audit remediation); responsive/mobile/deployment follow-up remains
+- **P10** (in progress): Next.js frontend — 12 task pages complete, frontend hardening landed, and reviewer-facing documentation/health-economics packaging improved; responsive/mobile/deployment and broader legacy docs cleanup remain
 
-**Tracking docs:** `docs/planning/roadmap.md`, `docs/planning/archive/audit-remediation-and-frontend-hardening-2026-04-15.md`, `docs/planning/backtesting-live-readiness-backlog.md`, `docs/planning/priority-5-6-completion-status.md`, `docs/adr/ADR-011-nautilus-decision.md`
+**Tracking docs:** `docs/planning/roadmap.md`, `docs/planning/archive/audit-remediation-and-frontend-hardening-2026-04-15.md`, `docs/planning/archive/reviewer-facing-packaging-and-docs-alignment-2026-04-16.md`, `docs/planning/backtesting-live-readiness-backlog.md`, `docs/planning/priority-5-6-completion-status.md`, `docs/adr/ADR-011-nautilus-decision.md`
 
 ## Common Commands
 
@@ -278,7 +278,7 @@ Entry point: `web/backend/main.py` (mounted at `/api/`). Requires `uv sync --ext
 
 Next.js 16 App Router with React 19, Tailwind CSS v4, shadcn/ui, Recharts, Framer Motion, Zustand.
 
-- **`src/app/`**: 12 pages — simulations, backtesting, optimizer, monte-carlo, walk-forward, experiments, risk-analytics, portfolio-analytics, factor-analytics, realtime-quotes, data-status, health-economics
+- **`src/app/`**: Dashboard home + 12 task pages — simulations, backtesting, optimizer, monte-carlo, walk-forward, experiments, risk-analytics, portfolio-analytics, factor-analytics, realtime-quotes, data-status, health-economics
 - **`src/lib/`**: Foundation utilities — `utils.ts` (cn), `api.ts` (apiGet/apiPost), `format.ts` (number formatters), `constants.ts` (nav items, chart colors)
 - **`src/components/`**: Reusable components — `layout/` (sidebar, command-palette, header), `common/` (stat-card, chart-card, data-table, tool-layout, config-panel, empty-state, inline-error, heatmap, metric-badge), `charts/` (recharts-wrappers, line-chart-wrapper, drawdown-chart, lightweight-chart)
 - **`src/stores/`**: Zustand stores — `sidebar-store.ts`, `watchlist-store.ts` (localStorage-persisted)
@@ -340,7 +340,7 @@ Create `.env` file in `finbot/config/` (excluded by `.gitignore`).
 | `finbot/dashboard/app.py` | Streamlit dashboard entry point (12 pages) |
 | **Web Application** | |
 | `web/backend/main.py` | FastAPI API server (12 routers, 34 endpoints) |
-| `web/frontend/src/app/` | Next.js frontend (12 pages) |
+| `web/frontend/src/app/` | Next.js frontend (dashboard home + 12 task pages) |
 | `web/frontend/src/lib/api.ts` | HTTP client (apiGet/apiPost with timeout + error handling) |
 | `web/frontend/src/lib/constants.ts` | Navigation items, chart colors, shared constants |
 | **Other Services** | |

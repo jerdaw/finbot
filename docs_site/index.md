@@ -1,14 +1,27 @@
 # Finbot Documentation
 
-Welcome to the Finbot documentation! Finbot is a comprehensive financial data collection, simulation, and backtesting platform designed for quantitative analysis and portfolio optimization.
+Welcome to the Finbot documentation. Finbot is a quantitative research
+platform that combines financial analysis workflows with health-economics
+tooling for transparent, evidence-oriented modeling.
+
+!!! warning "Important Context"
+
+    Finbot is an educational and research project. It is not financial advice,
+    not medical advice, and not a substitute for formal clinical or policy
+    review. If you are exploring the health-economics side of the project,
+    start with the [Health Economics Evidence](research/health-economics-evidence.md)
+    page and the repository
+    [Disclaimer](https://github.com/jerdaw/finbot/blob/main/DISCLAIMER.md).
 
 ## Overview
 
-Finbot consolidates three key areas of quantitative finance:
+Finbot brings together two applied domains that share the same quantitative
+core:
 
-- **Data Collection**: Automated fetching from Yahoo Finance, FRED, Alpha Vantage, Google Finance, and more
-- **Simulation**: Fund simulators (leveraged ETFs), bond ladders, Monte Carlo risk analysis
-- **Backtesting**: 13 trading strategies with comprehensive performance metrics using Backtrader
+- **Financial analysis**: data collection, simulation, backtesting, risk
+    analysis, and optimization.
+- **Health economics**: QALY simulation, cost-effectiveness analysis,
+    treatment-schedule optimization, and illustrative clinical scenarios.
 
 ## Key Features
 
@@ -36,6 +49,11 @@ Finbot consolidates three key areas of quantitative finance:
 - **Treatment Optimizer**: Grid-search optimization for dose frequency and duration
 - **Clinical scenarios**: Type 2 diabetes, cancer screening with NICE/CADTH/WHO thresholds
 - **Publication-grade research**: 3 research documents with 22+ academic citations
+
+### 🔎 Reviewer-Oriented Entry Points
+- **Health Economics Evidence**: Public context page explaining scope, intended use, and limitations
+- **Health Economics Methodology**: Public summary of model structure, equations, and standards alignment
+- **Responsible use**: Repository disclaimer and ethics guidance for interpreting outputs conservatively
 
 ### 📈 Data Collection Infrastructure
 - **Multiple data sources**: Yahoo Finance, FRED, Alpha Vantage, Google Finance, BLS, MSCI
