@@ -66,6 +66,8 @@
 
 # Project Documentation
 # README, contributing guide, license, project instructions
+/AGENTS.md @jerdaw
 /README.md @jerdaw
 /CONTRIBUTING.md @jerdaw
 /CLAUDE.md @jerdaw
+/GEMINI.md @jerdaw

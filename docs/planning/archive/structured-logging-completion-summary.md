@@ -119,7 +119,7 @@ df.groupby("operation_type")["duration_ms"].mean()
 
 **Documentation:**
 5. `docs/guides/audit-trails.md` (13KB, 482 lines) - Comprehensive user guide
-6. `docs/planning/structured-logging-implementation-plan.md` - Implementation plan
+6. `docs/planning/roadmap.md` - Completion tracked in the canonical roadmap
 7. `docs_site/guides/audit-trails.md` - Symlink to guide
 
 **Tests:**

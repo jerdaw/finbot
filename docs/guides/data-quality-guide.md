@@ -10,6 +10,7 @@
 Finbot maintains a comprehensive data quality and monitoring infrastructure to ensure the reliability of the daily data pipeline. This guide explains how to monitor data freshness, diagnose staleness issues, validate data integrity, and extend the monitoring system.
 
 **Key capabilities:**
+
 - Automatic freshness monitoring for 7 data sources
 - CLI status command with staleness detection
 - DataFrame validation utilities
@@ -18,6 +19,8 @@ Finbot maintains a comprehensive data quality and monitoring infrastructure to e
 ---
 
 ## Quick Reference
+
+If you are running from a source checkout without activating `.venv`, prefix the `finbot` commands below with `uv run`.
 
 ```bash
 # Check data freshness status
@@ -30,7 +33,7 @@ finbot status --stale-only
 finbot update
 
 # Run daily pipeline with verbose output
-finbot update --verbose
+finbot --verbose update
 ```
 
 ---
@@ -47,6 +50,7 @@ finbot/services/data_quality/
 ```
 
 **Data flow:**
+
 1. `data_source_registry.py` defines data sources and staleness thresholds
 2. `check_data_freshness.py` scans directories and computes staleness
 3. `finbot status` CLI command displays results in formatted table
@@ -60,15 +64,15 @@ finbot/services/data_quality/
 
 The registry tracks 7 data sources with specific staleness thresholds:
 
-| Source | Directory | Max Age | Update Frequency | Description |
-|--------|-----------|---------|------------------|-------------|
-| Yahoo Finance | `yfinance_data/history/` | 3 days | Daily (market hours) | OHLCV price histories |
-| Google Finance | `google_finance_data/` | 3 days | Daily | Index data from Google Sheets |
-| FRED | `fred_data/` | 7 days | Weekly | Federal Reserve economic data |
-| Shiller | `shiller_data/` | 35 days | Monthly | CAPE ratios, PE ratios, long-term S&P data |
-| Alpha Vantage | `alpha_vantage_data/` | 7 days | Weekly | Intraday data, sentiment scores |
-| BLS | `bls_data/` | 35 days | Monthly | CPI, unemployment, labor statistics |
-| Simulations | `simulations/` | 3 days | Daily | Fund and index simulation results |
+| Source         | Directory                | Max Age | Update Frequency     | Description                                |
+| -------------- | ------------------------ | ------- | -------------------- | ------------------------------------------ |
+| Yahoo Finance  | `yfinance_data/history/` | 3 days  | Daily (market hours) | OHLCV price histories                      |
+| Google Finance | `google_finance_data/`   | 3 days  | Daily                | Index data from Google Sheets              |
+| FRED           | `fred_data/`             | 7 days  | Weekly               | Federal Reserve economic data              |
+| Shiller        | `shiller_data/`          | 35 days | Monthly              | CAPE ratios, PE ratios, long-term S&P data |
+| Alpha Vantage  | `alpha_vantage_data/`    | 7 days  | Weekly               | Intraday data, sentiment scores            |
+| BLS            | `bls_data/`              | 35 days | Monthly              | CPI, unemployment, labor statistics        |
+| Simulations    | `simulations/`           | 3 days  | Daily                | Fund and index simulation results          |
 
 **File format:** All data sources use **parquet** format (fast, safe, interoperable).
 
@@ -85,6 +89,7 @@ Data sources have different natural update frequencies based on their upstream p
 - **35 days** (Shiller, BLS): Monthly economic reports. 35-day threshold (just over 1 month) flags missed updates without false alarms.
 
 **Staleness calculation:**
+
 ```python
 age_days = (datetime.now() - newest_file_mtime).total_seconds() / 86400
 is_stale = age_days > source.max_age_days
@@ -102,6 +107,7 @@ finbot status
 ```
 
 **Example output:**
+
 ```
 Data Source Status
 ==================
@@ -128,10 +134,11 @@ All data sources are fresh.
 finbot status --stale-only
 
 # Show staleness thresholds
-finbot status --verbose
+finbot --verbose status
 ```
 
 **Example stale output:**
+
 ```
 Data Source Status
 ==================
@@ -149,6 +156,7 @@ Warning: 2 source(s) are stale. Run 'finbot update' to refresh.
 ### Understanding Status Output
 
 **Columns explained:**
+
 - **Source**: Data source name (from registry)
 - **Files**: Number of parquet files matching the source pattern
 - **Size**: Total size of all files (human-readable)
@@ -157,6 +165,7 @@ Warning: 2 source(s) are stale. Run 'finbot update' to refresh.
 - **Status**: `OK` or `STALE` based on staleness threshold
 
 **Age formatting:**
+
 - Less than 1 hour: `45m ago`
 - Less than 1 day: `8h ago`
 - 1+ days: `3d 6h ago`
@@ -169,49 +178,55 @@ Warning: 2 source(s) are stale. Run 'finbot update' to refresh.
 ### Diagnostic Workflow
 
 1. **Identify stale sources:**
-   ```bash
-   finbot status --stale-only
-   ```
+
+    ```bash
+    finbot status --stale-only
+    ```
 
 2. **Check for errors in logs:**
-   ```bash
-   # View latest log file
-   tail -n 100 logs/finbot.log
 
-   # Search for errors in last update
-   grep ERROR logs/finbot.log | tail -n 20
-   ```
+    ```bash
+    # View latest log file
+    tail -n 100 logs/finbot.log
+
+    # Search for errors in last update
+    grep ERROR logs/finbot.log | tail -n 20
+    ```
 
 3. **Run manual update:**
-   ```bash
-   finbot update --verbose
-   ```
+
+    ```bash
+     finbot --verbose update
+    ```
 
 4. **Verify freshness:**
-   ```bash
-   finbot status
-   ```
+    ```bash
+    finbot status
+    ```
 
 ### Common Issues and Solutions
 
 #### Issue: Yahoo Finance data is stale
 
 **Symptoms:**
+
 - `finbot status` shows Yahoo Finance as STALE
 - Last updated >3 days ago
 
 **Causes:**
+
 - Network connectivity issues
 - Yahoo Finance API rate limiting
 - Ticker symbol changes/delistings
 
 **Solutions:**
+
 ```bash
 # 1. Check network connectivity
 ping finance.yahoo.com
 
 # 2. Run update with verbose logging
-finbot update --verbose
+finbot --verbose update
 
 # 3. Check logs for specific ticker errors
 grep "yfinance" logs/finbot.log | tail -n 50
@@ -221,6 +236,7 @@ grep "yfinance" logs/finbot.log | tail -n 50
 ```
 
 **Manual workaround:**
+
 ```python
 # Test specific ticker in Python
 from finbot.utils.data_collection_utils.yfinance.get_history import get_history
@@ -233,15 +249,18 @@ print(df.tail())
 #### Issue: Google Finance data is stale
 
 **Symptoms:**
+
 - Google Finance shown as STALE
 - Missing API credentials error in logs
 
 **Causes:**
+
 - Missing Google service account credentials
 - Credentials file path incorrect
 - Google Sheets API disabled
 
 **Solutions:**
+
 ```bash
 # 1. Check if credentials file exists
 echo $GOOGLE_FINANCE_SERVICE_ACCOUNT_CREDENTIALS_PATH
@@ -260,44 +279,47 @@ finbot update
 #### Issue: FRED data is stale
 
 **Symptoms:**
+
 - FRED shown as STALE (>7 days old)
 - API key errors in logs
 
 **Causes:**
-- Missing FRED API key (note: FRED may work without key but has lower rate limits)
+
+- Network or upstream availability issues
 - Network issues
 - FRED service outage
 
 **Solutions:**
-```bash
-# 1. Check API key (optional but recommended)
-echo $FRED_API_KEY
 
-# 2. Test FRED connectivity
+```bash
+# 1. Test FRED connectivity
 python3 -c "from finbot.utils.data_collection_utils.fred.get_fred_data import get_fred_data; print(get_fred_data('SP500', force_update=True).tail())"
 
-# 3. Run full update
+# 2. Run full update
 finbot update
 ```
 
 #### Issue: Simulations are stale
 
 **Symptoms:**
+
 - Simulations shown as STALE
 - Files older than 3 days
 
 **Causes:**
+
 - Upstream data dependencies stale (Yahoo Finance, Google Finance)
 - Simulation pipeline errors
 - Missing LIBOR data for overnight rates
 
 **Solutions:**
+
 ```bash
 # 1. Check upstream dependencies first
 finbot status | grep -E "(Yahoo|Google|FRED)"
 
 # 2. Update upstream data
-finbot update --verbose
+finbot --verbose update
 
 # 3. Check simulation logs
 grep "simulation" logs/finbot.log | tail -n 50
@@ -307,6 +329,7 @@ ls -lth finbot/data/simulations/ | head -n 20
 ```
 
 **Dependency chain:**
+
 ```
 FRED data (overnight rates)
   → approximate_overnight_libor()
@@ -325,6 +348,7 @@ If simulations fail, check each dependency in order.
 The `validate_dataframe()` utility catches common data quality issues after loading parquet files.
 
 **Basic usage:**
+
 ```python
 from finbot.utils.pandas_utils.load_df import load_df
 from finbot.services.data_quality.validate_dataframe import validate_dataframe
@@ -356,15 +380,16 @@ if result.warnings:
 
 ### Validation Checks
 
-| Check | Description | Failure Type |
-|-------|-------------|--------------|
-| Empty DataFrame | `df.empty == True` | Error (blocks) |
-| Minimum rows | `len(df) < min_rows` | Error (blocks) |
-| Expected columns | Missing required columns | Error (blocks) |
+| Check             | Description                   | Failure Type           |
+| ----------------- | ----------------------------- | ---------------------- |
+| Empty DataFrame   | `df.empty == True`            | Error (blocks)         |
+| Minimum rows      | `len(df) < min_rows`          | Error (blocks)         |
+| Expected columns  | Missing required columns      | Error (blocks)         |
 | Duplicate indices | `df.index.duplicated().any()` | Warning (non-blocking) |
-| Null values | `df.isnull().sum() > 0` | Warning (non-blocking) |
+| Null values       | `df.isnull().sum() > 0`       | Warning (non-blocking) |
 
 **ValidationResult attributes:**
+
 ```python
 result.is_valid          # bool: True if no errors
 result.row_count         # int: Number of rows
@@ -418,6 +443,7 @@ for ticker in tickers:
 ```
 
 **Example output:**
+
 ```
 ✓ SPY: 5432 rows, 6 columns
 ✓ QQQ: 4821 rows, 6 columns
@@ -436,6 +462,7 @@ for ticker in tickers:
 **1. Add directory constant (if new source):**
 
 Edit `finbot/constants/path_constants.py`:
+
 ```python
 # Subdirectories under DATA_DIR
 NEW_SOURCE_DATA_DIR = _process_dir(DATA_DIR / "new_source_data")
@@ -444,6 +471,7 @@ NEW_SOURCE_DATA_DIR = _process_dir(DATA_DIR / "new_source_data")
 **2. Add data source to registry:**
 
 Edit `finbot/services/data_quality/data_source_registry.py`:
+
 ```python
 from finbot.constants.path_constants import NEW_SOURCE_DATA_DIR
 
@@ -462,6 +490,7 @@ DATA_SOURCES: tuple[DataSource, ...] = (
 **3. Create data collection utility:**
 
 Create `finbot/utils/data_collection_utils/new_source/get_new_source_data.py`:
+
 ```python
 """Fetch data from New Source.
 
@@ -539,6 +568,7 @@ def _fetch_from_api(
 **4. Add to daily update pipeline:**
 
 Edit `scripts/update_daily.py`:
+
 ```python
 from finbot.utils.data_collection_utils.new_source.get_new_source_data import get_new_source_data
 
@@ -574,7 +604,7 @@ ls -la finbot/data/new_source_data/
 python3 -c "from finbot.utils.data_collection_utils.new_source.get_new_source_data import get_new_source_data; print(get_new_source_data('TEST_SYMBOL'))"
 
 # 3. Run full update
-finbot update --verbose
+finbot --verbose update
 
 # 4. Check status
 finbot status | grep "New Source"
@@ -636,148 +666,161 @@ def update_polygon_data() -> None:
 ### Data Collection
 
 1. **Always use parquet format:**
-   ```python
-   # Good
-   save_df(df, path_with_parquet_extension)
 
-   # Bad (don't use pickle)
-   df.to_pickle("data.pkl")
-   ```
+    ```python
+    # Good
+    save_df(df, path_with_parquet_extension)
+
+    # Bad (don't use pickle)
+    df.to_pickle("data.pkl")
+    ```
 
 2. **Implement caching with force_update flag:**
-   ```python
-   def get_data(symbol: str, force_update: bool = False) -> pd.DataFrame:
-       cache_path = DATA_DIR / f"{symbol}.parquet"
 
-       if cache_path.exists() and not force_update:
-           return pd.read_parquet(cache_path)
+    ```python
+    def get_data(symbol: str, force_update: bool = False) -> pd.DataFrame:
+        cache_path = DATA_DIR / f"{symbol}.parquet"
 
-       # Fetch fresh data
-       df = fetch_from_api(symbol)
-       save_df(df, cache_path)
-       return df
-   ```
+        if cache_path.exists() and not force_update:
+            return pd.read_parquet(cache_path)
+
+        # Fetch fresh data
+        df = fetch_from_api(symbol)
+        save_df(df, cache_path)
+        return df
+    ```
 
 3. **Use retry logic for network operations:**
-   ```python
-   from finbot.utils.request_utils.request_with_retry import request_with_retry
 
-   response = request_with_retry(
-       url=url,
-       max_retries=3,
-       backoff_factor=2.0,
-   )
-   ```
+    ```python
+    from finbot.utils.request_utils.request_with_retry import request_with_retry
+
+    response = request_with_retry(
+        url=url,
+        max_retries=3,
+        backoff_factor=2.0,
+    )
+    ```
 
 4. **Log all data operations:**
-   ```python
-   from finbot.config import logger
 
-   logger.info(f"Fetching {symbol} from API")
-   logger.warning(f"Cache miss for {symbol}, fetching fresh data")
-   logger.error(f"Failed to fetch {symbol}: {error}")
-   ```
+    ```python
+    from finbot.config import logger
+
+    logger.info(f"Fetching {symbol} from API")
+    logger.warning(f"Cache miss for {symbol}, fetching fresh data")
+    logger.error(f"Failed to fetch {symbol}: {error}")
+    ```
 
 ### Data Validation
 
 1. **Validate immediately after loading:**
-   ```python
-   df = load_df(path)
-   result = validate_dataframe(df, path, min_rows=1, check_duplicates=True)
 
-   if not result.is_valid:
-       raise ValueError(f"Invalid data in {path}: {result.errors}")
-   ```
+    ```python
+    df = load_df(path)
+    result = validate_dataframe(df, path, min_rows=1, check_duplicates=True)
+
+    if not result.is_valid:
+        raise ValueError(f"Invalid data in {path}: {result.errors}")
+    ```
 
 2. **Set appropriate min_rows thresholds:**
-   ```python
-   # Daily data: at least 1 trading year
-   validate_dataframe(df, path, min_rows=252)
 
-   # Weekly data: at least 1 year
-   validate_dataframe(df, path, min_rows=52)
+    ```python
+    # Daily data: at least 1 trading year
+    validate_dataframe(df, path, min_rows=252)
 
-   # Monthly data: at least 1 year
-   validate_dataframe(df, path, min_rows=12)
-   ```
+    # Weekly data: at least 1 year
+    validate_dataframe(df, path, min_rows=52)
+
+    # Monthly data: at least 1 year
+    validate_dataframe(df, path, min_rows=12)
+    ```
 
 3. **Use expected_columns for schema validation:**
-   ```python
-   # OHLCV data
-   validate_dataframe(
-       df, path,
-       expected_columns=["Open", "High", "Low", "Close", "Volume"]
-   )
 
-   # Economic data
-   validate_dataframe(
-       df, path,
-       expected_columns=["value", "date"]
-   )
-   ```
+    ```python
+    # OHLCV data
+    validate_dataframe(
+        df, path,
+        expected_columns=["Open", "High", "Low", "Close", "Volume"]
+    )
+
+    # Economic data
+    validate_dataframe(
+        df, path,
+        expected_columns=["value", "date"]
+    )
+    ```
 
 ### Monitoring
 
 1. **Check status before long-running operations:**
-   ```bash
-   # Before running backtest
-   finbot status --stale-only
 
-   # If stale, update first
-   finbot update
-   ```
+    ```bash
+    # Before running backtest
+    finbot status --stale-only
+
+    # If stale, update first
+    finbot update
+    ```
 
 2. **Set up automated monitoring (cron/systemd):**
-   ```bash
-   # Daily update at 6 PM (after market close)
-   0 18 * * 1-5 cd /path/to/finbot && finbot update
 
-   # Daily status check at 7 PM
-   0 19 * * * cd /path/to/finbot && finbot status --stale-only
-   ```
+    ```bash
+    # Daily update at 6 PM (after market close)
+    0 18 * * 1-5 cd /path/to/finbot && finbot update
+
+    # Daily status check at 7 PM
+    0 19 * * * cd /path/to/finbot && finbot status --stale-only
+    ```
 
 3. **Monitor log files for errors:**
-   ```bash
-   # Check for errors in last 24 hours
-   grep ERROR logs/finbot.log | tail -n 50
 
-   # Watch logs in real-time
-   tail -f logs/finbot.log
-   ```
+    ```bash
+    # Check for errors in last 24 hours
+    grep ERROR logs/finbot.log | tail -n 50
+
+    # Watch logs in real-time
+    tail -f logs/finbot.log
+    ```
 
 4. **Use verbose mode during troubleshooting:**
-   ```bash
-   # Normal operation
-   finbot update
 
-   # Troubleshooting
-   finbot update --verbose
-   ```
+    ```bash
+    # Normal operation
+    finbot update
+
+    # Troubleshooting
+     finbot --verbose update
+    ```
 
 ### Performance
 
 1. **Batch updates when possible:**
-   ```python
-   # Good: batch fetch
-   symbols = ["SPY", "QQQ", "IWM", "TLT"]
-   get_history(symbols, force_update=True)
 
-   # Bad: individual fetches
-   for symbol in symbols:
-       get_history(symbol, force_update=True)
-   ```
+    ```python
+    # Good: batch fetch
+    symbols = ["SPY", "QQQ", "IWM", "TLT"]
+    get_history(symbols, force_update=True)
+
+    # Bad: individual fetches
+    for symbol in symbols:
+        get_history(symbol, force_update=True)
+    ```
 
 2. **Use parquet compression:**
-   ```python
-   # Parquet automatically uses snappy compression
-   df.to_parquet(path)  # Compressed by default
-   ```
+
+    ```python
+    # Parquet automatically uses snappy compression
+    df.to_parquet(path)  # Compressed by default
+    ```
 
 3. **Clean up old cache files periodically:**
-   ```bash
-   # Remove files older than 90 days
-   find finbot/data/responses/ -name "*.zst" -mtime +90 -delete
-   ```
+    ```bash
+    # Remove files older than 90 days
+    find finbot/data/responses/ -name "*.zst" -mtime +90 -delete
+    ```
 
 ---
 
@@ -809,14 +852,14 @@ def update_polygon_data() -> None:
 
 ### Key Files
 
-| File | Purpose |
-|------|---------|
-| `finbot/services/data_quality/data_source_registry.py` | Registry of tracked data sources |
-| `finbot/services/data_quality/check_data_freshness.py` | Freshness monitoring engine |
-| `finbot/services/data_quality/validate_dataframe.py` | DataFrame validation utilities |
-| `finbot/cli/commands/status.py` | CLI status command implementation |
-| `scripts/update_daily.py` | Daily data update pipeline |
-| `finbot/constants/path_constants.py` | Data directory paths |
+| File                                                   | Purpose                           |
+| ------------------------------------------------------ | --------------------------------- |
+| `finbot/services/data_quality/data_source_registry.py` | Registry of tracked data sources  |
+| `finbot/services/data_quality/check_data_freshness.py` | Freshness monitoring engine       |
+| `finbot/services/data_quality/validate_dataframe.py`   | DataFrame validation utilities    |
+| `finbot/cli/commands/status.py`                        | CLI status command implementation |
+| `scripts/update_daily.py`                              | Daily data update pipeline        |
+| `finbot/constants/path_constants.py`                   | Data directory paths              |
 
 ### Related Documentation
 
@@ -830,12 +873,14 @@ def update_polygon_data() -> None:
 ## Support
 
 **Issues?** Check:
+
 1. Recent logs: `tail -n 100 logs/finbot.log`
 2. Network connectivity: `ping finance.yahoo.com`
 3. API keys: `env | grep API_KEY`
 4. Disk space: `df -h`
 
 **Still stuck?** File an issue with:
+
 - Output of `finbot status`
 - Relevant log excerpts
 - Steps to reproduce

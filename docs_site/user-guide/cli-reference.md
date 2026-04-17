@@ -1,6 +1,8 @@
 # CLI Reference
 
-Complete command-line interface documentation for Finbot.
+Complete command-line interface documentation for the current Finbot Click CLI.
+
+If you are running from a source checkout without activating `.venv`, prefix commands with `uv run`, for example `uv run finbot --help`.
 
 ## Global Options
 
@@ -8,17 +10,20 @@ Complete command-line interface documentation for Finbot.
 finbot [OPTIONS] COMMAND [ARGS]...
 ```
 
-**Global Options:**
+**Global options:**
 
 - `--version`: Show version and exit
-- `--verbose`, `-v`: Enable verbose output
-- `--help`: Show help message
+- `--verbose`, `-v`: Enable verbose logging output
+- `--trace-id TEXT`: Attach a trace ID to audit logs
+- `--disclaimer`: Print the full disclaimer and exit
+
+`--verbose` is a global option, so it must appear before the subcommand: `finbot --verbose status`.
 
 ## Commands
 
 ### finbot simulate
 
-Simulate leveraged funds:
+Run a fund simulation from the built-in fund registry.
 
 ```bash
 finbot simulate --fund FUND_TICKER [OPTIONS]
@@ -26,96 +31,86 @@ finbot simulate --fund FUND_TICKER [OPTIONS]
 
 **Required:**
 
-- `--fund TEXT`: Fund ticker (SPY, UPRO, TQQQ, etc.)
+- `--fund TEXT`: Fund ticker such as `UPRO`, `TQQQ`, `TMF`, or `SPY`
 
 **Optional:**
 
-- `--start TEXT`: Start date (YYYY-MM-DD)
-- `--end TEXT`: End date (YYYY-MM-DD)
-- `--output PATH`: Save results (CSV, parquet, JSON)
-- `--plot`: Show interactive plot
+- `--start TEXT`: Start date in `YYYY-MM-DD` format
+- `--end TEXT`: End date in `YYYY-MM-DD` format
+- `--output PATH`: Save results as `.csv`, `.parquet`, or `.json`
+- `--plot`: Show the interactive Plotly chart
 
 **Examples:**
 
 ```bash
-# Basic simulation
 finbot simulate --fund UPRO
-
-# Historical extension
-finbot simulate --fund TQQQ --start 1990-01-01 --end 2024-01-01
-
-# Save and plot
+finbot simulate --fund TQQQ --start 2020-01-01 --end 2024-01-01
 finbot simulate --fund TMF --output results/tmf.parquet --plot
 ```
 
 ### finbot backtest
 
-Run strategy backtests:
+Run a strategy backtest for a single asset.
 
 ```bash
-finbot backtest --strategy STRATEGY --asset ASSETS [OPTIONS]
+finbot backtest --strategy STRATEGY --asset ASSET [OPTIONS]
 ```
 
 **Required:**
 
-- `--strategy TEXT`: Strategy name (Rebalance, SMACrossover, etc.)
-- `--asset TEXT`: Comma-separated tickers (SPY,TLT)
+- `--strategy TEXT`: One of `Rebalance`, `NoRebalance`, `SMACrossover`, `SMACrossoverDouble`, `SMACrossoverTriple`, `MACDSingle`, `MACDDual`, `DipBuySMA`, `DipBuyStdev`, `SMARebalMix`, `DualMomentum`, `RiskParity`
+- `--asset TEXT`: Single asset ticker such as `SPY` or `QQQ`
 
 **Optional:**
 
-- `--start TEXT`: Start date
-- `--end TEXT`: End date
-- `--cash FLOAT`: Starting cash (default: 100000)
-- `--commission FLOAT`: Commission rate (default: 0.001)
-- `--output PATH`: Save results
-- `--plot`: Show portfolio value chart
+- `--start TEXT`: Start date in `YYYY-MM-DD` format
+- `--end TEXT`: End date in `YYYY-MM-DD` format
+- `--cash FLOAT`: Starting cash, default `100000`
+- `--output PATH`: Save the one-row metrics table as `.csv`, `.parquet`, or `.json`
+- `--plot`: Show the Backtrader plot
 
 **Examples:**
 
 ```bash
-# 60/40 portfolio
-finbot backtest --strategy Rebalance --asset SPY,TLT
-
-# Custom parameters
-finbot backtest --strategy SMACrossover --asset QQQ \
-  --start 2010-01-01 --cash 50000 --commission 0.0005 --plot
+finbot backtest --strategy NoRebalance --asset SPY
+finbot backtest --strategy SMACrossover --asset QQQ --cash 50000 --plot
+finbot backtest --strategy MACDDual --asset SPY --output results/backtest.parquet
 ```
+
+`RegimeAdaptive` exists in the service layer but is not exposed by the current CLI command.
 
 ### finbot optimize
 
-Portfolio optimization:
+Run the built-in DCA schedule optimizer for one asset.
 
 ```bash
-finbot optimize --method METHOD --assets ASSETS [OPTIONS]
+finbot optimize --method dca --asset ASSET [OPTIONS]
 ```
 
 **Required:**
 
-- `--method TEXT`: Optimization method (dca)
-- `--assets TEXT`: Comma-separated tickers
+- `--method TEXT`: Currently only `dca`
+- `--asset TEXT`: Single asset ticker such as `SPY`, `QQQ`, or `UPRO`
 
 **Optional:**
 
-- `--duration INTEGER`: DCA duration in days
-- `--interval INTEGER`: Purchase interval in days
-- `--ratios TEXT`: Ratio range (start,stop,num)
-- `--output PATH`: Save results
-- `--plot`: Show optimization charts
+- `--cash FLOAT`: Starting cash, default `1000`
+- `--output PATH`: Save the raw per-trial results table as `.csv`, `.parquet`, or `.json`
+- `--plot`: Show the ratio and duration charts
+
+The current CLI runs the built-in sweep of front-loading ratios, DCA durations, purchase intervals, and trial durations. Use the Python API if you need to override those ranges directly.
 
 **Examples:**
 
 ```bash
-# Default optimization
-finbot optimize --method dca --assets SPY,TLT
-
-# Custom parameters
-finbot optimize --method dca --assets UPRO,TMF \
-  --duration 1095 --interval 30 --ratios 0.3,0.7,9 --plot
+finbot optimize --method dca --asset SPY
+finbot optimize --method dca --asset QQQ --cash 5000 --plot
+finbot optimize --method dca --asset UPRO --output results/dca.parquet
 ```
 
 ### finbot update
 
-Update all data:
+Run the daily data update pipeline.
 
 ```bash
 finbot update [OPTIONS]
@@ -123,26 +118,21 @@ finbot update [OPTIONS]
 
 **Optional:**
 
-- `--dry-run`: Show what would be updated
-- `--skip-prices`: Skip price history updates
-- `--skip-simulations`: Skip simulation updates
+- `--dry-run`: Show what would run without making changes
+- `--skip-prices`: Skip price and economic data updates
+- `--skip-simulations`: Skip LIBOR approximation and simulation regeneration
 
 **Examples:**
 
 ```bash
-# Full update
 finbot update
-
-# Dry run (no changes)
 finbot update --dry-run
-
-# Update prices only
 finbot update --skip-simulations
 ```
 
 ### finbot status
 
-Check data freshness and pipeline health:
+Show data freshness and pipeline health.
 
 ```bash
 finbot status [OPTIONS]
@@ -151,31 +141,48 @@ finbot status [OPTIONS]
 **Optional:**
 
 - `--stale-only`: Show only stale data sources
-- `--verbose`, `-v`: Include detailed logging and threshold output
+
+Use `finbot --verbose status` when you want the staleness thresholds printed after the table.
 
 **Examples:**
 
 ```bash
-# Show all tracked data sources
 finbot status
-
-# Focus on stale sources only
 finbot status --stale-only
-
-# Show detailed threshold information
 finbot --verbose status
+```
+
+### finbot dashboard
+
+Launch the Streamlit dashboard.
+
+```bash
+finbot dashboard [OPTIONS]
+```
+
+**Optional:**
+
+- `--port INTEGER`: Port to bind, default `8501`
+- `--host TEXT`: Host to bind, default `localhost`
+
+**Examples:**
+
+```bash
+finbot dashboard
+finbot dashboard --port 8080
+finbot dashboard --host 0.0.0.0 --port 8501
 ```
 
 ## Output Formats
 
-Specify output format via file extension:
+Command outputs are saved based on file extension:
 
 - `.csv`: Comma-separated values
-- `.parquet`: Apache Parquet (recommended)
-- `.json`: JSON format
+- `.parquet`: Apache Parquet
+- `.json`: JSON serialization
 
 ## See Also
 
 - [Getting Started](getting-started.md) - Installation and setup
-- [Configuration](configuration.md) - Advanced settings
+- [Configuration](configuration.md) - Environment and secret management
 - [API Reference](../api/index.md) - Python API documentation

@@ -9,7 +9,7 @@ Finbot is a comprehensive platform for:
 - **Data Collection**: Automated fetching from 6+ data sources
 - **Simulation**: Model leveraged ETFs, bond ladders, and Monte Carlo scenarios
 - **Backtesting**: Test 13 trading strategies with detailed performance metrics
-- **Optimization**: Find optimal portfolios using DCA and rebalancing strategies
+- **Optimization**: Explore DCA schedules and portfolio rebalancing tools
 
 ## Installation
 
@@ -40,7 +40,7 @@ source .venv/bin/activate  # On Linux/Mac
 export DYNACONF_ENV=development
 
 # Verify installation
-DYNACONF_ENV=development finbot --version
+DYNACONF_ENV=development uv run finbot --version
 ```
 
 ### Install with pip
@@ -71,7 +71,7 @@ DYNACONF_ENV=development finbot --version
 
 ### Environment Setup
 
-Finbot uses Dynaconf for environment-aware configuration. Create a `.env` file in the `finbot/config/` directory:
+Finbot uses Dynaconf for environment-aware configuration. Export environment variables directly in your shell or store them in `finbot/config/.env` for local development. Dynaconf auto-loads that `.env` file when `DYNACONF_ENV=development`.
 
 ```bash
 # finbot/config/.env
@@ -97,13 +97,13 @@ Example development configuration:
 ```yaml
 # finbot/config/development.yaml
 threading:
-  min_threads: 1
-  max_threads: null  # Auto-detect CPU cores
-  reserved_threads: 2  # Reserve 2 cores for system
+    min_threads: 1
+    max_threads: null # Auto-detect CPU cores
+    reserved_threads: 2 # Reserve 2 cores for system
 
 logging:
-  level: INFO
-  json_output: true
+    level: INFO
+    json_output: true
 ```
 
 ## First Steps
@@ -131,16 +131,16 @@ Fetch the latest data from all sources:
 
 ```bash
 # Run full update (requires API keys)
-finbot update
+uv run finbot update
 
 # Dry run (shows what would be updated)
-finbot update --dry-run
+uv run finbot update --dry-run
 
 # Skip price updates
-finbot update --skip-prices
+uv run finbot update --skip-prices
 
 # Skip simulations
-finbot update --skip-simulations
+uv run finbot update --skip-simulations
 ```
 
 This will:
@@ -157,13 +157,13 @@ Simulate a leveraged fund:
 
 ```bash
 # Simulate UPRO (3x leveraged S&P 500)
-finbot simulate --fund UPRO --start 2010-01-01 --plot
+uv run finbot simulate --fund UPRO --start 2010-01-01 --plot
 
 # Save results to file
-finbot simulate --fund UPRO --start 2010-01-01 --output results/upro_sim.parquet
+uv run finbot simulate --fund UPRO --start 2010-01-01 --output results/upro_sim.parquet
 
 # See all available funds
-finbot simulate --help
+uv run finbot simulate --help
 ```
 
 Available funds: SPY, SSO, UPRO, QQQ, QLD, TQQQ, TLT, UBT, TMF, IEF, UST, TYD, SHY, NTSX
@@ -173,102 +173,114 @@ Available funds: SPY, SSO, UPRO, QQQ, QLD, TQQQ, TLT, UBT, TMF, IEF, UST, TYD, S
 Test a trading strategy:
 
 ```bash
-# Backtest rebalancing strategy on 60/40 portfolio
-finbot backtest --strategy Rebalance --asset SPY,TLT --plot
+# Backtest a single asset with the current CLI
+uv run finbot backtest --strategy NoRebalance --asset SPY --plot
 
-# Backtest with custom parameters
-finbot backtest --strategy Rebalance --asset SPY,TLT \
-  --cash 100000 --commission 0.001 --output results/backtest.csv
+# Save results to file
+uv run finbot backtest --strategy SMACrossover --asset QQQ \
+  --cash 100000 --output results/backtest.parquet
 
 # See all available strategies
-finbot backtest --help
+uv run finbot backtest --help
 ```
 
-Available strategies: Rebalance, NoRebalance, SMACrossover, SMACrossoverDouble, SMACrossoverTriple, MACDSingle, MACDDual, DipBuySMA, DipBuyStdev, SMARebalMix, DualMomentum, RiskParity, RegimeAdaptive
+CLI strategies: Rebalance, NoRebalance, SMACrossover, SMACrossoverDouble, SMACrossoverTriple, MACDSingle, MACDDual, DipBuySMA, DipBuyStdev, SMARebalMix, DualMomentum, RiskParity
+
+`RegimeAdaptive` is available from the Python API and service layer, but it is not exposed by the current CLI command.
 
 ### 5. Optimize a Portfolio
 
 Find optimal asset allocation:
 
 ```bash
-# Optimize SPY/TLT allocation with DCA strategy
-finbot optimize --method dca --assets SPY,TLT --plot
+# Optimize a DCA schedule for one asset
+uv run finbot optimize --method dca --asset SPY --plot
 
-# Custom optimization parameters
-finbot optimize --method dca --assets SPY,TLT \
-  --duration 1825 --interval 30 --ratios 0.5,0.95,10 \
-  --output results/optimization.parquet
+# Save the raw trial table
+uv run finbot optimize --method dca --asset QQQ \
+  --cash 5000 --output results/optimization.parquet
 ```
+
+The current CLI runs the built-in DCA sweep for a single asset. Use the Python API below when you want direct control over ratio ranges, DCA durations, or trial windows.
 
 ## Python API Usage
 
 ### Simulate a Fund
 
 ```python
-from finbot.services.simulation.fund_simulator import simulate_fund
+from finbot.services.simulation.sim_specific_funds import simulate_fund
 
 # Simulate TQQQ (3x leveraged Nasdaq 100)
-tqqq_sim = simulate_fund('TQQQ', start_date='2010-02-11', end_date='2024-01-01')
+tqqq_sim = simulate_fund("TQQQ", save_sim=False)
+tqqq_sim = tqqq_sim.loc["2010-02-11":"2024-01-01"]
 
 # Access results
 print(tqqq_sim.head())
-print(f"Total return: {(tqqq_sim['Close'][-1] / tqqq_sim['Close'][0] - 1) * 100:.2f}%")
+print(f"Total return: {(tqqq_sim['Close'].iloc[-1] / tqqq_sim['Close'].iloc[0] - 1) * 100:.2f}%")
 ```
 
 ### Run a Backtest
 
 ```python
+import backtrader as bt
+
 from finbot.services.backtesting.backtest_runner import BacktestRunner
-from finbot.utils.data_collection_utils.yfinance import get_history
+from finbot.services.backtesting.brokers.fixed_commission_scheme import FixedCommissionScheme
+from finbot.services.backtesting.strategies.rebalance import Rebalance
+from finbot.utils.data_collection_utils.yfinance.get_history import get_history
 
 # Load data
-spy = get_history('SPY', start='2010-01-01')
-tlt = get_history('TLT', start='2010-01-01')
+spy = get_history("SPY", adjust_price=True)
+tlt = get_history("TLT", adjust_price=True)
 
 # Create backtest runner
 runner = BacktestRunner(
-    strategy='Rebalance',
-    data_feeds={'SPY': spy, 'TLT': tlt},
-    strategy_params={'rebalance_days': 30, 'target_allocations': {'SPY': 0.6, 'TLT': 0.4}},
-    cash=100000,
-    commission=0.001
+  price_histories={"SPY": spy, "TLT": tlt},
+  start=None,
+  end=None,
+  duration=None,
+  start_step=None,
+  init_cash=100000,
+  strat=Rebalance,
+  strat_kwargs={"rebal_proportions": [0.6, 0.4], "rebal_interval": 63},
+  broker=bt.brokers.BackBroker,
+  broker_kwargs={},
+  broker_commission=FixedCommissionScheme,
+  sizer=bt.sizers.AllInSizer,
+  sizer_kwargs={},
+  plot=False,
 )
 
 # Run backtest
-results = runner.run()
-stats = runner.get_stats()
+stats = runner.run_backtest()
 
-print(f"CAGR: {stats['CAGR']:.2%}")
-print(f"Sharpe: {stats['Sharpe']:.2f}")
-print(f"Max Drawdown: {stats['Max Drawdown']:.2%}")
+print(f"CAGR: {stats['CAGR'].iloc[0]:.2%}")
+print(f"Sharpe: {stats['Sharpe'].iloc[0]:.2f}")
+print(f"Max Drawdown: {stats['Max Drawdown'].iloc[0]:.2%}")
 ```
 
 ### Optimize DCA Strategy
 
 ```python
 from finbot.services.optimization.dca_optimizer import dca_optimizer
-import pandas as pd
+from finbot.utils.data_collection_utils.yfinance.get_history import get_history
 
-# Load and merge price data
-spy = get_history('SPY')['Close']
-tlt = get_history('TLT')['Close']
-combined = pd.DataFrame({'SPY': spy, 'TLT': tlt}).dropna()
+# Load one asset's close history
+spy = get_history("SPY", adjust_price=True)["Close"]
 
-# Run optimizer
-results = dca_optimizer(
-    price_history=combined,
-    ratio_linspace=(0.50, 0.95, 10),
-    dca_duration_days=365 * 5,
-    dca_step_days=30,
-    trial_duration_days=365 * 10,
-    starting_cash=100000
+# Run the default analysis views
+ratio_df, duration_df = dca_optimizer(
+  price_history=spy,
+  ticker="SPY",
+  starting_cash=100000,
 )
 
-# View best allocation
-print(results.head())
-print(f"Optimal: {results.iloc[0]['ratio']:.0%} SPY / {1-results.iloc[0]['ratio']:.0%} TLT")
-print(f"Expected Sharpe: {results.iloc[0]['sharpe']:.2f}")
+# View the strongest front-loading ratios and DCA durations
+print(ratio_df.head())
+print(duration_df.head())
 ```
+
+Set `analyze_results=False` when you want the raw per-trial DataFrame instead of the aggregated ratio and duration summaries.
 
 ## Next Steps
 
@@ -294,15 +306,15 @@ pip install -e '.[dashboard,web,nautilus,notebooks]'
 
 If data collection fails with "OSError: API key not found":
 
-1. Create `finbot/config/.env` file
-2. Add the relevant API key (see Configuration section)
+1. Export the relevant environment variable in your shell, or add it to `finbot/config/.env` for local development
+2. Confirm `DYNACONF_ENV` is set correctly
 3. Restart your shell / reload environment
 
 ### No Data Available
 
 If simulations fail with "no data available":
 
-1. Run `finbot update` to fetch data
+1. Run `uv run finbot update` to fetch data
 2. Check that `finbot/data/` subdirectories are populated
 3. Verify API keys are configured correctly
 

@@ -174,7 +174,7 @@ If you want to disable automatic daily updates:
 - **Data Quality Guide:** `docs/guides/data-quality-guide.md`
 - **Data Source Registry:** `finbot/services/data_quality/data_source_registry.py`
 - **Update Script:** `scripts/update_daily.py`
-- **Priority 7 Plan:** `docs/planning/priority-7-implementation-plan.md`
+- **Roadmap:** `docs/planning/roadmap.md`
 
 ---
 

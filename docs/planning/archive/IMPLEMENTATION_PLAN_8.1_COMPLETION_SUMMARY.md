@@ -8,7 +8,7 @@
 
 1. Added active v8.1 planning and status artifacts:
    - `docs/planning/archive/IMPLEMENTATION_PLAN_8.1_PRIORITY5_TAIL_AND_E6_CONFIDENCE_UPLIFT.md`
-   - `docs/planning/priority-7-status-refresh-2026-02-20.md`
+   - `docs/planning/roadmap.md`
 2. Added manual artifact enablement docs/templates:
    - `docs/guides/media-artifact-production-runbook.md`
    - `docs/templates/poster-outline.md`

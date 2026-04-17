@@ -13,7 +13,7 @@ Located in `finbot/config/`:
 - `settings.yaml`: Base settings (all environments)
 - `development.yaml`: Development overrides
 - `production.yaml`: Production overrides
-- `.env`: Environment variables (gitignored)
+- `.env`: Optional local environment file, auto-loaded in `development` (gitignored)
 
 ## Environment Selection
 
@@ -32,27 +32,26 @@ export DYNACONF_ENV=production
 ```yaml
 # finbot/config/development.yaml
 threading:
-  min_threads: 1
-  max_threads: null  # Auto-detect
-  reserved_threads: 2  # Leave 2 cores for system
+    min_threads: 1
+    max_threads: null # Auto-detect
+    reserved_threads: 2 # Leave 2 cores for system
 ```
 
 ### Logging
 
 ```yaml
 logging:
-  level: INFO  # DEBUG, INFO, WARNING, ERROR
-  json_output: true
-  file_rotation_mb: 5
-  file_backup_count: 3
+    level: INFO # DEBUG, INFO, WARNING, ERROR
+    json_output: true
+    file_rotation_mb: 5
+    file_backup_count: 3
 ```
 
 ## API Keys
 
-Store API keys in `finbot/config/.env`:
+Environment variables are the primary interface for secrets. For local development, you can also place them in `finbot/config/.env`, which Dynaconf auto-loads when `DYNACONF_ENV=development`.
 
 ```bash
-# finbot/config/.env
 ALPHA_VANTAGE_API_KEY=your_key_here
 NASDAQ_DATA_LINK_API_KEY=your_key_here
 US_BUREAU_OF_LABOR_STATISTICS_API_KEY=your_key_here

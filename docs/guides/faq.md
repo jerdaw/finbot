@@ -9,6 +9,7 @@
 ### Q: What is Finbot?
 
 Finbot is a quantitative analysis platform for personal finance research. It provides tools for:
+
 - **Fund simulation**: Model leveraged ETFs (UPRO, TQQQ, TMF, etc.) back to 1950 with realistic costs
 - **Backtesting**: Test 13 investment strategies on historical data with realistic transaction costs
 - **Portfolio optimization**: Find optimal dollar-cost averaging and rebalancing schedules
@@ -59,6 +60,7 @@ Python 3.11, 3.12, and 3.13. CI tests all three versions on every commit.
 For basic functionality (simulation, backtesting with cached data), no API keys are required.
 
 API keys are only needed for live data collection:
+
 - **Alpha Vantage**: Economic indicators, sentiment data
 - **NASDAQ Data Link**: Additional historical data
 - **BLS**: Bureau of Labor Statistics data
@@ -73,6 +75,7 @@ Yahoo Finance (yfinance) and FRED data work without API keys for most purposes.
 ### Q: What strategies are included?
 
 13 built-in strategies:
+
 1. `NoRebalance` — Buy and hold
 2. `Rebalance` — Periodic portfolio rebalancing
 3. `SmaCrossover` — Single SMA crossover
@@ -92,6 +95,7 @@ Yahoo Finance (yfinance) and FRED data work without API keys for most purposes.
 ### Q: How realistic are the backtests?
 
 More realistic than most consumer tools, but imperfect. Finbot accounts for:
+
 - **Commissions**: Configurable per-trade fixed commissions
 - **Slippage**: Configurable execution slippage model
 - **Bid-ask spreads**: In fund simulations
@@ -100,6 +104,7 @@ More realistic than most consumer tools, but imperfect. Finbot accounts for:
 - **LIBOR/borrowing costs**: In leveraged fund simulations
 
 Finbot does **not** account for:
+
 - Taxes (capital gains, dividend tax)
 - Exact intraday execution timing
 - Market impact of large orders
@@ -117,6 +122,7 @@ Backtrader uses a **bar-based model**: your strategy receives one complete OHLCV
 NautilusTrader uses an **event-driven model**: your strategy receives discrete events (BarEvent, OrderFilled, PositionChanged) that more accurately reflect how real markets work. More realistic fills, but a steeper learning curve.
 
 **Quick guide:**
+
 - For pure research/backtesting: Backtrader
 - For strategies intended for live trading: NautilusTrader
 
@@ -128,7 +134,7 @@ See [docs/guides/choosing-backtest-engine.md](choosing-backtest-engine.md) and [
 
 ```bash
 # CLI
-uv run finbot backtest --strategy NoRebalance --symbols SPY --start 2000-01-01
+uv run finbot backtest --strategy NoRebalance --asset SPY --start 2000-01-01
 
 # Python
 from finbot.services.backtesting.run_backtest import run_backtest
@@ -249,6 +255,7 @@ The health economics extension demonstrates this cross-domain applicability and 
 ### Q: What is a QALY?
 
 A Quality-Adjusted Life Year combines length of life (years) with quality of life (utility, 0-1 scale):
+
 ```
 QALY = Years of Life × Health Utility
 ```
@@ -262,6 +269,7 @@ See [docs/blog/health-economics-part1-qaly.md](../blog/health-economics-part1-qa
 ### Q: What is an ICER?
 
 Incremental Cost-Effectiveness Ratio:
+
 ```
 ICER = ΔCost / ΔQALY
 ```
@@ -280,10 +288,10 @@ The cost of generating one additional QALY compared to the comparator. If ICER <
 
 ### Q: Why parquet instead of CSV or pickle?
 
-| Format | Problem |
-|--------|---------|
-| CSV | Slow to read/write, no type information, no compression by default |
-| Pickle | Breaks across Python versions, not interoperable, security risks |
+| Format  | Problem                                                                |
+| ------- | ---------------------------------------------------------------------- |
+| CSV     | Slow to read/write, no type information, no compression by default     |
+| Pickle  | Breaks across Python versions, not interoperable, security risks       |
 | Parquet | Fast columnar format, self-describing types, compressed, interoperable |
 
 Parquet files in Finbot are readable by pandas, Polars, Arrow, R, Spark, and any other tool that supports the Apache Parquet format.
@@ -293,6 +301,7 @@ Parquet files in Finbot are readable by pandas, Polars, Arrow, R, Spark, and any
 ### Q: How is the CI/CD pipeline structured?
 
 Core CI coverage runs on every push/PR to main:
+
 1. **Lint**: `ruff check` (code style, imports, security patterns)
 2. **Format**: `ruff format --check`
 3. **Type check**: `mypy finbot/`
