@@ -1180,10 +1180,9 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="API Reference">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#finbot.services.backtesting.compute_stats.compute_stats" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1191,11 +1190,6 @@
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -2756,10 +2750,9 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="API Reference">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#finbot.services.backtesting.compute_stats.compute_stats" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2767,11 +2760,6 @@
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -2824,7 +2812,7 @@ summary table of return, risk, drawdown, and metadata fields.</p>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">cash_history</span><span class="o">=</span><span class="n">cash_history</span><span class="p">,</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">stocks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;SPY&quot;</span><span class="p">,</span> <span class="s2">&quot;TLT&quot;</span><span class="p">],</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">strat</span><span class="o">=</span><span class="n">strategy_cls</span><span class="p">,</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">strat_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;rebalance_days&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">},</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">strat_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;rebal_proportions&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">],</span> <span class="s2">&quot;rebal_interval&quot;</span><span class="p">:</span> <span class="mi">63</span><span class="p">},</span>
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">broker</span><span class="o">=</span><span class="n">broker_cls</span><span class="p">,</span>
 </span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n">broker_kwargs</span><span class="o">=</span><span class="p">{},</span>
 </span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">broker_commission</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -2840,11 +2828,11 @@ summary table of return, risk, drawdown, and metadata fields.</p>
 <div class="doc doc-object doc-function">
 
 
-<h3 id="finbot.services.backtesting.compute_stats.compute_stats" class="doc doc-heading">
+<h2 id="finbot.services.backtesting.compute_stats.compute_stats" class="doc doc-heading">
             <span class="doc doc-object-name doc-function-name">finbot.services.backtesting.compute_stats.compute_stats</span>
 
 
-<a href="#finbot.services.backtesting.compute_stats.compute_stats" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#finbot.services.backtesting.compute_stats.compute_stats" class="headerlink" title="Permanent link">&para;</a></h2>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">compute_stats</span><span class="p">(</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">value_history</span><span class="p">:</span> <span class="n">Series</span><span class="p">,</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">cash_history</span><span class="p">:</span> <span class="n">Series</span><span class="p">,</span>
@@ -3010,7 +2998,11 @@ summary table of return, risk, drawdown, and metadata fields.</p>
             </details>
     </div>
 
-</div><h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
+</div><p>options:
+show_root_heading: true
+show_source: true
+heading_level: 3</p>
+<h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="../backtest-runner/">BacktestRunner</a></li>
 <li><a href="../strategies/">Trading Strategies</a></li>

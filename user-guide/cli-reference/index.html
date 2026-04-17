@@ -719,6 +719,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#finbot-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        finbot dashboard
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2841,6 +2852,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#finbot-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        finbot dashboard
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2889,143 +2911,138 @@
 
 
 <h1 id="cli-reference">CLI Reference<a class="headerlink" href="#cli-reference" title="Permanent link">&para;</a></h1>
-<p>Complete command-line interface documentation for Finbot.</p>
+<p>Complete command-line interface documentation for the current Finbot Click CLI.</p>
+<p>If you are running from a source checkout without activating <code>.venv</code>, prefix commands with <code>uv run</code>, for example <code>uv run finbot --help</code>.</p>
 <h2 id="global-options">Global Options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h2>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>finbot<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
 </span></code></pre></div>
-<p><strong>Global Options:</strong></p>
+<p><strong>Global options:</strong></p>
 <ul>
 <li><code>--version</code>: Show version and exit</li>
-<li><code>--verbose</code>, <code>-v</code>: Enable verbose output</li>
-<li><code>--help</code>: Show help message</li>
+<li><code>--verbose</code>, <code>-v</code>: Enable verbose logging output</li>
+<li><code>--trace-id TEXT</code>: Attach a trace ID to audit logs</li>
+<li><code>--disclaimer</code>: Print the full disclaimer and exit</li>
 </ul>
+<p><code>--verbose</code> is a global option, so it must appear before the subcommand: <code>finbot --verbose status</code>.</p>
 <h2 id="commands">Commands<a class="headerlink" href="#commands" title="Permanent link">&para;</a></h2>
 <h3 id="finbot-simulate">finbot simulate<a class="headerlink" href="#finbot-simulate" title="Permanent link">&para;</a></h3>
-<p>Simulate leveraged funds:</p>
+<p>Run a fund simulation from the built-in fund registry.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>finbot<span class="w"> </span>simulate<span class="w"> </span>--fund<span class="w"> </span>FUND_TICKER<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </span></code></pre></div>
 <p><strong>Required:</strong></p>
 <ul>
-<li><code>--fund TEXT</code>: Fund ticker (SPY, UPRO, TQQQ, etc.)</li>
+<li><code>--fund TEXT</code>: Fund ticker such as <code>UPRO</code>, <code>TQQQ</code>, <code>TMF</code>, or <code>SPY</code></li>
 </ul>
 <p><strong>Optional:</strong></p>
 <ul>
-<li><code>--start TEXT</code>: Start date (YYYY-MM-DD)</li>
-<li><code>--end TEXT</code>: End date (YYYY-MM-DD)</li>
-<li><code>--output PATH</code>: Save results (CSV, parquet, JSON)</li>
-<li><code>--plot</code>: Show interactive plot</li>
+<li><code>--start TEXT</code>: Start date in <code>YYYY-MM-DD</code> format</li>
+<li><code>--end TEXT</code>: End date in <code>YYYY-MM-DD</code> format</li>
+<li><code>--output PATH</code>: Save results as <code>.csv</code>, <code>.parquet</code>, or <code>.json</code></li>
+<li><code>--plot</code>: Show the interactive Plotly chart</li>
 </ul>
 <p><strong>Examples:</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Basic simulation</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>finbot<span class="w"> </span>simulate<span class="w"> </span>--fund<span class="w"> </span>UPRO
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Historical extension</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>finbot<span class="w"> </span>simulate<span class="w"> </span>--fund<span class="w"> </span>TQQQ<span class="w"> </span>--start<span class="w"> </span><span class="m">1990</span>-01-01<span class="w"> </span>--end<span class="w"> </span><span class="m">2024</span>-01-01
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1"># Save and plot</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>finbot<span class="w"> </span>simulate<span class="w"> </span>--fund<span class="w"> </span>TMF<span class="w"> </span>--output<span class="w"> </span>results/tmf.parquet<span class="w"> </span>--plot
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>finbot<span class="w"> </span>simulate<span class="w"> </span>--fund<span class="w"> </span>UPRO
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>finbot<span class="w"> </span>simulate<span class="w"> </span>--fund<span class="w"> </span>TQQQ<span class="w"> </span>--start<span class="w"> </span><span class="m">2020</span>-01-01<span class="w"> </span>--end<span class="w"> </span><span class="m">2024</span>-01-01
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>finbot<span class="w"> </span>simulate<span class="w"> </span>--fund<span class="w"> </span>TMF<span class="w"> </span>--output<span class="w"> </span>results/tmf.parquet<span class="w"> </span>--plot
 </span></code></pre></div>
 <h3 id="finbot-backtest">finbot backtest<a class="headerlink" href="#finbot-backtest" title="Permanent link">&para;</a></h3>
-<p>Run strategy backtests:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>finbot<span class="w"> </span>backtest<span class="w"> </span>--strategy<span class="w"> </span>STRATEGY<span class="w"> </span>--asset<span class="w"> </span>ASSETS<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+<p>Run a strategy backtest for a single asset.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>finbot<span class="w"> </span>backtest<span class="w"> </span>--strategy<span class="w"> </span>STRATEGY<span class="w"> </span>--asset<span class="w"> </span>ASSET<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </span></code></pre></div>
 <p><strong>Required:</strong></p>
 <ul>
-<li><code>--strategy TEXT</code>: Strategy name (Rebalance, SMACrossover, etc.)</li>
-<li><code>--asset TEXT</code>: Comma-separated tickers (SPY,TLT)</li>
+<li><code>--strategy TEXT</code>: One of <code>Rebalance</code>, <code>NoRebalance</code>, <code>SMACrossover</code>, <code>SMACrossoverDouble</code>, <code>SMACrossoverTriple</code>, <code>MACDSingle</code>, <code>MACDDual</code>, <code>DipBuySMA</code>, <code>DipBuyStdev</code>, <code>SMARebalMix</code>, <code>DualMomentum</code>, <code>RiskParity</code></li>
+<li><code>--asset TEXT</code>: Single asset ticker such as <code>SPY</code> or <code>QQQ</code></li>
 </ul>
 <p><strong>Optional:</strong></p>
 <ul>
-<li><code>--start TEXT</code>: Start date</li>
-<li><code>--end TEXT</code>: End date</li>
-<li><code>--cash FLOAT</code>: Starting cash (default: 100000)</li>
-<li><code>--commission FLOAT</code>: Commission rate (default: 0.001)</li>
-<li><code>--output PATH</code>: Save results</li>
-<li><code>--plot</code>: Show portfolio value chart</li>
+<li><code>--start TEXT</code>: Start date in <code>YYYY-MM-DD</code> format</li>
+<li><code>--end TEXT</code>: End date in <code>YYYY-MM-DD</code> format</li>
+<li><code>--cash FLOAT</code>: Starting cash, default <code>100000</code></li>
+<li><code>--output PATH</code>: Save the one-row metrics table as <code>.csv</code>, <code>.parquet</code>, or <code>.json</code></li>
+<li><code>--plot</code>: Show the Backtrader plot</li>
 </ul>
 <p><strong>Examples:</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># 60/40 portfolio</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>finbot<span class="w"> </span>backtest<span class="w"> </span>--strategy<span class="w"> </span>Rebalance<span class="w"> </span>--asset<span class="w"> </span>SPY,TLT
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Custom parameters</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>finbot<span class="w"> </span>backtest<span class="w"> </span>--strategy<span class="w"> </span>SMACrossover<span class="w"> </span>--asset<span class="w"> </span>QQQ<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span>--start<span class="w"> </span><span class="m">2010</span>-01-01<span class="w"> </span>--cash<span class="w"> </span><span class="m">50000</span><span class="w"> </span>--commission<span class="w"> </span><span class="m">0</span>.0005<span class="w"> </span>--plot
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>finbot<span class="w"> </span>backtest<span class="w"> </span>--strategy<span class="w"> </span>NoRebalance<span class="w"> </span>--asset<span class="w"> </span>SPY
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>finbot<span class="w"> </span>backtest<span class="w"> </span>--strategy<span class="w"> </span>SMACrossover<span class="w"> </span>--asset<span class="w"> </span>QQQ<span class="w"> </span>--cash<span class="w"> </span><span class="m">50000</span><span class="w"> </span>--plot
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>finbot<span class="w"> </span>backtest<span class="w"> </span>--strategy<span class="w"> </span>MACDDual<span class="w"> </span>--asset<span class="w"> </span>SPY<span class="w"> </span>--output<span class="w"> </span>results/backtest.parquet
 </span></code></pre></div>
+<p><code>RegimeAdaptive</code> exists in the service layer but is not exposed by the current CLI command.</p>
 <h3 id="finbot-optimize">finbot optimize<a class="headerlink" href="#finbot-optimize" title="Permanent link">&para;</a></h3>
-<p>Portfolio optimization:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>finbot<span class="w"> </span>optimize<span class="w"> </span>--method<span class="w"> </span>METHOD<span class="w"> </span>--assets<span class="w"> </span>ASSETS<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+<p>Run the built-in DCA schedule optimizer for one asset.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>finbot<span class="w"> </span>optimize<span class="w"> </span>--method<span class="w"> </span>dca<span class="w"> </span>--asset<span class="w"> </span>ASSET<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </span></code></pre></div>
 <p><strong>Required:</strong></p>
 <ul>
-<li><code>--method TEXT</code>: Optimization method (dca)</li>
-<li><code>--assets TEXT</code>: Comma-separated tickers</li>
+<li><code>--method TEXT</code>: Currently only <code>dca</code></li>
+<li><code>--asset TEXT</code>: Single asset ticker such as <code>SPY</code>, <code>QQQ</code>, or <code>UPRO</code></li>
 </ul>
 <p><strong>Optional:</strong></p>
 <ul>
-<li><code>--duration INTEGER</code>: DCA duration in days</li>
-<li><code>--interval INTEGER</code>: Purchase interval in days</li>
-<li><code>--ratios TEXT</code>: Ratio range (start,stop,num)</li>
-<li><code>--output PATH</code>: Save results</li>
-<li><code>--plot</code>: Show optimization charts</li>
+<li><code>--cash FLOAT</code>: Starting cash, default <code>1000</code></li>
+<li><code>--output PATH</code>: Save the raw per-trial results table as <code>.csv</code>, <code>.parquet</code>, or <code>.json</code></li>
+<li><code>--plot</code>: Show the ratio and duration charts</li>
 </ul>
+<p>The current CLI runs the built-in sweep of front-loading ratios, DCA durations, purchase intervals, and trial durations. Use the Python API if you need to override those ranges directly.</p>
 <p><strong>Examples:</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Default optimization</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>finbot<span class="w"> </span>optimize<span class="w"> </span>--method<span class="w"> </span>dca<span class="w"> </span>--assets<span class="w"> </span>SPY,TLT
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># Custom parameters</span>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>finbot<span class="w"> </span>optimize<span class="w"> </span>--method<span class="w"> </span>dca<span class="w"> </span>--assets<span class="w"> </span>UPRO,TMF<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">  </span>--duration<span class="w"> </span><span class="m">1095</span><span class="w"> </span>--interval<span class="w"> </span><span class="m">30</span><span class="w"> </span>--ratios<span class="w"> </span><span class="m">0</span>.3,0.7,9<span class="w"> </span>--plot
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>finbot<span class="w"> </span>optimize<span class="w"> </span>--method<span class="w"> </span>dca<span class="w"> </span>--asset<span class="w"> </span>SPY
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>finbot<span class="w"> </span>optimize<span class="w"> </span>--method<span class="w"> </span>dca<span class="w"> </span>--asset<span class="w"> </span>QQQ<span class="w"> </span>--cash<span class="w"> </span><span class="m">5000</span><span class="w"> </span>--plot
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>finbot<span class="w"> </span>optimize<span class="w"> </span>--method<span class="w"> </span>dca<span class="w"> </span>--asset<span class="w"> </span>UPRO<span class="w"> </span>--output<span class="w"> </span>results/dca.parquet
 </span></code></pre></div>
 <h3 id="finbot-update">finbot update<a class="headerlink" href="#finbot-update" title="Permanent link">&para;</a></h3>
-<p>Update all data:</p>
+<p>Run the daily data update pipeline.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>finbot<span class="w"> </span>update<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </span></code></pre></div>
 <p><strong>Optional:</strong></p>
 <ul>
-<li><code>--dry-run</code>: Show what would be updated</li>
-<li><code>--skip-prices</code>: Skip price history updates</li>
-<li><code>--skip-simulations</code>: Skip simulation updates</li>
+<li><code>--dry-run</code>: Show what would run without making changes</li>
+<li><code>--skip-prices</code>: Skip price and economic data updates</li>
+<li><code>--skip-simulations</code>: Skip LIBOR approximation and simulation regeneration</li>
 </ul>
 <p><strong>Examples:</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Full update</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>finbot<span class="w"> </span>update
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># Dry run (no changes)</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>finbot<span class="w"> </span>update<span class="w"> </span>--dry-run
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
-</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c1"># Update prices only</span>
-</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>finbot<span class="w"> </span>update<span class="w"> </span>--skip-simulations
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>finbot<span class="w"> </span>update
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>finbot<span class="w"> </span>update<span class="w"> </span>--dry-run
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>finbot<span class="w"> </span>update<span class="w"> </span>--skip-simulations
 </span></code></pre></div>
 <h3 id="finbot-status">finbot status<a class="headerlink" href="#finbot-status" title="Permanent link">&para;</a></h3>
-<p>Check data freshness and pipeline health:</p>
+<p>Show data freshness and pipeline health.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>finbot<span class="w"> </span>status<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </span></code></pre></div>
 <p><strong>Optional:</strong></p>
 <ul>
 <li><code>--stale-only</code>: Show only stale data sources</li>
-<li><code>--verbose</code>, <code>-v</code>: Include detailed logging and threshold output</li>
+</ul>
+<p>Use <code>finbot --verbose status</code> when you want the staleness thresholds printed after the table.</p>
+<p><strong>Examples:</strong></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>finbot<span class="w"> </span>status
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>finbot<span class="w"> </span>status<span class="w"> </span>--stale-only
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>finbot<span class="w"> </span>--verbose<span class="w"> </span>status
+</span></code></pre></div>
+<h3 id="finbot-dashboard">finbot dashboard<a class="headerlink" href="#finbot-dashboard" title="Permanent link">&para;</a></h3>
+<p>Launch the Streamlit dashboard.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>finbot<span class="w"> </span>dashboard<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</span></code></pre></div>
+<p><strong>Optional:</strong></p>
+<ul>
+<li><code>--port INTEGER</code>: Port to bind, default <code>8501</code></li>
+<li><code>--host TEXT</code>: Host to bind, default <code>localhost</code></li>
 </ul>
 <p><strong>Examples:</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Show all tracked data sources</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>finbot<span class="w"> </span>status
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1"># Focus on stale sources only</span>
-</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>finbot<span class="w"> </span>status<span class="w"> </span>--stale-only
-</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>
-</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="c1"># Show detailed threshold information</span>
-</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>finbot<span class="w"> </span>--verbose<span class="w"> </span>status
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>finbot<span class="w"> </span>dashboard
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>finbot<span class="w"> </span>dashboard<span class="w"> </span>--port<span class="w"> </span><span class="m">8080</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>finbot<span class="w"> </span>dashboard<span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="w"> </span><span class="m">8501</span>
 </span></code></pre></div>
 <h2 id="output-formats">Output Formats<a class="headerlink" href="#output-formats" title="Permanent link">&para;</a></h2>
-<p>Specify output format via file extension:</p>
+<p>Command outputs are saved based on file extension:</p>
 <ul>
 <li><code>.csv</code>: Comma-separated values</li>
-<li><code>.parquet</code>: Apache Parquet (recommended)</li>
-<li><code>.json</code>: JSON format</li>
+<li><code>.parquet</code>: Apache Parquet</li>
+<li><code>.json</code>: JSON serialization</li>
 </ul>
 <h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="../getting-started/">Getting Started</a> - Installation and setup</li>
-<li><a href="../configuration/">Configuration</a> - Advanced settings</li>
+<li><a href="../configuration/">Configuration</a> - Environment and secret management</li>
 <li><a href="../../api/">API Reference</a> - Python API documentation</li>
 </ul>
 

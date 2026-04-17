@@ -2805,15 +2805,15 @@
 <h2 id="5-minute-quick-start">5-Minute Quick Start<a class="headerlink" href="#5-minute-quick-start" title="Permanent link">&para;</a></h2>
 <h3 id="1-simulate-a-fund">1. Simulate a Fund<a class="headerlink" href="#1-simulate-a-fund" title="Permanent link">&para;</a></h3>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Simulate UPRO (3x leveraged S&amp;P 500)</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>finbot<span class="w"> </span>simulate<span class="w"> </span>--fund<span class="w"> </span>UPRO<span class="w"> </span>--start<span class="w"> </span><span class="m">2010</span>-01-01<span class="w"> </span>--plot
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>uv<span class="w"> </span>run<span class="w"> </span>finbot<span class="w"> </span>simulate<span class="w"> </span>--fund<span class="w"> </span>UPRO<span class="w"> </span>--start<span class="w"> </span><span class="m">2010</span>-01-01<span class="w"> </span>--plot
 </span></code></pre></div>
 <h3 id="2-backtest-a-strategy">2. Backtest a Strategy<a class="headerlink" href="#2-backtest-a-strategy" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Test 60/40 rebalancing strategy</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>finbot<span class="w"> </span>backtest<span class="w"> </span>--strategy<span class="w"> </span>Rebalance<span class="w"> </span>--asset<span class="w"> </span>SPY,TLT<span class="w"> </span>--plot
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Test a single-asset strategy with the current CLI</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>uv<span class="w"> </span>run<span class="w"> </span>finbot<span class="w"> </span>backtest<span class="w"> </span>--strategy<span class="w"> </span>NoRebalance<span class="w"> </span>--asset<span class="w"> </span>SPY<span class="w"> </span>--plot
 </span></code></pre></div>
 <h3 id="3-optimize-allocation">3. Optimize Allocation<a class="headerlink" href="#3-optimize-allocation" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Find optimal SPY/TLT ratio</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>finbot<span class="w"> </span>optimize<span class="w"> </span>--method<span class="w"> </span>dca<span class="w"> </span>--assets<span class="w"> </span>SPY,TLT<span class="w"> </span>--plot
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Find an optimal DCA schedule for one asset</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>uv<span class="w"> </span>run<span class="w"> </span>finbot<span class="w"> </span>optimize<span class="w"> </span>--method<span class="w"> </span>dca<span class="w"> </span>--asset<span class="w"> </span>SPY<span class="w"> </span>--plot
 </span></code></pre></div>
 <h2 id="detailed-workflows">Detailed Workflows<a class="headerlink" href="#detailed-workflows" title="Permanent link">&para;</a></h2>
 <p>See <a href="../getting-started/">Getting Started</a> for comprehensive documentation.</p>

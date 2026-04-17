@@ -1123,10 +1123,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#run" class="md-nav__link">
+  <a href="#run_backtest" class="md-nav__link">
     <span class="md-ellipsis">
       
-        run()
+        run_backtest()
       
     </span>
   </a>
@@ -1134,10 +1134,32 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#get_stats" class="md-nav__link">
+  <a href="#get_value_history" class="md-nav__link">
     <span class="md-ellipsis">
       
-        get_stats()
+        get_value_history()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_trades" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_trades()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_test_stats" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_test_stats()
       
     </span>
   </a>
@@ -1166,17 +1188,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#performance-metrics" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Performance Metrics
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#examples" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1189,10 +1200,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#basic-rebalance-strategy" class="md-nav__link">
+  <a href="#single-asset-sma-crossover" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Basic Rebalance Strategy
+        Single-Asset SMA Crossover
       
     </span>
   </a>
@@ -1200,10 +1211,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#sma-crossover-with-custom-parameters" class="md-nav__link">
+  <a href="#restricting-the-date-window" class="md-nav__link">
     <span class="md-ellipsis">
       
-        SMA Crossover with Custom Parameters
+        Restricting the Date Window
       
     </span>
   </a>
@@ -2883,10 +2894,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#run" class="md-nav__link">
+  <a href="#run_backtest" class="md-nav__link">
     <span class="md-ellipsis">
       
-        run()
+        run_backtest()
       
     </span>
   </a>
@@ -2894,10 +2905,32 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#get_stats" class="md-nav__link">
+  <a href="#get_value_history" class="md-nav__link">
     <span class="md-ellipsis">
       
-        get_stats()
+        get_value_history()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_trades" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_trades()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_test_stats" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_test_stats()
       
     </span>
   </a>
@@ -2926,17 +2959,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#performance-metrics" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Performance Metrics
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#examples" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2949,10 +2971,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#basic-rebalance-strategy" class="md-nav__link">
+  <a href="#single-asset-sma-crossover" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Basic Rebalance Strategy
+        Single-Asset SMA Crossover
       
     </span>
   </a>
@@ -2960,10 +2982,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#sma-crossover-with-custom-parameters" class="md-nav__link">
+  <a href="#restricting-the-date-window" class="md-nav__link">
     <span class="md-ellipsis">
       
-        SMA Crossover with Custom Parameters
+        Restricting the Date Window
       
     </span>
   </a>
@@ -3007,165 +3029,154 @@
 
 
 <h1 id="backtestrunner">BacktestRunner<a class="headerlink" href="#backtestrunner" title="Permanent link">&para;</a></h1>
-<p>The <code>BacktestRunner</code> class is the main orchestrator for running backtests in Finbot. It wraps Backtrader's Cerebro engine and provides a simplified interface for testing trading strategies.</p>
+<p>The <code>BacktestRunner</code> class is the low-level orchestrator behind Finbot's Backtrader-based backtesting flow. It works with explicit strategy classes, broker objects, sizers, and price-history DataFrames.</p>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p><code>BacktestRunner</code> provides:</p>
+<p><code>BacktestRunner</code>:</p>
 <ul>
-<li>Strategy initialization with parameters</li>
-<li>Data feed management (multiple assets)</li>
-<li>Broker configuration (cash, commission)</li>
-<li>Custom analyzers for performance tracking</li>
-<li>Results processing and statistics computation</li>
+<li>Accepts a <code>price_histories</code> mapping of tickers to pandas DataFrames</li>
+<li>Truncates inputs to the shared date range and prefers adjusted close data when available</li>
+<li>Installs analyzers and observers before running Backtrader</li>
+<li>Returns a one-row metrics DataFrame from <code>run_backtest()</code></li>
+<li>Exposes value history and trade data after execution</li>
 </ul>
 <h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">finbot.services.backtesting.backtest_runner</span><span class="w"> </span><span class="kn">import</span> <span class="n">BacktestRunner</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Load price data</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">spy_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="s1">&#39;spy_prices.parquet&#39;</span><span class="p">)</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">tlt_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="s1">&#39;tlt_prices.parquet&#39;</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">backtrader</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bt</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">finbot.services.backtesting.backtest_runner</span><span class="w"> </span><span class="kn">import</span> <span class="n">BacktestRunner</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">finbot.services.backtesting.brokers.fixed_commission_scheme</span><span class="w"> </span><span class="kn">import</span> <span class="n">FixedCommissionScheme</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">finbot.services.backtesting.strategies.rebalance</span><span class="w"> </span><span class="kn">import</span> <span class="n">Rebalance</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="kn">from</span><span class="w"> </span><span class="nn">finbot.utils.data_collection_utils.yfinance.get_history</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_history</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># Create backtest runner</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">runner</span> <span class="o">=</span> <span class="n">BacktestRunner</span><span class="p">(</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;Rebalance&#39;</span><span class="p">,</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">data_feeds</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;SPY&#39;</span><span class="p">:</span> <span class="n">spy_data</span><span class="p">,</span> <span class="s1">&#39;TLT&#39;</span><span class="p">:</span> <span class="n">tlt_data</span><span class="p">},</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n">strategy_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;rebalance_days&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">},</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n">cash</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="n">commission</span><span class="o">=</span><span class="mf">0.001</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="p">)</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="c1"># Run backtest</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="n">results</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="c1"># Get statistics</span>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="n">stats</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CAGR: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;CAGR&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sharpe: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;Sharpe&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max Drawdown: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;Max Drawdown&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">spy_data</span> <span class="o">=</span> <span class="n">get_history</span><span class="p">(</span><span class="s2">&quot;SPY&quot;</span><span class="p">,</span> <span class="n">adjust_price</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">tlt_data</span> <span class="o">=</span> <span class="n">get_history</span><span class="p">(</span><span class="s2">&quot;TLT&quot;</span><span class="p">,</span> <span class="n">adjust_price</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">runner</span> <span class="o">=</span> <span class="n">BacktestRunner</span><span class="p">(</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n">price_histories</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;SPY&quot;</span><span class="p">:</span> <span class="n">spy_data</span><span class="p">,</span> <span class="s2">&quot;TLT&quot;</span><span class="p">:</span> <span class="n">tlt_data</span><span class="p">},</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="n">duration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="n">start_step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="n">init_cash</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="n">strat</span><span class="o">=</span><span class="n">Rebalance</span><span class="p">,</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="n">strat_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;rebal_proportions&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">],</span> <span class="s2">&quot;rebal_interval&quot;</span><span class="p">:</span> <span class="mi">63</span><span class="p">},</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="n">broker</span><span class="o">=</span><span class="n">bt</span><span class="o">.</span><span class="n">brokers</span><span class="o">.</span><span class="n">BackBroker</span><span class="p">,</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    <span class="n">broker_kwargs</span><span class="o">=</span><span class="p">{},</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    <span class="n">broker_commission</span><span class="o">=</span><span class="n">FixedCommissionScheme</span><span class="p">,</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    <span class="n">sizer</span><span class="o">=</span><span class="n">bt</span><span class="o">.</span><span class="n">sizers</span><span class="o">.</span><span class="n">AllInSizer</span><span class="p">,</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>    <span class="n">sizer_kwargs</span><span class="o">=</span><span class="p">{},</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="p">)</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="n">stats</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">run_backtest</span><span class="p">()</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="nb">print</span><span class="p">(</span><span class="n">stats</span><span class="p">[[</span><span class="s2">&quot;CAGR&quot;</span><span class="p">,</span> <span class="s2">&quot;Sharpe&quot;</span><span class="p">,</span> <span class="s2">&quot;Max Drawdown&quot;</span><span class="p">]])</span>
 </span></code></pre></div>
 <h2 id="class-backtestrunner">Class: BacktestRunner<a class="headerlink" href="#class-backtestrunner" title="Permanent link">&para;</a></h2>
 <p><strong>Location:</strong> <code>finbot.services.backtesting.backtest_runner</code></p>
 <h3 id="constructor">Constructor<a class="headerlink" href="#constructor" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">BacktestRunner</span><span class="p">(</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">strategy</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">data_feeds</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">strategy_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">cash</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100000</span><span class="p">,</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">commission</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="p">)</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">price_histories</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">start</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">end</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">duration</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">start_step</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">init_cash</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="n">strat</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">strat_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">broker</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="n">broker_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="n">broker_commission</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    <span class="n">sizer</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    <span class="n">sizer_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>    <span class="n">plot</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="p">)</span>
 </span></code></pre></div>
-<p><strong>Parameters:</strong></p>
+<p><strong>Key parameters:</strong></p>
 <ul>
-<li><code>strategy</code> (str): Strategy name (Rebalance, SMACrossover, etc.)</li>
-<li><code>data_feeds</code> (dict): Dictionary mapping tickers to DataFrames</li>
-<li><code>strategy_params</code> (dict, optional): Strategy-specific parameters</li>
-<li><code>cash</code> (float, optional): Starting cash amount (default: 100000)</li>
-<li><code>commission</code> (float, optional): Commission rate (default: 0.001)</li>
+<li><code>price_histories</code>: mapping of symbols to OHLCV DataFrames</li>
+<li><code>start</code>, <code>end</code>: optional date bounds</li>
+<li><code>duration</code>, <code>start_step</code>: optional rolling-window controls for batch workflows</li>
+<li><code>init_cash</code>: starting portfolio cash</li>
+<li><code>strat</code>: Backtrader strategy class, not a string name</li>
+<li><code>strat_kwargs</code>: keyword arguments passed into the strategy constructor</li>
+<li><code>broker</code>, <code>broker_kwargs</code>, <code>broker_commission</code>: broker wiring</li>
+<li><code>sizer</code>, <code>sizer_kwargs</code>: position-sizing configuration</li>
+<li><code>plot</code>: whether to call Backtrader plotting after execution</li>
 </ul>
 <h3 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h3>
-<h4 id="run">run()<a class="headerlink" href="#run" title="Permanent link">&para;</a></h4>
-<p>Execute the backtest and return results.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">results</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-</span></code></pre></div>
-<p><strong>Returns:</strong> Dictionary with backtest results including portfolio values, returns, and analyzer data.</p>
-<h4 id="get_stats">get_stats()<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h4>
-<p>Calculate performance statistics.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">stats</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
-</span></code></pre></div>
-<p><strong>Returns:</strong> Dictionary with performance metrics:
-- CAGR: Compound annual growth rate
-- Sharpe: Sharpe ratio
-- Sortino: Sortino ratio
-- Calmar: Calmar ratio
-- Max Drawdown: Maximum drawdown percentage
-- Win Rate: Percentage of winning trades
-- Volatility: Annualized volatility</p>
+<h4 id="run_backtest"><code>run_backtest()</code><a class="headerlink" href="#run_backtest" title="Permanent link">&para;</a></h4>
+<p>Execute the backtest and return the one-row metrics DataFrame.</p>
+<h4 id="get_value_history"><code>get_value_history()</code><a class="headerlink" href="#get_value_history" title="Permanent link">&para;</a></h4>
+<p>Return the post-run <code>Value</code> and <code>Cash</code> time series as a DataFrame.</p>
+<h4 id="get_trades"><code>get_trades()</code><a class="headerlink" href="#get_trades" title="Permanent link">&para;</a></h4>
+<p>Return the trade list captured by the trade analyzer.</p>
+<h4 id="get_test_stats"><code>get_test_stats()</code><a class="headerlink" href="#get_test_stats" title="Permanent link">&para;</a></h4>
+<p>Recompute and return the metrics DataFrame from the captured value history.</p>
 <h2 id="supported-strategies">Supported Strategies<a class="headerlink" href="#supported-strategies" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Rebalance</strong>: Periodic portfolio rebalancing</li>
-<li><strong>NoRebalance</strong>: Buy and hold</li>
-<li><strong>SMACrossover</strong>: Simple moving average crossover</li>
-<li><strong>SMACrossoverDouble</strong>: Dual SMA crossover</li>
-<li><strong>SMACrossoverTriple</strong>: Triple SMA crossover</li>
-<li><strong>MACDSingle</strong>: MACD-based strategy</li>
-<li><strong>MACDDual</strong>: Dual MACD strategy</li>
-<li><strong>DipBuySMA</strong>: Buy dips with SMA filter</li>
-<li><strong>DipBuyStdev</strong>: Buy dips with standard deviation filter</li>
-<li><strong>SMARebalMix</strong>: Mixed SMA + rebalance approach</li>
+<li><code>Rebalance</code></li>
+<li><code>NoRebalance</code></li>
+<li><code>SMACrossover</code></li>
+<li><code>SMACrossoverDouble</code></li>
+<li><code>SMACrossoverTriple</code></li>
+<li><code>MACDSingle</code></li>
+<li><code>MACDDual</code></li>
+<li><code>DipBuySMA</code></li>
+<li><code>DipBuyStdev</code></li>
+<li><code>SMARebalMix</code></li>
+<li><code>DualMomentum</code></li>
+<li><code>RiskParity</code></li>
+<li><code>RegimeAdaptive</code></li>
 </ul>
-<h2 id="performance-metrics">Performance Metrics<a class="headerlink" href="#performance-metrics" title="Permanent link">&para;</a></h2>
-<p>The backtest computes the following metrics using quantstats:</p>
-<table>
-<thead>
-<tr>
-<th>Metric</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>CAGR</strong></td>
-<td>Compound Annual Growth Rate</td>
-</tr>
-<tr>
-<td><strong>Sharpe Ratio</strong></td>
-<td>Risk-adjusted return (Rf = 2%)</td>
-</tr>
-<tr>
-<td><strong>Sortino Ratio</strong></td>
-<td>Downside risk-adjusted return</td>
-</tr>
-<tr>
-<td><strong>Calmar Ratio</strong></td>
-<td>CAGR / Max Drawdown</td>
-</tr>
-<tr>
-<td><strong>Max Drawdown</strong></td>
-<td>Largest peak-to-trough decline</td>
-</tr>
-<tr>
-<td><strong>Win Rate</strong></td>
-<td>Percentage of winning trades</td>
-</tr>
-<tr>
-<td><strong>Kelly Criterion</strong></td>
-<td>Optimal position sizing</td>
-</tr>
-<tr>
-<td><strong>Volatility</strong></td>
-<td>Annualized standard deviation</td>
-</tr>
-</tbody>
-</table>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
-<h3 id="basic-rebalance-strategy">Basic Rebalance Strategy<a class="headerlink" href="#basic-rebalance-strategy" title="Permanent link">&para;</a></h3>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">runner</span> <span class="o">=</span> <span class="n">BacktestRunner</span><span class="p">(</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;Rebalance&#39;</span><span class="p">,</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">data_feeds</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;SPY&#39;</span><span class="p">:</span> <span class="n">spy</span><span class="p">,</span> <span class="s1">&#39;TLT&#39;</span><span class="p">:</span> <span class="n">tlt</span><span class="p">},</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">strategy_params</span><span class="o">=</span><span class="p">{</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>        <span class="s1">&#39;rebalance_days&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>        <span class="s1">&#39;target_allocations&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;SPY&#39;</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">,</span> <span class="s1">&#39;TLT&#39;</span><span class="p">:</span> <span class="mf">0.4</span><span class="p">}</span>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="p">}</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="p">)</span>
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="n">results</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<h3 id="single-asset-sma-crossover">Single-Asset SMA Crossover<a class="headerlink" href="#single-asset-sma-crossover" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">finbot.services.backtesting.strategies.sma_crossover</span><span class="w"> </span><span class="kn">import</span> <span class="n">SMACrossover</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">spy_data</span> <span class="o">=</span> <span class="n">get_history</span><span class="p">(</span><span class="s2">&quot;SPY&quot;</span><span class="p">,</span> <span class="n">adjust_price</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">runner</span> <span class="o">=</span> <span class="n">BacktestRunner</span><span class="p">(</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="n">price_histories</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;SPY&quot;</span><span class="p">:</span> <span class="n">spy_data</span><span class="p">},</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="n">duration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="n">start_step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    <span class="n">init_cash</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    <span class="n">strat</span><span class="o">=</span><span class="n">SMACrossover</span><span class="p">,</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="n">strat_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;fast_ma&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s2">&quot;slow_ma&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">},</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    <span class="n">broker</span><span class="o">=</span><span class="n">bt</span><span class="o">.</span><span class="n">brokers</span><span class="o">.</span><span class="n">BackBroker</span><span class="p">,</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>    <span class="n">broker_kwargs</span><span class="o">=</span><span class="p">{},</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>    <span class="n">broker_commission</span><span class="o">=</span><span class="n">FixedCommissionScheme</span><span class="p">,</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>    <span class="n">sizer</span><span class="o">=</span><span class="n">bt</span><span class="o">.</span><span class="n">sizers</span><span class="o">.</span><span class="n">AllInSizer</span><span class="p">,</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>    <span class="n">sizer_kwargs</span><span class="o">=</span><span class="p">{},</span>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>    <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="p">)</span>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="n">stats</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">run_backtest</span><span class="p">()</span>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="nb">print</span><span class="p">(</span><span class="n">stats</span><span class="p">[[</span><span class="s2">&quot;CAGR&quot;</span><span class="p">,</span> <span class="s2">&quot;Sharpe&quot;</span><span class="p">,</span> <span class="s2">&quot;Max Drawdown&quot;</span><span class="p">]])</span>
 </span></code></pre></div>
-<h3 id="sma-crossover-with-custom-parameters">SMA Crossover with Custom Parameters<a class="headerlink" href="#sma-crossover-with-custom-parameters" title="Permanent link">&para;</a></h3>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">runner</span> <span class="o">=</span> <span class="n">BacktestRunner</span><span class="p">(</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;SMACrossover&#39;</span><span class="p">,</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">data_feeds</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;SPY&#39;</span><span class="p">:</span> <span class="n">spy</span><span class="p">},</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">strategy_params</span><span class="o">=</span><span class="p">{</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>        <span class="s1">&#39;fast_period&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>        <span class="s1">&#39;slow_period&#39;</span><span class="p">:</span> <span class="mi">200</span>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    <span class="p">},</span>
-</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    <span class="n">cash</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span>
-</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    <span class="n">commission</span><span class="o">=</span><span class="mf">0.001</span>
-</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="p">)</span>
-</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="n">results</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<h3 id="restricting-the-date-window">Restricting the Date Window<a class="headerlink" href="#restricting-the-date-window" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">runner</span> <span class="o">=</span> <span class="n">BacktestRunner</span><span class="p">(</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">price_histories</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;SPY&quot;</span><span class="p">:</span> <span class="n">spy_data</span><span class="p">},</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">start</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="s2">&quot;2015-01-01&quot;</span><span class="p">),</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="n">end</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="s2">&quot;2024-01-01&quot;</span><span class="p">),</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="n">duration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="n">start_step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="n">init_cash</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="n">strat</span><span class="o">=</span><span class="n">SMACrossover</span><span class="p">,</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    <span class="n">strat_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;fast_ma&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s2">&quot;slow_ma&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">},</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>    <span class="n">broker</span><span class="o">=</span><span class="n">bt</span><span class="o">.</span><span class="n">brokers</span><span class="o">.</span><span class="n">BackBroker</span><span class="p">,</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>    <span class="n">broker_kwargs</span><span class="o">=</span><span class="p">{},</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    <span class="n">broker_commission</span><span class="o">=</span><span class="n">FixedCommissionScheme</span><span class="p">,</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>    <span class="n">sizer</span><span class="o">=</span><span class="n">bt</span><span class="o">.</span><span class="n">sizers</span><span class="o">.</span><span class="n">AllInSizer</span><span class="p">,</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>    <span class="n">sizer_kwargs</span><span class="o">=</span><span class="p">{},</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>    <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="p">)</span>
 </span></code></pre></div>
 <h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
 <ul>
-<li><a href="../run-backtest/">run_backtest Function</a> - Single backtest execution</li>
-<li><a href="../compute-stats/">compute_stats Function</a> - Performance metrics</li>
+<li><a href="../run-backtest/">run_backtest Function</a> - Thin wrapper around <code>BacktestRunner</code></li>
+<li><a href="../compute-stats/">compute_stats Function</a> - Metrics generation</li>
 <li><a href="../../../../user-guide/backtesting/">User Guide: Backtesting</a> - Tutorial path and entry points</li>
 </ul>
 

@@ -985,10 +985,9 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Dashboard Module">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#finbot.dashboard.app" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -996,11 +995,6 @@
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -3194,10 +3188,9 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Dashboard Module">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#finbot.dashboard.app" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3205,11 +3198,6 @@
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -3665,11 +3653,11 @@
 
 
 
-<h3 id="finbot.dashboard.app" class="doc doc-heading">
+<h2 id="finbot.dashboard.app" class="doc doc-heading">
             <span class="doc doc-object-name doc-module-name">finbot.dashboard.app</span>
 
 
-<a href="#finbot.dashboard.app" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#finbot.dashboard.app" class="headerlink" title="Permanent link">&para;</a></h2>
 
     <div class="doc doc-contents first">
 
@@ -3701,212 +3689,278 @@
 
     </div>
 
-</div><h2 id="pages">Pages<a class="headerlink" href="#pages" title="Permanent link">&para;</a></h2>
+</div><p>options:
+show_root_heading: true
+show_source: true
+heading_level: 3</p>
+<h2 id="pages">Pages<a class="headerlink" href="#pages" title="Permanent link">&para;</a></h2>
 <h3 id="1-overview-home">1. Overview (Home)<a class="headerlink" href="#1-overview-home" title="Permanent link">&para;</a></h3>
 <p><strong>Location:</strong> <code>finbot/dashboard/app.py</code> (main page)</p>
-<p><strong>Features:</strong>
-- Project introduction and purpose
-- Quick navigation to all pages
-- System status indicators
-- Recent activity summary</p>
+<p><strong>Features:</strong></p>
+<ul>
+<li>Project introduction and purpose</li>
+<li>Quick navigation to all pages</li>
+<li>System status indicators</li>
+<li>Recent activity summary</li>
+</ul>
 <h3 id="2-simulations">2. Simulations<a class="headerlink" href="#2-simulations" title="Permanent link">&para;</a></h3>
 <p><strong>Location:</strong> <code>finbot/dashboard/pages/1_simulations.py</code></p>
-<p><strong>Features:</strong>
-- Fund simulation interface (15 pre-configured funds)
-- Index simulation (S&amp;P 500, Nasdaq 100, Treasury indexes)
-- Custom parameter adjustment
-- Performance charts (price, returns, cumulative returns)
-- Comparison with actual ETF data (tracking error)</p>
-<p><strong>Interactive controls:</strong>
-- Fund/index selector (dropdown)
-- Date range picker (start/end dates)
-- Leverage ratio slider (for custom simulations)
-- Expense ratio input
-- Display toggles (log scale, show actual vs simulated)</p>
-<p><strong>Charts:</strong>
-- Price history line chart
-- Daily returns histogram
-- Cumulative returns comparison
-- Tracking error over time</p>
+<p><strong>Features:</strong></p>
+<ul>
+<li>Fund simulation interface (15 pre-configured funds)</li>
+<li>Index simulation (S&amp;P 500, Nasdaq 100, Treasury indexes)</li>
+<li>Custom parameter adjustment</li>
+<li>Performance charts (price, returns, cumulative returns)</li>
+<li>Comparison with actual ETF data (tracking error)</li>
+</ul>
+<p><strong>Interactive controls:</strong></p>
+<ul>
+<li>Fund/index selector (dropdown)</li>
+<li>Date range picker (start/end dates)</li>
+<li>Leverage ratio slider (for custom simulations)</li>
+<li>Expense ratio input</li>
+<li>Display toggles (log scale, show actual vs simulated)</li>
+</ul>
+<p><strong>Charts:</strong></p>
+<ul>
+<li>Price history line chart</li>
+<li>Daily returns histogram</li>
+<li>Cumulative returns comparison</li>
+<li>Tracking error over time</li>
+</ul>
 <h3 id="3-backtesting">3. Backtesting<a class="headerlink" href="#3-backtesting" title="Permanent link">&para;</a></h3>
 <p><strong>Location:</strong> <code>finbot/dashboard/pages/2_backtesting.py</code></p>
-<p><strong>Features:</strong>
-- Strategy selection (12 strategies)
-- Multi-asset backtesting
-- Strategy parameter tuning
-- Performance metrics display
-- Trade log visualization</p>
-<p><strong>Interactive controls:</strong>
-- Strategy selector (dropdown)
-- Asset tickers (multi-select)
-- Parameter inputs (strategy-specific)
-- Date range picker
-- Commission rate slider
-- Starting cash input</p>
-<p><strong>Metrics displayed:</strong>
-- CAGR, Sharpe, Sortino, Calmar ratios
-- Max drawdown, volatility
-- Win rate, profit factor
-- Total trades, win/loss breakdown</p>
-<p><strong>Charts:</strong>
-- Portfolio value over time
-- Drawdown chart
-- Monthly/yearly returns heatmap
-- Trade markers on price chart</p>
+<p><strong>Features:</strong></p>
+<ul>
+<li>Strategy selection (12 strategies)</li>
+<li>Multi-asset backtesting</li>
+<li>Strategy parameter tuning</li>
+<li>Performance metrics display</li>
+<li>Trade log visualization</li>
+</ul>
+<p><strong>Interactive controls:</strong></p>
+<ul>
+<li>Strategy selector (dropdown)</li>
+<li>Asset tickers (multi-select)</li>
+<li>Parameter inputs (strategy-specific)</li>
+<li>Date range picker</li>
+<li>Commission rate slider</li>
+<li>Starting cash input</li>
+</ul>
+<p><strong>Metrics displayed:</strong></p>
+<ul>
+<li>CAGR, Sharpe, Sortino, Calmar ratios</li>
+<li>Max drawdown, volatility</li>
+<li>Win rate, profit factor</li>
+<li>Total trades, win/loss breakdown</li>
+</ul>
+<p><strong>Charts:</strong></p>
+<ul>
+<li>Portfolio value over time</li>
+<li>Drawdown chart</li>
+<li>Monthly/yearly returns heatmap</li>
+<li>Trade markers on price chart</li>
+</ul>
 <h3 id="4-optimizer">4. Optimizer<a class="headerlink" href="#4-optimizer" title="Permanent link">&para;</a></h3>
 <p><strong>Location:</strong> <code>finbot/dashboard/pages/3_optimizer.py</code></p>
-<p><strong>Features:</strong>
-- DCA optimization interface
-- Allocation ratio heatmaps
-- Multi-metric optimization (Sharpe, Sortino, Calmar, CAGR)
-- Efficient frontier visualization</p>
-<p><strong>Interactive controls:</strong>
-- Asset tickers (multi-select)
-- Optimization metric selector (Sharpe, Sortino, Calmar, CAGR)
-- Investment amount slider
-- Duration range (min/max years)
-- Frequency selector (monthly, quarterly)</p>
-<p><strong>Visualizations:</strong>
-- Heatmap: Allocation ratio vs. Sharpe ratio
-- Scatter plot: Risk vs. return (efficient frontier)
-- Bar chart: Top 10 allocation strategies
-- Table: Full optimization results (sortable)</p>
+<p><strong>Features:</strong></p>
+<ul>
+<li>DCA optimization interface</li>
+<li>Allocation ratio heatmaps</li>
+<li>Multi-metric optimization (Sharpe, Sortino, Calmar, CAGR)</li>
+<li>Efficient frontier visualization</li>
+</ul>
+<p><strong>Interactive controls:</strong></p>
+<ul>
+<li>Asset tickers (multi-select)</li>
+<li>Optimization metric selector (Sharpe, Sortino, Calmar, CAGR)</li>
+<li>Investment amount slider</li>
+<li>Duration range (min/max years)</li>
+<li>Frequency selector (monthly, quarterly)</li>
+</ul>
+<p><strong>Visualizations:</strong></p>
+<ul>
+<li>Heatmap: Allocation ratio vs. Sharpe ratio</li>
+<li>Scatter plot: Risk vs. return (efficient frontier)</li>
+<li>Bar chart: Top 10 allocation strategies</li>
+<li>Table: Full optimization results (sortable)</li>
+</ul>
 <h3 id="5-monte-carlo">5. Monte Carlo<a class="headerlink" href="#5-monte-carlo" title="Permanent link">&para;</a></h3>
 <p><strong>Location:</strong> <code>finbot/dashboard/pages/4_monte_carlo.py</code></p>
-<p><strong>Features:</strong>
-- Risk simulation interface
-- Multi-asset Monte Carlo
-- Percentile projections (5th, 50th, 95th)
-- Distribution analysis</p>
-<p><strong>Interactive controls:</strong>
-- Ticker selector
-- Number of trials slider (1,000 - 50,000)
-- Time horizon slider (1-50 years)
-- Initial investment input
-- Annual contribution input</p>
-<p><strong>Charts:</strong>
-- Fan chart (percentile bands)
-- Histogram of final values
-- Probability of achieving target
-- Distribution statistics table</p>
+<p><strong>Features:</strong></p>
+<ul>
+<li>Risk simulation interface</li>
+<li>Multi-asset Monte Carlo</li>
+<li>Percentile projections (5th, 50th, 95th)</li>
+<li>Distribution analysis</li>
+</ul>
+<p><strong>Interactive controls:</strong></p>
+<ul>
+<li>Ticker selector</li>
+<li>Number of trials slider (1,000 - 50,000)</li>
+<li>Time horizon slider (1-50 years)</li>
+<li>Initial investment input</li>
+<li>Annual contribution input</li>
+</ul>
+<p><strong>Charts:</strong></p>
+<ul>
+<li>Fan chart (percentile bands)</li>
+<li>Histogram of final values</li>
+<li>Probability of achieving target</li>
+<li>Distribution statistics table</li>
+</ul>
 <h3 id="6-data-status">6. Data Status<a class="headerlink" href="#6-data-status" title="Permanent link">&para;</a></h3>
 <p><strong>Location:</strong> <code>finbot/dashboard/pages/5_data_status.py</code></p>
-<p><strong>Features:</strong>
-- Real-time data freshness monitoring
-- Data source health dashboard
-- Refresh trigger buttons
-- Staleness alerts</p>
-<p><strong>Status indicators:</strong>
-- ✓ FRESH (green badge)
-- ⚠ STALE (yellow badge)
-- ✗ MISSING (red badge)</p>
-<p><strong>Data sources tracked:</strong>
-- YFinance (1-day threshold)
-- FRED (7-day threshold)
-- Google Finance (7-day threshold)
-- Alpha Vantage (7-day threshold)
-- BLS (30-day threshold)
-- Shiller (90-day threshold)
-- Simulations (1-day threshold)</p>
-<p><strong>Actions:</strong>
-- Refresh data source button (triggers update)
-- View last update timestamp
-- Check data file count
-- Navigate to data directory</p>
+<p><strong>Features:</strong></p>
+<ul>
+<li>Real-time data freshness monitoring</li>
+<li>Data source health dashboard</li>
+<li>Refresh trigger buttons</li>
+<li>Staleness alerts</li>
+</ul>
+<p><strong>Status indicators:</strong></p>
+<ul>
+<li>✓ FRESH (green badge)</li>
+<li>⚠ STALE (yellow badge)</li>
+<li>✗ MISSING (red badge)</li>
+</ul>
+<p><strong>Data sources tracked:</strong></p>
+<ul>
+<li>YFinance (1-day threshold)</li>
+<li>FRED (7-day threshold)</li>
+<li>Google Finance (7-day threshold)</li>
+<li>Alpha Vantage (7-day threshold)</li>
+<li>BLS (30-day threshold)</li>
+<li>Shiller (90-day threshold)</li>
+<li>Simulations (1-day threshold)</li>
+</ul>
+<p><strong>Actions:</strong></p>
+<ul>
+<li>Refresh data source button (triggers update)</li>
+<li>View last update timestamp</li>
+<li>Check data file count</li>
+<li>Navigate to data directory</li>
+</ul>
 <h3 id="7-health-economics">7. Health Economics<a class="headerlink" href="#7-health-economics" title="Permanent link">&para;</a></h3>
 <p><strong>Location:</strong> <code>finbot/dashboard/pages/6_health_economics.py</code></p>
-<p><strong>Features:</strong>
-- QALY simulation interface
-- Cost-effectiveness analysis (ICER, NMB, CEAC)
-- Treatment optimization
-- Clinical scenario selector</p>
-<p><strong>Interactive controls:</strong>
-- Treatment parameters (cost, utility, mortality, duration)
-- Control parameters (cost, utility, mortality, duration)
-- Number of simulations slider (1,000 - 100,000)
-- WTP threshold slider ($0 - $200,000)
-- Clinical scenario selector (pre-configured scenarios)</p>
-<p><strong>Clinical scenarios:</strong>
-- Type 2 Diabetes (Metformin vs. GLP-1)
-- Hypertension (Standard vs. Intensive BP control)
-- Hyperlipidemia (Statin vs. PCSK9 inhibitor)
-- Custom (user-defined parameters)</p>
-<p><strong>Charts:</strong>
-- Cost-effectiveness plane (scatter plot)
-- CEAC (cost-effectiveness acceptability curve)
-- Distribution histograms (cost, QALYs, ICER, NMB)</p>
+<p><strong>Features:</strong></p>
+<ul>
+<li>QALY simulation interface</li>
+<li>Cost-effectiveness analysis (ICER, NMB, CEAC)</li>
+<li>Treatment optimization</li>
+<li>Clinical scenario selector</li>
+</ul>
+<p><strong>Interactive controls:</strong></p>
+<ul>
+<li>Treatment parameters (cost, utility, mortality, duration)</li>
+<li>Control parameters (cost, utility, mortality, duration)</li>
+<li>Number of simulations slider (1,000 - 100,000)</li>
+<li>WTP threshold slider ($0 - $200,000)</li>
+<li>Clinical scenario selector (pre-configured scenarios)</li>
+</ul>
+<p><strong>Clinical scenarios:</strong></p>
+<ul>
+<li>Type 2 Diabetes (Metformin vs. GLP-1)</li>
+<li>Hypertension (Standard vs. Intensive BP control)</li>
+<li>Hyperlipidemia (Statin vs. PCSK9 inhibitor)</li>
+<li>Custom (user-defined parameters)</li>
+</ul>
+<p><strong>Charts:</strong></p>
+<ul>
+<li>Cost-effectiveness plane (scatter plot)</li>
+<li>CEAC (cost-effectiveness acceptability curve)</li>
+<li>Distribution histograms (cost, QALYs, ICER, NMB)</li>
+</ul>
 <h3 id="8-experiments">8. Experiments<a class="headerlink" href="#8-experiments" title="Permanent link">&para;</a></h3>
 <p><strong>Location:</strong> <code>finbot/dashboard/pages/7_experiments.py</code></p>
-<p><strong>Features:</strong>
-- Experiment registry browsing
-- Snapshot-aware comparisons
-- Batch observability summaries
-- Reproducibility metadata inspection</p>
+<p><strong>Features:</strong></p>
+<ul>
+<li>Experiment registry browsing</li>
+<li>Snapshot-aware comparisons</li>
+<li>Batch observability summaries</li>
+<li>Reproducibility metadata inspection</li>
+</ul>
 <h3 id="9-walk-forward">9. Walk-Forward<a class="headerlink" href="#9-walk-forward" title="Permanent link">&para;</a></h3>
 <p><strong>Location:</strong> <code>finbot/dashboard/pages/8_walkforward.py</code></p>
-<p><strong>Features:</strong>
-- Walk-forward analysis visualisation
-- Fold-by-fold performance inspection
-- Regime overlays and stability review</p>
+<p><strong>Features:</strong></p>
+<ul>
+<li>Walk-forward analysis visualisation</li>
+<li>Fold-by-fold performance inspection</li>
+<li>Regime overlays and stability review</li>
+</ul>
 <h3 id="10-risk-analytics">10. Risk Analytics<a class="headerlink" href="#10-risk-analytics" title="Permanent link">&para;</a></h3>
 <p><strong>Location:</strong> <code>finbot/dashboard/pages/9_risk_analytics.py</code></p>
-<p><strong>Features:</strong>
-- VaR/CVaR analysis
-- Parametric stress testing
-- Kelly sizing charts and tables</p>
+<p><strong>Features:</strong></p>
+<ul>
+<li>VaR/CVaR analysis</li>
+<li>Parametric stress testing</li>
+<li>Kelly sizing charts and tables</li>
+</ul>
 <h3 id="11-portfolio-analytics">11. Portfolio Analytics<a class="headerlink" href="#11-portfolio-analytics" title="Permanent link">&para;</a></h3>
 <p><strong>Location:</strong> <code>finbot/dashboard/pages/10_portfolio_analytics.py</code></p>
-<p><strong>Features:</strong>
-- Rolling performance metrics
-- Benchmark comparison
-- Drawdown decomposition
-- Correlation and diversification views</p>
+<p><strong>Features:</strong></p>
+<ul>
+<li>Rolling performance metrics</li>
+<li>Benchmark comparison</li>
+<li>Drawdown decomposition</li>
+<li>Correlation and diversification views</li>
+</ul>
 <h3 id="12-real-time-quotes">12. Real-Time Quotes<a class="headerlink" href="#12-real-time-quotes" title="Permanent link">&para;</a></h3>
 <p><strong>Location:</strong> <code>finbot/dashboard/pages/11_realtime_quotes.py</code></p>
-<p><strong>Features:</strong>
-- Multi-provider quote lookup
-- Watchlist support
-- Provider health/status display</p>
+<p><strong>Features:</strong></p>
+<ul>
+<li>Multi-provider quote lookup</li>
+<li>Watchlist support</li>
+<li>Provider health/status display</li>
+</ul>
 <h3 id="13-factor-analytics">13. Factor Analytics<a class="headerlink" href="#13-factor-analytics" title="Permanent link">&para;</a></h3>
 <p><strong>Location:</strong> <code>finbot/dashboard/pages/12_factor_analytics.py</code></p>
-<p><strong>Features:</strong>
-- CAPM/FF3/FF5 regression analysis
-- Return attribution
-- Factor risk decomposition
-- Tornado diagram (sensitivity analysis)</p>
-<p><strong>Metrics displayed:</strong>
-- ICER (<span class="arithmatex">\(/QALY)
-- NMB (\)</span>)
-- Probability cost-effective (%)
-- Incremental cost ($)
-- Incremental QALYs</p>
-<p><strong>Thresholds shown:</strong>
-- NICE: £20,000 - £30,000/QALY (~$25,000 - $37,500)
-- CADTH: $30,000 - <span class="arithmatex">\(60,000 CAD/QALY (~\)</span>37,500 - $75,000 USD)
-- US: $50,000 - $150,000/QALY
-- WHO: 1-3× GDP per capita</p>
+<p><strong>Features:</strong></p>
+<ul>
+<li>CAPM/FF3/FF5 regression analysis</li>
+<li>Return attribution</li>
+<li>Factor risk decomposition</li>
+<li>Tornado diagram (sensitivity analysis)</li>
+</ul>
+<p><strong>Metrics displayed:</strong></p>
+<ul>
+<li>ICER ($/QALY)</li>
+<li>NMB ($)</li>
+<li>Probability cost-effective (%)</li>
+<li>Incremental cost ($)</li>
+<li>Incremental QALYs</li>
+</ul>
+<p><strong>Thresholds shown:</strong></p>
+<ul>
+<li>NICE: £20,000 - £30,000/QALY (~$25,000 - $37,500)</li>
+<li>CADTH: $30,000 - <span class="arithmatex">\(60,000 CAD/QALY (~\)</span>37,500 - $75,000 USD)</li>
+<li>US: $50,000 - $150,000/QALY</li>
+<li>WHO: 1-3× GDP per capita</li>
+</ul>
 <h2 id="reusable-components">Reusable Components<a class="headerlink" href="#reusable-components" title="Permanent link">&para;</a></h2>
 <p>The dashboard includes reusable chart components:</p>
 <p><strong>Location:</strong> <code>finbot/dashboard/components/</code></p>
-<p>Common components:
-- Price chart with volume
-- Returns distribution histogram
-- Cumulative returns line chart
-- Drawdown area chart
-- Correlation heatmap
-- Performance metrics table
-- Parameter control sidebar</p>
+<p>Common components:</p>
+<ul>
+<li>Price chart with volume</li>
+<li>Returns distribution histogram</li>
+<li>Cumulative returns line chart</li>
+<li>Drawdown area chart</li>
+<li>Correlation heatmap</li>
+<li>Performance metrics table</li>
+<li>Parameter control sidebar</li>
+</ul>
 <h2 id="customization">Customization<a class="headerlink" href="#customization" title="Permanent link">&para;</a></h2>
 <h3 id="adding-a-new-page">Adding a New Page<a class="headerlink" href="#adding-a-new-page" title="Permanent link">&para;</a></h3>
 <ol>
 <li>
-<p>Create file in <code>finbot/dashboard/pages/</code>:
-   <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># finbot/dashboard/pages/7_my_page.py</span>
+<p>Create file in <code>finbot/dashboard/pages/</code>:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># finbot/dashboard/pages/7_my_page.py</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">streamlit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">st</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;My Custom Page&quot;</span><span class="p">)</span>
 </span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Page content here&quot;</span><span class="p">)</span>
-</span></code></pre></div></p>
+</span></code></pre></div>
 </li>
 <li>
 <p>Streamlit automatically adds to sidebar navigation</p>
@@ -3943,12 +3997,14 @@
 <li>Select strategy (e.g., "Rebalance")</li>
 <li>Choose assets (e.g., SPY, TLT)</li>
 <li>Set date range (e.g., 2010-01-01 to 2024-01-01)</li>
-<li>Adjust parameters (e.g., rebalance_days: 30)</li>
+<li>Adjust parameters (e.g., rebal_interval: 63)</li>
 <li>Click "Run Backtest"</li>
-<li>Review results:</li>
+<li>Review results:<ul>
 <li>Portfolio value chart</li>
 <li>Performance metrics</li>
 <li>Trade log</li>
+</ul>
+</li>
 <li>Export results (Download CSV button)</li>
 </ol>
 <h3 id="optimizing-dca-allocation">Optimizing DCA Allocation<a class="headerlink" href="#optimizing-dca-allocation" title="Permanent link">&para;</a></h3>

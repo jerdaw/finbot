@@ -1273,7 +1273,12 @@
   
 </li>
         
-          <li class="md-nav__item">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#finbot.services.simulation.sim_specific_funds.simulate_fund" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1282,7 +1287,8 @@
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="simulate_fund">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#fund_simulator" class="md-nav__link">
@@ -1295,7 +1301,12 @@
   
 </li>
         
-          <li class="md-nav__item">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#finbot.services.simulation.fund_simulator.fund_simulator" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1303,11 +1314,6 @@
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -3036,7 +3042,12 @@
   
 </li>
         
-          <li class="md-nav__item">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#finbot.services.simulation.sim_specific_funds.simulate_fund" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3045,7 +3056,8 @@
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="simulate_fund">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#fund_simulator" class="md-nav__link">
@@ -3058,7 +3070,12 @@
   
 </li>
         
-          <li class="md-nav__item">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#finbot.services.simulation.fund_simulator.fund_simulator" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3066,11 +3083,6 @@
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -3379,11 +3391,11 @@
 <div class="doc doc-object doc-function">
 
 
-<h3 id="finbot.services.simulation.sim_specific_funds.simulate_fund" class="doc doc-heading">
+<h2 id="finbot.services.simulation.sim_specific_funds.simulate_fund" class="doc doc-heading">
             <span class="doc doc-object-name doc-function-name">finbot.services.simulation.sim_specific_funds.simulate_fund</span>
 
 
-<a href="#finbot.services.simulation.sim_specific_funds.simulate_fund" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#finbot.services.simulation.sim_specific_funds.simulate_fund" class="headerlink" title="Permanent link">&para;</a></h2>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">simulate_fund</span><span class="p">(</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">ticker</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">underlying</span><span class="p">:</span> <span class="n">DataFrame</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -3708,18 +3720,22 @@ upro_sim = simulate_fund("UPRO", force_update=True)</p>
             </details>
     </div>
 
-</div><h3 id="fund_simulator">fund_simulator<a class="headerlink" href="#fund_simulator" title="Permanent link">&para;</a></h3>
+</div><p>options:
+show_root_heading: true
+show_source: true
+heading_level: 3</p>
+<h3 id="fund_simulator">fund_simulator<a class="headerlink" href="#fund_simulator" title="Permanent link">&para;</a></h3>
 <p>Core simulation function with full parameter control:</p>
 
 
 <div class="doc doc-object doc-function">
 
 
-<h3 id="finbot.services.simulation.fund_simulator.fund_simulator" class="doc doc-heading">
+<h2 id="finbot.services.simulation.fund_simulator.fund_simulator" class="doc doc-heading">
             <span class="doc doc-object-name doc-function-name">finbot.services.simulation.fund_simulator.fund_simulator</span>
 
 
-<a href="#finbot.services.simulation.fund_simulator.fund_simulator" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#finbot.services.simulation.fund_simulator.fund_simulator" class="headerlink" title="Permanent link">&para;</a></h2>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">fund_simulator</span><span class="p">(</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">price_df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">leverage_mult</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
@@ -4111,59 +4127,77 @@ upro_sim = simulate_fund("UPRO", force_update=True)</p>
             </details>
     </div>
 
-</div><h2 id="simulation-equation">Simulation Equation<a class="headerlink" href="#simulation-equation" title="Permanent link">&para;</a></h2>
+</div><p>options:
+show_root_heading: true
+show_source: true
+heading_level: 3</p>
+<h2 id="simulation-equation">Simulation Equation<a class="headerlink" href="#simulation-equation" title="Permanent link">&para;</a></h2>
 <p>The core simulation equation is:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>simulated_return = (underlying_change * leverage - daily_expenses) * mult_constant + add_constant
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>simulated_return = (underlying_change * leverage - daily_expenses) * multiplicative_constant + additive_constant
 </span></code></pre></div>
-<p>Where:
-- <code>underlying_change</code>: Daily return of the underlying index
-- <code>leverage</code>: Leverage ratio (1x, 2x, 3x, -1x, -2x, -3x)
-- <code>daily_expenses</code>: Expense ratio + swap rate + spread + borrowing costs (LIBOR)
-- <code>mult_constant</code>: Multiplicative adjustment factor (typically 1.0)
-- <code>add_constant</code>: Additive adjustment factor (calibrated to real data)</p>
+<p>Where:</p>
+<ul>
+<li><code>underlying_change</code>: Daily return of the underlying index</li>
+<li><code>leverage</code>: Leverage ratio (1x, 2x, 3x, -1x, -2x, -3x)</li>
+<li><code>daily_expenses</code>: Expense ratio + swap rate + spread + borrowing costs (LIBOR)</li>
+<li><code>multiplicative_constant</code>: Multiplicative adjustment factor (typically 1.0)</li>
+<li><code>additive_constant</code>: Additive adjustment factor (calibrated to real data)</li>
+</ul>
 <h2 id="expense-components">Expense Components<a class="headerlink" href="#expense-components" title="Permanent link">&para;</a></h2>
 <h3 id="expense-ratio">Expense Ratio<a class="headerlink" href="#expense-ratio" title="Permanent link">&para;</a></h3>
-<p>Annual management fee charged by the fund:
-- <strong>SPY</strong>: 0.0945% (very low, index fund)
-- <strong>UPRO</strong>: 0.91% (leveraged, higher management)
-- <strong>TQQQ</strong>: 0.86% (leveraged)</p>
+<p>Annual management fee charged by the fund:</p>
+<ul>
+<li><strong>SPY</strong>: 0.0945% (very low, index fund)</li>
+<li><strong>UPRO</strong>: 0.91% (leveraged, higher management)</li>
+<li><strong>TQQQ</strong>: 0.86% (leveraged)</li>
+</ul>
 <h3 id="swap-rate-overnight-borrowing">Swap Rate (Overnight Borrowing)<a class="headerlink" href="#swap-rate-overnight-borrowing" title="Permanent link">&para;</a></h3>
-<p>Cost to maintain leveraged positions overnight:
-- Approximated using overnight LIBOR rates
-- Applied as <code>LIBOR * leverage_factor</code> for leveraged funds
-- Zero for 1x funds</p>
+<p>Cost to maintain leveraged positions overnight:</p>
+<ul>
+<li>Approximated using overnight LIBOR rates</li>
+<li>Applied as <code>LIBOR * leverage_factor</code> for leveraged funds</li>
+<li>Zero for 1x funds</li>
+</ul>
 <h3 id="spread">Spread<a class="headerlink" href="#spread" title="Permanent link">&para;</a></h3>
-<p>Bid-ask spread and trading friction:
-- <strong>Default</strong>: 0.05% (5 basis points)
-- Higher for less liquid funds</p>
+<p>Bid-ask spread and trading friction:</p>
+<ul>
+<li><strong>Default</strong>: 0.05% (5 basis points)</li>
+<li>Higher for less liquid funds</li>
+</ul>
 <h3 id="borrowing-costs">Borrowing Costs<a class="headerlink" href="#borrowing-costs" title="Permanent link">&para;</a></h3>
-<p>Additional costs for short positions and leverage beyond swap:
-- Zero for long-only 1x funds
-- Increases with leverage ratio</p>
+<p>Additional costs for short positions and leverage beyond swap:</p>
+<ul>
+<li>Zero for long-only 1x funds</li>
+<li>Increases with leverage ratio</li>
+</ul>
 <h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">finbot.services.simulation.fund_simulator</span><span class="w"> </span><span class="kn">import</span> <span class="n">simulate_fund</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">finbot.utils.data_collection_utils.yfinance</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_history</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># Simulate UPRO (3x leveraged S&amp;P 500)</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">upro_sim</span> <span class="o">=</span> <span class="n">simulate_fund</span><span class="p">(</span><span class="s1">&#39;UPRO&#39;</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="s1">&#39;2010-01-01&#39;</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="s1">&#39;2024-01-01&#39;</span><span class="p">)</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1"># Access simulation results</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="nb">print</span><span class="p">(</span><span class="n">upro_sim</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>  <span class="c1"># [&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;, &#39;Volume&#39;, &#39;Dividends&#39;, &#39;Stock Splits&#39;]</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total return: </span><span class="si">{</span><span class="p">(</span><span class="n">upro_sim</span><span class="p">[</span><span class="s1">&#39;Close&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">upro_sim</span><span class="p">[</span><span class="s1">&#39;Close&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="c1"># Custom parameters</span>
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="n">custom_sim</span> <span class="o">=</span> <span class="n">fund_simulator</span><span class="p">(</span>
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    <span class="n">price_df</span><span class="o">=</span><span class="n">spy_data</span><span class="p">,</span>
-</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    <span class="n">leverage_ratio</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
-</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>    <span class="n">expense_ratio</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
-</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>    <span class="n">spread</span><span class="o">=</span><span class="mf">0.0005</span><span class="p">,</span>
-</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>    <span class="n">swap_rate_df</span><span class="o">=</span><span class="n">libor_data</span><span class="p">,</span>
-</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>    <span class="n">mult_constant</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>    <span class="n">add_constant</span><span class="o">=</span><span class="mf">0.0</span>
-</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">finbot.services.simulation.approximate_overnight_libor</span><span class="w"> </span><span class="kn">import</span> <span class="n">approximate_overnight_libor</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">finbot.services.simulation.fund_simulator</span><span class="w"> </span><span class="kn">import</span> <span class="n">fund_simulator</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">finbot.services.simulation.sim_specific_funds</span><span class="w"> </span><span class="kn">import</span> <span class="n">simulate_fund</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">finbot.utils.data_collection_utils.yfinance.get_history</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_history</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="c1"># Simulate UPRO (3x leveraged S&amp;P 500)</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">upro_sim</span> <span class="o">=</span> <span class="n">simulate_fund</span><span class="p">(</span><span class="s2">&quot;UPRO&quot;</span><span class="p">,</span> <span class="n">save_sim</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="c1"># Access simulation results</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="nb">print</span><span class="p">(</span><span class="n">upro_sim</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>  <span class="c1"># [&#39;Close&#39;, &#39;Change&#39;]</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total return: </span><span class="si">{</span><span class="p">(</span><span class="n">upro_sim</span><span class="p">[</span><span class="s1">&#39;Close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">upro_sim</span><span class="p">[</span><span class="s1">&#39;Close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="c1"># Custom parameters</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="n">spy_data</span> <span class="o">=</span> <span class="n">get_history</span><span class="p">(</span><span class="s2">&quot;SPY&quot;</span><span class="p">,</span> <span class="n">adjust_price</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="n">libor_data</span> <span class="o">=</span> <span class="n">approximate_overnight_libor</span><span class="p">()</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="n">custom_sim</span> <span class="o">=</span> <span class="n">fund_simulator</span><span class="p">(</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>    <span class="n">price_df</span><span class="o">=</span><span class="n">spy_data</span><span class="p">,</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>    <span class="n">leverage_mult</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>    <span class="n">annual_er_pct</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>    <span class="n">percent_daily_spread_cost</span><span class="o">=</span><span class="mf">0.0005</span><span class="p">,</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>    <span class="n">libor_yield_df</span><span class="o">=</span><span class="n">libor_data</span><span class="p">,</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>    <span class="n">multiplicative_constant</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>    <span class="n">additive_constant</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="p">)</span>
 </span></code></pre></div>
 <h2 id="pre-configured-funds">Pre-configured Funds<a class="headerlink" href="#pre-configured-funds" title="Permanent link">&para;</a></h2>
-<p>Finbot includes pre-configured simulations for 15 popular funds:</p>
+<p>Finbot ships a registry of stock, bond, and hybrid fund configurations, including SPY, SSO, UPRO, QQQ, QLD, TQQQ, TLT, UBT, TMF, IEF, UST, TYD, SHY, NTSX, 2X_STT, and 3X_STT.</p>
 <h3 id="stock-funds">Stock Funds<a class="headerlink" href="#stock-funds" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -4328,10 +4362,12 @@ upro_sim = simulate_fund("UPRO", force_update=True)</p>
 </tr>
 </tbody>
 </table>
-<p><strong>Key Findings:</strong>
-- Sub-linear O(n) scaling: 480x data → 1.2x time
-- Vectorized NumPy is faster than numba JIT compilation
-- Processes 40 years of daily data in ~110ms</p>
+<p><strong>Key Findings:</strong></p>
+<ul>
+<li>Sub-linear O(n) scaling: 480x data → 1.2x time</li>
+<li>Vectorized NumPy is faster than numba JIT compilation</li>
+<li>Processes 40 years of daily data in ~110ms</li>
+</ul>
 <h2 id="tracking-accuracy">Tracking Accuracy<a class="headerlink" href="#tracking-accuracy" title="Permanent link">&para;</a></h2>
 <p>Simulations validate against actual ETF data:</p>
 <table>
@@ -4360,83 +4396,102 @@ upro_sim = simulate_fund("UPRO", force_update=True)</p>
 </tr>
 </tbody>
 </table>
-<p>Tracking error sources:
-- LIBOR approximation (overnight vs 3-month)
-- Rebalancing timing differences
-- Dividend reinvestment assumptions
-- Intraday volatility (using daily data)</p>
+<p>Tracking error sources:</p>
+<ul>
+<li>LIBOR approximation (overnight vs 3-month)</li>
+<li>Rebalancing timing differences</li>
+<li>Dividend reinvestment assumptions</li>
+<li>Intraday volatility (using daily data)</li>
+</ul>
 <h2 id="advanced-usage">Advanced Usage<a class="headerlink" href="#advanced-usage" title="Permanent link">&para;</a></h2>
 <h3 id="historical-extension">Historical Extension<a class="headerlink" href="#historical-extension" title="Permanent link">&para;</a></h3>
 <p>Simulate funds before their inception:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># UPRO launched in 2009, simulate back to 1990</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">upro_extended</span> <span class="o">=</span> <span class="n">simulate_fund</span><span class="p">(</span><span class="s1">&#39;UPRO&#39;</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="s1">&#39;1990-01-01&#39;</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="s1">&#39;2024-01-01&#39;</span><span class="p">)</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Compare to actual data</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">actual_upro</span> <span class="o">=</span> <span class="n">get_history</span><span class="p">(</span><span class="s1">&#39;UPRO&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2009-06-25&#39;</span><span class="p">)</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">simulated_overlap</span> <span class="o">=</span> <span class="n">upro_extended</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;2009-06-25&#39;</span><span class="p">:]</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="c1"># Calculate tracking error</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="n">tracking_error</span> <span class="o">=</span> <span class="p">(</span><span class="n">simulated_overlap</span><span class="p">[</span><span class="s1">&#39;Close&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">actual_upro</span><span class="p">[</span><span class="s1">&#39;Close&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tracking error: </span><span class="si">{</span><span class="n">tracking_error</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">upro_extended</span> <span class="o">=</span> <span class="n">simulate_fund</span><span class="p">(</span><span class="s2">&quot;UPRO&quot;</span><span class="p">,</span> <span class="n">save_sim</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">upro_extended</span> <span class="o">=</span> <span class="n">upro_extended</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">&quot;1990-01-01&quot;</span><span class="p">:</span><span class="s2">&quot;2024-01-01&quot;</span><span class="p">]</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1"># Compare to actual data</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">actual_upro</span> <span class="o">=</span> <span class="n">get_history</span><span class="p">(</span><span class="s2">&quot;UPRO&quot;</span><span class="p">,</span> <span class="n">adjust_price</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="n">simulated_overlap</span> <span class="o">=</span> <span class="n">upro_extended</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">&quot;2009-06-25&quot;</span><span class="p">:]</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="c1"># Calculate tracking error</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="n">tracking_error</span> <span class="o">=</span> <span class="p">(</span><span class="n">simulated_overlap</span><span class="p">[</span><span class="s1">&#39;Close&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">actual_upro</span><span class="p">[</span><span class="s1">&#39;Close&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tracking error: </span><span class="si">{</span><span class="n">tracking_error</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <h3 id="custom-fund-creation">Custom Fund Creation<a class="headerlink" href="#custom-fund-creation" title="Permanent link">&para;</a></h3>
 <p>Create hypothetical funds with custom parameters:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Hypothetical 5x leveraged S&amp;P 500</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">extreme_leverage</span> <span class="o">=</span> <span class="n">fund_simulator</span><span class="p">(</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">price_df</span><span class="o">=</span><span class="n">spy_data</span><span class="p">,</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">leverage_ratio</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">expense_ratio</span><span class="o">=</span><span class="mf">0.015</span><span class="p">,</span>  <span class="c1"># 1.5% expense ratio</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="n">spread</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>  <span class="c1"># 10 bps spread</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="n">swap_rate_df</span><span class="o">=</span><span class="n">libor_data</span><span class="p">,</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="n">mult_constant</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="n">add_constant</span><span class="o">=</span><span class="mf">0.0</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="p">)</span>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="c1"># Inverse leveraged fund</span>
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="n">inverse_fund</span> <span class="o">=</span> <span class="n">fund_simulator</span><span class="p">(</span>
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    <span class="n">price_df</span><span class="o">=</span><span class="n">spy_data</span><span class="p">,</span>
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>    <span class="n">leverage_ratio</span><span class="o">=-</span><span class="mf">2.0</span><span class="p">,</span>  <span class="c1"># 2x inverse</span>
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>    <span class="n">expense_ratio</span><span class="o">=</span><span class="mf">0.0095</span><span class="p">,</span>
-</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>    <span class="n">spread</span><span class="o">=</span><span class="mf">0.0005</span><span class="p">,</span>
-</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>    <span class="n">swap_rate_df</span><span class="o">=</span><span class="n">libor_data</span>
-</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">finbot.services.simulation.approximate_overnight_libor</span><span class="w"> </span><span class="kn">import</span> <span class="n">approximate_overnight_libor</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">spy_data</span> <span class="o">=</span> <span class="n">get_history</span><span class="p">(</span><span class="s2">&quot;SPY&quot;</span><span class="p">,</span> <span class="n">adjust_price</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">libor_data</span> <span class="o">=</span> <span class="n">approximate_overnight_libor</span><span class="p">()</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="c1"># Hypothetical 5x leveraged S&amp;P 500</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="n">extreme_leverage</span> <span class="o">=</span> <span class="n">fund_simulator</span><span class="p">(</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="n">price_df</span><span class="o">=</span><span class="n">spy_data</span><span class="p">,</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="n">leverage_mult</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="n">annual_er_pct</span><span class="o">=</span><span class="mf">0.015</span><span class="p">,</span>  <span class="c1"># 1.5% expense ratio</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    <span class="n">percent_daily_spread_cost</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>  <span class="c1"># 10 bps spread</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>    <span class="n">libor_yield_df</span><span class="o">=</span><span class="n">libor_data</span><span class="p">,</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>    <span class="n">multiplicative_constant</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    <span class="n">additive_constant</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="p">)</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="c1"># Inverse leveraged fund</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="n">inverse_fund</span> <span class="o">=</span> <span class="n">fund_simulator</span><span class="p">(</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>    <span class="n">price_df</span><span class="o">=</span><span class="n">spy_data</span><span class="p">,</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>    <span class="n">leverage_mult</span><span class="o">=-</span><span class="mf">2.0</span><span class="p">,</span>  <span class="c1"># 2x inverse</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>    <span class="n">annual_er_pct</span><span class="o">=</span><span class="mf">0.0095</span><span class="p">,</span>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>    <span class="n">percent_daily_spread_cost</span><span class="o">=</span><span class="mf">0.0005</span><span class="p">,</span>
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>    <span class="n">libor_yield_df</span><span class="o">=</span><span class="n">libor_data</span><span class="p">,</span>
+</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="p">)</span>
 </span></code></pre></div>
 <h3 id="sensitivity-analysis">Sensitivity Analysis<a class="headerlink" href="#sensitivity-analysis" title="Permanent link">&para;</a></h3>
 <p>Test impact of different expense assumptions:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">base_sim</span> <span class="o">=</span> <span class="n">simulate_fund</span><span class="p">(</span><span class="s1">&#39;UPRO&#39;</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">finbot.services.simulation.approximate_overnight_libor</span><span class="w"> </span><span class="kn">import</span> <span class="n">approximate_overnight_libor</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="c1"># Higher expenses</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">high_expense</span> <span class="o">=</span> <span class="n">fund_simulator</span><span class="p">(</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="n">price_df</span><span class="o">=</span><span class="n">spy_data</span><span class="p">,</span>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="n">leverage_ratio</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="n">expense_ratio</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span>  <span class="c1"># 2% vs 0.91% actual</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="n">spread</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    <span class="n">swap_rate_df</span><span class="o">=</span><span class="n">libor_data</span>
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="p">)</span>
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>
-</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="c1"># Compare performance</span>
-</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="n">base_return</span> <span class="o">=</span> <span class="p">(</span><span class="n">base_sim</span><span class="p">[</span><span class="s1">&#39;Close&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">base_sim</span><span class="p">[</span><span class="s1">&#39;Close&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="n">high_expense_return</span> <span class="o">=</span> <span class="p">(</span><span class="n">high_expense</span><span class="p">[</span><span class="s1">&#39;Close&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">high_expense</span><span class="p">[</span><span class="s1">&#39;Close&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="n">expense_drag</span> <span class="o">=</span> <span class="n">base_return</span> <span class="o">-</span> <span class="n">high_expense_return</span>
-</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expense drag: </span><span class="si">{</span><span class="n">expense_drag</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">spy_data</span> <span class="o">=</span> <span class="n">get_history</span><span class="p">(</span><span class="s2">&quot;SPY&quot;</span><span class="p">,</span> <span class="n">adjust_price</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">libor_data</span> <span class="o">=</span> <span class="n">approximate_overnight_libor</span><span class="p">()</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="n">base_sim</span> <span class="o">=</span> <span class="n">simulate_fund</span><span class="p">(</span><span class="s2">&quot;UPRO&quot;</span><span class="p">,</span> <span class="n">save_sim</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="c1"># Higher expenses</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="n">high_expense</span> <span class="o">=</span> <span class="n">fund_simulator</span><span class="p">(</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    <span class="n">price_df</span><span class="o">=</span><span class="n">spy_data</span><span class="p">,</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>    <span class="n">leverage_mult</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>    <span class="n">annual_er_pct</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span>  <span class="c1"># 2% vs 0.91% actual</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>    <span class="n">percent_daily_spread_cost</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>    <span class="n">libor_yield_df</span><span class="o">=</span><span class="n">libor_data</span><span class="p">,</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="p">)</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="c1"># Compare performance</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="n">base_return</span> <span class="o">=</span> <span class="p">(</span><span class="n">base_sim</span><span class="p">[</span><span class="s1">&#39;Close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">base_sim</span><span class="p">[</span><span class="s1">&#39;Close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="n">high_expense_return</span> <span class="o">=</span> <span class="p">(</span><span class="n">high_expense</span><span class="p">[</span><span class="s1">&#39;Close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">high_expense</span><span class="p">[</span><span class="s1">&#39;Close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="n">expense_drag</span> <span class="o">=</span> <span class="n">base_return</span> <span class="o">-</span> <span class="n">high_expense_return</span>
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expense drag: </span><span class="si">{</span><span class="n">expense_drag</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <h2 id="data-requirements">Data Requirements<a class="headerlink" href="#data-requirements" title="Permanent link">&para;</a></h2>
 <h3 id="price-data-format">Price Data Format<a class="headerlink" href="#price-data-format" title="Permanent link">&para;</a></h3>
-<p>Input <code>price_df</code> must be a pandas DataFrame with:
-- <strong>Index</strong>: DatetimeIndex (daily frequency)
-- <strong>Columns</strong>: <code>Open</code>, <code>High</code>, <code>Low</code>, <code>Close</code>, <code>Volume</code>
-- <strong>Format</strong>: Decimal (not percentage) prices</p>
+<p>Input <code>price_df</code> must be a pandas DataFrame with:</p>
+<ul>
+<li><strong>Index</strong>: DatetimeIndex (daily frequency)</li>
+<li><strong>Columns</strong>: <code>Open</code>, <code>High</code>, <code>Low</code>, <code>Close</code>, <code>Volume</code></li>
+<li><strong>Format</strong>: Decimal (not percentage) prices</li>
+</ul>
 <h3 id="libor-data-format">LIBOR Data Format<a class="headerlink" href="#libor-data-format" title="Permanent link">&para;</a></h3>
-<p>Input <code>swap_rate_df</code> must be a pandas DataFrame with:
-- <strong>Index</strong>: DatetimeIndex matching price_df
-- <strong>Column</strong>: Interest rates as decimal (0.02 = 2%)
-- <strong>Source</strong>: Approximated overnight LIBOR from <code>approximate_overnight_libor()</code></p>
+<p>Input <code>libor_yield_df</code> must be a pandas DataFrame with:</p>
+<ul>
+<li><strong>Index</strong>: DatetimeIndex matching price_df</li>
+<li><strong>Column</strong>: <code>Yield</code> values in percent terms (for example <code>2.0</code> = 2%)</li>
+<li><strong>Source</strong>: Approximated overnight LIBOR from <code>approximate_overnight_libor()</code></li>
+</ul>
 <h2 id="implementation-details">Implementation Details<a class="headerlink" href="#implementation-details" title="Permanent link">&para;</a></h2>
-<p>The simulator uses:
-- <strong>Vectorized NumPy</strong>: All operations vectorized for performance
-- <strong>Daily rebalancing</strong>: Leveraged positions rebalanced at close
-- <strong>Compound returns</strong>: Accurate multi-day return calculation
-- <strong>Missing data handling</strong>: Forward-fill for gaps in LIBOR data</p>
+<p>The simulator uses:</p>
+<ul>
+<li><strong>Vectorized NumPy</strong>: All operations vectorized for performance</li>
+<li><strong>Daily rebalancing</strong>: Leveraged positions rebalanced at close</li>
+<li><strong>Compound returns</strong>: Accurate multi-day return calculation</li>
+<li><strong>Missing data handling</strong>: Forward-fill for gaps in LIBOR data</li>
+</ul>
 <h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="../specific-funds/">Specific Funds</a> - Pre-configured fund simulations</li>

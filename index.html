@@ -539,10 +539,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#reviewer-oriented-entry-points" class="md-nav__link">
+  <a href="#suggested-entry-points" class="md-nav__link">
     <span class="md-ellipsis">
       
-        🔎 Reviewer-Oriented Entry Points
+        🔎 Suggested Entry Points
       
     </span>
   </a>
@@ -2920,10 +2920,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#reviewer-oriented-entry-points" class="md-nav__link">
+  <a href="#suggested-entry-points" class="md-nav__link">
     <span class="md-ellipsis">
       
-        🔎 Reviewer-Oriented Entry Points
+        🔎 Suggested Entry Points
       
     </span>
   </a>
@@ -3089,9 +3089,9 @@ page and the repository
 core:</p>
 <ul>
 <li><strong>Financial analysis</strong>: data collection, simulation, backtesting, risk
-    analysis, and optimization.</li>
+  analysis, and optimization.</li>
 <li><strong>Health economics</strong>: QALY simulation, cost-effectiveness analysis,
-    treatment-schedule optimization, and illustrative clinical scenarios.</li>
+  treatment-schedule optimization, and illustrative clinical scenarios.</li>
 </ul>
 <h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
 <h3 id="production-ready-backtesting-engine">📊 Production-Ready Backtesting Engine<a class="headerlink" href="#production-ready-backtesting-engine" title="Permanent link">&para;</a></h3>
@@ -3111,7 +3111,7 @@ core:</p>
 </ul>
 <h3 id="portfolio-optimization">🔧 Portfolio Optimization<a class="headerlink" href="#portfolio-optimization" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>DCA Optimizer</strong>: Grid search across asset ratios, durations, and purchase intervals</li>
+<li><strong>DCA Optimizer</strong>: Grid search across front-loading ratios, durations, and purchase intervals</li>
 <li><strong>Rebalance Optimizer</strong>: Gradient descent for optimal portfolio rebalancing</li>
 <li><strong>Multi-metric optimization</strong>: CAGR, Sharpe, Sortino, Max drawdown</li>
 </ul>
@@ -3123,7 +3123,7 @@ core:</p>
 <li><strong>Clinical scenarios</strong>: Type 2 diabetes, cancer screening with NICE/CADTH/WHO thresholds</li>
 <li><strong>Publication-grade research</strong>: 3 research documents with 22+ academic citations</li>
 </ul>
-<h3 id="reviewer-oriented-entry-points">🔎 Reviewer-Oriented Entry Points<a class="headerlink" href="#reviewer-oriented-entry-points" title="Permanent link">&para;</a></h3>
+<h3 id="suggested-entry-points">🔎 Suggested Entry Points<a class="headerlink" href="#suggested-entry-points" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Health Economics Evidence</strong>: Public context page explaining scope, intended use, and limitations</li>
 <li><strong>Health Economics Methodology</strong>: Public summary of model structure, equations, and standards alignment</li>
@@ -3138,7 +3138,7 @@ core:</p>
 </ul>
 <h3 id="production-ready-infrastructure">🛠️ Production-Ready Infrastructure<a class="headerlink" href="#production-ready-infrastructure" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>CLI interface</strong>: <code>finbot simulate</code>, <code>finbot backtest</code>, <code>finbot optimize</code>, <code>finbot update</code>, <code>finbot dashboard</code></li>
+<li><strong>CLI interface</strong>: <code>finbot simulate</code>, <code>finbot backtest</code>, <code>finbot optimize</code>, <code>finbot update</code>, <code>finbot status</code>, <code>finbot dashboard</code></li>
 <li><strong>Web Dashboard</strong>: Interactive Streamlit app with 12 task-focused pages plus the home page</li>
 <li><strong>Comprehensive CI/CD</strong>: Python 3.11/3.12/3.13 validation plus separate CLI/API Docker security scanning</li>
 <li><strong>Queue-based logging</strong>: Non-blocking async logging with JSON output and audit trails</li>
@@ -3149,59 +3149,79 @@ core:</p>
 </ul>
 <h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
 <h3 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Clone repository</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/jerdaw/finbot.git
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nb">cd</span><span class="w"> </span>finbot
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># Install the full contributor environment</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>uv<span class="w"> </span>sync<span class="w"> </span>--all-extras
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># Minimal runtime only</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1"># uv sync</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1"># Set environment</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="nb">export</span><span class="w"> </span><span class="nv">DYNACONF_ENV</span><span class="o">=</span>development
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="c1"># Run tests</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest
-</span></code></pre></div>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Clone repository</span>
+<span class="n">git</span><span class="w"> </span><span class="n">clone</span><span class="w"> </span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">jerdaw</span><span class="o">/</span><span class="n">finbot</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span><span class="w"> </span><span class="n">finbot</span>
+
+<span class="c1"># Install the full contributor environment</span>
+<span class="n">uv</span><span class="w"> </span><span class="n">sync</span><span class="w"> </span><span class="o">--</span><span class="n">all</span><span class="o">-</span><span class="n">extras</span>
+
+<span class="c1"># Minimal runtime only</span>
+<span class="c1"># uv sync</span>
+
+<span class="c1"># Set environment</span>
+<span class="k">export</span><span class="w"> </span><span class="n">DYNACONF_ENV</span><span class="o">=</span><span class="n">development</span>
+
+<span class="c1"># Run tests</span>
+<span class="n">uv</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="n">pytest</span>
+</code></pre></div>
+
 <h3 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Simulate a leveraged fund</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>finbot<span class="w"> </span>simulate<span class="w"> </span>--fund<span class="w"> </span>UPRO<span class="w"> </span>--start<span class="w"> </span><span class="m">2010</span>-01-01<span class="w"> </span>--plot
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># Backtest a strategy</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>finbot<span class="w"> </span>backtest<span class="w"> </span>--strategy<span class="w"> </span>Rebalance<span class="w"> </span>--asset<span class="w"> </span>SPY,TLT<span class="w"> </span>--plot
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1"># Optimize DCA portfolio</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>finbot<span class="w"> </span>optimize<span class="w"> </span>--method<span class="w"> </span>dca<span class="w"> </span>--assets<span class="w"> </span>SPY,TQQQ<span class="w"> </span>--plot
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="c1"># Update all data</span>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>finbot<span class="w"> </span>update
-</span></code></pre></div>
+<div class="codehilite"><pre><span></span><code># Simulate a leveraged fund
+uv run finbot simulate --fund UPRO --start 2010-01-01 --plot
+
+# Backtest a strategy
+uv run finbot backtest --strategy NoRebalance --asset SPY --plot
+
+# Optimize a DCA schedule
+uv run finbot optimize --method dca --asset SPY --plot
+
+# Update all data
+uv run finbot update
+</code></pre></div>
+
 <h3 id="python-api">Python API<a class="headerlink" href="#python-api" title="Permanent link">&para;</a></h3>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">finbot.services.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">fund_simulator</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">finbot.services.backtesting</span><span class="w"> </span><span class="kn">import</span> <span class="n">BacktestRunner</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">finbot.services.optimization</span><span class="w"> </span><span class="kn">import</span> <span class="n">dca_optimizer</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1"># Simulate UPRO fund</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">upro_sim</span> <span class="o">=</span> <span class="n">fund_simulator</span><span class="o">.</span><span class="n">simulate_fund</span><span class="p">(</span><span class="s1">&#39;UPRO&#39;</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="s1">&#39;2010-01-01&#39;</span><span class="p">)</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="c1"># Run backtest</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="n">runner</span> <span class="o">=</span> <span class="n">BacktestRunner</span><span class="p">(</span>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;Rebalance&#39;</span><span class="p">,</span>
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    <span class="n">data_feeds</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;SPY&#39;</span><span class="p">:</span> <span class="n">spy_data</span><span class="p">,</span> <span class="s1">&#39;TLT&#39;</span><span class="p">:</span> <span class="n">tlt_data</span><span class="p">},</span>
-</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    <span class="n">strategy_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;rebalance_days&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">}</span>
-</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="p">)</span>
-</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="n">results</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>
-</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="c1"># Optimize DCA strategy</span>
-</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="n">optimal_results</span> <span class="o">=</span> <span class="n">dca_optimizer</span><span class="p">(</span>
-</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>    <span class="n">price_history</span><span class="o">=</span><span class="n">combined_df</span><span class="p">,</span>
-</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>    <span class="n">ratio_linspace</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
-</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>    <span class="n">dca_duration_days</span><span class="o">=</span><span class="mi">365</span> <span class="o">*</span> <span class="mi">5</span><span class="p">,</span>
-</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>    <span class="n">trial_duration_days</span><span class="o">=</span><span class="mi">365</span> <span class="o">*</span> <span class="mi">10</span>
-</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="p">)</span>
-</span></code></pre></div>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">backtrader</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bt</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">finbot.services.backtesting.backtest_runner</span><span class="w"> </span><span class="kn">import</span> <span class="n">BacktestRunner</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">finbot.services.backtesting.brokers.fixed_commission_scheme</span><span class="w"> </span><span class="kn">import</span> <span class="n">FixedCommissionScheme</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">finbot.services.backtesting.strategies.rebalance</span><span class="w"> </span><span class="kn">import</span> <span class="n">Rebalance</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">finbot.services.optimization.dca_optimizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">dca_optimizer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">finbot.services.simulation.sim_specific_funds</span><span class="w"> </span><span class="kn">import</span> <span class="n">simulate_fund</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">finbot.utils.data_collection_utils.yfinance.get_history</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_history</span>
+
+<span class="c1"># Simulate UPRO fund</span>
+<span class="n">upro_sim</span> <span class="o">=</span> <span class="n">simulate_fund</span><span class="p">(</span><span class="s2">&quot;UPRO&quot;</span><span class="p">,</span> <span class="n">save_sim</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Run a 60/40 rebalance backtest</span>
+<span class="n">spy_data</span> <span class="o">=</span> <span class="n">get_history</span><span class="p">(</span><span class="s2">&quot;SPY&quot;</span><span class="p">,</span> <span class="n">adjust_price</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">tlt_data</span> <span class="o">=</span> <span class="n">get_history</span><span class="p">(</span><span class="s2">&quot;TLT&quot;</span><span class="p">,</span> <span class="n">adjust_price</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">stats</span> <span class="o">=</span> <span class="n">BacktestRunner</span><span class="p">(</span>
+    <span class="n">price_histories</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;SPY&quot;</span><span class="p">:</span> <span class="n">spy_data</span><span class="p">,</span> <span class="s2">&quot;TLT&quot;</span><span class="p">:</span> <span class="n">tlt_data</span><span class="p">},</span>
+    <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">duration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">start_step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">init_cash</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span>
+    <span class="n">strat</span><span class="o">=</span><span class="n">Rebalance</span><span class="p">,</span>
+    <span class="n">strat_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;rebal_proportions&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">],</span> <span class="s2">&quot;rebal_interval&quot;</span><span class="p">:</span> <span class="mi">63</span><span class="p">},</span>
+    <span class="n">broker</span><span class="o">=</span><span class="n">bt</span><span class="o">.</span><span class="n">brokers</span><span class="o">.</span><span class="n">BackBroker</span><span class="p">,</span>
+    <span class="n">broker_kwargs</span><span class="o">=</span><span class="p">{},</span>
+    <span class="n">broker_commission</span><span class="o">=</span><span class="n">FixedCommissionScheme</span><span class="p">,</span>
+    <span class="n">sizer</span><span class="o">=</span><span class="n">bt</span><span class="o">.</span><span class="n">sizers</span><span class="o">.</span><span class="n">AllInSizer</span><span class="p">,</span>
+    <span class="n">sizer_kwargs</span><span class="o">=</span><span class="p">{},</span>
+    <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span><span class="o">.</span><span class="n">run_backtest</span><span class="p">()</span>
+
+<span class="c1"># Optimize a DCA schedule for one asset</span>
+<span class="n">spy_close</span> <span class="o">=</span> <span class="n">get_history</span><span class="p">(</span><span class="s2">&quot;SPY&quot;</span><span class="p">,</span> <span class="n">adjust_price</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="s2">&quot;Close&quot;</span><span class="p">]</span>
+<span class="n">ratio_df</span><span class="p">,</span> <span class="n">duration_df</span> <span class="o">=</span> <span class="n">dca_optimizer</span><span class="p">(</span>
+    <span class="n">price_history</span><span class="o">=</span><span class="n">spy_close</span><span class="p">,</span>
+    <span class="n">ticker</span><span class="o">=</span><span class="s2">&quot;SPY&quot;</span><span class="p">,</span>
+    <span class="n">starting_cash</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+
 <h2 id="documentation-structure">Documentation Structure<a class="headerlink" href="#documentation-structure" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong><a href="user-guide/getting-started/">User Guide</a></strong>: Installation, configuration, and usage tutorials</li>
