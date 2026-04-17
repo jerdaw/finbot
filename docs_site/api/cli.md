@@ -1,20 +1,21 @@
 # CLI Reference
 
-The Finbot CLI provides command-line access to simulations, backtesting, optimization, data updates, and status monitoring.
+The Finbot CLI provides the current Click-based interface for simulations, backtesting, optimization, data refresh, status reporting, and dashboard launch.
 
 ## Overview
 
-The CLI is built with Click and provides:
+The current CLI provides:
 
-- **5 main commands**: simulate, backtest, optimize, update, status
-- **Streamlit dashboard**: Launch interactive web interface
-- **Subcommands**: Multiple simulation and optimization types
-- **Rich output**: Colored, formatted console output
-- **Error handling**: Graceful failures with helpful messages
+- **6 main commands**: `simulate`, `backtest`, `optimize`, `update`, `status`, `dashboard`
+- **Global runtime flags**: `--verbose`, `--trace-id`, `--disclaimer`, `--version`
+- **Flat command structure**: no command subtrees under `simulate` or `optimize`
+- **File output helpers**: save `.csv`, `.parquet`, or `.json` from commands that emit tables
+
+If you are running from a source checkout without activating `.venv`, prepend examples with `uv run`, for example `DYNACONF_ENV=development uv run finbot --help`.
 
 ## Installation
 
-The core CLI is installed automatically with finbot:
+The core CLI is installed with the main package:
 
 ```bash
 uv sync
@@ -34,6 +35,15 @@ DYNACONF_ENV=development finbot --help
 DYNACONF_ENV=development finbot --version
 ```
 
+Available global options:
+
+- `--verbose`, `-v`: enable verbose logging
+- `--trace-id TEXT`: attach a trace ID to audit logs
+- `--disclaimer`: print the full disclaimer and exit
+- `--version`: show the CLI version
+
+`--verbose` is global and must appear before the command, for example `finbot --verbose status`.
+
 ## Commands
 
 ### CLI Module
@@ -41,414 +51,198 @@ DYNACONF_ENV=development finbot --version
 Main CLI entry point and command definitions:
 
 ::: finbot.cli.main
-    options:
-      show_root_heading: true
-      show_source: true
-      heading_level: 3
+options:
+show_root_heading: true
+show_source: true
+heading_level: 3
 
 ## Command Reference
 
 ### 1. simulate
 
-Run financial simulations (funds, indexes, bond ladder, Monte Carlo).
-
-#### Subcommands
-
-##### simulate fund
-
-Simulate a specific fund:
+Run a simulation from the built-in fund registry.
 
 ```bash
-finbot simulate fund UPRO --start 2010-01-01 --end 2024-01-01
+finbot simulate --fund FUND [OPTIONS]
 ```
 
 **Options:**
-- `TICKER` (required): Fund ticker symbol (UPRO, TQQQ, TMF, etc.)
-- `--start DATE`: Start date (YYYY-MM-DD, default: 10 years ago)
-- `--end DATE`: End date (YYYY-MM-DD, default: today)
-- `--output PATH`: Save results to file (parquet format)
 
-**Available funds:**
-SPY, SSO, UPRO, QQQ, QLD, TQQQ, TLT, UBT, TMF, IEF, UST, TYD, SHY, NTSX
+- `--fund TEXT` required: fund ticker such as `UPRO`, `TQQQ`, `TMF`, or `SPY`
+- `--start DATE`: inclusive start date in `YYYY-MM-DD`
+- `--end DATE`: inclusive end date in `YYYY-MM-DD`
+- `--output PATH`: save the DataFrame as `.csv`, `.parquet`, or `.json`
+- `--plot`: display the Plotly line chart
 
-##### simulate index
-
-Simulate a stock or bond index:
+**Examples:**
 
 ```bash
-finbot simulate index sp500 --start 2010-01-01
+finbot simulate --fund UPRO
+finbot simulate --fund TQQQ --start 2020-01-01 --end 2024-01-01
+finbot simulate --fund TMF --output tmf.parquet --plot
 ```
-
-**Options:**
-- `INDEX` (required): Index name (sp500, nasdaq100, treasury_20y, treasury_7y, treasury_1y)
-- `--start DATE`: Start date
-- `--end DATE`: End date
-- `--output PATH`: Save results to file
-
-**Available indexes:**
-- **Stock**: sp500, nasdaq100
-- **Bond**: treasury_20y, treasury_7y, treasury_1y
-
-##### simulate bond-ladder
-
-Simulate a bond ladder portfolio:
-
-```bash
-finbot simulate bond-ladder --investment 100000 --years 10 --start 2010-01-01
-```
-
-**Options:**
-- `--investment FLOAT`: Initial investment amount (default: 100000)
-- `--years INT`: Ladder duration in years (default: 10)
-- `--start DATE`: Start date (default: 10 years ago)
-- `--end DATE`: End date (default: today)
-- `--output PATH`: Save results to file
-
-##### simulate monte-carlo
-
-Run Monte Carlo risk simulation:
-
-```bash
-finbot simulate monte-carlo --ticker SPY --trials 10000 --years 30
-```
-
-**Options:**
-- `--ticker TEXT`: Asset ticker symbol (default: SPY)
-- `--trials INT`: Number of simulation trials (default: 10000)
-- `--years INT`: Projection horizon in years (default: 30)
-- `--initial-investment FLOAT`: Starting amount (default: 100000)
-- `--annual-contribution FLOAT`: Yearly contribution (default: 0)
-- `--output PATH`: Save results to file
-
-##### simulate all
-
-Run all simulations (full pipeline):
-
-```bash
-finbot simulate all
-```
-
-Runs:
-1. Overnight LIBOR approximation
-2. All stock indexes (SP500, Nasdaq 100)
-3. All bond indexes (1Y, 7Y, 20Y Treasuries)
-4. All 15 fund simulations
-
-**Use case:** Daily data update pipeline
 
 ### 2. backtest
 
-Run strategy backtests.
+Run a strategy backtest for one asset.
 
 ```bash
-finbot backtest --strategy Rebalance --tickers SPY TLT --start 2010-01-01
+finbot backtest --strategy STRATEGY --asset ASSET [OPTIONS]
 ```
 
 **Options:**
-- `--strategy TEXT` (required): Strategy name
-- `--tickers TEXT...` (required): Asset tickers (space-separated)
-- `--start DATE`: Start date (default: 10 years ago)
-- `--end DATE`: End date (default: today)
-- `--cash FLOAT`: Starting cash (default: 100000)
-- `--commission FLOAT`: Commission rate (default: 0.001)
-- `--params JSON`: Strategy parameters as JSON (default: {})
-- `--output PATH`: Save results to file
 
-**Available strategies:**
-Rebalance, NoRebalance, SMACrossover, SMACrossoverDouble, SMACrossoverTriple, MACDSingle, MACDDual, DipBuySMA, DipBuyStdev, SMARebalMix, DualMomentum, RiskParity, RegimeAdaptive
+- `--strategy TEXT` required: one of `Rebalance`, `NoRebalance`, `SMACrossover`, `SMACrossoverDouble`, `SMACrossoverTriple`, `MACDSingle`, `MACDDual`, `DipBuySMA`, `DipBuyStdev`, `SMARebalMix`, `DualMomentum`, `RiskParity`
+- `--asset TEXT` required: single asset ticker such as `SPY` or `QQQ`
+- `--start DATE`: inclusive start date in `YYYY-MM-DD`
+- `--end DATE`: inclusive end date in `YYYY-MM-DD`
+- `--cash FLOAT`: starting cash, default `100000`
+- `--output PATH`: save the one-row metrics DataFrame
+- `--plot`: display the Backtrader plot
 
-**Example with parameters:**
+**Examples:**
+
 ```bash
-finbot backtest \
-  --strategy SMACrossover \
-  --tickers SPY \
-  --params '{"fast_period": 50, "slow_period": 200}' \
-  --start 2010-01-01 \
-  --commission 0.001
+finbot backtest --strategy NoRebalance --asset SPY
+finbot backtest --strategy SMACrossover --asset QQQ --cash 50000 --plot
+finbot backtest --strategy MACDDual --asset SPY --output backtest.parquet
 ```
+
+The service layer contains `RegimeAdaptive`, but the current CLI does not expose it.
 
 ### 3. optimize
 
-Run portfolio optimizers.
-
-#### Subcommands
-
-##### optimize dca
-
-Optimize dollar cost averaging allocations:
+Run the built-in DCA optimizer sweep for one asset.
 
 ```bash
-finbot optimize dca --tickers SPY TLT --start 2010-01-01
+finbot optimize --method dca --asset ASSET [OPTIONS]
 ```
 
 **Options:**
-- `--tickers TEXT...` (required): Asset tickers
-- `--start DATE`: Start date (default: 10 years ago)
-- `--end DATE`: End date (default: today)
-- `--investment FLOAT`: Monthly investment amount (default: 1000)
-- `--output PATH`: Save results to file
 
-**Grid search across:**
-- Asset allocation ratios (50-95% equity in 5% steps)
-- Investment durations (5-30 years)
-- Purchase frequencies (monthly, quarterly)
+- `--method TEXT` required: currently only `dca`
+- `--asset TEXT` required: single asset ticker
+- `--cash FLOAT`: starting cash, default `1000`
+- `--output PATH`: save the raw trial table
+- `--plot`: display the ratio and duration charts
 
-**Metrics computed:**
-- Sharpe ratio
-- Sortino ratio
-- Calmar ratio
-- CAGR
-- Max drawdown
-- Standard deviation
+The CLI uses the package defaults for front-loading ratios, DCA durations, purchase intervals, and trial durations. Use the Python API when you need to override those ranges.
 
-##### optimize rebalance
-
-Optimize portfolio rebalancing ratios:
+**Examples:**
 
 ```bash
-finbot optimize rebalance --tickers SPY TLT --start 2010-01-01
+finbot optimize --method dca --asset SPY
+finbot optimize --method dca --asset QQQ --cash 5000 --plot
+finbot optimize --method dca --asset UPRO --output dca.parquet
 ```
-
-**Options:**
-- `--tickers TEXT...` (required): Asset tickers
-- `--start DATE`: Start date
-- `--end DATE`: End date
-- `--output PATH`: Save results to file
-
-**Optimizer:**
-Gradient descent-like search for optimal allocation ratios maximizing Sharpe ratio.
 
 ### 4. update
 
 Run the daily data update pipeline.
 
 ```bash
-finbot update
+finbot update [OPTIONS]
 ```
 
-**Pipeline:**
-1. Fetch latest YFinance price data
-2. Fetch latest FRED economic data (yields, rates, CPI, etc.)
-3. Fetch latest Google Finance index data
-4. Fetch latest Shiller datasets
-5. Run overnight LIBOR approximation
-6. Run all index simulations
-7. Run all fund simulations
+**Options:**
 
-**Requirements:**
-- API keys (FRED, Google Finance service account) in environment variables
-- Internet connection
-- ~5-10 minutes runtime (first run or stale data)
-- ~30 seconds runtime (fresh data, incremental updates)
+- `--dry-run`: print the update plan without making changes
+- `--skip-prices`: skip price and economic data updates
+- `--skip-simulations`: skip LIBOR approximation and simulation regeneration
 
-**Output:**
-- Updated parquet files in `finbot/data/` subdirectories
-- Log messages showing progress
-- Success/failure status for each step
+**Examples:**
+
+```bash
+finbot update
+finbot update --dry-run
+finbot update --skip-simulations
+```
 
 ### 5. status
 
-Check data freshness and health.
+Check data freshness and pipeline health.
+
+```bash
+finbot status [OPTIONS]
+```
+
+**Options:**
+
+- `--stale-only`: show only stale data sources
+
+Use `finbot --verbose status` when you also want the per-source staleness thresholds printed.
+
+**Examples:**
 
 ```bash
 finbot status
+finbot status --stale-only
+finbot --verbose status
 ```
-
-**Checks:**
-- YFinance data age
-- FRED data age
-- Google Finance data age
-- Alpha Vantage data age
-- BLS data age
-- Shiller data age
-- Simulation data age
-
-**Output:**
-```
-Data Source Status
-==================
-YFinance: ✓ FRESH (0.2 days old, threshold: 1 day)
-FRED: ✓ FRESH (0.5 days old, threshold: 7 days)
-Google Finance: ⚠ STALE (8.3 days old, threshold: 7 days)
-Simulations: ✓ FRESH (0.1 days old, threshold: 1 day)
-...
-```
-
-**Status codes:**
-- ✓ **FRESH**: Age < threshold (green)
-- ⚠ **STALE**: Age ≥ threshold (yellow)
-- ✗ **MISSING**: No data files found (red)
 
 ### 6. dashboard
 
-Launch the Streamlit web dashboard.
+Launch the Streamlit dashboard.
+
+```bash
+finbot dashboard [OPTIONS]
+```
+
+**Options:**
+
+- `--port INTEGER`: port to bind, default `8501`
+- `--host TEXT`: host to bind, default `localhost`
+
+**Examples:**
 
 ```bash
 finbot dashboard
+finbot dashboard --port 8080
+finbot dashboard --host 0.0.0.0 --port 8501
 ```
 
-**Dashboard features:**
-- **12 task-focused pages plus the home page**: simulations, backtesting, optimizer, Monte Carlo, data status, health economics, experiments, walk-forward, risk analytics, portfolio analytics, real-time quotes, and factor analytics
-- **Interactive charts**: Plotly visualizations
-- **Parameter controls**: Sliders, dropdowns, date pickers
-- **Real-time updates**: Rerun analyses with new parameters
-- **Export results**: Download data as CSV
+## Workflows
 
-**Default:**
-- Launches on http://localhost:8501
-- Opens browser automatically
-- Streamlit serves from `finbot/dashboard/app.py`
-- If Streamlit is missing, the command exits with an install hint for `uv sync --extra dashboard` or `pip install 'finbot[dashboard]'`
-
-## Examples
-
-### Daily Update Workflow
+### Daily Refresh Workflow
 
 ```bash
-# Check current data status
-finbot status
-
-# Run update pipeline
+finbot status --stale-only
 finbot update
-
-# Verify updates
-finbot status
+finbot --verbose status
 ```
 
-### Strategy Comparison Workflow
+### Basic Research Workflow
 
 ```bash
-# Backtest multiple strategies
-finbot backtest --strategy Rebalance --tickers SPY TLT --start 2010-01-01 --output rebalance.parquet
-finbot backtest --strategy NoRebalance --tickers SPY TLT --start 2010-01-01 --output no_rebalance.parquet
-finbot backtest --strategy DualMomentum --tickers SPY TLT --start 2010-01-01 --output dual_momentum.parquet
-
-# Analyze results in Python
-import pandas as pd
-
-rebalance = pd.read_parquet('rebalance.parquet')
-no_rebalance = pd.read_parquet('no_rebalance.parquet')
-dual_momentum = pd.read_parquet('dual_momentum.parquet')
-
-# Compare returns
-print(f"Rebalance CAGR: {rebalance['cagr'][0]:.2%}")
-print(f"No Rebalance CAGR: {no_rebalance['cagr'][0]:.2%}")
-print(f"Dual Momentum CAGR: {dual_momentum['cagr'][0]:.2%}")
-```
-
-### Fund Simulation Workflow
-
-```bash
-# Simulate UPRO (3x S&P 500)
-finbot simulate fund UPRO --start 2010-01-01 --end 2024-01-01 --output upro.parquet
-
-# Simulate TQQQ (3x Nasdaq 100)
-finbot simulate fund TQQQ --start 2010-01-01 --end 2024-01-01 --output tqqq.parquet
-
-# Simulate TMF (3x 20Y Treasury)
-finbot simulate fund TMF --start 2010-01-01 --end 2024-01-01 --output tmf.parquet
-
-# Compare in Python
-import pandas as pd
-
-upro = pd.read_parquet('upro.parquet')
-tqqq = pd.read_parquet('tqqq.parquet')
-tmf = pd.read_parquet('tmf.parquet')
-
-# Calculate total returns
-upro_return = (upro['Close'][-1] / upro['Close'][0] - 1) * 100
-tqqq_return = (tqqq['Close'][-1] / tqqq['Close'][0] - 1) * 100
-tmf_return = (tmf['Close'][-1] / tmf['Close'][0] - 1) * 100
-
-print(f"UPRO: {upro_return:.1f}%")
-print(f"TQQQ: {tqqq_return:.1f}%")
-print(f"TMF: {tmf_return:.1f}%")
-```
-
-### DCA Optimization Workflow
-
-```bash
-# Optimize SPY/TLT allocation
-finbot optimize dca --tickers SPY TLT --start 2010-01-01 --investment 1000 --output dca_results.parquet
-
-# Analyze results in Python
-import pandas as pd
-
-results = pd.read_parquet('dca_results.parquet')
-
-# Find best Sharpe ratio
-best = results.loc[results['sharpe'].idxmax()]
-print(f"Best allocation: {best['spy_allocation']:.0%} SPY / {best['tlt_allocation']:.0%} TLT")
-print(f"Sharpe ratio: {best['sharpe']:.2f}")
-print(f"CAGR: {best['cagr']:.2%}")
-print(f"Max drawdown: {best['max_drawdown']:.2%}")
-```
-
-## Error Handling
-
-The CLI provides helpful error messages:
-
-```bash
-# Missing required argument
-$ finbot backtest --strategy Rebalance
-Error: Missing option '--tickers'
-
-# Invalid strategy name
-$ finbot backtest --strategy InvalidStrategy --tickers SPY
-Error: Unknown strategy 'InvalidStrategy'
-Available strategies: Rebalance, NoRebalance, SMACrossover, ...
-
-# Invalid date format
-$ finbot simulate fund UPRO --start 2010-13-01
-Error: Invalid date format '2010-13-01'. Use YYYY-MM-DD
-
-# Missing API key
-$ finbot update
-Error: FRED_API_KEY environment variable not set
-Set it in .env file or export FRED_API_KEY=your_key
+finbot simulate --fund UPRO --output upro.parquet
+finbot backtest --strategy NoRebalance --asset SPY --output spy_backtest.parquet
+finbot optimize --method dca --asset SPY --output spy_dca.parquet
 ```
 
 ## Environment Variables
 
-Required for data collection features:
+Set `DYNACONF_ENV` explicitly and export any required data-source credentials in the shell. For local development, you can also place them in `finbot/config/.env`, which is auto-loaded in `development` mode.
 
 ```bash
-export DYNACONF_ENV=development  # or production
-export FRED_API_KEY=your_key
+export DYNACONF_ENV=development
+export ALPHA_VANTAGE_API_KEY=your_key
 export NASDAQ_DATA_LINK_API_KEY=your_key
 export US_BUREAU_OF_LABOR_STATISTICS_API_KEY=your_key
 export GOOGLE_FINANCE_SERVICE_ACCOUNT_CREDENTIALS_PATH=/path/to/credentials.json
 ```
 
-Create `.env` file in `finbot/config/` for persistent configuration.
-
-## Performance
-
-CLI commands are designed for interactive use:
-
-| Command | Typical Runtime | Notes |
-|---------|----------------|-------|
-| status | <1 second | File system checks only |
-| simulate fund | 1-2 seconds | Single fund simulation |
-| simulate all | 2-5 minutes | All 15 funds + indexes |
-| backtest | 2-5 seconds | Single strategy |
-| optimize dca | 30-60 seconds | Grid search, parallel execution |
-| update | 30 seconds - 10 minutes | Depends on data staleness |
-| dashboard | 2-3 seconds | Streamlit startup |
-
 ## Testing
 
-CLI has smoke tests:
+CLI smoke coverage lives in the Python test suite:
 
 ```bash
-# Test CLI imports and --help
 uv run pytest tests/unit/test_imports.py::test_cli_import -v
 ```
 
 ## See Also
 
-- [User Guide: Quick Start](../user-guide/quick-start.md) - CLI tutorial
+- [User Guide: Quick Start](../user-guide/quick-start.md) - CLI walkthrough
 - [Configuration](../user-guide/configuration.md) - Environment setup
-- [Data Quality](services/data-quality.md) - Status monitoring
-- [BacktestRunner](services/backtesting/backtest-runner.md) - Backtest API
-- [DCA Optimizer](services/optimization/dca-optimizer.md) - Optimizer API
+- [Data Quality](../user-guide/data-quality-guide.md) - Status monitoring
+- [BacktestRunner](services/backtesting/backtest-runner.md) - Python backtest API
+- [DCA Optimizer](services/optimization/dca-optimizer.md) - Python optimizer API

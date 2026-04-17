@@ -1,13 +1,13 @@
 # Why I Built Finbot: A Developer's Journey from Spreadsheets to Systematic Backtesting
 
-*Originally published: 2026-02-17*
-*Reading time: ~8 minutes*
+_Originally published: 2026-02-17_
+_Reading time: ~8 minutes_
 
 ---
 
 It started with a spreadsheet.
 
-Like many people interested in personal finance, I started my investing journey with a few cells in Excel, manually tracking my portfolio performance. I'd pull prices from Google Finance every weekend, paste them in, and stare at the numbers. Was I doing well? Better than just holding the S&P 500? Better than a bond ladder? I genuinely didn't know. The spreadsheet could tell me what *had* happened, but it couldn't tell me what *would* happen — or more importantly, what *would have* happened if I'd done something different.
+Like many people interested in personal finance, I started my investing journey with a few cells in Excel, manually tracking my portfolio performance. I'd pull prices from Google Finance every weekend, paste them in, and stare at the numbers. Was I doing well? Better than just holding the S&P 500? Better than a bond ladder? I genuinely didn't know. The spreadsheet could tell me what _had_ happened, but it couldn't tell me what _would_ happen — or more importantly, what _would have_ happened if I'd done something different.
 
 That question — "what would have happened?" — eventually became Finbot.
 
@@ -19,7 +19,7 @@ There's a seductive simplicity to financial advice. Everyone has a hot take. "Ju
 
 The frustrating thing is that many of these claims are based on anecdote, short time windows, or survivorship bias. And when I started digging into the actual research, I found that even the peer-reviewed literature was often contradictory, cherry-picked, or limited to a specific market regime.
 
-I wanted to *test* these ideas myself. Not just read about them — actually run the numbers on historical data, under realistic conditions, with realistic costs. That's much harder than it sounds.
+I wanted to _test_ these ideas myself. Not just read about them — actually run the numbers on historical data, under realistic conditions, with realistic costs. That's much harder than it sounds.
 
 ---
 
@@ -87,19 +87,18 @@ The technical output is documented in the code. What's harder to see are the les
 
 ---
 
-## The Medical School Connection
+## Why the Health Economics Extension Matters
 
-I'll be transparent about something: I'm applying to medical school, and this project is partly a portfolio piece. That might seem like a strange admission in a technical blog post, but I think it's worth explaining.
+One of the most useful things I discovered while building Finbot is that health economics and financial economics share a surprising amount of quantitative machinery. Cost-effectiveness analysis, probabilistic sensitivity analysis, discounting, and optimization all sit close to the same core ideas that already powered the finance side of the project.
 
-I'm applying to medicine because I'm genuinely interested in the quantitative and systems-level aspects of healthcare. Health economics, evidence-based medicine, clinical research — these are areas where the kind of systematic, data-driven thinking I've been developing translates directly.
+That made the health-economics extension feel less like a tangent and more like a natural test of whether the framework was actually portable. Building Finbot demonstrated that I can:
 
-Building Finbot demonstrated that I can:
 - Take a complex domain (quantitative finance) and build tools that produce useful insights
 - Maintain quality standards (60%+ test coverage, continuous integration, rigorous documentation) over an extended project
 - Apply quantitative methods across domains (hence the health economics extension)
 - Communicate technical results to non-technical audiences (hence the Jupyter notebooks and Streamlit dashboard)
 
-The CanMEDS framework that guides Canadian medical education emphasizes roles like Scholar, Communicator, and Professional. Those aren't abstract ideals — they're exactly the capacities I've been developing while building this.
+The common thread across all of that work is evidence-oriented reasoning: state assumptions clearly, model uncertainty explicitly, document limitations, and make results legible to someone who did not write the code.
 
 ---
 
@@ -108,12 +107,13 @@ The CanMEDS framework that guides Canadian medical education emphasizes roles li
 Priority 7 focuses on external impact: publishing research findings, creating tutorial content, and deepening the health economics capabilities.
 
 The technical roadmap continues with:
+
 - **Multi-objective portfolio optimization** using Pareto frontier methods
 - **Regime-adaptive strategies** that adjust behavior based on detected market conditions
 - **Statistical hypothesis testing** for rigorous strategy comparison
 - **NautilusTrader migration guide** for teams ready to move toward live trading
 
-But honestly, the most interesting next chapter isn't technical — it's medical school. If Finbot helped me get there, it will have been worth every hour.
+The most interesting next chapter is pushing the platform further into better research workflows, richer health-economics scenarios, and clearer public teaching materials.
 
 ---
 
@@ -129,7 +129,7 @@ The research notebooks in `notebooks/` are the best starting point for understan
 
 ---
 
-*Questions or feedback? Open an issue on GitHub or reach out directly.*
+_Questions or feedback? Open an issue on GitHub or reach out directly._
 
 ---
 

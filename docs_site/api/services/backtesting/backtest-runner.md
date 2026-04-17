@@ -1,44 +1,49 @@
 # BacktestRunner
 
-The `BacktestRunner` class is the main orchestrator for running backtests in Finbot. It wraps Backtrader's Cerebro engine and provides a simplified interface for testing trading strategies.
+The `BacktestRunner` class is the low-level orchestrator behind Finbot's Backtrader-based backtesting flow. It works with explicit strategy classes, broker objects, sizers, and price-history DataFrames.
 
 ## Overview
 
-`BacktestRunner` provides:
+`BacktestRunner`:
 
-- Strategy initialization with parameters
-- Data feed management (multiple assets)
-- Broker configuration (cash, commission)
-- Custom analyzers for performance tracking
-- Results processing and statistics computation
+- Accepts a `price_histories` mapping of tickers to pandas DataFrames
+- Truncates inputs to the shared date range and prefers adjusted close data when available
+- Installs analyzers and observers before running Backtrader
+- Returns a one-row metrics DataFrame from `run_backtest()`
+- Exposes value history and trade data after execution
 
 ## Quick Start
 
 ```python
+import backtrader as bt
+
 from finbot.services.backtesting.backtest_runner import BacktestRunner
-import pandas as pd
+from finbot.services.backtesting.brokers.fixed_commission_scheme import FixedCommissionScheme
+from finbot.services.backtesting.strategies.rebalance import Rebalance
+from finbot.utils.data_collection_utils.yfinance.get_history import get_history
 
-# Load price data
-spy_data = pd.read_parquet('spy_prices.parquet')
-tlt_data = pd.read_parquet('tlt_prices.parquet')
+spy_data = get_history("SPY", adjust_price=True)
+tlt_data = get_history("TLT", adjust_price=True)
 
-# Create backtest runner
 runner = BacktestRunner(
-    strategy='Rebalance',
-    data_feeds={'SPY': spy_data, 'TLT': tlt_data},
-    strategy_params={'rebalance_days': 30},
-    cash=100000,
-    commission=0.001
+    price_histories={"SPY": spy_data, "TLT": tlt_data},
+    start=None,
+    end=None,
+    duration=None,
+    start_step=None,
+    init_cash=100000,
+    strat=Rebalance,
+    strat_kwargs={"rebal_proportions": [0.6, 0.4], "rebal_interval": 63},
+    broker=bt.brokers.BackBroker,
+    broker_kwargs={},
+    broker_commission=FixedCommissionScheme,
+    sizer=bt.sizers.AllInSizer,
+    sizer_kwargs={},
+    plot=False,
 )
 
-# Run backtest
-results = runner.run()
-
-# Get statistics
-stats = runner.get_stats()
-print(f"CAGR: {stats['CAGR']:.2%}")
-print(f"Sharpe: {stats['Sharpe']:.2f}")
-print(f"Max Drawdown: {stats['Max Drawdown']:.2%}")
+stats = runner.run_backtest()
+print(stats[["CAGR", "Sharpe", "Max Drawdown"]])
 ```
 
 ## Class: BacktestRunner
@@ -49,113 +54,124 @@ print(f"Max Drawdown: {stats['Max Drawdown']:.2%}")
 
 ```python
 BacktestRunner(
-    strategy: str,
-    data_feeds: dict[str, pd.DataFrame],
-    strategy_params: dict[str, Any] = None,
-    cash: float = 100000,
-    commission: float = 0.001
+    price_histories: dict[str, pd.DataFrame],
+    start: pd.Timestamp | None,
+    end: pd.Timestamp | None,
+    duration: pd.Timedelta | None,
+    start_step: pd.Timedelta | None,
+    init_cash: float,
+    strat: Any,
+    strat_kwargs: dict[str, Any],
+    broker: Any,
+    broker_kwargs: dict[str, Any],
+    broker_commission: Any,
+    sizer: Any,
+    sizer_kwargs: dict[str, Any],
+    plot: bool,
 )
 ```
 
-**Parameters:**
+**Key parameters:**
 
-- `strategy` (str): Strategy name (Rebalance, SMACrossover, etc.)
-- `data_feeds` (dict): Dictionary mapping tickers to DataFrames
-- `strategy_params` (dict, optional): Strategy-specific parameters
-- `cash` (float, optional): Starting cash amount (default: 100000)
-- `commission` (float, optional): Commission rate (default: 0.001)
+- `price_histories`: mapping of symbols to OHLCV DataFrames
+- `start`, `end`: optional date bounds
+- `duration`, `start_step`: optional rolling-window controls for batch workflows
+- `init_cash`: starting portfolio cash
+- `strat`: Backtrader strategy class, not a string name
+- `strat_kwargs`: keyword arguments passed into the strategy constructor
+- `broker`, `broker_kwargs`, `broker_commission`: broker wiring
+- `sizer`, `sizer_kwargs`: position-sizing configuration
+- `plot`: whether to call Backtrader plotting after execution
 
 ### Methods
 
-#### run()
+#### `run_backtest()`
 
-Execute the backtest and return results.
+Execute the backtest and return the one-row metrics DataFrame.
 
-```python
-results = runner.run()
-```
+#### `get_value_history()`
 
-**Returns:** Dictionary with backtest results including portfolio values, returns, and analyzer data.
+Return the post-run `Value` and `Cash` time series as a DataFrame.
 
-#### get_stats()
+#### `get_trades()`
 
-Calculate performance statistics.
+Return the trade list captured by the trade analyzer.
 
-```python
-stats = runner.get_stats()
-```
+#### `get_test_stats()`
 
-**Returns:** Dictionary with performance metrics:
-- CAGR: Compound annual growth rate
-- Sharpe: Sharpe ratio
-- Sortino: Sortino ratio
-- Calmar: Calmar ratio
-- Max Drawdown: Maximum drawdown percentage
-- Win Rate: Percentage of winning trades
-- Volatility: Annualized volatility
+Recompute and return the metrics DataFrame from the captured value history.
 
 ## Supported Strategies
 
-- **Rebalance**: Periodic portfolio rebalancing
-- **NoRebalance**: Buy and hold
-- **SMACrossover**: Simple moving average crossover
-- **SMACrossoverDouble**: Dual SMA crossover
-- **SMACrossoverTriple**: Triple SMA crossover
-- **MACDSingle**: MACD-based strategy
-- **MACDDual**: Dual MACD strategy
-- **DipBuySMA**: Buy dips with SMA filter
-- **DipBuyStdev**: Buy dips with standard deviation filter
-- **SMARebalMix**: Mixed SMA + rebalance approach
-
-## Performance Metrics
-
-The backtest computes the following metrics using quantstats:
-
-| Metric | Description |
-|--------|-------------|
-| **CAGR** | Compound Annual Growth Rate |
-| **Sharpe Ratio** | Risk-adjusted return (Rf = 2%) |
-| **Sortino Ratio** | Downside risk-adjusted return |
-| **Calmar Ratio** | CAGR / Max Drawdown |
-| **Max Drawdown** | Largest peak-to-trough decline |
-| **Win Rate** | Percentage of winning trades |
-| **Kelly Criterion** | Optimal position sizing |
-| **Volatility** | Annualized standard deviation |
+- `Rebalance`
+- `NoRebalance`
+- `SMACrossover`
+- `SMACrossoverDouble`
+- `SMACrossoverTriple`
+- `MACDSingle`
+- `MACDDual`
+- `DipBuySMA`
+- `DipBuyStdev`
+- `SMARebalMix`
+- `DualMomentum`
+- `RiskParity`
+- `RegimeAdaptive`
 
 ## Examples
 
-### Basic Rebalance Strategy
+### Single-Asset SMA Crossover
 
 ```python
+from finbot.services.backtesting.strategies.sma_crossover import SMACrossover
+
+spy_data = get_history("SPY", adjust_price=True)
+
 runner = BacktestRunner(
-    strategy='Rebalance',
-    data_feeds={'SPY': spy, 'TLT': tlt},
-    strategy_params={
-        'rebalance_days': 30,
-        'target_allocations': {'SPY': 0.6, 'TLT': 0.4}
-    }
+    price_histories={"SPY": spy_data},
+    start=None,
+    end=None,
+    duration=None,
+    start_step=None,
+    init_cash=100000,
+    strat=SMACrossover,
+    strat_kwargs={"fast_ma": 50, "slow_ma": 200},
+    broker=bt.brokers.BackBroker,
+    broker_kwargs={},
+    broker_commission=FixedCommissionScheme,
+    sizer=bt.sizers.AllInSizer,
+    sizer_kwargs={},
+    plot=False,
 )
-results = runner.run()
+
+stats = runner.run_backtest()
+print(stats[["CAGR", "Sharpe", "Max Drawdown"]])
 ```
 
-### SMA Crossover with Custom Parameters
+### Restricting the Date Window
 
 ```python
+import pandas as pd
+
 runner = BacktestRunner(
-    strategy='SMACrossover',
-    data_feeds={'SPY': spy},
-    strategy_params={
-        'fast_period': 50,
-        'slow_period': 200
-    },
-    cash=100000,
-    commission=0.001
+    price_histories={"SPY": spy_data},
+    start=pd.Timestamp("2015-01-01"),
+    end=pd.Timestamp("2024-01-01"),
+    duration=None,
+    start_step=None,
+    init_cash=100000,
+    strat=SMACrossover,
+    strat_kwargs={"fast_ma": 50, "slow_ma": 200},
+    broker=bt.brokers.BackBroker,
+    broker_kwargs={},
+    broker_commission=FixedCommissionScheme,
+    sizer=bt.sizers.AllInSizer,
+    sizer_kwargs={},
+    plot=False,
 )
-results = runner.run()
 ```
 
 ## See Also
 
-- [run_backtest Function](run-backtest.md) - Single backtest execution
-- [compute_stats Function](compute-stats.md) - Performance metrics
+- [run_backtest Function](run-backtest.md) - Thin wrapper around `BacktestRunner`
+- [compute_stats Function](compute-stats.md) - Metrics generation
 - [User Guide: Backtesting](../../../user-guide/backtesting.md) - Tutorial path and entry points

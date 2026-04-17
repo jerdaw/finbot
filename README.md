@@ -1,6 +1,6 @@
 # Finbot
 
-**Financial data collection, simulation, backtesting, and health-economics platform for quantitative analysis**
+## Financial Data Collection, Simulation, Backtesting, And Health-Economics Platform For Quantitative Analysis
 
 [![CI](https://github.com/jerdaw/finbot/actions/workflows/ci.yml/badge.svg)](https://github.com/jerdaw/finbot/actions/workflows/ci.yml)
 [![Docs](https://github.com/jerdaw/finbot/actions/workflows/docs.yml/badge.svg)](https://github.com/jerdaw/finbot/actions/workflows/docs.yml)
@@ -14,6 +14,7 @@
 **Finbot is for educational and research purposes only. This software does not constitute financial, investment, or medical advice. Past performance is not indicative of future results. You use this software entirely at your own risk.**
 
 See [DISCLAIMER.md](DISCLAIMER.md) for complete legal terms, limitations, and risk disclosures. By using this software, you acknowledge that:
+
 - This is NOT financial or investment advice
 - Results should NOT replace professional consultation
 - You accept all risks and limitations
@@ -37,6 +38,7 @@ Finbot is a comprehensive platform for quantitative financial analysis, combinin
 **Problem**: Testing investment strategies requires stitching together disparate tools, managing data inconsistencies, and writing repetitive boilerplate code.
 
 **Solution**: Finbot provides a unified platform where you can:
+
 - Fetch historical data from 6+ sources with a single function call
 - Simulate leveraged funds back to 1950 with realistic cost modeling (fees, spreads, borrowing costs)
 - Backtest any strategy with engine-agnostic contracts (swap Backtrader for NautilusTrader without code changes)
@@ -46,6 +48,7 @@ Finbot is a comprehensive platform for quantitative financial analysis, combinin
 - Generate publication-ready research with example notebooks
 
 **Use Cases**:
+
 - Test rebalancing strategies (60/40, All-Weather, etc.) with realistic execution costs
 - Evaluate leveraged ETF performance vs unleveraged alternatives
 - Model bond ladder mechanics across different yield environments
@@ -87,6 +90,7 @@ make run-update
 ```
 
 **Makefile Commands:**
+
 - `make help` - Show all available commands
 - `make install` - Install dependencies with uv
 - `make test` - Run all tests with verbose output
@@ -96,33 +100,26 @@ make run-update
 
 ## Current Implementation Status (2026-04-16)
 
-Priority 0-9 is complete. Priority 10 remains in progress, but the core Next.js frontend, the hardening batch, and the reviewer-facing packaging/docs-alignment pass are all landed.
+Priority 0-9 is complete. Priority 10 remains in progress, but the core Next.js frontend, the hardening batch, and the public packaging/docs-alignment pass are all landed.
 
-- **P0-P9 Complete**
-  - Engine-agnostic contracts, Backtrader adapter path, parity gates, cost/corporate-action fidelity, walk-forward analysis, regime detection, experiment tracking, execution simulation, and runtime hardening are in place.
-  - Risk analytics, portfolio analytics, real-time quotes, factor analytics, and health economics surfaces are implemented across services and Streamlit.
-- **P10 In Progress**
-  - ✅ P10.1: Next.js frontend completion (12 pages, backend routers, shared UI foundation, ADR-015)
-  - ✅ P10.2: Frontend hardening and audit remediation (frequency-gap fix, lazy host probing, restored mypy baseline, mocked Playwright smoke coverage, frontend CI gate)
-    - ✅ P10.3: Reviewer-facing packaging and docs alignment (public health-economics evidence path, claim cleanup, docs wrappers, metrics snapshot, and guided tour)
-  - ⏳ Remaining: responsive mobile hardening, deeper browser-flow coverage beyond smoke tests, and production deployment configuration
-- **CI Status**
-  - Core Python quality/test gates run on push/PR to `main`
-  - Frontend quality runs typecheck, production build, and Playwright smoke tests when frontend-relevant files change
+- **P0-P9 Complete**: Engine-agnostic contracts, Backtrader adapter path, parity gates, cost and corporate-action fidelity, walk-forward analysis, regime detection, experiment tracking, execution simulation, and runtime hardening are in place. Risk analytics, portfolio analytics, real-time quotes, factor analytics, and health economics surfaces are implemented across services and Streamlit.
+- **P10 In Progress**: ✅ P10.1 Next.js frontend completion (12 pages, backend routers, shared UI foundation, ADR-015); ✅ P10.2 frontend hardening and audit remediation (frequency-gap fix, lazy host probing, restored mypy baseline, mocked Playwright smoke coverage, frontend CI gate); ✅ P10.3 public packaging and docs alignment (public health-economics evidence path, claim cleanup, docs wrappers, metrics snapshot, and guided tour). Remaining work includes responsive mobile hardening, deeper browser-flow coverage beyond smoke tests, and production deployment configuration.
+- **CI Status**: Core Python quality and test gates run on push and PR to `main`. Frontend quality runs typecheck, production build, and Playwright smoke tests when frontend-relevant files change.
 
 Tracking docs:
+
 - `docs/planning/roadmap.md`
 - `docs/planning/archive/audit-remediation-and-frontend-hardening-2026-04-15.md`
-- `docs/planning/archive/reviewer-facing-packaging-and-docs-alignment-2026-04-16.md`
+- `docs/planning/archive/public-packaging-and-docs-alignment-2026-04-16.md`
 - `docs/adr/ADR-011-nautilus-decision.md`
 - `docs/adr/ADR-015-nextjs-frontend-completion.md`
 
 ## Prerequisites
 
 | Requirement | Minimum Version |
-| --- | --- |
-| **Python** | 3.11+ |
-| **uv** | 0.6+ |
+| ----------- | --------------- |
+| **Python**  | 3.11+           |
+| **uv**      | 0.9+            |
 
 ### Docker (Alternative)
 
@@ -145,20 +142,24 @@ make docker-run CMD="simulate --fund UPRO --start 2020-01-01"
 docker compose up finbot-dashboard finbot-api
 ```
 
-Data is persisted in a Docker volume (`finbot-data`). API keys are loaded from `finbot/config/.env`.
+Data is persisted in a Docker volume (`finbot-data`). Export API keys in the container environment or mount `finbot/config/.env` as a local-development convenience when running in `development` mode.
 
 ## Usage
 
 ### Backtesting
 
 Finbot supports two backtesting engines through a unified adapter interface:
+
 - **Backtrader** - Mature, bar-based backtesting (default)
 - **NautilusTrader** - Event-driven, live-trading capable
 
 See **[Choosing a Backtest Engine](https://jerdaw.github.io/finbot/guides/choosing-backtest-engine/)** for a comprehensive comparison and decision guide.
 
 ```python
+import backtrader as bt
+
 from finbot.services.backtesting.backtest_runner import BacktestRunner
+from finbot.services.backtesting.brokers.fixed_commission_scheme import FixedCommissionScheme
 from finbot.services.backtesting.strategies.rebalance import Rebalance
 
 runner = BacktestRunner(
@@ -169,7 +170,7 @@ runner = BacktestRunner(
     strat_kwargs={"rebal_proportions": (0.6, 0.4), "rebal_interval": 63},
     broker=bt.brokers.BackBroker, broker_kwargs={},
     broker_commission=FixedCommissionScheme,
-    sizer=AllInSizer, sizer_kwargs={},
+    sizer=bt.sizers.AllInSizer, sizer_kwargs={},
     plot=False,
 )
 stats = runner.run_backtest()
@@ -182,7 +183,7 @@ from decimal import Decimal
 from datetime import datetime
 from finbot.core.contracts import LATENCY_NORMAL
 from finbot.core.contracts.risk import RiskConfig, DrawdownLimitRule
-from finbot.services.execution import ExecutionSimulator
+from finbot.services.execution.execution_simulator import ExecutionSimulator
 
 # Create paper trading simulator with drawdown protection
 risk_config = RiskConfig(
@@ -204,7 +205,7 @@ simulator.submit_order(order, timestamp=datetime.now())
 simulator.process_market_data(current_time, current_prices)
 
 # Save state for disaster recovery
-from finbot.services.execution import CheckpointManager
+from finbot.services.execution.checkpoint_manager import CheckpointManager
 manager = CheckpointManager("checkpoints")
 checkpoint = manager.create_checkpoint(simulator)
 manager.save_checkpoint(checkpoint)
@@ -235,12 +236,12 @@ trials_df = monte_carlo_simulator(equity_data=spy_df, sim_periods=252, n_sims=10
 
 ## Settings Configuration
 
-| Variable | Required | Description |
-| --- | --- | --- |
-| `DYNACONF_ENV` | Yes | `development` or `production` |
-| `ALPHA_VANTAGE_API_KEY` | For data collection | Alpha Vantage API access |
-| `NASDAQ_DATA_LINK_API_KEY` | For data collection | Nasdaq Data Link access |
-| `US_BUREAU_OF_LABOR_STATISTICS_API_KEY` | For data collection | BLS API access |
+| Variable                                          | Required            | Description                   |
+| ------------------------------------------------- | ------------------- | ----------------------------- |
+| `DYNACONF_ENV`                                    | Yes                 | `development` or `production` |
+| `ALPHA_VANTAGE_API_KEY`                           | For data collection | Alpha Vantage API access      |
+| `NASDAQ_DATA_LINK_API_KEY`                        | For data collection | Nasdaq Data Link access       |
+| `US_BUREAU_OF_LABOR_STATISTICS_API_KEY`           | For data collection | BLS API access                |
 | `GOOGLE_FINANCE_SERVICE_ACCOUNT_CREDENTIALS_PATH` | For data collection | Google Sheets service account |
 
 ## Development
@@ -314,13 +315,13 @@ graph TB
     subgraph "Service Layer"
         EXEC[finbot/services/execution/<br/>Paper Trading Simulator, Risk Controls, Checkpoints]
         SIM[finbot/services/simulation/<br/>Fund, Bond Ladder, Monte Carlo]
-        BT[finbot/services/backtesting/<br/>12 Strategies, Cost Models, Corporate Actions, Regime Detection]
+        BT[finbot/services/backtesting/<br/>13 Strategies, Cost Models, Corporate Actions, Regime Detection]
         OPT[finbot/services/optimization/<br/>DCA Optimizer, Rebalance Optimizer]
         EXP[finbot/services/experiment/<br/>Tracking, Snapshots, Batch Execution]
     end
 
     subgraph "Interface Layer"
-        CLI[CLI Commands<br/>simulate, backtest, optimize, update]
+        CLI[CLI Commands<br/>simulate, backtest, optimize,<br/>status, update, dashboard]
         NB[Jupyter Notebooks<br/>5 Example Analyses]
         SCRIPTS[scripts/<br/>Daily Update Pipeline]
     end
@@ -378,23 +379,23 @@ graph TB
 
 ### Package Structure
 
-| Layer | Purpose |
-| --- | --- |
-| `config/` | Dynaconf-based environment configuration, settings accessors |
-| `constants/` | Application constants, path definitions, API URLs |
-| `libs/` | API manager with rate limiting, queue-based async logger |
-| `finbot/core/contracts/` | **NEW**: Engine-agnostic typed contracts (orders, risk, checkpoints, costs, regimes) |
-| `finbot/adapters/` | **NEW**: Engine adapters (Backtrader, future NautilusTrader) |
-| `finbot/services/execution/` | **NEW**: Paper trading simulator with latency, risk controls, state recovery |
-| `finbot/services/experiment/` | **NEW**: Experiment tracking and snapshot management |
-| `finbot/utils/` | 176-file utility library (data collection, finance, pandas, datetime, plotting, etc.) |
-| `finbot/services/simulation/` | Fund, index, bond ladder, Monte Carlo simulators |
-| `finbot/services/backtesting/` | Backtesting engine with 13 strategies, cost tracking, corporate actions, regime detection |
-| `finbot/services/optimization/` | DCA and rebalance portfolio optimizers |
-| `finbot/cli/` | Click-based CLI with 4 commands (simulate, backtest, optimize, update) |
-| `scripts/` | Daily data update pipeline, baseline generation |
-| `notebooks/` | 5 example Jupyter notebooks with analysis |
-| `docs/` | Research papers, ADRs, planning documents |
+| Layer                           | Purpose                                                                                   |
+| ------------------------------- | ----------------------------------------------------------------------------------------- |
+| `config/`                       | Dynaconf-based environment configuration, settings accessors                              |
+| `constants/`                    | Application constants, path definitions, API URLs                                         |
+| `libs/`                         | API manager with rate limiting, queue-based async logger                                  |
+| `finbot/core/contracts/`        | **NEW**: Engine-agnostic typed contracts (orders, risk, checkpoints, costs, regimes)      |
+| `finbot/adapters/`              | **NEW**: Engine adapters (Backtrader, future NautilusTrader)                              |
+| `finbot/services/execution/`    | **NEW**: Paper trading simulator with latency, risk controls, state recovery              |
+| `finbot/services/experiment/`   | **NEW**: Experiment tracking and snapshot management                                      |
+| `finbot/utils/`                 | 176-file utility library (data collection, finance, pandas, datetime, plotting, etc.)     |
+| `finbot/services/simulation/`   | Fund, index, bond ladder, Monte Carlo simulators                                          |
+| `finbot/services/backtesting/`  | Backtesting engine with 13 strategies, cost tracking, corporate actions, regime detection |
+| `finbot/services/optimization/` | DCA and rebalance portfolio optimizers                                                    |
+| `finbot/cli/`                   | Click-based CLI with 6 commands (simulate, backtest, optimize, update, status, dashboard) |
+| `scripts/`                      | Daily data update pipeline, baseline generation                                           |
+| `notebooks/`                    | 5 example Jupyter notebooks with analysis                                                 |
+| `docs/`                         | Research papers, ADRs, planning documents                                                 |
 
 See [docs/adr/](docs/adr/) for architectural decision records and [finbot/utils/README.md](finbot/utils/README.md) for utility library overview.
 
@@ -438,6 +439,7 @@ Built for reliability and scale:
 - **API Rate Limiting**: Built-in retry with exponential backoff for data collection
 - **Data Quality**: Automated freshness monitoring with staleness thresholds
 - **Docker Support**: Run without installing Python or dependencies
+
 ## Example Notebooks
 
 Explore comprehensive analyses demonstrating all major features:
@@ -450,6 +452,7 @@ Explore comprehensive analyses demonstrating all major features:
 6. **[Health Economics Demo](notebooks/06_health_economics_demo.ipynb)** - QALY simulation, ICER/NMB analysis, and treatment-schedule optimization
 
 Each notebook includes:
+
 - Setup and data loading
 - Multiple analysis sections with interactive visualizations
 - Key findings with actionable insights
@@ -469,6 +472,7 @@ Selected research and methodology documents:
 **Important:** Finbot is a research and educational tool. All models make simplifying assumptions and past performance does not guarantee future results.
 
 See **[docs/limitations.md](docs/limitations.md)** for comprehensive documentation of:
+
 - Survivorship bias and its impact
 - Simulation assumptions and trade-offs
 - Data quality and coverage limitations
@@ -477,6 +481,7 @@ See **[docs/limitations.md](docs/limitations.md)** for comprehensive documentati
 - Known bugs and workarounds
 
 **Key Takeaways:**
+
 - Use results as inputs to decisions, not sole decision-maker
 - Combine quantitative analysis with qualitative judgment
 - Always consult qualified financial professionals
@@ -489,6 +494,7 @@ See **[docs/limitations.md](docs/limitations.md)** for comprehensive documentati
 See **[DISCLAIMER.md](DISCLAIMER.md)** for concise financial/medical decision disclaimers and liability terms.
 
 See **[docs/ethics/responsible-use.md](docs/ethics/responsible-use.md)** for comprehensive ethical guidelines covering:
+
 - **Financial Advice Disclaimer:** Not a substitute for professional financial advisors
 - **Data Privacy and Security:** Practices for protecting API keys and credentials
 - **Backtesting Limitations:** Survivorship bias, overfitting, and regime dependency
@@ -497,6 +503,7 @@ See **[docs/ethics/responsible-use.md](docs/ethics/responsible-use.md)** for com
 - **Liability Limitations:** No warranty; use at your own risk
 
 **Key Principles:**
+
 - Seek professional advice for financial and health decisions
 - Understand all limitations before using results
 - Exercise independent judgment and due diligence
@@ -505,6 +512,7 @@ See **[docs/ethics/responsible-use.md](docs/ethics/responsible-use.md)** for com
 ## Contributing
 
 Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for:
+
 - Development setup
 - Code quality standards
 - Pull request process
@@ -519,6 +527,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 Finbot depends on various open-source libraries. See [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) for a comprehensive audit of all dependencies and their licenses.
 
 **Key points:**
+
 - Most dependencies use permissive licenses (MIT, BSD, Apache 2.0)
 - A few dependencies use GPL/LGPL licenses (backtrader, ecos, frozendict, nautilus_trader, portion)
 - All licenses are compatible with the MIT license when used as library dependencies

@@ -10,7 +10,8 @@ For the full changelog, see [CHANGELOG.md](https://github.com/jerdaw/finbot/blob
 ## [1.0.0] - 2026-02-10
 
 ### Added
-- CLI interface with 4 commands (simulate, backtest, optimize, update)
+
+- CLI interface with 6 commands (simulate, backtest, optimize, update, status, dashboard)
 - Comprehensive test suite (80 tests, 444% increase)
 - 5 example Jupyter notebooks
 - 3 research documents (~50 pages)
@@ -22,12 +23,14 @@ For the full changelog, see [CHANGELOG.md](https://github.com/jerdaw/finbot/blob
 - Pre-commit hooks (17 total)
 
 ### Changed
+
 - Consolidated dual config system to Dynaconf only
 - Refactored fund simulations to data-driven config
 - Updated ruff to v0.11.13 with expanded rules
 - Modernized pyproject.toml to PEP 621
 
 ### Fixed
+
 - Logger code duplication
 - Import-time side effects in constants
 - Dangerous error handling (bare except, assert)
@@ -36,6 +39,7 @@ For the full changelog, see [CHANGELOG.md](https://github.com/jerdaw/finbot/blob
 ## [0.1.0] - 2026-02-09
 
 ### Added
+
 - Initial consolidated release
 - Merged three repos (finbot, bb, backbetter)
 - 10 backtesting strategies
@@ -45,6 +49,7 @@ For the full changelog, see [CHANGELOG.md](https://github.com/jerdaw/finbot/blob
 - CI workflow
 
 ### Changed
+
 - Replaced numba with vectorized NumPy
 - Replaced pickle with parquet
 - Lazy API key loading

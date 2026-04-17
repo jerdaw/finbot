@@ -49,10 +49,10 @@ docker compose up finbot-dashboard
 Main dashboard entry point and app configuration:
 
 ::: finbot.dashboard.app
-    options:
-      show_root_heading: true
-      show_source: true
-      heading_level: 3
+options:
+show_root_heading: true
+show_source: true
+heading_level: 3
 
 ## Pages
 
@@ -61,6 +61,7 @@ Main dashboard entry point and app configuration:
 **Location:** `finbot/dashboard/app.py` (main page)
 
 **Features:**
+
 - Project introduction and purpose
 - Quick navigation to all pages
 - System status indicators
@@ -71,6 +72,7 @@ Main dashboard entry point and app configuration:
 **Location:** `finbot/dashboard/pages/1_simulations.py`
 
 **Features:**
+
 - Fund simulation interface (15 pre-configured funds)
 - Index simulation (S&P 500, Nasdaq 100, Treasury indexes)
 - Custom parameter adjustment
@@ -78,6 +80,7 @@ Main dashboard entry point and app configuration:
 - Comparison with actual ETF data (tracking error)
 
 **Interactive controls:**
+
 - Fund/index selector (dropdown)
 - Date range picker (start/end dates)
 - Leverage ratio slider (for custom simulations)
@@ -85,6 +88,7 @@ Main dashboard entry point and app configuration:
 - Display toggles (log scale, show actual vs simulated)
 
 **Charts:**
+
 - Price history line chart
 - Daily returns histogram
 - Cumulative returns comparison
@@ -95,6 +99,7 @@ Main dashboard entry point and app configuration:
 **Location:** `finbot/dashboard/pages/2_backtesting.py`
 
 **Features:**
+
 - Strategy selection (12 strategies)
 - Multi-asset backtesting
 - Strategy parameter tuning
@@ -102,6 +107,7 @@ Main dashboard entry point and app configuration:
 - Trade log visualization
 
 **Interactive controls:**
+
 - Strategy selector (dropdown)
 - Asset tickers (multi-select)
 - Parameter inputs (strategy-specific)
@@ -110,12 +116,14 @@ Main dashboard entry point and app configuration:
 - Starting cash input
 
 **Metrics displayed:**
+
 - CAGR, Sharpe, Sortino, Calmar ratios
 - Max drawdown, volatility
 - Win rate, profit factor
 - Total trades, win/loss breakdown
 
 **Charts:**
+
 - Portfolio value over time
 - Drawdown chart
 - Monthly/yearly returns heatmap
@@ -126,12 +134,14 @@ Main dashboard entry point and app configuration:
 **Location:** `finbot/dashboard/pages/3_optimizer.py`
 
 **Features:**
+
 - DCA optimization interface
 - Allocation ratio heatmaps
 - Multi-metric optimization (Sharpe, Sortino, Calmar, CAGR)
 - Efficient frontier visualization
 
 **Interactive controls:**
+
 - Asset tickers (multi-select)
 - Optimization metric selector (Sharpe, Sortino, Calmar, CAGR)
 - Investment amount slider
@@ -139,6 +149,7 @@ Main dashboard entry point and app configuration:
 - Frequency selector (monthly, quarterly)
 
 **Visualizations:**
+
 - Heatmap: Allocation ratio vs. Sharpe ratio
 - Scatter plot: Risk vs. return (efficient frontier)
 - Bar chart: Top 10 allocation strategies
@@ -149,12 +160,14 @@ Main dashboard entry point and app configuration:
 **Location:** `finbot/dashboard/pages/4_monte_carlo.py`
 
 **Features:**
+
 - Risk simulation interface
 - Multi-asset Monte Carlo
 - Percentile projections (5th, 50th, 95th)
 - Distribution analysis
 
 **Interactive controls:**
+
 - Ticker selector
 - Number of trials slider (1,000 - 50,000)
 - Time horizon slider (1-50 years)
@@ -162,6 +175,7 @@ Main dashboard entry point and app configuration:
 - Annual contribution input
 
 **Charts:**
+
 - Fan chart (percentile bands)
 - Histogram of final values
 - Probability of achieving target
@@ -172,17 +186,20 @@ Main dashboard entry point and app configuration:
 **Location:** `finbot/dashboard/pages/5_data_status.py`
 
 **Features:**
+
 - Real-time data freshness monitoring
 - Data source health dashboard
 - Refresh trigger buttons
 - Staleness alerts
 
 **Status indicators:**
+
 - ✓ FRESH (green badge)
 - ⚠ STALE (yellow badge)
 - ✗ MISSING (red badge)
 
 **Data sources tracked:**
+
 - YFinance (1-day threshold)
 - FRED (7-day threshold)
 - Google Finance (7-day threshold)
@@ -192,6 +209,7 @@ Main dashboard entry point and app configuration:
 - Simulations (1-day threshold)
 
 **Actions:**
+
 - Refresh data source button (triggers update)
 - View last update timestamp
 - Check data file count
@@ -202,12 +220,14 @@ Main dashboard entry point and app configuration:
 **Location:** `finbot/dashboard/pages/6_health_economics.py`
 
 **Features:**
+
 - QALY simulation interface
 - Cost-effectiveness analysis (ICER, NMB, CEAC)
 - Treatment optimization
 - Clinical scenario selector
 
 **Interactive controls:**
+
 - Treatment parameters (cost, utility, mortality, duration)
 - Control parameters (cost, utility, mortality, duration)
 - Number of simulations slider (1,000 - 100,000)
@@ -215,12 +235,14 @@ Main dashboard entry point and app configuration:
 - Clinical scenario selector (pre-configured scenarios)
 
 **Clinical scenarios:**
+
 - Type 2 Diabetes (Metformin vs. GLP-1)
 - Hypertension (Standard vs. Intensive BP control)
 - Hyperlipidemia (Statin vs. PCSK9 inhibitor)
 - Custom (user-defined parameters)
 
 **Charts:**
+
 - Cost-effectiveness plane (scatter plot)
 - CEAC (cost-effectiveness acceptability curve)
 - Distribution histograms (cost, QALYs, ICER, NMB)
@@ -230,6 +252,7 @@ Main dashboard entry point and app configuration:
 **Location:** `finbot/dashboard/pages/7_experiments.py`
 
 **Features:**
+
 - Experiment registry browsing
 - Snapshot-aware comparisons
 - Batch observability summaries
@@ -240,6 +263,7 @@ Main dashboard entry point and app configuration:
 **Location:** `finbot/dashboard/pages/8_walkforward.py`
 
 **Features:**
+
 - Walk-forward analysis visualisation
 - Fold-by-fold performance inspection
 - Regime overlays and stability review
@@ -249,6 +273,7 @@ Main dashboard entry point and app configuration:
 **Location:** `finbot/dashboard/pages/9_risk_analytics.py`
 
 **Features:**
+
 - VaR/CVaR analysis
 - Parametric stress testing
 - Kelly sizing charts and tables
@@ -258,6 +283,7 @@ Main dashboard entry point and app configuration:
 **Location:** `finbot/dashboard/pages/10_portfolio_analytics.py`
 
 **Features:**
+
 - Rolling performance metrics
 - Benchmark comparison
 - Drawdown decomposition
@@ -268,6 +294,7 @@ Main dashboard entry point and app configuration:
 **Location:** `finbot/dashboard/pages/11_realtime_quotes.py`
 
 **Features:**
+
 - Multi-provider quote lookup
 - Watchlist support
 - Provider health/status display
@@ -277,12 +304,14 @@ Main dashboard entry point and app configuration:
 **Location:** `finbot/dashboard/pages/12_factor_analytics.py`
 
 **Features:**
+
 - CAPM/FF3/FF5 regression analysis
 - Return attribution
 - Factor risk decomposition
 - Tornado diagram (sensitivity analysis)
 
 **Metrics displayed:**
+
 - ICER ($/QALY)
 - NMB ($)
 - Probability cost-effective (%)
@@ -290,6 +319,7 @@ Main dashboard entry point and app configuration:
 - Incremental QALYs
 
 **Thresholds shown:**
+
 - NICE: £20,000 - £30,000/QALY (~$25,000 - $37,500)
 - CADTH: $30,000 - $60,000 CAD/QALY (~$37,500 - $75,000 USD)
 - US: $50,000 - $150,000/QALY
@@ -302,6 +332,7 @@ The dashboard includes reusable chart components:
 **Location:** `finbot/dashboard/components/`
 
 Common components:
+
 - Price chart with volume
 - Returns distribution histogram
 - Cumulative returns line chart
@@ -315,13 +346,14 @@ Common components:
 ### Adding a New Page
 
 1. Create file in `finbot/dashboard/pages/`:
-   ```python
-   # finbot/dashboard/pages/7_my_page.py
-   import streamlit as st
 
-   st.title("My Custom Page")
-   st.write("Page content here")
-   ```
+    ```python
+    # finbot/dashboard/pages/7_my_page.py
+    import streamlit as st
+
+    st.title("My Custom Page")
+    st.write("Page content here")
+    ```
 
 2. Streamlit automatically adds to sidebar navigation
 
@@ -361,12 +393,12 @@ Dashboard optimizations:
 2. Select strategy (e.g., "Rebalance")
 3. Choose assets (e.g., SPY, TLT)
 4. Set date range (e.g., 2010-01-01 to 2024-01-01)
-5. Adjust parameters (e.g., rebalance_days: 30)
+5. Adjust parameters (e.g., rebal_interval: 63)
 6. Click "Run Backtest"
 7. Review results:
-   - Portfolio value chart
-   - Performance metrics
-   - Trade log
+    - Portfolio value chart
+    - Performance metrics
+    - Trade log
 8. Export results (Download CSV button)
 
 ### Optimizing DCA Allocation

@@ -20,7 +20,7 @@ stats = compute_stats(
     cash_history=cash_history,
     stocks=["SPY", "TLT"],
     strat=strategy_cls,
-    strat_kwargs={"rebalance_days": 30},
+    strat_kwargs={"rebal_proportions": [0.6, 0.4], "rebal_interval": 63},
     broker=broker_cls,
     broker_kwargs={},
     broker_commission=None,
@@ -34,10 +34,10 @@ print(stats[["CAGR", "Sharpe", "Max Drawdown"]])
 ## API Reference
 
 ::: finbot.services.backtesting.compute_stats.compute_stats
-        options:
-            show_root_heading: true
-            show_source: true
-            heading_level: 3
+options:
+show_root_heading: true
+show_source: true
+heading_level: 3
 
 ## See Also
 

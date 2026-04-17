@@ -60,7 +60,7 @@ Finbot is stable and mature after v8.0 closeout:
 
 Deliverables:
 
-1. `docs/planning/priority-7-status-refresh-2026-02-20.md`
+1. `docs/planning/roadmap.md`
 2. Roadmap current-phase update to reference v8.1 execution.
 3. Priority-7 implementation plan metadata/status correction.
 

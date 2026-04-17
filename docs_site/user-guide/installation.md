@@ -36,8 +36,8 @@ source .venv/bin/activate  # On Linux/Mac
 # Set environment
 export DYNACONF_ENV=development
 
-# Verify installation
-DYNACONF_ENV=development finbot --version
+# Verify installation from the source checkout
+DYNACONF_ENV=development uv run finbot --version
 python -c "import finbot; print('Success!')"
 ```
 

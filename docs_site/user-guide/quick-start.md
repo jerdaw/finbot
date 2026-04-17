@@ -8,21 +8,21 @@ This guide provides a rapid walkthrough of Finbot's core features.
 
 ```bash
 # Simulate UPRO (3x leveraged S&P 500)
-finbot simulate --fund UPRO --start 2010-01-01 --plot
+uv run finbot simulate --fund UPRO --start 2010-01-01 --plot
 ```
 
 ### 2. Backtest a Strategy
 
 ```bash
-# Test 60/40 rebalancing strategy
-finbot backtest --strategy Rebalance --asset SPY,TLT --plot
+# Test a single-asset strategy with the current CLI
+uv run finbot backtest --strategy NoRebalance --asset SPY --plot
 ```
 
 ### 3. Optimize Allocation
 
 ```bash
-# Find optimal SPY/TLT ratio
-finbot optimize --method dca --assets SPY,TLT --plot
+# Find an optimal DCA schedule for one asset
+uv run finbot optimize --method dca --asset SPY --plot
 ```
 
 ## Detailed Workflows

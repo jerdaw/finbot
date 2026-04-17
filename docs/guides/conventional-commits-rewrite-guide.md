@@ -209,8 +209,8 @@ git push --force-with-lease origin main
 
 Per AGENTS.md commit policy: commits must list only **human authors**. Do not add:
 
-- `Co-Authored-By: <assistant> ...`
-- `AI-Assisted: ...`
+- `Co-Authored-By:` trailers for anyone who did not actually co-author the rewrite
+- custom tool or assistant attribution trailers
 
 All conventional commit rewrites should be attributed to you as the human author.
 

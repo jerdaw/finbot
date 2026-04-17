@@ -23,6 +23,7 @@ Finbot is an **educational and research tool** developed to demonstrate software
 ### 1.2 Professional Advice Required
 
 Users should:
+
 - **Consult Licensed Professionals:** Seek advice from registered investment advisors, certified financial planners, or tax professionals before making investment decisions
 - **Verify Independently:** Independently verify all data, assumptions, and conclusions
 - **Conduct Due Diligence:** Perform your own research and analysis
@@ -31,12 +32,14 @@ Users should:
 ### 1.3 Regulatory Compliance
 
 The author:
+
 - Is **not** a registered investment advisor, broker-dealer, or financial planner
 - Does **not** hold securities licenses (Series 7, Series 65, etc.)
 - Does **not** provide personalized investment advice
 - Does **not** receive compensation for investment recommendations
 
 Users are responsible for:
+
 - Complying with all applicable securities laws and regulations
 - Understanding tax implications of investment strategies
 - Filing required tax forms and disclosures
@@ -47,6 +50,7 @@ Users are responsible for:
 ### 2.1 Data Collection and Usage
 
 Finbot operates on publicly available financial data:
+
 - **No Personal Financial Data:** The software does not collect, store, or transmit users' personal financial information
 - **Public Market Data Only:** All price data, economic indicators, and index data come from public sources (Yahoo Finance, FRED, Google Finance, etc.)
 - **Local Processing:** All simulations and analyses run locally on the user's machine
@@ -55,6 +59,7 @@ Finbot operates on publicly available financial data:
 ### 2.2 API Keys and Credentials
 
 Users must:
+
 - **Secure API Keys:** Protect API keys for data providers (FRED, Alpha Vantage, etc.) using environment variables or `.env` files
 - **Never Commit Credentials:** Never commit API keys, service account credentials, or passwords to version control
 - **Use Service Accounts:** For Google Finance integration, use service accounts with minimal permissions
@@ -64,6 +69,7 @@ Users must:
 ### 2.3 Data Security Best Practices
 
 Recommended practices:
+
 - **Keep Software Updated:** Regularly update dependencies to patch security vulnerabilities
 - **Review Dependencies:** Periodically audit third-party dependencies using `pip-audit`
 - **Use Virtual Environments:** Isolate project dependencies from system Python
@@ -84,23 +90,27 @@ Recommended practices:
 Backtesting has fundamental limitations:
 
 **Survivorship Bias:**
+
 - Backtests use current index constituents
 - Delisted companies (bankruptcies, mergers) are excluded
 - Actual historical performance would be worse than backtests suggest
 - Example: S&P 500 backtests exclude companies that went bankrupt
 
 **Overfitting and Data Snooping:**
+
 - Strategies optimized on historical data may not generalize
 - Multiple testing increases false discovery risk
 - "Backtest until it works" leads to illusory performance
 - Parameter optimization may find spurious patterns
 
 **Look-Ahead Bias:**
+
 - Inadvertently using future information in historical analysis
 - Index rebalancing dates may not reflect actual historical timing
 - Corporate actions (splits, dividends) known with certainty in backtests
 
 **Assumption Violations:**
+
 - Assumes perfect liquidity (all orders fill at close prices)
 - Ignores slippage (difference between expected and actual execution prices)
 - Simplified commission models (flat $0.001 per share, actual costs vary)
@@ -120,12 +130,14 @@ Backtesting has fundamental limitations:
 Backtests underestimate real-world costs:
 
 **Transaction Costs:**
+
 - Commissions (even "zero-commission" brokers have payment for order flow)
 - Bid-ask spreads (especially for illiquid securities)
 - Market impact (large orders move prices)
 - Short-term trading fees (some brokers charge for frequent trading)
 
 **Tax Implications:**
+
 - Short-term capital gains taxed as ordinary income (up to 37% federal)
 - Frequent trading generates taxable events
 - Wash sale rules complicate tax-loss harvesting
@@ -133,6 +145,7 @@ Backtests underestimate real-world costs:
 - Backtests do not account for tax drag
 
 **Borrowing Costs:**
+
 - Leveraged strategies incur margin interest
 - Margin calls force liquidation at unfavorable prices
 - Short positions pay borrow fees
@@ -141,6 +154,7 @@ Backtests underestimate real-world costs:
 ### 3.4 Statistical Significance
 
 Beware of false positives:
+
 - Small sample sizes lack statistical power
 - Chance can produce impressive backtests
 - Multiple hypothesis testing requires correction (Bonferroni, FDR)
@@ -150,6 +164,7 @@ Beware of false positives:
 ### 3.5 Behavioral Factors
 
 Humans struggle to execute strategies:
+
 - **Emotional Decision-Making:** Fear and greed override systematic rules
 - **Recency Bias:** Recent performance dominates decision-making
 - **Loss Aversion:** Losses hurt more than equivalent gains feel good
@@ -172,6 +187,7 @@ Humans struggle to execute strategies:
 Health economics simulations have constraints:
 
 **Simplified Models:**
+
 - Constant hazard rates (not age-dependent mortality)
 - Independent utility and cost distributions (correlations ignored)
 - No discounting of future costs/QALYs (standard practice is 3% discount rate)
@@ -179,12 +195,14 @@ Health economics simulations have constraints:
 - No adverse event modeling (treatment side effects excluded)
 
 **Data Quality:**
+
 - Parameters based on literature estimates (varying quality)
 - Studies may not generalize across populations
 - Publication bias favors positive results
 - Industry-sponsored trials may overestimate benefits
 
 **Ethical Concerns:**
+
 - QALY framework has philosophical limitations (values quantity over quality in some scenarios)
 - Willingness-to-pay thresholds vary across countries and contexts
 - Equity considerations not modeled (distributional impacts ignored)
@@ -193,12 +211,14 @@ Health economics simulations have constraints:
 ### 4.3 Appropriate Use Cases
 
 Health economics tools are appropriate for:
+
 - **Educational Demonstrations:** Teaching health technology assessment methods
 - **Methodology Learning:** Understanding cost-effectiveness analysis frameworks
 - **Research Skills:** Developing quantitative analysis capabilities
 - **Policy Discussion:** Informing general policy discussions (not specific decisions)
 
 Health economics tools are **not** appropriate for:
+
 - Clinical decision-making for individual patients
 - Regulatory submissions or health technology assessments
 - Reimbursement decisions
@@ -215,12 +235,14 @@ Health economics tools are **not** appropriate for:
 ### 4.5 Equity and Justice Considerations
 
 Cost-effectiveness analysis raises ethical questions:
+
 - **Age Discrimination:** QALY framework may disadvantage elderly (fewer remaining life years)
 - **Disability Rights:** Quality-of-life weights may undervalue lives of people with disabilities
 - **Access to Care:** Cost-effectiveness used to deny treatments raises equity concerns
 - **Socioeconomic Status:** Health outcomes vary by income, race, geography (models may not capture)
 
 Users should:
+
 - Recognize these limitations when interpreting results
 - Consider multiple ethical frameworks (not just cost-effectiveness)
 - Prioritize patient autonomy and shared decision-making
@@ -231,15 +253,17 @@ Users should:
 ### 5.1 Intended Use Cases
 
 Finbot is designed for:
+
 - **Learning Programming:** Demonstrating software engineering, data science, and quantitative analysis skills
 - **Academic Research:** Exploring portfolio theory, algorithmic trading, and health economics methods
-- **Skills Portfolio:** Showcasing technical capabilities for job applications and academic admissions
+- **Skills Development:** Building and demonstrating technical capabilities for research, engineering, and analytical work
 - **Methodology Education:** Teaching backtesting, simulation, and optimization techniques
 - **Concept Demonstration:** Illustrating financial concepts (compound growth, volatility, risk-adjusted returns)
 
 ### 5.2 Citation and Attribution
 
 If using this software in research or publications:
+
 - Cite the GitHub repository: `github.com/jerdaw/finbot`
 - Disclose methodology: Describe simulation parameters, assumptions, and limitations
 - Acknowledge limitations: Explicitly state the caveats discussed in this document
@@ -248,6 +272,7 @@ If using this software in research or publications:
 ### 5.3 Reproducibility
 
 To support reproducible research:
+
 - **Version Control:** All code is tracked in Git
 - **Dependency Management:** Use `uv.lock` for exact dependency versions
 - **Configuration:** All parameters configurable via YAML files
@@ -257,6 +282,7 @@ To support reproducible research:
 ### 5.4 Academic Integrity
 
 Users conducting academic research must:
+
 - Follow institutional research ethics guidelines
 - Obtain IRB approval if research involves human subjects (even survey data)
 - Properly attribute ideas and code
@@ -269,6 +295,7 @@ Users conducting academic research must:
 ### 6.1 No Warranty
 
 This software is provided "AS IS" without warranty of any kind:
+
 - **No Guarantees:** No guarantee of accuracy, completeness, or fitness for any purpose
 - **No Liability:** The author is not liable for financial losses, missed opportunities, or damages
 - **Use at Own Risk:** Users assume all risks associated with using this software
@@ -300,6 +327,7 @@ This software is provided "AS IS" without warranty of any kind:
 ### 7.1 Independent Judgment
 
 Users must:
+
 - Exercise independent judgment in all financial and health decisions
 - Verify all data, assumptions, and conclusions
 - Understand the limitations documented here
@@ -309,6 +337,7 @@ Users must:
 ### 7.2 Risk Management
 
 Users should:
+
 - Only invest money they can afford to lose
 - Diversify across asset classes and strategies
 - Maintain emergency funds (3-6 months expenses)
@@ -318,6 +347,7 @@ Users should:
 ### 7.3 Continuous Learning
 
 Users are encouraged to:
+
 - Read academic literature on portfolio theory and risk management
 - Study market history (bubbles, crashes, recoveries)
 - Learn about behavioral finance and cognitive biases
@@ -327,6 +357,7 @@ Users are encouraged to:
 ### 7.4 Ethical Conduct
 
 Users must:
+
 - Not use this software for illegal activities (market manipulation, insider trading)
 - Comply with securities regulations (accredited investor rules, etc.)
 - Respect intellectual property (cite sources, don't plagiarize)
@@ -338,6 +369,7 @@ Users must:
 ### 8.1 Bug Reports
 
 If you discover bugs:
+
 - Open an issue on GitHub: `github.com/jerdaw/finbot/issues`
 - Provide minimal reproducible examples
 - Include software version, Python version, and error messages
@@ -346,6 +378,7 @@ If you discover bugs:
 ### 8.2 Security Vulnerabilities
 
 If you discover security vulnerabilities:
+
 - Report privately to the repository maintainer (see SECURITY.md)
 - Do not disclose publicly until a fix is available
 - Allow reasonable time for remediation
@@ -354,6 +387,7 @@ If you discover security vulnerabilities:
 ### 8.3 Ethical Concerns
 
 If you identify ethical issues with the software:
+
 - Open a discussion on GitHub Discussions
 - Propose improvements to this document
 - Share relevant research or best practices
@@ -362,6 +396,7 @@ If you identify ethical issues with the software:
 ## 9. Updates and Revisions
 
 This document may be updated to:
+
 - Reflect new features or capabilities
 - Address emerging ethical concerns
 - Incorporate user feedback
@@ -369,6 +404,7 @@ This document may be updated to:
 - Improve clarity and comprehensiveness
 
 **Version History:**
+
 - **Version 1.0 (2026-02-12):** Initial release
 
 Users should periodically review this document for updates.
@@ -390,21 +426,25 @@ Finbot is a powerful educational and research tool, but it comes with significan
 ## Additional Resources
 
 **Financial Education:**
+
 - [SEC Investor Education](https://www.investor.gov/)
 - [FINRA Investor Education](https://www.finra.org/investors)
 - [CFA Institute Research Foundation](https://www.cfainstitute.org/research/foundation)
 
 **Health Economics:**
+
 - [NICE International](https://www.nice.org.uk/about/what-we-do/nice-international)
 - [CADTH Methods and Guidelines](https://www.cadth.ca/resources/finding-evidence)
 - [WHO-CHOICE](https://www.who.int/teams/health-systems-governance-and-financing/economic-analysis/cost-effectiveness/choosing-interventions-that-are-cost-effective)
 
 **Research Ethics:**
+
 - [Declaration of Helsinki (Medical Research)](https://www.wma.net/what-we-do/medical-ethics/declaration-of-helsinki/)
 - [COPE Guidelines (Research Publication)](https://publicationethics.org/)
 - [Open Science Framework](https://osf.io/)
 
 **Software Security:**
+
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - [Python Security Best Practices](https://python.readthedocs.io/en/stable/library/security_warnings.html)
 - [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework)

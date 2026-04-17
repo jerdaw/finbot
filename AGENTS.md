@@ -51,14 +51,14 @@ uv run python scripts/update_daily.py
 
 **P0-P9 complete. P10 remains in progress.**
 
-- **P5** (97.8%): OMSAS/CanMEDS improvements — 44/45 items (item 42 blocked on external resources)
+- **P5** (97.8%): documentation, governance, and public-quality improvements — 44/45 items (item 42 blocked on external resources)
 - **P6** (100%): Backtesting-to-live readiness — Epics E0-E6 complete; ADR-011 confirmed **Defer**
 - **P7** (93%): External impact & advanced capabilities — 25/27 active items
 - **P8** (100%): Risk Analytics, Portfolio Analytics, Real-Time Data, Factor Analytics
 - **P9** (100%): Agent tooling and runtime hardening — P9.1-P9.4 complete
-- **P10** (in progress): Next.js frontend — 12 task pages complete, frontend hardening landed, and reviewer-facing documentation/health-economics packaging plus broader docs cleanup are complete; responsive/mobile/deployment work remains
+- **P10** (in progress): Next.js frontend — 12 task pages complete, frontend hardening landed, and public documentation, roadmap cleanup, and health-economics packaging maintenance are complete; responsive/mobile/deployment work remains
 
-**Tracking docs:** `docs/planning/roadmap.md`, `docs/planning/archive/audit-remediation-and-frontend-hardening-2026-04-15.md`, `docs/planning/archive/reviewer-facing-packaging-and-docs-alignment-2026-04-16.md`, `docs/planning/backtesting-live-readiness-backlog.md`, `docs/planning/priority-5-6-completion-status.md`, `docs/adr/ADR-011-nautilus-decision.md`
+**Tracking docs:** `docs/planning/roadmap.md`, `docs/planning/archive/audit-remediation-and-frontend-hardening-2026-04-15.md`, `docs/planning/archive/public-packaging-and-docs-alignment-2026-04-16.md`, `docs/planning/archive/docs-maintenance-and-roadmap-reconciliation-2026-04-16.md`, `docs/planning/backtesting-live-readiness-backlog.md`, `docs/planning/priority-5-6-completion-status.md`, `docs/adr/ADR-011-nautilus-decision.md`
 
 ## Common Commands
 
@@ -146,10 +146,10 @@ All packages live under the single `finbot/` namespace:
 #### `finbot/libs/` — Core Infrastructure
 
 - **`api_manager/`**: Central API registry with `APIResourceGroup` for rate limits/retry
-  - Supports FRED, Alpha Vantage, NASDAQ Data Link, Google Finance, BLS APIs
+    - Supports FRED, Alpha Vantage, NASDAQ Data Link, Google Finance, BLS APIs
 - **`logger/`**: Queue-based async logging
-  - Dual output: colored console (stdout for INFO+, stderr for ERROR+) + JSON file
-  - Rotating file handlers (5MB, 3 backups)
+    - Dual output: colored console (stdout for INFO+, stderr for ERROR+) + JSON file
+    - Rotating file handlers (5MB, 3 backups)
 
 #### `finbot/core/contracts/` — Engine-Agnostic Contracts
 
@@ -315,73 +315,73 @@ Create `.env` file in `finbot/config/` (excluded by `.gitignore`).
 
 ## Key Entry Points
 
-| File | Purpose |
-| --- | --- |
-| **Core Contracts** | |
-| `finbot/core/contracts/models.py` | Backtest request/result models, events |
-| `finbot/core/contracts/orders.py` | Order lifecycle tracking |
-| `finbot/core/contracts/checkpoint.py` | State persistence contracts |
-| `finbot/core/contracts/risk.py` | Risk management rules |
-| `finbot/core/contracts/schemas.py` | Data validation, canonical metrics |
-| `finbot/core/contracts/optimization.py` | Optimization result contracts |
-| **Execution System** | |
-| `finbot/services/execution/execution_simulator.py` | Paper trading simulator with latency/risk controls |
-| `finbot/services/execution/checkpoint_manager.py` | State checkpoint/restore for disaster recovery |
-| `finbot/services/execution/risk_checker.py` | Risk limit enforcement (position, exposure, drawdown) |
-| `finbot/services/execution/order_registry.py` | Order lookup and lifecycle queries |
-| **Backtesting** | |
-| `finbot/services/backtesting/run_backtest.py` | Run single backtest |
-| `finbot/services/backtesting/backtest_batch.py` | Run backtests in parallel |
-| `finbot/services/backtesting/backtest_runner.py` | BacktestRunner class (Cerebro wrapper) |
-| `finbot/services/backtesting/hypothesis_testing.py` | Statistical hypothesis tests for strategy evaluation |
-| **Simulations** | |
-| `finbot/services/simulation/fund_simulator.py` | Simulate leveraged funds with fees |
-| `finbot/services/simulation/bond_ladder/bond_ladder_simulator.py` | Simulate bond ladders |
-| `finbot/services/simulation/monte_carlo/monte_carlo_simulator.py` | Monte Carlo simulations |
-| **Optimization** | |
-| `finbot/services/optimization/dca_optimizer.py` | DCA grid search optimizer |
-| `finbot/services/optimization/pareto_optimizer.py` | Multi-objective Pareto optimizer |
-| **Infrastructure** | |
-| `scripts/update_daily.py` | Daily data update + simulation pipeline |
-| `finbot/cli/main.py` | CLI entry point (`finbot simulate/backtest/optimize/update/status/dashboard`) |
-| `finbot/dashboard/app.py` | Streamlit dashboard entry point (12 pages) |
-| **Web Application** | |
-| `web/backend/main.py` | FastAPI API server (12 routers, 34 endpoints) |
-| `web/frontend/src/app/` | Next.js frontend (dashboard home + 12 task pages) |
-| `web/frontend/src/lib/api.ts` | HTTP client (apiGet/apiPost with timeout + error handling) |
-| `web/frontend/src/lib/constants.ts` | Navigation items, chart colors, shared constants |
-| **Other Services** | |
-| `finbot/services/health_economics/qaly_simulator.py` | QALY Monte Carlo simulation |
-| `finbot/services/health_economics/cost_effectiveness.py` | Cost-effectiveness analysis (ICER/NMB/CEAC) |
-| `finbot/services/health_economics/scenarios/` | Clinical scenarios: cancer screening, hypertension, vaccine |
-| `finbot/services/data_quality/check_data_freshness.py` | Data freshness monitoring |
-| **Risk Analytics** | |
-| `finbot/services/risk_analytics/var.py` | VaR / CVaR (historical, parametric, Monte Carlo) |
-| `finbot/services/risk_analytics/stress.py` | Parametric stress testing (4 built-in scenarios) |
-| `finbot/services/risk_analytics/kelly.py` | Kelly criterion (single + multi-asset) |
-| `finbot/services/risk_analytics/viz.py` | 6 risk analytics Plotly charts |
-| `finbot/core/contracts/risk_analytics.py` | Risk analytics result contracts |
-| **Portfolio Analytics** | |
-| `finbot/services/portfolio_analytics/rolling.py` | Rolling Sharpe, vol, beta |
-| `finbot/services/portfolio_analytics/benchmark.py` | Alpha, beta, R-squared, tracking error, IR, up/down capture |
-| `finbot/services/portfolio_analytics/drawdown.py` | Drawdown period detection + underwater curve |
-| `finbot/services/portfolio_analytics/correlation.py` | HHI, effective N, diversification ratio |
-| `finbot/services/portfolio_analytics/viz.py` | 6 portfolio analytics Plotly charts |
-| `finbot/core/contracts/portfolio_analytics.py` | Portfolio analytics result contracts |
-| **Real-Time Data** | |
-| `finbot/services/realtime_data/composite_provider.py` | Multi-provider quote fetcher with fallback + caching |
-| `finbot/services/realtime_data/quote_cache.py` | Thread-safe TTL cache for quotes |
-| `finbot/services/realtime_data/_providers/alpaca_provider.py` | Alpaca IEX feed (US equities) |
-| `finbot/services/realtime_data/_providers/twelvedata_provider.py` | Twelve Data (US + Canada/TSX) |
-| `finbot/services/realtime_data/_providers/yfinance_provider.py` | yfinance fallback (always available) |
-| `finbot/services/realtime_data/viz.py` | 3 real-time data Plotly charts |
-| `finbot/core/contracts/realtime_data.py` | Quote, QuoteBatch, ProviderStatus contracts |
-| **Factor Analytics** | |
-| `finbot/services/factor_analytics/factor_regression.py` | OLS factor regression + rolling R-squared |
-| `finbot/services/factor_analytics/factor_attribution.py` | Per-factor return contribution decomposition |
-| `finbot/services/factor_analytics/factor_risk.py` | Systematic/idiosyncratic variance decomposition |
-| `finbot/services/factor_analytics/viz.py` | 5 factor analytics Plotly charts |
-| `finbot/core/contracts/factor_analytics.py` | FactorModelType, FactorRegressionResult, FactorAttributionResult, FactorRiskResult |
+| File                                                              | Purpose                                                                            |
+| ----------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| **Core Contracts**                                                |                                                                                    |
+| `finbot/core/contracts/models.py`                                 | Backtest request/result models, events                                             |
+| `finbot/core/contracts/orders.py`                                 | Order lifecycle tracking                                                           |
+| `finbot/core/contracts/checkpoint.py`                             | State persistence contracts                                                        |
+| `finbot/core/contracts/risk.py`                                   | Risk management rules                                                              |
+| `finbot/core/contracts/schemas.py`                                | Data validation, canonical metrics                                                 |
+| `finbot/core/contracts/optimization.py`                           | Optimization result contracts                                                      |
+| **Execution System**                                              |                                                                                    |
+| `finbot/services/execution/execution_simulator.py`                | Paper trading simulator with latency/risk controls                                 |
+| `finbot/services/execution/checkpoint_manager.py`                 | State checkpoint/restore for disaster recovery                                     |
+| `finbot/services/execution/risk_checker.py`                       | Risk limit enforcement (position, exposure, drawdown)                              |
+| `finbot/services/execution/order_registry.py`                     | Order lookup and lifecycle queries                                                 |
+| **Backtesting**                                                   |                                                                                    |
+| `finbot/services/backtesting/run_backtest.py`                     | Run single backtest                                                                |
+| `finbot/services/backtesting/backtest_batch.py`                   | Run backtests in parallel                                                          |
+| `finbot/services/backtesting/backtest_runner.py`                  | BacktestRunner class (Cerebro wrapper)                                             |
+| `finbot/services/backtesting/hypothesis_testing.py`               | Statistical hypothesis tests for strategy evaluation                               |
+| **Simulations**                                                   |                                                                                    |
+| `finbot/services/simulation/fund_simulator.py`                    | Simulate leveraged funds with fees                                                 |
+| `finbot/services/simulation/bond_ladder/bond_ladder_simulator.py` | Simulate bond ladders                                                              |
+| `finbot/services/simulation/monte_carlo/monte_carlo_simulator.py` | Monte Carlo simulations                                                            |
+| **Optimization**                                                  |                                                                                    |
+| `finbot/services/optimization/dca_optimizer.py`                   | DCA grid search optimizer                                                          |
+| `finbot/services/optimization/pareto_optimizer.py`                | Multi-objective Pareto optimizer                                                   |
+| **Infrastructure**                                                |                                                                                    |
+| `scripts/update_daily.py`                                         | Daily data update + simulation pipeline                                            |
+| `finbot/cli/main.py`                                              | CLI entry point (`finbot simulate/backtest/optimize/update/status/dashboard`)      |
+| `finbot/dashboard/app.py`                                         | Streamlit dashboard entry point (12 pages)                                         |
+| **Web Application**                                               |                                                                                    |
+| `web/backend/main.py`                                             | FastAPI API server (12 routers, 34 endpoints)                                      |
+| `web/frontend/src/app/`                                           | Next.js frontend (dashboard home + 12 task pages)                                  |
+| `web/frontend/src/lib/api.ts`                                     | HTTP client (apiGet/apiPost with timeout + error handling)                         |
+| `web/frontend/src/lib/constants.ts`                               | Navigation items, chart colors, shared constants                                   |
+| **Other Services**                                                |                                                                                    |
+| `finbot/services/health_economics/qaly_simulator.py`              | QALY Monte Carlo simulation                                                        |
+| `finbot/services/health_economics/cost_effectiveness.py`          | Cost-effectiveness analysis (ICER/NMB/CEAC)                                        |
+| `finbot/services/health_economics/scenarios/`                     | Clinical scenarios: cancer screening, hypertension, vaccine                        |
+| `finbot/services/data_quality/check_data_freshness.py`            | Data freshness monitoring                                                          |
+| **Risk Analytics**                                                |                                                                                    |
+| `finbot/services/risk_analytics/var.py`                           | VaR / CVaR (historical, parametric, Monte Carlo)                                   |
+| `finbot/services/risk_analytics/stress.py`                        | Parametric stress testing (4 built-in scenarios)                                   |
+| `finbot/services/risk_analytics/kelly.py`                         | Kelly criterion (single + multi-asset)                                             |
+| `finbot/services/risk_analytics/viz.py`                           | 6 risk analytics Plotly charts                                                     |
+| `finbot/core/contracts/risk_analytics.py`                         | Risk analytics result contracts                                                    |
+| **Portfolio Analytics**                                           |                                                                                    |
+| `finbot/services/portfolio_analytics/rolling.py`                  | Rolling Sharpe, vol, beta                                                          |
+| `finbot/services/portfolio_analytics/benchmark.py`                | Alpha, beta, R-squared, tracking error, IR, up/down capture                        |
+| `finbot/services/portfolio_analytics/drawdown.py`                 | Drawdown period detection + underwater curve                                       |
+| `finbot/services/portfolio_analytics/correlation.py`              | HHI, effective N, diversification ratio                                            |
+| `finbot/services/portfolio_analytics/viz.py`                      | 6 portfolio analytics Plotly charts                                                |
+| `finbot/core/contracts/portfolio_analytics.py`                    | Portfolio analytics result contracts                                               |
+| **Real-Time Data**                                                |                                                                                    |
+| `finbot/services/realtime_data/composite_provider.py`             | Multi-provider quote fetcher with fallback + caching                               |
+| `finbot/services/realtime_data/quote_cache.py`                    | Thread-safe TTL cache for quotes                                                   |
+| `finbot/services/realtime_data/_providers/alpaca_provider.py`     | Alpaca IEX feed (US equities)                                                      |
+| `finbot/services/realtime_data/_providers/twelvedata_provider.py` | Twelve Data (US + Canada/TSX)                                                      |
+| `finbot/services/realtime_data/_providers/yfinance_provider.py`   | yfinance fallback (always available)                                               |
+| `finbot/services/realtime_data/viz.py`                            | 3 real-time data Plotly charts                                                     |
+| `finbot/core/contracts/realtime_data.py`                          | Quote, QuoteBatch, ProviderStatus contracts                                        |
+| **Factor Analytics**                                              |                                                                                    |
+| `finbot/services/factor_analytics/factor_regression.py`           | OLS factor regression + rolling R-squared                                          |
+| `finbot/services/factor_analytics/factor_attribution.py`          | Per-factor return contribution decomposition                                       |
+| `finbot/services/factor_analytics/factor_risk.py`                 | Systematic/idiosyncratic variance decomposition                                    |
+| `finbot/services/factor_analytics/viz.py`                         | 5 factor analytics Plotly charts                                                   |
+| `finbot/core/contracts/factor_analytics.py`                       | FactorModelType, FactorRegressionResult, FactorAttributionResult, FactorRiskResult |
 
 ## Code Style
 
@@ -443,31 +443,31 @@ GitHub Actions (`.github/workflows/ci.yml`) on push/PR to main:
 See `docs/adr/` for architectural decision records:
 
 - **ADR-001**: Consolidate three repos (finbot, bb, backbetter) into one
-  - Drop numba → vectorized numpy + numpy-financial
-  - Drop Scrapy → bb's Selenium
-  - Keep quantstats
-  - Replace pickle → parquet
-  - Lazy API key loading
+    - Drop numba → vectorized numpy + numpy-financial
+    - Drop Scrapy → bb's Selenium
+    - Keep quantstats
+    - Replace pickle → parquet
+    - Lazy API key loading
 - **ADR-004**: Consolidate package layout — move config/, constants/, libs/ under finbot/ as subpackages
 
 ## Key Design Patterns
 
-| Pattern | Implementation | Rationale |
-| --- | --- | --- |
-| **Settings Accessors** | `settings_accessors` module in `finbot/config/` | Lazy accessors for MAX_THREADS and API keys (alpha_vantage, nasdaq_data_link, bls, google_finance) |
-| **Lazy Host Snapshot** | `finbot.constants.host_constants.get_current_host_info()` | Keeps settings import resilient when hostname, psutil, or subprocess probes fail |
-| **Lazy API keys** | `APIKeyManager.get_key()` only loads on first access | Prevents import failures when keys not needed |
-| **Queue-based logging** | `finbot/libs/logger/setup_queue_logging.py` | Non-blocking async logging for performance |
-| **Structured audit logs** | `finbot/libs/audit/audit_logger.py` | Queryable audit trails for compliance and debugging |
-| **Vectorized simulation** | Numpy broadcasting in `fund_simulator.py` | Faster than numba loop, no JIT compilation required |
-| **Parquet everywhere** | All serialization uses `to_parquet()`/`read_parquet()` | Safer, faster, smaller than pickle |
-| **Auto-create dirs** | `path_constants._process_dir()` uses `mkdir(exist_ok=True)` | Works in CI, fresh clones, no manual setup |
-| **Typed contracts** | Frozen dataclasses in `finbot/core/contracts/` | Engine-agnostic, immutable, serializable |
-| **Versioned schemas** | `CONTRACT_SCHEMA_VERSION` + migration functions | Forward compatibility, automatic upgrades |
-| **Pluggable risk** | `RiskConfig` with composable rules | Add/remove risk controls without code changes |
-| **Pending action queue** | Binary search insertion in `PendingActionQueue` | O(log n) insertion, realistic latency simulation |
-| **Checkpoint versioning** | `CHECKPOINT_VERSION` in all checkpoints | Detect incompatible restores, enable migration |
-| **Decimal precision** | String serialization for Decimal in JSON | Preserve precision across checkpoint/restore |
+| Pattern                   | Implementation                                              | Rationale                                                                                          |
+| ------------------------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| **Settings Accessors**    | `settings_accessors` module in `finbot/config/`             | Lazy accessors for MAX_THREADS and API keys (alpha_vantage, nasdaq_data_link, bls, google_finance) |
+| **Lazy Host Snapshot**    | `finbot.constants.host_constants.get_current_host_info()`   | Keeps settings import resilient when hostname, psutil, or subprocess probes fail                   |
+| **Lazy API keys**         | `APIKeyManager.get_key()` only loads on first access        | Prevents import failures when keys not needed                                                      |
+| **Queue-based logging**   | `finbot/libs/logger/setup_queue_logging.py`                 | Non-blocking async logging for performance                                                         |
+| **Structured audit logs** | `finbot/libs/audit/audit_logger.py`                         | Queryable audit trails for compliance and debugging                                                |
+| **Vectorized simulation** | Numpy broadcasting in `fund_simulator.py`                   | Faster than numba loop, no JIT compilation required                                                |
+| **Parquet everywhere**    | All serialization uses `to_parquet()`/`read_parquet()`      | Safer, faster, smaller than pickle                                                                 |
+| **Auto-create dirs**      | `path_constants._process_dir()` uses `mkdir(exist_ok=True)` | Works in CI, fresh clones, no manual setup                                                         |
+| **Typed contracts**       | Frozen dataclasses in `finbot/core/contracts/`              | Engine-agnostic, immutable, serializable                                                           |
+| **Versioned schemas**     | `CONTRACT_SCHEMA_VERSION` + migration functions             | Forward compatibility, automatic upgrades                                                          |
+| **Pluggable risk**        | `RiskConfig` with composable rules                          | Add/remove risk controls without code changes                                                      |
+| **Pending action queue**  | Binary search insertion in `PendingActionQueue`             | O(log n) insertion, realistic latency simulation                                                   |
+| **Checkpoint versioning** | `CHECKPOINT_VERSION` in all checkpoints                     | Detect incompatible restores, enable migration                                                     |
+| **Decimal precision**     | String serialization for Decimal in JSON                    | Preserve precision across checkpoint/restore                                                       |
 
 ## Performance Notes
 
