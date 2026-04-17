@@ -141,7 +141,7 @@ class SimpleRegimeDetector:
 
 
 def segment_by_regime(
-    result: BacktestRunResult,
+    result: BacktestRunResult | None,
     market_data: pd.DataFrame,
     detector: SimpleRegimeDetector | None = None,
     config: RegimeConfig | None = None,
@@ -159,7 +159,8 @@ def segment_by_regime(
     (period counts and day totals), preserving backward compatibility.
 
     Args:
-        result: Backtest result to segment.
+        result: Backtest result to segment. Retained for backward
+            compatibility and currently unused when computing regime slices.
         market_data: Market data used for regime detection (must contain
             a ``Close`` or ``Adj Close`` column with a ``DatetimeIndex``).
         detector: Regime detector implementation.  Defaults to

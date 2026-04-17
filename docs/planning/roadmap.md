@@ -8,7 +8,7 @@ Improvements, fixes, and enhancements identified from comprehensive project eval
 
 See Completed Items table below and git history for details on implemented features.
 
-**Current Plan Record:** None active. Last archived plan: Docs Maintenance and Roadmap Reconciliation (completed 2026-04-16)
+**Current Plan Record:** None active. Last archived plan: Backtesting Workflow Expansion and Research Workspace Pass (completed 2026-04-17)
 
 ---
 
@@ -97,6 +97,24 @@ See Completed Items table below and git history for details on implemented featu
 - [x] Reduced high-signal MkDocs warning sources by restoring missing public wrapper pages for engine selection and selected API surfaces
 
 **What Was Done:** Completed a public-packaging pass aimed at trust, legibility, and coherence rather than branding. The public health-economics journey now resolves through live docs pages, stale counts and template content were removed from high-visibility surfaces, the homepage/docs framing now reads as a dual-domain quantitative research platform, and the docs site regained several missing public wrapper pages that had been generating visible navigation debt.
+
+### P10.4 Allocation Backtester and Portfolio Research Workflow
+
+**Status:** IN PROGRESS (2026-04-17; major workflow slices shipped, remaining follow-ups below)
+
+- [x] First slice on the current backtesting page: editable allocation rows, explicit weight validation, and canonical preset portfolios for `NoRebalance` and `Rebalance`
+- [x] Add benchmark selection and benchmark-relative views to the allocation workflow
+- [x] Add cashflow and retirement modeling: recurring contributions, withdrawals, one-time events, inflation-adjusted views, and withdrawal durability analysis
+- [x] Expand one-run result inspection with monthly/yearly returns tables and benchmark-relative overlays
+- [x] Continue one-run result inspection with rolling metrics and export
+- [x] Continue one-run result inspection with allocation drift and rebalance logs
+- [x] Connect backtests to Finbot's existing moat with saved runs as experiments and snapshot lineage
+- [x] Continue moat integration with regime-aware diagnostics in the main backtest result
+- [ ] Continue moat integration with surfaced cost assumptions, missing-data policy, and walk-forward follow-ups
+- [ ] Surface adjacent portfolio research pages already supported by the repo's service layer: bond ladder, Pareto optimizer, multi-asset Monte Carlo, and efficient frontier
+- [ ] Long-tail suite expansion: Black-Litterman, fund screener, autocorrelation, cointegration, PCA, and similar institutional-style add-ons -- **Deferred**: keep roadmap focus on finishing the core backtesting workflow first
+
+**Why This Was Added:** The 2026-04-17 competitor refresh in `docs/research/2026-04-17-testfolio-portfolio-visualizer-competitive-analysis-refresh.md` confirmed that Finbot has closed several surrounding analytics gaps but still trails testfolio and Portfolio Visualizer in the core portfolio backtesting workflow. The next frontend push should therefore prioritize turning the current strategy runner into a portfolio research workspace rather than adding more isolated analytics first.
 
 ### P10 Remaining / Future
 
@@ -292,6 +310,7 @@ See Completed Items table for full details on all 25 completed items.
 
 | Item                                                         | Completed  | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | :----------------------------------------------------------- | :--------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Backtesting workflow expansion pass (P10.4 tranche 1)        | 2026-04-17 | Turned the main backtesting page into a broader research workspace: editable allocation builder and presets, benchmark-relative analytics, monthly/annual return tables, saved experiments with snapshot lineage, rolling and regime diagnostics, CSV/JSON export, recurring and one-time cashflow planning, inflation-adjusted durability views, and allocation drift/rebalance logs. Archive note records verification and remaining P10.4 follow-ups.                                         |
 | Docs maintenance and roadmap reconciliation (post-P10.3)     | 2026-04-16 | Normalized remaining public-doc markdown diagnostics, pruned obsolete application and planning artifacts, reconciled archive references to retired plan files, verified agent-file symlink and ownership coverage, confirmed there were no open PRs or extra branches to handle, and limited remaining roadmap work to Playwright depth, responsive fixes, and deployment configuration. Archive note records verification and follow-up.                                                        |
 | Runtime surface split and Docker security hardening (P9.4)   | 2026-03-23 | Split core/runtime vs optional extras (`dashboard`, `web`, `nautilus`, `notebooks`), made the root Docker image CLI-first, updated the backend image to install the `web` extra, added per-image CLI/API Docker security scanning, later reduced scheduled-monitor notification churn by keeping findings in workflow artifacts/Security tab instead of issue-thread updates, and narrowed push CI gating to library findings while the scheduled monitor continues tracking OS/base-image drift |
 | Dependabot noise reduction and authorship guardrails (9.3)   | 2026-04-16 | Grouped GitHub Actions patch/minor updates, removed dependency-only CODEOWNERS review requests, created missing Dependabot labels, reduced duplicate approval noise, required a human PAT for fully automatic merges, later rewrote historical non-human commit metadata on `main`, replaced blank-author `gh-pages` history with a fresh human-authored deployment snapshot, and configured the docs workflow to keep future Pages commits human-attributed                                     |

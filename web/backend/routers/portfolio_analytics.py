@@ -79,6 +79,9 @@ def rolling_metrics(req: RollingMetricsRequest) -> RollingMetricsResponse:
             window=req.window,
             benchmark_returns=benchmark_arr,
             risk_free_rate=req.risk_free_rate,
+            dates=[timestamp.isoformat() for timestamp in returns_series.index if benchmark_arr is None]
+            if benchmark_arr is None
+            else [timestamp.isoformat() for timestamp in returns_series.loc[common_idx].index],
         )
     except (ValueError, TypeError) as e:
         raise HTTPException(status_code=400, detail=str(e)) from e

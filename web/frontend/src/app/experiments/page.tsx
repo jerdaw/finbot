@@ -184,19 +184,20 @@ export default function ExperimentsPage() {
 
           {experiments && experiments.length > 0 && (
             <div className="space-y-1">
-              <div className="grid grid-cols-[40px_1fr_1fr_1fr_1fr_1fr] gap-2 border-b border-border/30 pb-2 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+              <div className="grid grid-cols-[40px_1.2fr_.8fr_.9fr_.9fr_.9fr_1.1fr] gap-2 border-b border-border/30 pb-2 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                 <span />
                 <span>Run ID</span>
                 <span>Engine</span>
                 <span>Strategy</span>
                 <span>Created</span>
                 <span>Config Hash</span>
+                <span>Snapshot</span>
               </div>
 
               {experiments.map((exp) => (
                 <div
                   key={exp.run_id}
-                  className={`grid cursor-pointer grid-cols-[40px_1fr_1fr_1fr_1fr_1fr] gap-2 rounded-lg px-1 py-2.5 text-sm transition-all duration-200 hover:bg-accent/30 ${
+                  className={`grid cursor-pointer grid-cols-[40px_1.2fr_.8fr_.9fr_.9fr_.9fr_1.1fr] gap-2 rounded-lg px-1 py-2.5 text-sm transition-all duration-200 hover:bg-accent/30 ${
                     selectedIds.has(exp.run_id) ? "bg-accent/20" : ""
                   }`}
                   onClick={() => toggleSelection(exp.run_id)}
@@ -219,6 +220,9 @@ export default function ExperimentsPage() {
                   </span>
                   <span className="truncate font-mono text-xs text-muted-foreground">
                     {exp.config_hash}
+                  </span>
+                  <span className="truncate font-mono text-xs text-muted-foreground">
+                    {exp.data_snapshot_id}
                   </span>
                 </div>
               ))}

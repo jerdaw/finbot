@@ -38,12 +38,14 @@ def test_import_strategies():
     from finbot.services.backtesting.strategies.macd_single import MACDSingle
     from finbot.services.backtesting.strategies.no_rebalance import NoRebalance
     from finbot.services.backtesting.strategies.rebalance import Rebalance
+    from finbot.services.backtesting.strategies.research_wrapper import build_research_strategy
     from finbot.services.backtesting.strategies.sma_crossover import SMACrossover
 
     assert Rebalance is not None
     assert NoRebalance is not None
     assert SMACrossover is not None
     assert MACDSingle is not None
+    assert callable(build_research_strategy)
 
 
 def test_import_fund_simulator():
@@ -260,6 +262,12 @@ def test_import_web_backend_main():
     assert app is not None
 
 
+def test_import_web_backend_router_backtesting():
+    from web.backend.routers.backtesting import router
+
+    assert router is not None
+
+
 def test_import_web_backend_router_risk_analytics():
     from web.backend.routers.risk_analytics import router
 
@@ -284,6 +292,12 @@ def test_import_web_backend_router_factor_analytics():
     assert router is not None
 
 
+def test_import_web_backend_router_experiments():
+    from web.backend.routers.experiments import router
+
+    assert router is not None
+
+
 # ---- Web Backend Schemas ----
 
 
@@ -292,6 +306,13 @@ def test_import_web_backend_schemas_risk_analytics():
 
     assert VaRRequest is not None
     assert VaRResponse is not None
+
+
+def test_import_web_backend_schemas_backtesting():
+    from web.backend.schemas.backtesting import BacktestRequest, BacktestResponse
+
+    assert BacktestRequest is not None
+    assert BacktestResponse is not None
 
 
 def test_import_web_backend_schemas_portfolio_analytics():
@@ -313,3 +334,10 @@ def test_import_web_backend_schemas_factor_analytics():
 
     assert FactorRegressionRequest is not None
     assert FactorRegressionResponse is not None
+
+
+def test_import_web_backend_schemas_experiments():
+    from web.backend.schemas.experiments import SaveExperimentRequest, SaveExperimentResponse
+
+    assert SaveExperimentRequest is not None
+    assert SaveExperimentResponse is not None

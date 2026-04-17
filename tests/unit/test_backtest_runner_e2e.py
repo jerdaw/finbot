@@ -173,6 +173,68 @@ class TestBacktestRunnerExecution:
             stats = runner.run_backtest()
         assert stats["Starting Value"].iloc[0] == pytest.approx(100_000, rel=0.01)
 
+    def test_research_wrapper_captures_cashflows_and_allocation_history(self):
+        df1 = _make_price_df(n_days=80)
+        runner = BacktestRunner(
+            price_histories={"SPY": df1},
+            start=None,
+            end=pd.Timestamp("2018-03-31"),
+            duration=None,
+            start_step=None,
+            init_cash=100_000,
+            strat=NoRebalance,
+            strat_kwargs={
+                "equity_proportions": {0: 1.0},
+                "recurring_cashflows": [
+                    {
+                        "amount": 100.0,
+                        "frequency": "monthly",
+                        "start_date": "2018-01-01",
+                        "end_date": "2018-03-31",
+                        "label": "Monthly contribution",
+                    }
+                ],
+                "one_time_cashflows": [
+                    {
+                        "amount": -250.0,
+                        "date": "2018-02-03",
+                        "label": "Planned withdrawal",
+                    }
+                ],
+            },
+            broker=bt.brokers.BackBroker,
+            broker_kwargs={},
+            broker_commission=FixedCommissionScheme,
+            sizer=bt.sizers.AllInSizer,
+            sizer_kwargs={},
+            plot=False,
+        )
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            runner.run_backtest()
+
+        cashflow_events = runner.get_cashflow_events()
+        recurring_events = [event for event in cashflow_events if event["source"] == "recurring"]
+        one_time_events = [event for event in cashflow_events if event["source"] == "one_time"]
+
+        assert [event["applied_date"] for event in recurring_events] == [
+            "2018-01-02",
+            "2018-02-01",
+            "2018-03-01",
+        ]
+        assert len(one_time_events) == 1
+        assert one_time_events[0]["scheduled_date"] == "2018-02-03"
+        assert one_time_events[0]["applied_date"] == "2018-02-05"
+        assert one_time_events[0]["direction"] == "withdrawal"
+
+        allocation_history = runner.get_allocation_history()
+        value_history = runner.get_value_history()
+        assert allocation_history
+        assert len(allocation_history) == len(value_history)
+        assert all("SPY" in snapshot and "Cash" in snapshot for snapshot in allocation_history)
+        assert any(snapshot["date"] == "2018-02-05" for snapshot in allocation_history)
+
 
 class TestRunBacktestFunction:
     """Tests for the run_backtest() wrapper function."""

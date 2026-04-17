@@ -8,6 +8,7 @@ import pandas as pd
 
 from finbot.services.backtesting.analyzers.cv_tracker import CVTracker
 from finbot.services.backtesting.analyzers.trade_tracker import TradeTracker
+from finbot.services.backtesting.strategies.research_wrapper import build_research_strategy
 from finbot.services.backtesting.compute_stats import compute_stats
 
 
@@ -76,7 +77,8 @@ class BacktestRunner:
             cerebro = bt.Cerebro()
             self._cerebro = cerebro
             self._add_ph_to_cerebro()
-            cerebro.addstrategy(self.strat, **self.strat_kwargs)
+            wrapped_strategy, wrapped_kwargs = self._build_wrapped_strategy()
+            cerebro.addstrategy(wrapped_strategy, **wrapped_kwargs)
             self._add_broker_to_cerebro()
             cerebro.addsizer(self.sizer, **self.sizer_kwargs)
             cerebro.addanalyzer(CVTracker)
@@ -102,6 +104,13 @@ class BacktestRunner:
                 )
 
             return stats
+
+    def _build_wrapped_strategy(self) -> tuple[Any, dict[str, Any]]:
+        research_keys = {"recurring_cashflows", "one_time_cashflows"}
+        strategy_kwargs = {k: v for k, v in self.strat_kwargs.items() if k not in research_keys}
+        wrapper_kwargs = {k: v for k, v in self.strat_kwargs.items() if k in research_keys}
+        wrapped_strategy = build_research_strategy(self.strat)
+        return wrapped_strategy, {**strategy_kwargs, **wrapper_kwargs}
 
     def _add_ph_to_cerebro(self) -> None:
         assert self._cerebro is not None
@@ -171,6 +180,22 @@ class BacktestRunner:
         assert self._cerebro_res is not None
         trade_analysis = self._cerebro_res[0].analyzers.tradetracker.get_analysis()
         return trade_analysis.get("trades", [])
+
+    def get_cashflow_events(self) -> list[dict[str, Any]]:
+        """Return cashflow events captured by the wrapped strategy instance."""
+        assert self._cerebro_res is not None
+        strategy = self._cerebro_res[0]
+        if hasattr(strategy, "get_cashflow_events"):
+            return strategy.get_cashflow_events()
+        return []
+
+    def get_allocation_history(self) -> list[dict[str, Any]]:
+        """Return allocation history snapshots captured by the wrapped strategy."""
+        assert self._cerebro_res is not None
+        strategy = self._cerebro_res[0]
+        if hasattr(strategy, "get_allocation_history"):
+            return strategy.get_allocation_history()
+        return []
 
     def get_test_stats(self) -> pd.DataFrame:
         cv_hist = self._build_cv_hist()

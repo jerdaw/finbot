@@ -10,6 +10,7 @@ The first ``window - 1`` positions contain ``NaN`` (insufficient history).
 from __future__ import annotations
 
 import math
+from collections.abc import Sequence
 
 import numpy as np
 
@@ -32,6 +33,7 @@ def compute_rolling_metrics(
     benchmark_returns: np.ndarray | None = None,
     risk_free_rate: float = 0.0,
     annualization_factor: int = _DEFAULT_ANNUALIZATION,
+    dates: Sequence[str] | None = None,
 ) -> RollingMetricsResult:
     """Compute rolling Sharpe ratio, volatility, and beta.
 
@@ -47,6 +49,8 @@ def compute_rolling_metrics(
         risk_free_rate: Annual risk-free rate as a fraction (e.g. 0.04 = 4%).
             Converted to a per-bar rate internally.
         annualization_factor: Trading periods per year.  Defaults to 252.
+        dates: Optional date labels aligned 1:1 with ``returns``.  Defaults to
+            ordinal string indices when omitted.
 
     Returns:
         RollingMetricsResult with ``sharpe``, ``volatility``, and optionally
@@ -70,6 +74,8 @@ def compute_rolling_metrics(
         benchmark_returns = np.asarray(benchmark_returns, dtype=float)
         if len(benchmark_returns) != n:
             raise ValueError(f"benchmark_returns length ({len(benchmark_returns)}) must equal returns length ({n})")
+    if dates is not None and len(dates) != n:
+        raise ValueError(f"dates length ({len(dates)}) must equal returns length ({n})")
 
     rf_per_bar = risk_free_rate / annualization_factor
     excess = returns - rf_per_bar
@@ -97,7 +103,7 @@ def compute_rolling_metrics(
             else:
                 beta_arr[i] = 0.0
 
-    dates = tuple(str(i) for i in range(n))
+    date_labels = tuple(dates) if dates is not None else tuple(str(i) for i in range(n))
     beta_tuple: tuple[float, ...] | None = tuple(float(x) for x in beta_arr) if beta_arr is not None else None
 
     return RollingMetricsResult(
@@ -106,6 +112,6 @@ def compute_rolling_metrics(
         sharpe=tuple(float(x) for x in sharpe_arr),
         volatility=tuple(float(x) for x in vol_arr),
         beta=beta_tuple,
-        dates=dates,
+        dates=date_labels,
         annualization_factor=annualization_factor,
     )

@@ -53,6 +53,25 @@ export interface BacktestRequest {
   start_date?: string;
   end_date?: string;
   initial_cash: number;
+  benchmark_ticker?: string;
+  risk_free_rate?: number;
+  recurring_cashflows?: RecurringCashflowRule[];
+  one_time_cashflows?: OneTimeCashflowEvent[];
+  inflation_rate?: number;
+}
+
+export interface RecurringCashflowRule {
+  amount: number;
+  frequency: "monthly" | "quarterly" | "yearly";
+  start_date?: string;
+  end_date?: string;
+  label?: string;
+}
+
+export interface OneTimeCashflowEvent {
+  date: string;
+  amount: number;
+  label?: string;
 }
 
 export interface TradeRecord {
@@ -64,10 +83,99 @@ export interface TradeRecord {
   value: number;
 }
 
+export interface BacktestBenchmarkStats {
+  alpha: number | null;
+  beta: number | null;
+  r_squared: number | null;
+  tracking_error: number | null;
+  information_ratio: number | null;
+  up_capture: number | null;
+  down_capture: number | null;
+  benchmark_name: string;
+  n_observations: number;
+}
+
+export interface ReturnTableRow {
+  period: string;
+  start_value: number | null;
+  end_value: number | null;
+  return_pct: number | null;
+}
+
+export interface BacktestRegimeSummary {
+  regime: string;
+  count_periods: number;
+  total_days: number;
+  cagr: number | null;
+  volatility: number | null;
+  sharpe: number | null;
+  total_return: number | null;
+}
+
+export interface BacktestRegimePeriod {
+  regime: string;
+  start: string;
+  end: string;
+  days: number;
+  market_return: number | null;
+  market_volatility: number | null;
+  portfolio_return: number | null;
+  portfolio_volatility: number | null;
+}
+
+export interface CashflowEventRecord {
+  scheduled_date: string;
+  applied_date: string;
+  label: string;
+  source: "recurring" | "one_time";
+  direction: "contribution" | "withdrawal";
+  amount: number;
+  cash_after: number | null;
+  portfolio_value_after: number | null;
+}
+
+export interface WithdrawalDurabilitySummary {
+  survived_to_end: boolean;
+  depletion_date: string | null;
+  ending_nominal_value: number | null;
+  ending_real_value: number | null;
+  min_nominal_value: number | null;
+  min_real_value: number | null;
+  total_contributions: number;
+  total_withdrawals: number;
+  net_cashflow: number;
+  real_total_return: number | null;
+  inflation_rate: number;
+}
+
+export interface RebalanceEventRecord {
+  date: string;
+  event_type: "initial_allocation" | "rebalance" | "trade";
+  trade_count: number;
+  symbols: string[];
+  gross_trade_value: number | null;
+  net_trade_value: number | null;
+  portfolio_value: number | null;
+  cash_after: number | null;
+}
+
 export interface BacktestResponse {
   stats: Record<string, unknown>;
   value_history: Record<string, unknown>[];
   trades: TradeRecord[];
+  benchmark_stats?: BacktestBenchmarkStats | null;
+  benchmark_value_history?: Record<string, unknown>[];
+  rolling_metrics?: RollingMetricsResponse | null;
+  regime_reference_ticker?: string | null;
+  regime_summary?: BacktestRegimeSummary[];
+  regime_periods?: BacktestRegimePeriod[];
+  cashflow_events?: CashflowEventRecord[];
+  real_value_history?: Record<string, unknown>[];
+  withdrawal_durability?: WithdrawalDurabilitySummary | null;
+  allocation_history?: Record<string, unknown>[];
+  rebalance_events?: RebalanceEventRecord[];
+  monthly_returns?: ReturnTableRow[];
+  annual_returns?: ReturnTableRow[];
 }
 
 // --- Monte Carlo ---
@@ -232,11 +340,32 @@ export interface ExperimentSummary {
   strategy_name: string;
   created_at: string;
   config_hash: string;
+  data_snapshot_id: string;
 }
 
 export interface ExperimentCompareResponse {
   assumptions: Record<string, unknown>[];
   metrics: Record<string, unknown>[];
+}
+
+export interface SaveExperimentRequest {
+  tickers: string[];
+  strategy: string;
+  strategy_params: Record<string, unknown>;
+  start_date?: string;
+  end_date?: string;
+  initial_cash: number;
+  benchmark_ticker?: string;
+  risk_free_rate?: number;
+  stats: Record<string, unknown>;
+}
+
+export interface SaveExperimentResponse {
+  run_id: string;
+  strategy_name: string;
+  created_at: string;
+  config_hash: string;
+  data_snapshot_id: string;
 }
 
 // --- Risk Analytics ---

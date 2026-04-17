@@ -15,6 +15,7 @@ class ExperimentSummary(BaseModel):
     strategy_name: str
     created_at: str
     config_hash: str
+    data_snapshot_id: str
 
 
 class ExperimentCompareRequest(BaseModel):
@@ -28,3 +29,27 @@ class ExperimentCompareResponse(BaseModel):
 
     assumptions: list[dict[str, Any]]
     metrics: list[dict[str, Any]]
+
+
+class SaveExperimentRequest(BaseModel):
+    """Request to save a web backtest run as an experiment."""
+
+    tickers: list[str]
+    strategy: str
+    strategy_params: dict[str, Any]
+    start_date: str | None = None
+    end_date: str | None = None
+    initial_cash: float = 10000.0
+    benchmark_ticker: str | None = None
+    risk_free_rate: float = 0.04
+    stats: dict[str, Any]
+
+
+class SaveExperimentResponse(BaseModel):
+    """Response returned after saving an experiment."""
+
+    run_id: str
+    strategy_name: str
+    created_at: str
+    config_hash: str
+    data_snapshot_id: str
