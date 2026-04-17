@@ -111,8 +111,8 @@ Validation:
 1. Unit tests cover fidelity labels, fallback behavior, and benchmark metadata mapping.
 2. Existing Nautilus adapter tests remain passing.
 3. Full benchmark artifact refresh run completed:
-   - `docs/research/artifacts/e6-benchmark-2026-02-20.json`
-   - `docs/research/artifacts/e6-benchmark-2026-02-20.md`
+    - `docs/research/artifacts/e6-benchmark-2026-02-20.json`
+    - `docs/research/artifacts/e6-benchmark-2026-02-20.md`
 4. Outcome: execution fidelity reached `full_native` for GS-02/GS-03, but strategy equivalence remains `false` with low confidence due large metric divergence.
 
 ### Phase 4: Manual Artifact Enablement

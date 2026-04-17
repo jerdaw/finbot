@@ -17,10 +17,10 @@ The scheduled CI workflow runs daily at 6:00 AM UTC to automatically update fina
 1. **Checks out code** at 6:00 AM UTC daily
 2. **Installs dependencies** (Python 3.12 + uv)
 3. **Runs daily update script** (`scripts/update_daily.py`)
-   - Fetches latest price histories (YFinance, Google Finance)
-   - Updates FRED economic data
-   - Updates Shiller datasets
-   - Re-runs simulations (index sims, fund sims)
+    - Fetches latest price histories (YFinance, Google Finance)
+    - Updates FRED economic data
+    - Updates Shiller datasets
+    - Re-runs simulations (index sims, fund sims)
 4. **Checks data freshness** using `finbot status` command
 5. **Creates GitHub issue on failure** (automatic alert)
 
@@ -37,12 +37,12 @@ The workflow requires API keys to fetch data. Add these as **GitHub Secrets**:
 3. Click **New repository secret**
 4. Add the following secrets:
 
-| Secret Name | Description | Where to Get |
-|-------------|-------------|--------------|
-| `ALPHA_VANTAGE_API_KEY` | Alpha Vantage API key | https://www.alphavantage.co/support/#api-key |
-| `NASDAQ_DATA_LINK_API_KEY` | NASDAQ Data Link (Quandl) API key | https://data.nasdaq.com/sign-up |
-| `US_BUREAU_OF_LABOR_STATISTICS_API_KEY` | BLS API key (optional) | https://www.bls.gov/developers/home.htm |
-| `GOOGLE_FINANCE_SERVICE_ACCOUNT_CREDENTIALS_PATH` | Google Sheets service account JSON | https://cloud.google.com/iam/docs/service-accounts-create |
+| Secret Name                                       | Description                        | Where to Get                                                                            |
+| :------------------------------------------------ | :--------------------------------- | :-------------------------------------------------------------------------------------- |
+| `ALPHA_VANTAGE_API_KEY`                           | Alpha Vantage API key              | [Alpha Vantage](https://www.alphavantage.co/support/#api-key)                           |
+| `NASDAQ_DATA_LINK_API_KEY`                        | NASDAQ Data Link (Quandl) API key  | [NASDAQ Data Link](https://data.nasdaq.com/sign-up)                                     |
+| `US_BUREAU_OF_LABOR_STATISTICS_API_KEY`           | BLS API key (optional)             | [BLS Developers](https://www.bls.gov/developers/home.htm)                               |
+| `GOOGLE_FINANCE_SERVICE_ACCOUNT_CREDENTIALS_PATH` | Google Sheets service account JSON | [Google Cloud IAM](https://cloud.google.com/iam/docs/service-accounts-create)           |
 
 **Note:** If you don't have all API keys, the workflow will skip those data sources (graceful degradation).
 
@@ -72,6 +72,7 @@ Before waiting for the scheduled run, test manually:
 **Cron Schedule:** `0 6 * * *` (6:00 AM UTC daily)
 
 **Why 6:00 AM UTC?**
+
 - US markets close at 4:00 PM ET (9:00 PM UTC)
 - Allows time for EOD data to propagate (6-8 hours)
 - Runs before most US users wake up (1:00 AM ET, 11:00 PM PT)
@@ -89,6 +90,7 @@ If the workflow fails (API errors, data issues, etc.):
 3. **Notification:** You'll receive GitHub notification (if enabled)
 
 **Triage Steps:**
+
 1. Check the workflow logs (link in issue)
 2. Identify failing data source (YFinance, FRED, etc.)
 3. Check API key validity and rate limits
@@ -99,18 +101,21 @@ If the workflow fails (API errors, data issues, etc.):
 ## Monitoring Data Freshness
 
 The workflow runs `finbot status` command which checks:
+
 - YFinance data staleness (1 day threshold)
 - FRED data staleness (7 days threshold)
 - Google Finance data staleness (1 day threshold)
 - Shiller data staleness (30 days threshold)
 
 **View Status Locally:**
+
 ```bash
 uv run finbot status
 ```
 
 **Expected Output:**
-```
+
+```text
 Data Source Status:
 ✓ yfinance: Fresh (last updated: 2026-02-17)
 ✓ fred: Fresh (last updated: 2026-02-15)
@@ -126,10 +131,12 @@ If you want to disable automatic daily updates:
 
 1. Go to `.github/workflows/scheduled-update.yml`
 2. Comment out the `schedule:` section:
-   ```yaml
-   # schedule:
-   #   - cron: '0 6 * * *'
-   ```
+
+    ```yaml
+    # schedule:
+    #   - cron: '0 6 * * *'
+    ```
+
 3. Commit and push
 4. Manual runs still available via `workflow_dispatch`
 
@@ -138,12 +145,14 @@ If you want to disable automatic daily updates:
 ## Cost Considerations
 
 **GitHub Actions Minutes:**
+
 - Free tier: 2,000 minutes/month (500 minutes for private repos)
 - Each run: ~5-10 minutes
 - Monthly usage: ~150-300 minutes (30 days × 5-10 min)
 - **Well within free tier limits**
 
 **API Rate Limits:**
+
 - Alpha Vantage: 25 calls/day (free tier)
 - NASDAQ Data Link: 50 calls/day (free tier)
 - YFinance: No official limit (use respectfully)
@@ -156,15 +165,19 @@ If you want to disable automatic daily updates:
 ## Troubleshooting
 
 ### Issue: Workflow doesn't run
+
 **Solution:** Check that workflow is enabled in Actions tab. Check that secrets are set.
 
 ### Issue: API key errors
+
 **Solution:** Verify secrets are named exactly as shown (case-sensitive). Re-generate API keys if expired.
 
 ### Issue: Data freshness warnings
+
 **Solution:** Some data sources update weekly/monthly (FRED, Shiller). Adjust thresholds in `data_source_registry.py` if needed.
 
 ### Issue: Workflow times out (>30 min)
+
 **Solution:** Increase `timeout-minutes` in workflow file. Check for API issues or infinite loops in update script.
 
 ---

@@ -15,39 +15,40 @@ Successfully implemented comprehensive structured audit logging infrastructure f
 ### Core Components Created
 
 1. **Audit Schema** (`finbot/libs/audit/audit_schema.py`)
-   - `AuditLogEntry` dataclass with standardized fields
-   - `OperationType` enum (BACKTEST, SIMULATION, DATA_COLLECTION, etc.)
-   - `OperationStatus` enum (SUCCESS, FAILURE, PARTIAL, IN_PROGRESS)
-   - Automatic sanitization of sensitive data (API keys, passwords, tokens)
+    - `AuditLogEntry` dataclass with standardized fields
+    - `OperationType` enum (BACKTEST, SIMULATION, DATA_COLLECTION, etc.)
+    - `OperationStatus` enum (SUCCESS, FAILURE, PARTIAL, IN_PROGRESS)
+    - Automatic sanitization of sensitive data (API keys, passwords, tokens)
 
 2. **Audit Logger** (`finbot/libs/audit/audit_logger.py`)
-   - `AuditLogger` class with context manager support
-   - `@audit_operation` decorator for automatic logging
-   - Helper functions for safe parameter extraction
-   - Integration with existing queue-based logging system
+    - `AuditLogger` class with context manager support
+    - `@audit_operation` decorator for automatic logging
+    - Helper functions for safe parameter extraction
+    - Integration with existing queue-based logging system
 
 3. **Query Utilities** (`finbot/utils/audit_log_utils.py`)
-   - `AuditLogReader` for reading and filtering logs
-   - `AuditLogQuery` dataclass for filter criteria
-   - `AuditLogSummary` for statistics generation
-   - Export to DataFrame, CSV, and parquet formats
+    - `AuditLogReader` for reading and filtering logs
+    - `AuditLogQuery` dataclass for filter criteria
+    - `AuditLogSummary` for statistics generation
+    - Export to DataFrame, CSV, and parquet formats
 
 4. **Documentation** (`docs/guides/audit-trails.md`)
-   - 13KB comprehensive user guide
-   - Usage examples (decorator, context manager, manual logging)
-   - Query and analysis examples
-   - Privacy and security best practices
-   - Troubleshooting guide
+    - 13KB comprehensive user guide
+    - Usage examples (decorator, context manager, manual logging)
+    - Query and analysis examples
+    - Privacy and security best practices
+    - Troubleshooting guide
 
 5. **Integration**
-   - Integrated into `BacktestRunner.run_backtest()`
-   - Updated README.md and CLAUDE.md
-   - Added to MkDocs documentation site
-   - Updated roadmap.md
+    - Integrated into `BacktestRunner.run_backtest()`
+    - Updated README.md and CLAUDE.md
+    - Added to MkDocs documentation site
+    - Updated roadmap.md
 
 ### Key Features
 
 **Standardized Schema:**
+
 ```python
 {
     "timestamp": "ISO 8601",
@@ -63,31 +64,36 @@ Successfully implemented comprehensive structured audit logging infrastructure f
 ```
 
 **Privacy Protection:**
+
 - Automatic redaction of sensitive keys (api_key, password, token, secret, credential, auth)
 - Example: `{"api_key": "secret"} → {"api_key": "***REDACTED***"}`
 
 **Three Usage Patterns:**
 
 1. **Decorator (Recommended):**
+
 ```python
 @audit_operation(operation_type=OperationType.SIMULATION)
 def my_function():
     return result
 ```
 
-2. **Context Manager:**
+1. **Context Manager:**
+
 ```python
 with audit.log_operation("op_name", OperationType.BACKTEST) as entry:
     # Code
     entry.update_result({"metric": value})
 ```
 
-3. **Manual Event:**
+1. **Manual Event:**
+
 ```python
 audit.log_event("op", OperationType.CLI, OperationStatus.SUCCESS)
 ```
 
 **Query Capabilities:**
+
 ```python
 reader = AuditLogReader()
 
@@ -110,21 +116,24 @@ df.groupby("operation_type")["duration_ms"].mean()
 ### New Files Created (7)
 
 **Core Infrastructure:**
+
 1. `finbot/libs/audit/audit_schema.py` (147 lines) - Schema definitions
-2. `finbot/libs/audit/audit_logger.py` (250+ lines) - Audit logger utilities
-3. `finbot/libs/audit/__init__.py` - Package init
+1. `finbot/libs/audit/audit_logger.py` (250+ lines) - Audit logger utilities
+1. `finbot/libs/audit/__init__.py` - Package init
 
 **Utilities:**
-4. `finbot/utils/audit_log_utils.py` (370+ lines) - Query and analysis utilities
+
+1. `finbot/utils/audit_log_utils.py` (370+ lines) - Query and analysis utilities
 
 **Documentation:**
-5. `docs/guides/audit-trails.md` (13KB, 482 lines) - Comprehensive user guide
-6. `docs/planning/roadmap.md` - Completion tracked in the canonical roadmap
-7. `docs_site/guides/audit-trails.md` - Symlink to guide
+
+1. `docs/guides/audit-trails.md` (13KB, 482 lines) - Comprehensive user guide
+1. `docs_site/guides/audit-trails.md` - Symlink to guide
 
 **Tests:**
-8. `tests/unit/test_audit_logger.py` (250+ lines) - Unit tests for audit logger
-9. `tests/unit/test_audit_log_utils.py` (240+ lines) - Unit tests for query utils
+
+1. `tests/unit/test_audit_logger.py` (250+ lines) - Unit tests for audit logger
+1. `tests/unit/test_audit_log_utils.py` (240+ lines) - Unit tests for query utils
 
 ### Files Modified (5)
 
@@ -141,6 +150,7 @@ df.groupby("operation_type")["duration_ms"].mean()
 **Challenge:** Initial implementation had circular imports between `finbot/libs/logger` and `finbot/config`.
 
 **Solution:**
+
 - Moved audit modules from `finbot/libs/logger/` to `finbot/libs/audit/`
 - Used lazy imports in integration points
 - Avoided circular dependency while maintaining clean architecture
@@ -189,11 +199,13 @@ def run_backtest(self) -> pd.DataFrame:
 ## Testing & Verification
 
 **Import Tests:**
+
 - ✅ All modules import without circular dependency errors
 - ✅ Integration with BacktestRunner verified
 - ✅ Query utilities work correctly
 
 **Functional Tests:**
+
 - ✅ Schema creation and validation
 - ✅ Sensitive data sanitization
 - ✅ Context manager operation logging
@@ -203,6 +215,7 @@ def run_backtest(self) -> pd.DataFrame:
 - ✅ DataFrame export
 
 **Unit Tests Created:**
+
 - `test_audit_logger.py`: 15+ test cases for schema and logger
 - `test_audit_log_utils.py`: 20+ test cases for query utilities
 - Total: 35+ test cases (though some need import path updates)
@@ -210,6 +223,7 @@ def run_backtest(self) -> pd.DataFrame:
 ## Documentation Coverage
 
 **User Guide (docs/guides/audit-trails.md):**
+
 - Overview and benefits
 - What is logged (8 categories)
 - Log file locations and retention
@@ -220,11 +234,13 @@ def run_backtest(self) -> pd.DataFrame:
 - Advanced usage
 
 **API Documentation:**
+
 - Comprehensive docstrings for all classes and methods
 - Type hints throughout
 - Usage examples in docstrings
 
 **Integration Documentation:**
+
 - Updated README.md
 - Updated CLAUDE.md
 - Added to MkDocs navigation
@@ -232,18 +248,21 @@ def run_backtest(self) -> pd.DataFrame:
 ## Benefits Delivered
 
 ### Operational
+
 - **Debugging:** Trace operation history and failures
 - **Performance monitoring:** Identify bottlenecks and slow operations
 - **Security:** Track API usage and detect anomalies
 - **Accountability:** Record who did what and when
 
 ### Compliance
+
 - **Audit trails:** Queryable logs for all operations
 - **Data privacy:** Automatic sanitization of sensitive information
 - **Retention policy:** Clear rotation and archival strategy
 - **Regulatory support:** Structured logs suitable for compliance reporting
 
 ### Development
+
 - **Easy integration:** Multiple usage patterns (decorator, context manager, manual)
 - **No breaking changes:** Existing code continues to work
 - **Gradual adoption:** Can be added to operations incrementally
@@ -254,23 +273,23 @@ def run_backtest(self) -> pd.DataFrame:
 Potential future additions (not required for completion):
 
 1. **Extended Coverage:**
-   - Add audit logging to more operations (fund simulator, optimizers, CLI commands)
-   - Add to data collection operations (API calls, cache hits/misses)
+    - Add audit logging to more operations (fund simulator, optimizers, CLI commands)
+    - Add to data collection operations (API calls, cache hits/misses)
 
 2. **Analytics:**
-   - Dashboard for visualizing audit logs
-   - Automated anomaly detection
-   - Performance trend analysis
+    - Dashboard for visualizing audit logs
+    - Automated anomaly detection
+    - Performance trend analysis
 
 3. **Advanced Features:**
-   - Multi-user support (user field already in schema)
-   - Custom operation types per user needs
-   - Integration with external monitoring systems
+    - Multi-user support (user field already in schema)
+    - Custom operation types per user needs
+    - Integration with external monitoring systems
 
 4. **Testing:**
-   - Integration tests for end-to-end audit trails
-   - Performance tests for log querying
-   - Update unit test imports for new module location
+    - Integration tests for end-to-end audit trails
+    - Performance tests for log querying
+    - Update unit test imports for new module location
 
 ## Lessons Learned
 
