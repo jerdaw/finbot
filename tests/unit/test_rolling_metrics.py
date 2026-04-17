@@ -39,6 +39,12 @@ class TestComputeRollingMetrics:
         result = compute_rolling_metrics(RETURNS, window=63)
         assert len(result.dates) == len(RETURNS)
 
+    def test_preserves_provided_dates(self) -> None:
+        """Explicit date labels are preserved in the result."""
+        dates = [f"2024-01-{day:02d}" for day in range(1, len(RETURNS) + 1)]
+        result = compute_rolling_metrics(RETURNS, window=63, dates=dates)
+        assert list(result.dates) == dates
+
     def test_first_positions_are_nan(self) -> None:
         """First (window - 1) positions in sharpe and volatility are NaN."""
         window = 30
@@ -105,6 +111,11 @@ class TestComputeRollingMetrics:
         """benchmark_returns with different length raises ValueError."""
         with pytest.raises(ValueError, match="length"):
             compute_rolling_metrics(RETURNS, benchmark_returns=BENCHMARK[:100])
+
+    def test_dates_length_mismatch_raises(self) -> None:
+        """dates with different length raises ValueError."""
+        with pytest.raises(ValueError, match="dates length"):
+            compute_rolling_metrics(RETURNS, dates=["2024-01-01"] * 10)
 
     def test_zero_return_series_sharpe_zero(self) -> None:
         """Constant-return series produces Sharpe of 0 (zero std)."""

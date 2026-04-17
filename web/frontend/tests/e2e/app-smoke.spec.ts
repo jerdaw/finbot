@@ -95,6 +95,7 @@ const experiments = [
     strategy_name: "NoRebalance",
     created_at: "2024-01-01T12:00:00Z",
     config_hash: "abc123",
+    data_snapshot_id: "snap-abc123",
   },
   {
     run_id: "run-002",
@@ -102,6 +103,7 @@ const experiments = [
     strategy_name: "DualMomentum",
     created_at: "2024-01-02T12:00:00Z",
     config_hash: "def456",
+    data_snapshot_id: "snap-def456",
   },
 ];
 

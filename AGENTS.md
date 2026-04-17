@@ -47,7 +47,7 @@ uv run python scripts/update_daily.py
 - Repo contributors should use `uv sync --all-extras`.
 - The root `Dockerfile` builds the CLI image by default; dashboard and API images opt into extras explicitly.
 
-## Current Delivery Status (2026-04-16)
+## Current Delivery Status (2026-04-17)
 
 **P0-P9 complete. P10 remains in progress.**
 
@@ -56,9 +56,9 @@ uv run python scripts/update_daily.py
 - **P7** (93%): External impact & advanced capabilities — 25/27 active items
 - **P8** (100%): Risk Analytics, Portfolio Analytics, Real-Time Data, Factor Analytics
 - **P9** (100%): Agent tooling and runtime hardening — P9.1-P9.4 complete
-- **P10** (in progress): Next.js frontend — 12 task pages complete, frontend hardening landed, and public documentation, roadmap cleanup, and health-economics packaging maintenance are complete; responsive/mobile/deployment work remains
+- **P10** (in progress): Next.js frontend — 12 task pages complete, the main backtesting page now supports allocation building, benchmark analysis, return tables, experiment lineage, rolling/regime diagnostics, export, cashflow planning, and allocation drift/rebalance inspection; remaining work is the unfinished P10.4 follow-through (cost assumptions, missing-data policy, walk-forward follow-ups, adjacent research pages) plus responsive/mobile/deployment work
 
-**Tracking docs:** `docs/planning/roadmap.md`, `docs/planning/archive/audit-remediation-and-frontend-hardening-2026-04-15.md`, `docs/planning/archive/public-packaging-and-docs-alignment-2026-04-16.md`, `docs/planning/archive/docs-maintenance-and-roadmap-reconciliation-2026-04-16.md`, `docs/planning/backtesting-live-readiness-backlog.md`, `docs/planning/priority-5-6-completion-status.md`, `docs/adr/ADR-011-nautilus-decision.md`
+**Tracking docs:** `docs/planning/roadmap.md`, `docs/planning/archive/audit-remediation-and-frontend-hardening-2026-04-15.md`, `docs/planning/archive/public-packaging-and-docs-alignment-2026-04-16.md`, `docs/planning/archive/docs-maintenance-and-roadmap-reconciliation-2026-04-16.md`, `docs/planning/archive/backtesting-workflow-expansion-and-research-workspace-pass-2026-04-17.md`, `docs/planning/backtesting-live-readiness-backlog.md`, `docs/planning/priority-5-6-completion-status.md`, `docs/adr/ADR-011-nautilus-decision.md`
 
 ## Common Commands
 
@@ -145,11 +145,8 @@ All packages live under the single `finbot/` namespace:
 
 #### `finbot/libs/` — Core Infrastructure
 
-- **`api_manager/`**: Central API registry with `APIResourceGroup` for rate limits/retry
-    - Supports FRED, Alpha Vantage, NASDAQ Data Link, Google Finance, BLS APIs
-- **`logger/`**: Queue-based async logging
-    - Dual output: colored console (stdout for INFO+, stderr for ERROR+) + JSON file
-    - Rotating file handlers (5MB, 3 backups)
+- **`api_manager/`**: Central API registry with `APIResourceGroup` for rate limits/retry; supports FRED, Alpha Vantage, NASDAQ Data Link, Google Finance, and BLS APIs
+- **`logger/`**: Queue-based async logging with dual output (colored console to stdout/stderr plus JSON file) and rotating file handlers (5MB, 3 backups)
 
 #### `finbot/core/contracts/` — Engine-Agnostic Contracts
 
@@ -187,6 +184,7 @@ Entry point: `BacktestRunner` in `backtest_runner.py`
 - **`compute_stats.py`**: Performance metrics using quantstats (Sharpe, Sortino, Calmar, max drawdown, Kelly criterion)
 - **`rebalance_optimizer.py`**: Gradient descent-like optimizer for portfolio rebalance ratios
 - **`hypothesis_testing.py`**: Statistical hypothesis tests (t-test, bootstrap, permutation, etc.)
+- **`strategies/research_wrapper.py`**: Generic wrapper that layers recurring/one-time cashflows and allocation-history capture onto existing strategies
 
 **13 strategies** (in `strategies/`): `rebalance`, `no_rebalance`, `sma_crossover`, `sma_crossover_double`, `sma_crossover_triple`, `macd_single`, `macd_dual`, `dip_buy_sma`, `dip_buy_stdev`, `sma_rebal_mix`, `dual_momentum`, `risk_parity`, `regime_adaptive`
 
@@ -278,6 +276,8 @@ Entry point: `web/backend/main.py` (mounted at `/api/`). Requires `uv sync --ext
 
 - **`main.py`**: FastAPI app with CORS, 12 routers registered
 - **`routers/`**: 12 endpoint modules — `backtesting`, `data_status`, `experiments`, `factor_analytics`, `health_economics`, `monte_carlo`, `optimizer`, `portfolio_analytics`, `realtime_quotes`, `risk_analytics`, `simulations`, `walkforward`
+- **`routers/backtesting.py`**: Backtesting API with allocation validation, benchmark analytics, rolling/regime diagnostics, return tables, cashflow durability, and rebalance-event serialization
+- **`routers/experiments.py`**: Experiment list/compare/save API with data snapshot lineage for saved backtests
 - **`schemas/`**: Pydantic request/response models for each router
 - **`services/serializers.py`**: `sanitize_value()` (NaN/Inf→None), `dataframe_to_records()`
 
@@ -286,6 +286,7 @@ Entry point: `web/backend/main.py` (mounted at `/api/`). Requires `uv sync --ext
 Next.js 16 App Router with React 19, Tailwind CSS v4, shadcn/ui, Recharts, Framer Motion, Zustand.
 
 - **`src/app/`**: Dashboard home + 12 task pages — simulations, backtesting, optimizer, monte-carlo, walk-forward, experiments, risk-analytics, portfolio-analytics, factor-analytics, realtime-quotes, data-status, health-economics
+- **`src/app/backtesting/page.tsx`**: Flagship portfolio research workspace with allocation builder, benchmark controls, export, experiment save, and cashflow/drift/regime views
 - **`src/lib/`**: Foundation utilities — `utils.ts` (cn), `api.ts` (apiGet/apiPost), `format.ts` (number formatters), `constants.ts` (nav items, chart colors)
 - **`src/components/`**: Reusable components — `layout/` (sidebar, command-palette, header), `common/` (stat-card, chart-card, data-table, tool-layout, config-panel, empty-state, inline-error, heatmap, metric-badge), `charts/` (recharts-wrappers, line-chart-wrapper, drawdown-chart, lightweight-chart)
 - **`src/stores/`**: Zustand stores — `sidebar-store.ts`, `watchlist-store.ts` (localStorage-persisted)
@@ -333,6 +334,7 @@ Create `.env` file in `finbot/config/` (excluded by `.gitignore`).
 | `finbot/services/backtesting/run_backtest.py`                     | Run single backtest                                                                |
 | `finbot/services/backtesting/backtest_batch.py`                   | Run backtests in parallel                                                          |
 | `finbot/services/backtesting/backtest_runner.py`                  | BacktestRunner class (Cerebro wrapper)                                             |
+| `finbot/services/backtesting/strategies/research_wrapper.py`      | Cross-strategy cashflow and allocation-history instrumentation                     |
 | `finbot/services/backtesting/hypothesis_testing.py`               | Statistical hypothesis tests for strategy evaluation                               |
 | **Simulations**                                                   |                                                                                    |
 | `finbot/services/simulation/fund_simulator.py`                    | Simulate leveraged funds with fees                                                 |
@@ -347,6 +349,9 @@ Create `.env` file in `finbot/config/` (excluded by `.gitignore`).
 | `finbot/dashboard/app.py`                                         | Streamlit dashboard entry point (12 pages)                                         |
 | **Web Application**                                               |                                                                                    |
 | `web/backend/main.py`                                             | FastAPI API server (12 routers, 34 endpoints)                                      |
+| `web/backend/routers/backtesting.py`                              | Primary backtesting API with benchmark/cashflow/regime research outputs            |
+| `web/backend/routers/experiments.py`                              | Save/list/compare experiment runs with snapshot lineage                            |
+| `web/frontend/src/app/backtesting/page.tsx`                       | Main backtesting workspace with allocation builder and research hub                |
 | `web/frontend/src/app/`                                           | Next.js frontend (dashboard home + 12 task pages)                                  |
 | `web/frontend/src/lib/api.ts`                                     | HTTP client (apiGet/apiPost with timeout + error handling)                         |
 | `web/frontend/src/lib/constants.ts`                               | Navigation items, chart colors, shared constants                                   |
@@ -442,12 +447,7 @@ GitHub Actions (`.github/workflows/ci.yml`) on push/PR to main:
 
 See `docs/adr/` for architectural decision records:
 
-- **ADR-001**: Consolidate three repos (finbot, bb, backbetter) into one
-    - Drop numba → vectorized numpy + numpy-financial
-    - Drop Scrapy → bb's Selenium
-    - Keep quantstats
-    - Replace pickle → parquet
-    - Lazy API key loading
+- **ADR-001**: Consolidate three repos (finbot, bb, backbetter) into one; drop numba in favor of vectorized numpy + numpy-financial, drop Scrapy in favor of bb's Selenium approach, keep quantstats, replace pickle with parquet, and keep API key loading lazy
 - **ADR-004**: Consolidate package layout — move config/, constants/, libs/ under finbot/ as subpackages
 
 ## Key Design Patterns

@@ -37,12 +37,12 @@ The workflow requires API keys to fetch data. Add these as **GitHub Secrets**:
 3. Click **New repository secret**
 4. Add the following secrets:
 
-| Secret Name                                       | Description                        | Where to Get                                                                            |
-| :------------------------------------------------ | :--------------------------------- | :-------------------------------------------------------------------------------------- |
-| `ALPHA_VANTAGE_API_KEY`                           | Alpha Vantage API key              | [Alpha Vantage](https://www.alphavantage.co/support/#api-key)                           |
-| `NASDAQ_DATA_LINK_API_KEY`                        | NASDAQ Data Link (Quandl) API key  | [NASDAQ Data Link](https://data.nasdaq.com/sign-up)                                     |
-| `US_BUREAU_OF_LABOR_STATISTICS_API_KEY`           | BLS API key (optional)             | [BLS Developers](https://www.bls.gov/developers/home.htm)                               |
-| `GOOGLE_FINANCE_SERVICE_ACCOUNT_CREDENTIALS_PATH` | Google Sheets service account JSON | [Google Cloud IAM](https://cloud.google.com/iam/docs/service-accounts-create)           |
+| Secret Name                                       | Description                        | Where to Get                                                                  |
+| :------------------------------------------------ | :--------------------------------- | :---------------------------------------------------------------------------- |
+| `ALPHA_VANTAGE_API_KEY`                           | Alpha Vantage API key              | [Alpha Vantage](https://www.alphavantage.co/support/#api-key)                 |
+| `NASDAQ_DATA_LINK_API_KEY`                        | NASDAQ Data Link (Quandl) API key  | [NASDAQ Data Link](https://data.nasdaq.com/sign-up)                           |
+| `US_BUREAU_OF_LABOR_STATISTICS_API_KEY`           | BLS API key (optional)             | [BLS Developers](https://www.bls.gov/developers/home.htm)                     |
+| `GOOGLE_FINANCE_SERVICE_ACCOUNT_CREDENTIALS_PATH` | Google Sheets service account JSON | [Google Cloud IAM](https://cloud.google.com/iam/docs/service-accounts-create) |
 
 **Note:** If you don't have all API keys, the workflow will skip those data sources (graceful degradation).
 
