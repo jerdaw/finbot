@@ -1,71 +1,61 @@
-# CODEOWNERS - Automatic review requests for PRs
-#
-# This file defines code ownership for the finbot repository.
-# When a PR modifies files in these directories, the specified owners
-# will automatically be requested for review.
-#
-# Syntax: path/to/directory @github-username
-# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+# CODEOWNERS
 
-# Intentionally avoid a catch-all owner so dependency automation touching
-# root files like uv.lock doesn't generate code-owner review requests.
-
-# Core Architecture & Contracts
-# Live trading contracts, schemas, versioning, migration logic
 /finbot/adapters/ @jerdaw
 /finbot/core/ @jerdaw
 /finbot/core/contracts/ @jerdaw
 
-# Services - Backtesting
-# Backtrader engine, strategies, analyzers, backtesting orchestration
+## Core Architecture & Contracts
+
 /finbot/services/backtesting/ @jerdaw
 
-# Services - Simulation
-# Fund simulator, bond ladder, Monte Carlo, index simulators
+## Services - Backtesting
+
 /finbot/services/simulation/ @jerdaw
 
-# Services - Optimization
-# DCA optimizer, rebalance optimizer
+## Services - Simulation
+
 /finbot/services/optimization/ @jerdaw
 
-# Services - Health Economics
-# QALY simulation, cost-effectiveness analysis, treatment optimization
+## Services - Optimization
+
 /finbot/services/health_economics/ @jerdaw
 
-# Utilities
-# Data collection, finance utils, pandas utils, plotting, API clients
+## Services - Health Economics
+
 /finbot/utils/ @jerdaw
 
-# User Interfaces
-# CLI entry point and command handlers
+## Utilities
+
 /finbot/cli/ @jerdaw
 
-# Dashboard (Streamlit)
-# Multi-page interactive dashboard application
+## User Interfaces
+
 /finbot/dashboard/ @jerdaw
 
-# Configuration
-# Dynaconf settings, API key management, logging setup
+## Dashboard
+
 /finbot/config/ @jerdaw
 /finbot/libs/ @jerdaw
 
-# Documentation
-# ADRs, planning docs, guidelines, research, MkDocs site
+## Configuration
+
 /docs/ @jerdaw
 /docs_site/ @jerdaw
 
-# Tests
-# Unit tests, integration tests, test infrastructure
+## Documentation
+
 /tests/ @jerdaw
 
-# Infrastructure & Automation
-# CI/CD, scripts, Docker, dependency management
+## Tests
+
 /scripts/ @jerdaw
 /Dockerfile @jerdaw
 /Makefile @jerdaw
 
-# Project Documentation
-# README, contributing guide, license, project instructions
+## Infrastructure & Automation
+
+## Project Documentation
+
 /AGENTS.md @jerdaw
 /README.md @jerdaw
 /CONTRIBUTING.md @jerdaw

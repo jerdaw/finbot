@@ -54,17 +54,17 @@ Optional longer body.
 
 **Types:**
 
-| Type | When to use |
-| ---- | ----------- |
-| `feat` | New feature added |
-| `fix` | Bug fix |
-| `docs` | Documentation only |
-| `test` | Adding or fixing tests |
+| Type       | When to use                                             |
+| ---------- | ------------------------------------------------------- |
+| `feat`     | New feature added                                       |
+| `fix`      | Bug fix                                                 |
+| `docs`     | Documentation only                                      |
+| `test`     | Adding or fixing tests                                  |
 | `refactor` | Code change that neither fixes a bug nor adds a feature |
-| `chore` | Maintenance, dependency updates, CI |
-| `perf` | Performance improvement |
-| `style` | Formatting, missing semicolons, etc. |
-| `ci` | CI/CD changes |
+| `chore`    | Maintenance, dependency updates, CI                     |
+| `perf`     | Performance improvement                                 |
+| `style`    | Formatting, missing semicolons, etc.                    |
+| `ci`       | CI/CD changes                                           |
 
 **Scopes (for this project):**
 
