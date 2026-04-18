@@ -6,19 +6,40 @@ and error handling without requiring external data or API keys.
 
 from __future__ import annotations
 
+from datetime import UTC, datetime
 from types import SimpleNamespace
 
 import pandas as pd
 import pytest
 from fastapi.testclient import TestClient
 
+from finbot.core.contracts.models import BacktestRunMetadata, BacktestRunResult
 from finbot.services.backtesting.experiment_registry import ExperimentRegistry
 from finbot.services.backtesting.snapshot_registry import DataSnapshotRegistry
 from web.backend.main import app
 from web.backend.routers import backtesting as backtesting_router
 from web.backend.routers import experiments as experiments_router
+from web.backend.routers import monte_carlo as monte_carlo_router
+from web.backend.routers import optimizer as optimizer_router
+from web.backend.routers import simulations as simulations_router
 
 client = TestClient(app)
+
+
+def _make_ohlcv_frame(start_price: float, *, periods: int = 45, step: float = 1.0) -> pd.DataFrame:
+    index = pd.date_range("2020-01-01", periods=periods, freq="B")
+    closes = [start_price + (idx * step) for idx in range(len(index))]
+    return pd.DataFrame(
+        {
+            "Open": closes,
+            "High": [value + 1 for value in closes],
+            "Low": [value - 1 for value in closes],
+            "Close": closes,
+            "Adj Close": closes,
+            "Volume": [1_000_000 for _ in closes],
+        },
+        index=index,
+    )
 
 
 class TestAppSetup:
@@ -227,6 +248,75 @@ class TestBacktestingRouter:
         assert body["withdrawal_durability"] is not None
         assert len(body["monthly_returns"]) >= 2
         assert len(body["annual_returns"]) >= 1
+        assert body["applied_cost_assumptions"]["commission_mode"] == "none"
+        assert body["cost_summary"]["total_costs"] == 0
+        assert body["missing_data_summary"]["policy"] == "forward_fill"
+        assert body["walk_forward_request"]["strategy"] == "NoRebalance"
+
+    def test_backtest_surfaces_costs_and_missing_data_reporting(self, monkeypatch: pytest.MonkeyPatch):
+        def fake_get_history(_ticker: str) -> pd.DataFrame:
+            frame = self._make_price_frame(150.0)
+            frame.iloc[10, frame.columns.get_loc("Close")] = float("nan")
+            return frame
+
+        monkeypatch.setattr(backtesting_router, "get_history", fake_get_history)
+        monkeypatch.setattr(backtesting_router, "BacktestRunner", self._make_runner_factory())
+
+        payload = {
+            "tickers": ["QQQ"],
+            "strategy": "NoRebalance",
+            "strategy_params": {"equity_proportions": [1.0]},
+            "start_date": "2020-01-01",
+            "end_date": "2020-12-31",
+            "initial_cash": 10000,
+            "missing_data_policy": "forward_fill",
+            "cost_assumptions": {
+                "commission_mode": "per_share",
+                "commission_per_share": 0.01,
+                "commission_bps": 0,
+                "commission_minimum": 0,
+                "spread_bps": 10,
+                "slippage_bps": 5,
+            },
+        }
+
+        response = client.post("/api/backtesting/run", json=payload)
+
+        assert response.status_code == 200
+        body = response.json()
+        assert body["applied_cost_assumptions"]["commission_label"].startswith("FlatCommission")
+        assert body["cost_summary"]["total_commission"] == pytest.approx(0.15)
+        assert body["cost_summary"]["total_spread"] == pytest.approx(1.1875)
+        assert body["cost_summary"]["total_slippage"] == pytest.approx(1.1875)
+        assert body["cost_summary"]["total_costs"] == pytest.approx(2.525)
+        assert body["missing_data_summary"]["policy"] == "forward_fill"
+        assert body["missing_data_summary"]["total_missing_rows"] == 1
+        assert body["missing_data_summary"]["total_missing_cells"] == 1
+        assert body["missing_data_summary"]["tickers"][0]["had_missing_data"] is True
+        assert body["walk_forward_request"]["train_window"] >= 21
+
+    def test_backtest_rejects_missing_data_when_policy_is_error(self, monkeypatch: pytest.MonkeyPatch):
+        def fake_get_history(_ticker: str) -> pd.DataFrame:
+            frame = self._make_price_frame(150.0)
+            frame.iloc[10, frame.columns.get_loc("Close")] = float("nan")
+            return frame
+
+        monkeypatch.setattr(backtesting_router, "get_history", fake_get_history)
+
+        payload = {
+            "tickers": ["QQQ"],
+            "strategy": "NoRebalance",
+            "strategy_params": {"equity_proportions": [1.0]},
+            "start_date": "2020-01-01",
+            "end_date": "2020-12-31",
+            "initial_cash": 10000,
+            "missing_data_policy": "error",
+        }
+
+        response = client.post("/api/backtesting/run", json=payload)
+
+        assert response.status_code == 400
+        assert "Missing data detected in QQQ with policy=ERROR" in response.json()["detail"]
 
     def test_rejects_zero_recurring_cashflow(self):
         payload = {
@@ -356,6 +446,201 @@ class TestExperimentsSaveRouter:
         listed = list_response.json()
         assert len(listed) == 1
         assert listed[0]["data_snapshot_id"] == body["data_snapshot_id"]
+
+
+class TestSimulationsRouter:
+    """Test simulation research endpoints."""
+
+    def test_bond_ladder_route_returns_ladder_and_comparison_series(self, monkeypatch: pytest.MonkeyPatch):
+        def fake_bond_ladder_simulator(
+            *, min_maturity_years: int, max_maturity_years: int, save_db: bool
+        ) -> pd.DataFrame:
+            assert min_maturity_years == 1
+            assert max_maturity_years == 5
+            assert save_db is False
+            frame = _make_ohlcv_frame(100.0, periods=10, step=0.5)
+            return frame[["Close"]]
+
+        def fake_get_history(ticker: str) -> pd.DataFrame:
+            histories = {
+                "SHY": _make_ohlcv_frame(99.0, periods=15, step=0.2),
+                "IEF": _make_ohlcv_frame(101.0, periods=15, step=0.25),
+            }
+            return histories[ticker]
+
+        monkeypatch.setattr(simulations_router, "bond_ladder_simulator", fake_bond_ladder_simulator)
+        monkeypatch.setattr(simulations_router, "get_history", fake_get_history)
+
+        response = client.post(
+            "/api/simulations/bond-ladder/run",
+            json={
+                "min_maturity_years": 1,
+                "max_maturity_years": 5,
+                "compare_tickers": ["SHY", "IEF"],
+                "normalize": True,
+            },
+        )
+
+        assert response.status_code == 200
+        body = response.json()
+        assert [series["name"] for series in body["series"]] == ["1Y-5Y Ladder", "SHY", "IEF"]
+        assert body["metrics"][0]["ticker"] == "BOND_LADDER"
+        assert body["metrics"][0]["start_value"] == pytest.approx(100.0)
+        assert len(body["metrics"]) == 3
+
+
+class TestMonteCarloRouter:
+    """Test Monte Carlo research endpoints."""
+
+    def test_multi_asset_route_returns_correlated_portfolio_payload(self, monkeypatch: pytest.MonkeyPatch):
+        captured_kwargs: dict[str, object] = {}
+
+        def fake_get_history(ticker: str) -> pd.DataFrame:
+            histories = {
+                "SPY": _make_ohlcv_frame(100.0, periods=40, step=0.8),
+                "TLT": _make_ohlcv_frame(120.0, periods=40, step=0.2),
+            }
+            return histories[ticker]
+
+        def fake_multi_asset_monte_carlo(**kwargs: object) -> dict[str, object]:
+            captured_kwargs.update(kwargs)
+            return {
+                "portfolio_trials": pd.DataFrame(
+                    [
+                        [10000.0, 10150.0, 10225.0, 10310.0],
+                        [10000.0, 9950.0, 10025.0, 10110.0],
+                        [10000.0, 10200.0, 10350.0, 10480.0],
+                    ]
+                ),
+                "weights": pd.Series({"SPY": 0.6, "TLT": 0.4}),
+                "correlation": pd.DataFrame(
+                    {
+                        "SPY": {"SPY": 1.0, "TLT": -0.25},
+                        "TLT": {"SPY": -0.25, "TLT": 1.0},
+                    }
+                ),
+            }
+
+        monkeypatch.setattr(monte_carlo_router, "get_history", fake_get_history)
+        monkeypatch.setattr(monte_carlo_router, "multi_asset_monte_carlo", fake_multi_asset_monte_carlo)
+
+        response = client.post(
+            "/api/monte-carlo/multi-asset/run",
+            json={
+                "tickers": ["SPY", "TLT"],
+                "weights": [0.6, 0.4],
+                "sim_periods": 4,
+                "n_sims": 100,
+                "start_value": 10000,
+            },
+        )
+
+        assert response.status_code == 200
+        body = response.json()
+        assert captured_kwargs["show_progress"] is False
+        assert body["periods"] == [0, 1, 2, 3]
+        assert len(body["portfolio_sample_paths"]) == 3
+        assert body["weights"] == [
+            {"ticker": "SPY", "weight": 0.6},
+            {"ticker": "TLT", "weight": 0.4},
+        ]
+        assert set(body["correlation_matrix"].keys()) == {"SPY", "TLT"}
+        assert body["portfolio_statistics"]["mean"] is not None
+
+
+class TestOptimizerRouter:
+    """Test optimizer research endpoints."""
+
+    @staticmethod
+    def _make_result(strategy_name: str, metrics: dict[str, float], tickers_used: list[str]) -> BacktestRunResult:
+        return BacktestRunResult(
+            metadata=BacktestRunMetadata(
+                run_id=f"run-{strategy_name.lower()}",
+                engine_name="backtrader",
+                engine_version="test",
+                strategy_name=strategy_name,
+                created_at=datetime.now(UTC),
+                config_hash=f"cfg-{strategy_name.lower()}",
+                data_snapshot_id="snapshot-test",
+            ),
+            metrics=metrics,
+            assumptions={"tickers": tickers_used, "parameters": {}},
+        )
+
+    def test_pareto_route_returns_frontier_and_dominated_points(self, monkeypatch: pytest.MonkeyPatch):
+        def fake_get_history(ticker: str) -> pd.DataFrame:
+            histories = {
+                "SPY": _make_ohlcv_frame(100.0, periods=60, step=0.7),
+                "TLT": _make_ohlcv_frame(110.0, periods=60, step=0.2),
+            }
+            return histories[ticker]
+
+        def fake_run_strategy(**kwargs: object) -> BacktestRunResult:
+            strategy_name = str(kwargs["strategy_name"])
+            tickers_used = list(kwargs["tickers_used"])
+            metrics_map = {
+                "NoRebalance": {"cagr": 0.10, "max_drawdown": 0.12, "sharpe": 0.8},
+                "RiskParity": {"cagr": 0.08, "max_drawdown": 0.07, "sharpe": 1.0},
+                "Rebalance": {"cagr": 0.07, "max_drawdown": 0.15, "sharpe": 0.6},
+            }
+            return self._make_result(strategy_name, metrics_map[strategy_name], tickers_used)
+
+        monkeypatch.setattr(optimizer_router, "get_history", fake_get_history)
+        monkeypatch.setattr(optimizer_router, "_run_strategy", fake_run_strategy)
+
+        response = client.post(
+            "/api/optimizer/pareto/run",
+            json={
+                "tickers": ["SPY", "TLT"],
+                "strategies": ["NoRebalance", "RiskParity", "Rebalance"],
+                "start_date": "2020-01-01",
+                "end_date": "2020-12-31",
+                "initial_cash": 10000,
+                "objective_a": "cagr",
+                "objective_b": "max_drawdown",
+                "maximize_a": True,
+                "maximize_b": False,
+            },
+        )
+
+        assert response.status_code == 200
+        body = response.json()
+        assert body["n_evaluated"] == 3
+        assert len(body["pareto_front"]) == 2
+        assert len(body["dominated_points"]) == 1
+        assert {point["strategy_name"] for point in body["pareto_front"]} == {"NoRebalance", "RiskParity"}
+        assert body["warnings"] == []
+
+    def test_efficient_frontier_route_returns_highlighted_portfolios(self, monkeypatch: pytest.MonkeyPatch):
+        def fake_get_history(ticker: str) -> pd.DataFrame:
+            histories = {
+                "SPY": _make_ohlcv_frame(100.0, periods=80, step=0.7),
+                "TLT": _make_ohlcv_frame(110.0, periods=80, step=0.2),
+                "GLD": _make_ohlcv_frame(90.0, periods=80, step=0.35),
+            }
+            return histories[ticker]
+
+        monkeypatch.setattr(optimizer_router, "get_history", fake_get_history)
+
+        response = client.post(
+            "/api/optimizer/efficient-frontier/run",
+            json={
+                "tickers": ["SPY", "TLT", "GLD"],
+                "start_date": "2020-01-01",
+                "end_date": "2020-12-31",
+                "risk_free_rate": 0.02,
+                "n_portfolios": 200,
+            },
+        )
+
+        assert response.status_code == 200
+        body = response.json()
+        assert len(body["portfolios"]) == 200
+        assert len(body["frontier"]) >= 1
+        assert set(body["max_sharpe"]["weights"].keys()) == {"SPY", "TLT", "GLD"}
+        assert set(body["min_volatility"]["weights"].keys()) == {"SPY", "TLT", "GLD"}
+        assert len(body["asset_stats"]) == 3
+        assert set(body["correlation_matrix"].keys()) == {"SPY", "TLT", "GLD"}
 
 
 class TestPortfolioAnalyticsRouter:

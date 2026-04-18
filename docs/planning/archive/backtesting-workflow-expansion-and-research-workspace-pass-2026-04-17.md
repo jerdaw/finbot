@@ -73,12 +73,11 @@ budget.
 - P10.4 remains open, but the highest-priority workflow slices from the
   competitor analysis are now shipped and validated.
 
-## Remaining Follow-Up
+## Follow-Up Status
 
-- Surface cost assumptions, missing-data policy, and walk-forward follow-ups in
-  the main backtesting workflow.
-- Add the adjacent research pages already supported by the repo's service layer:
-  bond ladder, Pareto optimizer, multi-asset Monte Carlo, and efficient
-  frontier.
-- Defer long-tail suite expansion until the core backtesting workflow is fully
-  landed.
+- The originally deferred cost-assumption, missing-data, walk-forward, and
+  adjacent research-surface items were completed in
+  `docs/planning/archive/backtesting-followthrough-and-adjacent-research-closeout-2026-04-18.md`.
+- The remaining deferred scope is the long-tail suite expansion kept out of
+  P10.4 until the core workflow, responsive/mobile work, and deployment pass are
+  finished.

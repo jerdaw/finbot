@@ -37,12 +37,14 @@ core:
 
 - **Fund Simulator**: Simulate leveraged ETFs with fees, borrowing costs, and tracking error
 - **Bond Ladder Simulator**: Model bond portfolios with yield curves and maturity rolling
-- **Monte Carlo Simulator**: Portfolio risk analysis with probability distributions and VaR
+- **Monte Carlo Simulator**: Single-asset and correlated multi-asset portfolio risk analysis with percentile bands and distribution summaries
 - **Specific fund implementations**: SPY, SSO, UPRO, QQQ, TQQQ, TLT, TMF, and more
 
 ### 🔧 Portfolio Optimization
 
 - **DCA Optimizer**: Grid search across front-loading ratios, durations, and purchase intervals
+- **Pareto Optimizer**: Multi-objective strategy comparison across return/risk trade-offs
+- **Efficient Frontier**: Long-only portfolio sampling for risk/return trade-off research
 - **Rebalance Optimizer**: Gradient descent for optimal portfolio rebalancing
 - **Multi-metric optimization**: CAGR, Sharpe, Sortino, Max drawdown
 

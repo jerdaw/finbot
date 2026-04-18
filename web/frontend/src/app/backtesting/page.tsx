@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import Link from "next/link";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,13 +38,18 @@ import {
 } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type {
+    AppliedBacktestCostAssumptions,
     StrategyInfo,
+    BacktestCostAssumptions,
+    BacktestCostSummary,
     BacktestRequest,
     BacktestBenchmarkStats,
+    BacktestMissingDataSummary,
     CashflowEventRecord,
     BacktestRegimePeriod,
     BacktestRegimeSummary,
     BacktestResponse,
+    MissingDataPolicy,
     OneTimeCashflowEvent,
     RebalanceEventRecord,
     RecurringCashflowRule,
@@ -52,6 +58,7 @@ import type {
     SaveExperimentRequest,
     SaveExperimentResponse,
     WithdrawalDurabilitySummary,
+    WalkForwardHandoff,
 } from "@/types/api";
 
 interface PortfolioAsset {
@@ -127,10 +134,59 @@ const CASHFLOW_FREQUENCY_OPTIONS = [
     { label: "Yearly", value: "yearly" },
 ] as const;
 
-function getMetricTrend(value: number | null | undefined):
-    | "up"
-    | "down"
-    | "neutral" {
+const MISSING_DATA_POLICY_OPTIONS: Array<{
+    label: string;
+    value: MissingDataPolicy;
+    description: string;
+}> = [
+    {
+        label: "Forward Fill",
+        value: "forward_fill",
+        description: "Carry the last observed price across gaps.",
+    },
+    {
+        label: "Drop Gaps",
+        value: "drop",
+        description: "Remove dates that still contain missing values.",
+    },
+    {
+        label: "Error",
+        value: "error",
+        description:
+            "Fail fast when a selected series contains missing values.",
+    },
+    {
+        label: "Interpolate",
+        value: "interpolate",
+        description:
+            "Linearly interpolate missing prices between observations.",
+    },
+    {
+        label: "Backfill",
+        value: "backfill",
+        description:
+            "Use the next observed price. This can introduce look-ahead bias.",
+    },
+];
+
+const COMMISSION_MODE_OPTIONS = [
+    { label: "None", value: "none" },
+    { label: "Per Share", value: "per_share" },
+    { label: "Percentage", value: "percentage" },
+] as const;
+
+const DEFAULT_COST_ASSUMPTIONS: BacktestCostAssumptions = {
+    commission_mode: "none",
+    commission_per_share: 0.001,
+    commission_bps: 1,
+    commission_minimum: 0,
+    spread_bps: 0,
+    slippage_bps: 0,
+};
+
+function getMetricTrend(
+    value: number | null | undefined,
+): "up" | "down" | "neutral" {
     if (value == null) {
         return "neutral";
     }
@@ -195,6 +251,30 @@ function buildExportBaseName(request: BacktestRequest | null): string {
     return slug ? `finbot-${slug}` : "finbot-backtest";
 }
 
+function buildWalkForwardHref(
+    request: WalkForwardHandoff | null | undefined,
+): string {
+    if (!request) {
+        return "/walk-forward";
+    }
+
+    const params = new URLSearchParams();
+    params.set("tickers", request.tickers.join(","));
+    params.set("strategy", request.strategy);
+    params.set("start_date", request.start_date);
+    params.set("end_date", request.end_date);
+    params.set("initial_cash", String(request.initial_cash));
+    params.set("train_window", String(request.train_window));
+    params.set("test_window", String(request.test_window));
+    params.set("step_size", String(request.step_size));
+    params.set("anchored", String(request.anchored));
+    params.set("include_train", String(request.include_train));
+    if (Object.keys(request.strategy_params).length > 0) {
+        params.set("strategy_params", JSON.stringify(request.strategy_params));
+    }
+    return `/walk-forward?${params.toString()}`;
+}
+
 export default function BacktestingPage() {
     const [ticker, setTicker] = useState("SPY");
     const [altTicker, setAltTicker] = useState("TLT");
@@ -214,8 +294,13 @@ export default function BacktestingPage() {
     const [withdrawalFrequency, setWithdrawalFrequency] =
         useState<RecurringCashflowRule["frequency"]>("monthly");
     const [inflationRate, setInflationRate] = useState(0.03);
-    const [oneTimeCashflows, setOneTimeCashflows] =
-        useState<OneTimeCashflowEvent[]>([]);
+    const [oneTimeCashflows, setOneTimeCashflows] = useState<
+        OneTimeCashflowEvent[]
+    >([]);
+    const [missingDataPolicy, setMissingDataPolicy] =
+        useState<MissingDataPolicy>("forward_fill");
+    const [costAssumptions, setCostAssumptions] =
+        useState<BacktestCostAssumptions>(DEFAULT_COST_ASSUMPTIONS);
     const [params, setParams] = useState<Record<string, number>>({});
     const [lastRunRequest, setLastRunRequest] =
         useState<BacktestRequest | null>(null);
@@ -315,6 +400,16 @@ export default function BacktestingPage() {
         ]);
     };
 
+    const updateCostAssumption = <K extends keyof BacktestCostAssumptions>(
+        key: K,
+        value: BacktestCostAssumptions[K],
+    ) => {
+        setCostAssumptions((current) => ({
+            ...current,
+            [key]: value,
+        }));
+    };
+
     const updateOneTimeCashflow = (
         index: number,
         patch: Partial<OneTimeCashflowEvent>,
@@ -372,6 +467,43 @@ export default function BacktestingPage() {
         const strategyParams: Record<string, unknown> = { ...params };
         let tickers: string[] = [];
         const recurringCashflows: RecurringCashflowRule[] = [];
+        const normalizedCostAssumptions: BacktestCostAssumptions = {
+            ...costAssumptions,
+            commission_per_share: Number(costAssumptions.commission_per_share),
+            commission_bps: Number(costAssumptions.commission_bps),
+            commission_minimum: Number(costAssumptions.commission_minimum),
+            spread_bps: Number(costAssumptions.spread_bps),
+            slippage_bps: Number(costAssumptions.slippage_bps),
+        };
+
+        if (
+            Object.values(normalizedCostAssumptions)
+                .filter((value) => typeof value === "number")
+                .some(
+                    (value) =>
+                        !Number.isFinite(value as number) ||
+                        (value as number) < 0,
+                )
+        ) {
+            toast.error(
+                "Cost assumptions must be finite, non-negative numbers.",
+            );
+            return null;
+        }
+        if (
+            normalizedCostAssumptions.commission_mode === "per_share" &&
+            normalizedCostAssumptions.commission_per_share <= 0
+        ) {
+            toast.error("Per-share commission must be greater than 0.");
+            return null;
+        }
+        if (
+            normalizedCostAssumptions.commission_mode === "percentage" &&
+            normalizedCostAssumptions.commission_bps <= 0
+        ) {
+            toast.error("Percentage commission must be greater than 0 bps.");
+            return null;
+        }
 
         if (recurringContribution > 0) {
             recurringCashflows.push({
@@ -407,15 +539,11 @@ export default function BacktestingPage() {
 
         for (const event of normalizedOneTimeCashflows) {
             if (!event.date) {
-                toast.error(
-                    "Each one-time cashflow needs an applied date.",
-                );
+                toast.error("Each one-time cashflow needs an applied date.");
                 return null;
             }
             if (!Number.isFinite(event.amount) || event.amount === 0) {
-                toast.error(
-                    "Each one-time cashflow needs a non-zero amount.",
-                );
+                toast.error("Each one-time cashflow needs a non-zero amount.");
                 return null;
             }
         }
@@ -511,6 +639,8 @@ export default function BacktestingPage() {
                     ? normalizedOneTimeCashflows
                     : undefined,
             inflation_rate: inflationRate,
+            missing_data_policy: missingDataPolicy,
+            cost_assumptions: normalizedCostAssumptions,
         };
     };
 
@@ -629,19 +759,38 @@ export default function BacktestingPage() {
         result?.rebalance_events ?? [];
     const rollingMetrics: RollingMetricsResponse | null | undefined =
         result?.rolling_metrics;
+    const appliedCostAssumptions: AppliedBacktestCostAssumptions | undefined =
+        result?.applied_cost_assumptions;
+    const costSummary: BacktestCostSummary | null | undefined =
+        result?.cost_summary;
+    const missingDataSummary: BacktestMissingDataSummary | undefined =
+        result?.missing_data_summary;
+    const walkForwardRequest: WalkForwardHandoff | null | undefined =
+        result?.walk_forward_request;
     const regimeReferenceTicker = result?.regime_reference_ticker;
     const regimeSummary = result?.regime_summary ?? [];
     const regimePeriods = result?.regime_periods ?? [];
     const monthlyReturns = result?.monthly_returns ?? [];
     const annualReturns = result?.annual_returns ?? [];
+    const walkForwardHref = buildWalkForwardHref(walkForwardRequest);
+    const costBySymbolRows = Object.entries(
+        costSummary?.costs_by_symbol ?? {},
+    ).map(([tickerSymbol, total]) => ({
+        ticker: tickerSymbol,
+        total_cost: total,
+    }));
     const inflationAdjustedSeries =
         realValueHistory.length > 0
             ? [
                   {
                       name: "Nominal",
-                      dates: result?.value_history?.map((r) => String(r.date)) ?? [],
+                      dates:
+                          result?.value_history?.map((r) => String(r.date)) ??
+                          [],
                       values:
-                          result?.value_history?.map((r) => r.Value as number) ?? [],
+                          result?.value_history?.map(
+                              (r) => r.Value as number,
+                          ) ?? [],
                       color: "#2563eb",
                   },
                   {
@@ -675,7 +824,8 @@ export default function BacktestingPage() {
     let targetWeightMap: Record<string, number> = {};
     const noRebalanceWeights =
         lastRunRequest?.strategy_params["equity_proportions"];
-    const rebalanceWeights = lastRunRequest?.strategy_params["rebal_proportions"];
+    const rebalanceWeights =
+        lastRunRequest?.strategy_params["rebal_proportions"];
     if (
         lastRunRequest?.strategy === "NoRebalance" &&
         Array.isArray(noRebalanceWeights)
@@ -756,6 +906,13 @@ export default function BacktestingPage() {
                 actions={
                     result ? (
                         <>
+                            {walkForwardRequest && (
+                                <Button asChild type="button" variant="outline">
+                                    <Link href={walkForwardHref}>
+                                        Continue to Walk-Forward
+                                    </Link>
+                                </Button>
+                            )}
                             <Button
                                 type="button"
                                 variant="outline"
@@ -772,7 +929,10 @@ export default function BacktestingPage() {
                             </Button>
                             <Button
                                 onClick={handleSaveExperiment}
-                                disabled={saveExperimentMutation.isPending || !lastRunRequest}
+                                disabled={
+                                    saveExperimentMutation.isPending ||
+                                    !lastRunRequest
+                                }
                                 className="bg-gradient-to-r from-emerald-600 to-emerald-500 font-medium text-white shadow-lg shadow-emerald-500/20"
                             >
                                 {saveExperimentMutation.isPending
@@ -1054,6 +1214,220 @@ export default function BacktestingPage() {
                         <div className="space-y-3 rounded-xl border border-border/50 bg-background/30 p-3">
                             <div>
                                 <Label className="text-xs text-muted-foreground">
+                                    Data and Execution Assumptions
+                                </Label>
+                                <p className="text-[11px] leading-relaxed text-muted-foreground/70">
+                                    Surface the gap-handling policy and
+                                    estimated trade frictions used to
+                                    contextualize this run.
+                                </p>
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label className="text-xs text-muted-foreground">
+                                    Missing Data Policy
+                                </Label>
+                                <Select
+                                    value={missingDataPolicy}
+                                    onValueChange={(value) =>
+                                        setMissingDataPolicy(
+                                            value as MissingDataPolicy,
+                                        )
+                                    }
+                                >
+                                    <SelectTrigger className="border-border/50 bg-background/50">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent className="border-border/50 bg-popover/95 backdrop-blur-xl">
+                                        {MISSING_DATA_POLICY_OPTIONS.map(
+                                            (option) => (
+                                                <SelectItem
+                                                    key={option.value}
+                                                    value={option.value}
+                                                >
+                                                    {option.label}
+                                                </SelectItem>
+                                            ),
+                                        )}
+                                    </SelectContent>
+                                </Select>
+                                <p className="text-[11px] leading-relaxed text-muted-foreground/70">
+                                    {
+                                        MISSING_DATA_POLICY_OPTIONS.find(
+                                            (option) =>
+                                                option.value ===
+                                                missingDataPolicy,
+                                        )?.description
+                                    }
+                                </p>
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label className="text-xs text-muted-foreground">
+                                    Commission Model
+                                </Label>
+                                <Select
+                                    value={costAssumptions.commission_mode}
+                                    onValueChange={(value) =>
+                                        updateCostAssumption(
+                                            "commission_mode",
+                                            value as BacktestCostAssumptions["commission_mode"],
+                                        )
+                                    }
+                                >
+                                    <SelectTrigger className="border-border/50 bg-background/50">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent className="border-border/50 bg-popover/95 backdrop-blur-xl">
+                                        {COMMISSION_MODE_OPTIONS.map(
+                                            (option) => (
+                                                <SelectItem
+                                                    key={option.value}
+                                                    value={option.value}
+                                                >
+                                                    {option.label}
+                                                </SelectItem>
+                                            ),
+                                        )}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            {costAssumptions.commission_mode ===
+                                "per_share" && (
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="space-y-1.5">
+                                        <Label className="text-xs text-muted-foreground">
+                                            Per Share ($)
+                                        </Label>
+                                        <Input
+                                            type="number"
+                                            min={0}
+                                            step={0.0001}
+                                            value={
+                                                costAssumptions.commission_per_share
+                                            }
+                                            onChange={(e) =>
+                                                updateCostAssumption(
+                                                    "commission_per_share",
+                                                    Number(e.target.value),
+                                                )
+                                            }
+                                            className="border-border/50 bg-background/50"
+                                        />
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <Label className="text-xs text-muted-foreground">
+                                            Minimum ($)
+                                        </Label>
+                                        <Input
+                                            type="number"
+                                            min={0}
+                                            step={0.01}
+                                            value={
+                                                costAssumptions.commission_minimum
+                                            }
+                                            onChange={(e) =>
+                                                updateCostAssumption(
+                                                    "commission_minimum",
+                                                    Number(e.target.value),
+                                                )
+                                            }
+                                            className="border-border/50 bg-background/50"
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
+                            {costAssumptions.commission_mode ===
+                                "percentage" && (
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="space-y-1.5">
+                                        <Label className="text-xs text-muted-foreground">
+                                            Commission (bps)
+                                        </Label>
+                                        <Input
+                                            type="number"
+                                            min={0}
+                                            step={0.1}
+                                            value={
+                                                costAssumptions.commission_bps
+                                            }
+                                            onChange={(e) =>
+                                                updateCostAssumption(
+                                                    "commission_bps",
+                                                    Number(e.target.value),
+                                                )
+                                            }
+                                            className="border-border/50 bg-background/50"
+                                        />
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <Label className="text-xs text-muted-foreground">
+                                            Minimum ($)
+                                        </Label>
+                                        <Input
+                                            type="number"
+                                            min={0}
+                                            step={0.01}
+                                            value={
+                                                costAssumptions.commission_minimum
+                                            }
+                                            onChange={(e) =>
+                                                updateCostAssumption(
+                                                    "commission_minimum",
+                                                    Number(e.target.value),
+                                                )
+                                            }
+                                            className="border-border/50 bg-background/50"
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="space-y-1.5">
+                                    <Label className="text-xs text-muted-foreground">
+                                        Spread (bps)
+                                    </Label>
+                                    <Input
+                                        type="number"
+                                        min={0}
+                                        step={0.1}
+                                        value={costAssumptions.spread_bps}
+                                        onChange={(e) =>
+                                            updateCostAssumption(
+                                                "spread_bps",
+                                                Number(e.target.value),
+                                            )
+                                        }
+                                        className="border-border/50 bg-background/50"
+                                    />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <Label className="text-xs text-muted-foreground">
+                                        Slippage (bps)
+                                    </Label>
+                                    <Input
+                                        type="number"
+                                        min={0}
+                                        step={0.1}
+                                        value={costAssumptions.slippage_bps}
+                                        onChange={(e) =>
+                                            updateCostAssumption(
+                                                "slippage_bps",
+                                                Number(e.target.value),
+                                            )
+                                        }
+                                        className="border-border/50 bg-background/50"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="space-y-3 rounded-xl border border-border/50 bg-background/30 p-3">
+                            <div>
+                                <Label className="text-xs text-muted-foreground">
                                     Cashflow Planning
                                 </Label>
                                 <p className="text-[11px] leading-relaxed text-muted-foreground/70">
@@ -1087,14 +1461,16 @@ export default function BacktestingPage() {
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent className="border-border/50 bg-popover/95 backdrop-blur-xl">
-                                        {CASHFLOW_FREQUENCY_OPTIONS.map((option) => (
-                                            <SelectItem
-                                                key={`contrib-${option.value}`}
-                                                value={option.value}
-                                            >
-                                                {option.label}
-                                            </SelectItem>
-                                        ))}
+                                        {CASHFLOW_FREQUENCY_OPTIONS.map(
+                                            (option) => (
+                                                <SelectItem
+                                                    key={`contrib-${option.value}`}
+                                                    value={option.value}
+                                                >
+                                                    {option.label}
+                                                </SelectItem>
+                                            ),
+                                        )}
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -1123,14 +1499,16 @@ export default function BacktestingPage() {
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent className="border-border/50 bg-popover/95 backdrop-blur-xl">
-                                        {CASHFLOW_FREQUENCY_OPTIONS.map((option) => (
-                                            <SelectItem
-                                                key={`withdraw-${option.value}`}
-                                                value={option.value}
-                                            >
-                                                {option.label}
-                                            </SelectItem>
-                                        ))}
+                                        {CASHFLOW_FREQUENCY_OPTIONS.map(
+                                            (option) => (
+                                                <SelectItem
+                                                    key={`withdraw-${option.value}`}
+                                                    value={option.value}
+                                                >
+                                                    {option.label}
+                                                </SelectItem>
+                                            ),
+                                        )}
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -1159,8 +1537,8 @@ export default function BacktestingPage() {
                                             One-Time Events
                                         </Label>
                                         <p className="text-[11px] leading-relaxed text-muted-foreground/70">
-                                            Positive amounts add capital. Negative
-                                            amounts withdraw it.
+                                            Positive amounts add capital.
+                                            Negative amounts withdraw it.
                                         </p>
                                     </div>
                                     <Button
@@ -1176,64 +1554,77 @@ export default function BacktestingPage() {
 
                                 {oneTimeCashflows.length > 0 && (
                                     <div className="space-y-2">
-                                        {oneTimeCashflows.map((event, index) => (
-                                            <div
-                                                key={`${event.date}-${index}`}
-                                                className="grid grid-cols-[132px_minmax(0,1fr)_minmax(0,1fr)_auto] gap-2"
-                                            >
-                                                <Input
-                                                    type="date"
-                                                    value={event.date}
-                                                    onChange={(e) =>
-                                                        updateOneTimeCashflow(
-                                                            index,
-                                                            { date: e.target.value },
-                                                        )
-                                                    }
-                                                    className="border-border/50 bg-background/50"
-                                                />
-                                                <Input
-                                                    type="number"
-                                                    value={event.amount}
-                                                    onChange={(e) =>
-                                                        updateOneTimeCashflow(
-                                                            index,
-                                                            {
-                                                                amount: Number(
-                                                                    e.target.value,
-                                                                ),
-                                                            },
-                                                        )
-                                                    }
-                                                    placeholder="Amount"
-                                                    className="border-border/50 bg-background/50"
-                                                />
-                                                <Input
-                                                    value={event.label ?? ""}
-                                                    onChange={(e) =>
-                                                        updateOneTimeCashflow(
-                                                            index,
-                                                            { label: e.target.value },
-                                                        )
-                                                    }
-                                                    placeholder="Optional label"
-                                                    className="border-border/50 bg-background/50"
-                                                />
-                                                <Button
-                                                    type="button"
-                                                    variant="ghost"
-                                                    size="icon-xs"
-                                                    onClick={() =>
-                                                        removeOneTimeCashflow(
-                                                            index,
-                                                        )
-                                                    }
-                                                    aria-label={`Remove cashflow event ${index + 1}`}
+                                        {oneTimeCashflows.map(
+                                            (event, index) => (
+                                                <div
+                                                    key={`${event.date}-${index}`}
+                                                    className="grid grid-cols-[132px_minmax(0,1fr)_minmax(0,1fr)_auto] gap-2"
                                                 >
-                                                    <Trash2 />
-                                                </Button>
-                                            </div>
-                                        ))}
+                                                    <Input
+                                                        type="date"
+                                                        value={event.date}
+                                                        onChange={(e) =>
+                                                            updateOneTimeCashflow(
+                                                                index,
+                                                                {
+                                                                    date: e
+                                                                        .target
+                                                                        .value,
+                                                                },
+                                                            )
+                                                        }
+                                                        className="border-border/50 bg-background/50"
+                                                    />
+                                                    <Input
+                                                        type="number"
+                                                        value={event.amount}
+                                                        onChange={(e) =>
+                                                            updateOneTimeCashflow(
+                                                                index,
+                                                                {
+                                                                    amount: Number(
+                                                                        e.target
+                                                                            .value,
+                                                                    ),
+                                                                },
+                                                            )
+                                                        }
+                                                        placeholder="Amount"
+                                                        className="border-border/50 bg-background/50"
+                                                    />
+                                                    <Input
+                                                        value={
+                                                            event.label ?? ""
+                                                        }
+                                                        onChange={(e) =>
+                                                            updateOneTimeCashflow(
+                                                                index,
+                                                                {
+                                                                    label: e
+                                                                        .target
+                                                                        .value,
+                                                                },
+                                                            )
+                                                        }
+                                                        placeholder="Optional label"
+                                                        className="border-border/50 bg-background/50"
+                                                    />
+                                                    <Button
+                                                        type="button"
+                                                        variant="ghost"
+                                                        size="icon-xs"
+                                                        onClick={() =>
+                                                            removeOneTimeCashflow(
+                                                                index,
+                                                            )
+                                                        }
+                                                        aria-label={`Remove cashflow event ${index + 1}`}
+                                                    >
+                                                        <Trash2 />
+                                                    </Button>
+                                                </div>
+                                            ),
+                                        )}
                                     </div>
                                 )}
                             </div>
@@ -1358,6 +1749,158 @@ export default function BacktestingPage() {
                             </ChartCard>
                         )}
 
+                        {costSummary && appliedCostAssumptions && (
+                            <>
+                                <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                                    <StatCard
+                                        label="Estimated Costs"
+                                        value={formatCurrencyPrecise(
+                                            costSummary.total_costs,
+                                        )}
+                                        trend="down"
+                                    />
+                                    <StatCard
+                                        label="Commission"
+                                        value={formatCurrencyPrecise(
+                                            costSummary.total_commission,
+                                        )}
+                                        trend="down"
+                                    />
+                                    <StatCard
+                                        label="Spread"
+                                        value={formatCurrencyPrecise(
+                                            costSummary.total_spread,
+                                        )}
+                                        trend="down"
+                                    />
+                                    <StatCard
+                                        label="Slippage"
+                                        value={formatCurrencyPrecise(
+                                            costSummary.total_slippage,
+                                        )}
+                                        trend="down"
+                                    />
+                                </div>
+
+                                <ChartCard title="Execution Frictions">
+                                    <DataTable
+                                        columns={[
+                                            { key: "field", label: "Field" },
+                                            { key: "value", label: "Value" },
+                                        ]}
+                                        data={[
+                                            {
+                                                field: "Commission Model",
+                                                value: appliedCostAssumptions.commission_label,
+                                            },
+                                            {
+                                                field: "Spread Model",
+                                                value: appliedCostAssumptions.spread_label,
+                                            },
+                                            {
+                                                field: "Slippage Model",
+                                                value: appliedCostAssumptions.slippage_label,
+                                            },
+                                            {
+                                                field: "Equity Curve Impact",
+                                                value: appliedCostAssumptions.estimated_only
+                                                    ? "Estimated separately from the equity curve"
+                                                    : "Applied directly to the equity curve",
+                                            },
+                                        ]}
+                                    />
+                                </ChartCard>
+
+                                {costBySymbolRows.length > 0 && (
+                                    <ChartCard title="Estimated Costs by Symbol">
+                                        <DataTable
+                                            columns={[
+                                                {
+                                                    key: "ticker",
+                                                    label: "Ticker",
+                                                },
+                                                {
+                                                    key: "total_cost",
+                                                    label: "Estimated Cost",
+                                                    format: (value) =>
+                                                        formatCurrencyPrecise(
+                                                            value as
+                                                                | number
+                                                                | null,
+                                                        ),
+                                                },
+                                            ]}
+                                            data={costBySymbolRows}
+                                        />
+                                    </ChartCard>
+                                )}
+                            </>
+                        )}
+
+                        {missingDataSummary && (
+                            <ChartCard title="Missing Data Handling">
+                                <div className="mb-3 space-y-1 text-sm text-muted-foreground">
+                                    <p>Policy: {missingDataSummary.policy}</p>
+                                    {missingDataSummary.note && (
+                                        <p>{missingDataSummary.note}</p>
+                                    )}
+                                </div>
+                                <DataTable
+                                    columns={[
+                                        { key: "ticker", label: "Ticker" },
+                                        {
+                                            key: "had_missing_data",
+                                            label: "Had Gaps",
+                                            format: (value) =>
+                                                value ? "Yes" : "No",
+                                        },
+                                        {
+                                            key: "missing_rows",
+                                            label: "Missing Rows",
+                                        },
+                                        {
+                                            key: "missing_cells",
+                                            label: "Missing Cells",
+                                        },
+                                        {
+                                            key: "rows_dropped",
+                                            label: "Rows Dropped",
+                                        },
+                                        {
+                                            key: "remaining_missing_cells",
+                                            label: "Remaining Gaps",
+                                        },
+                                    ]}
+                                    data={missingDataSummary.tickers}
+                                />
+                            </ChartCard>
+                        )}
+
+                        {walkForwardRequest && (
+                            <ChartCard title="Walk-Forward Follow-Up">
+                                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                                    <div className="space-y-1">
+                                        <p className="text-sm text-muted-foreground">
+                                            {walkForwardRequest.reason}
+                                        </p>
+                                        <p className="text-xs text-muted-foreground/70">
+                                            Suggested windows: train{" "}
+                                            {walkForwardRequest.train_window}{" "}
+                                            days, test{" "}
+                                            {walkForwardRequest.test_window}{" "}
+                                            days, step{" "}
+                                            {walkForwardRequest.step_size} days.
+                                        </p>
+                                    </div>
+                                    <Button asChild>
+                                        <Link href={walkForwardHref}>
+                                            Open Walk-Forward Analysis
+                                        </Link>
+                                    </Button>
+                                </div>
+                            </ChartCard>
+                        )}
+
                         {withdrawalDurability && (
                             <>
                                 <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -1433,8 +1976,14 @@ export default function BacktestingPage() {
                                                             String(value),
                                                         ).toLocaleDateString(),
                                                 },
-                                                { key: "label", label: "Label" },
-                                                { key: "source", label: "Type" },
+                                                {
+                                                    key: "label",
+                                                    label: "Label",
+                                                },
+                                                {
+                                                    key: "source",
+                                                    label: "Type",
+                                                },
                                                 {
                                                     key: "direction",
                                                     label: "Direction",
@@ -1444,7 +1993,9 @@ export default function BacktestingPage() {
                                                     label: "Amount",
                                                     format: (value) =>
                                                         formatCurrencyPrecise(
-                                                            value as number | null,
+                                                            value as
+                                                                | number
+                                                                | null,
                                                         ),
                                                 },
                                                 {
@@ -1452,7 +2003,9 @@ export default function BacktestingPage() {
                                                     label: "Cash After",
                                                     format: (value) =>
                                                         formatCurrencyPrecise(
-                                                            value as number | null,
+                                                            value as
+                                                                | number
+                                                                | null,
                                                         ),
                                                 },
                                                 {
@@ -1460,7 +2013,9 @@ export default function BacktestingPage() {
                                                     label: "Portfolio After",
                                                     format: (value) =>
                                                         formatCurrencyPrecise(
-                                                            value as number | null,
+                                                            value as
+                                                                | number
+                                                                | null,
                                                         ),
                                                 },
                                             ]}
@@ -1544,9 +2099,7 @@ export default function BacktestingPage() {
                                 <LightweightChart
                                     series={comparisonChartSeries}
                                     height={400}
-                                    type={
-                                        benchmarkStats ? "line" : "area"
-                                    }
+                                    type={benchmarkStats ? "line" : "area"}
                                 />
                             </ChartCard>
                         )}
@@ -1710,7 +2263,12 @@ export default function BacktestingPage() {
                                         title={`Rolling Diagnostics (${rollingMetrics.window}-day)`}
                                     >
                                         <LineChartWrapper
-                                            data={rollingChartData as Record<string, unknown>[]}
+                                            data={
+                                                rollingChartData as Record<
+                                                    string,
+                                                    unknown
+                                                >[]
+                                            }
                                             xKey="date"
                                             series={[
                                                 {
@@ -1792,7 +2350,9 @@ export default function BacktestingPage() {
                                                 ),
                                         },
                                     ]}
-                                    data={regimeSummary as BacktestRegimeSummary[]}
+                                    data={
+                                        regimeSummary as BacktestRegimeSummary[]
+                                    }
                                 />
                             </ChartCard>
                         )}
@@ -1852,7 +2412,9 @@ export default function BacktestingPage() {
                                                 ),
                                         },
                                     ]}
-                                    data={regimePeriods as BacktestRegimePeriod[]}
+                                    data={
+                                        regimePeriods as BacktestRegimePeriod[]
+                                    }
                                 />
                             </ChartCard>
                         )}
@@ -1863,17 +2425,19 @@ export default function BacktestingPage() {
                                     <LineChartWrapper
                                         data={allocationChartData}
                                         xKey="date"
-                                        series={allocationSeriesKeys.map((key, index) => ({
-                                            key,
-                                            color:
-                                                index === 0
-                                                    ? "#2563eb"
-                                                    : index === 1
-                                                      ? "#16a34a"
-                                                      : index === 2
-                                                        ? "#f97316"
-                                                        : undefined,
-                                        }))}
+                                        series={allocationSeriesKeys.map(
+                                            (key, index) => ({
+                                                key,
+                                                color:
+                                                    index === 0
+                                                        ? "#2563eb"
+                                                        : index === 1
+                                                          ? "#16a34a"
+                                                          : index === 2
+                                                            ? "#f97316"
+                                                            : undefined,
+                                            }),
+                                        )}
                                         height={360}
                                     />
                                 </ChartCard>
@@ -1882,13 +2446,18 @@ export default function BacktestingPage() {
                                     <ChartCard title="Allocation Drift Summary">
                                         <DataTable
                                             columns={[
-                                                { key: "ticker", label: "Ticker" },
+                                                {
+                                                    key: "ticker",
+                                                    label: "Ticker",
+                                                },
                                                 {
                                                     key: "target_weight",
                                                     label: "Target",
                                                     format: (value) =>
                                                         formatPercent(
-                                                            value as number | null,
+                                                            value as
+                                                                | number
+                                                                | null,
                                                         ),
                                                 },
                                                 {
@@ -1896,7 +2465,9 @@ export default function BacktestingPage() {
                                                     label: "Latest",
                                                     format: (value) =>
                                                         formatPercent(
-                                                            value as number | null,
+                                                            value as
+                                                                | number
+                                                                | null,
                                                         ),
                                                 },
                                                 {
@@ -1904,7 +2475,9 @@ export default function BacktestingPage() {
                                                     label: "Max Drift",
                                                     format: (value) =>
                                                         formatPercent(
-                                                            value as number | null,
+                                                            value as
+                                                                | number
+                                                                | null,
                                                         ),
                                                 },
                                             ]}

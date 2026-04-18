@@ -6,7 +6,10 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
+from finbot.core.contracts.missing_data import DEFAULT_MISSING_DATA_POLICY, MissingDataPolicy
 from web.backend.schemas.portfolio_analytics import RollingMetricsResponse
+
+CommissionMode = Literal["none", "per_share", "percentage"]
 
 
 class StrategyParam(BaseModel):
@@ -28,6 +31,88 @@ class StrategyInfo(BaseModel):
     min_assets: int = 1
 
 
+class BacktestCostAssumptions(BaseModel):
+    """User-configurable execution friction assumptions for a web backtest."""
+
+    commission_mode: CommissionMode = "none"
+    commission_per_share: float = Field(default=0.0, ge=0.0)
+    commission_bps: float = Field(default=0.0, ge=0.0)
+    commission_minimum: float = Field(default=0.0, ge=0.0)
+    spread_bps: float = Field(default=0.0, ge=0.0)
+    slippage_bps: float = Field(default=0.0, ge=0.0)
+
+
+class AppliedBacktestCostAssumptions(BacktestCostAssumptions):
+    """Resolved cost assumptions returned alongside a run result."""
+
+    commission_label: str
+    spread_label: str
+    slippage_label: str
+    estimated_only: bool = True
+
+
+class BacktestCostEventRecord(BaseModel):
+    """A single estimated trading-cost event derived from an executed trade."""
+
+    timestamp: str
+    ticker: str
+    cost_type: Literal["commission", "spread", "slippage", "borrow", "market_impact"]
+    amount: float
+    basis: str
+
+
+class BacktestCostSummary(BaseModel):
+    """Estimated trade-cost totals for the completed backtest."""
+
+    total_commission: float = 0.0
+    total_spread: float = 0.0
+    total_slippage: float = 0.0
+    total_costs: float = 0.0
+    costs_by_symbol: dict[str, float] = Field(default_factory=dict)
+    cost_events: list[BacktestCostEventRecord] = Field(default_factory=list)
+
+
+class MissingDataTickerSummary(BaseModel):
+    """Per-ticker summary of detected gaps before applying the chosen policy."""
+
+    ticker: str
+    rows_before: int
+    rows_after: int
+    rows_dropped: int
+    missing_rows: int
+    missing_cells: int
+    remaining_missing_cells: int
+    had_missing_data: bool
+
+
+class BacktestMissingDataSummary(BaseModel):
+    """Summary of how missing data was handled for this run."""
+
+    policy: MissingDataPolicy = DEFAULT_MISSING_DATA_POLICY
+    total_missing_rows: int = 0
+    total_missing_cells: int = 0
+    remaining_missing_cells: int = 0
+    note: str | None = None
+    tickers: list[MissingDataTickerSummary] = Field(default_factory=list)
+
+
+class WalkForwardHandoff(BaseModel):
+    """Prefilled walk-forward configuration derived from a completed backtest."""
+
+    tickers: list[str] = Field(min_length=1)
+    strategy: str
+    strategy_params: dict[str, Any] = Field(default_factory=dict)
+    start_date: str
+    end_date: str
+    initial_cash: float
+    train_window: int
+    test_window: int
+    step_size: int
+    anchored: bool = False
+    include_train: bool = False
+    reason: str
+
+
 class BacktestRequest(BaseModel):
     """Request to run a backtest."""
 
@@ -39,9 +124,11 @@ class BacktestRequest(BaseModel):
     initial_cash: float = 10000.0
     benchmark_ticker: str | None = None
     risk_free_rate: float = 0.04
-    recurring_cashflows: list["RecurringCashflowRule"] = Field(default_factory=list)
-    one_time_cashflows: list["OneTimeCashflowEvent"] = Field(default_factory=list)
+    recurring_cashflows: list[RecurringCashflowRule] = Field(default_factory=list)
+    one_time_cashflows: list[OneTimeCashflowEvent] = Field(default_factory=list)
     inflation_rate: float = 0.0
+    missing_data_policy: MissingDataPolicy = DEFAULT_MISSING_DATA_POLICY
+    cost_assumptions: BacktestCostAssumptions = Field(default_factory=BacktestCostAssumptions)
 
 
 class RecurringCashflowRule(BaseModel):
@@ -169,6 +256,9 @@ class BacktestResponse(BaseModel):
     stats: dict[str, Any]
     value_history: list[dict[str, Any]]
     trades: list[TradeRecord]
+    applied_cost_assumptions: AppliedBacktestCostAssumptions
+    cost_summary: BacktestCostSummary | None = None
+    missing_data_summary: BacktestMissingDataSummary
     benchmark_stats: BacktestBenchmarkStats | None = None
     benchmark_value_history: list[dict[str, Any]] = Field(default_factory=list)
     rolling_metrics: RollingMetricsResponse | None = None
@@ -182,3 +272,4 @@ class BacktestResponse(BaseModel):
     rebalance_events: list[RebalanceEventRecord] = Field(default_factory=list)
     monthly_returns: list[ReturnTableRow] = Field(default_factory=list)
     annual_returns: list[ReturnTableRow] = Field(default_factory=list)
+    walk_forward_request: WalkForwardHandoff | None = None

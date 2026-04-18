@@ -2,6 +2,10 @@
 
 The DCA (Dollar Cost Averaging) optimizer sweeps front-loading ratios, DCA durations, purchase intervals, and trial windows for a single price series.
 
+This page documents the DCA-specific optimizer. Finbot's broader optimization
+surface also includes `pareto_optimizer` for multi-objective strategy sweeps
+and `efficient_frontier` for long-only portfolio trade-off analysis.
+
 ## Overview
 
 The optimizer:
@@ -226,4 +230,6 @@ results = process_map(_mp_helper, params_list, chunksize=1000)
 - [Research: DCA Optimization Findings](../../../research/dca-optimization.md) - Detailed research results
 - [Monte Carlo Simulator](../simulation/monte-carlo.md) - Forward-looking risk analysis
 - [Trading Strategies](../backtesting/strategies.md) - Related backtesting context
+- `finbot.services.optimization.pareto_optimizer` - Multi-objective backtest comparison
+- `finbot.services.optimization.efficient_frontier` - Historical long-only frontier sampling
 - [Performance Benchmarks](https://github.com/jerdaw/finbot/blob/main/docs/benchmarks.md) - Optimization performance analysis

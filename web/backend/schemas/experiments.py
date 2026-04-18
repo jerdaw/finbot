@@ -4,7 +4,10 @@ from __future__ import annotations
 
 from typing import Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+from finbot.core.contracts.missing_data import DEFAULT_MISSING_DATA_POLICY, MissingDataPolicy
+from web.backend.schemas.backtesting import BacktestCostAssumptions
 
 
 class ExperimentSummary(BaseModel):
@@ -42,6 +45,8 @@ class SaveExperimentRequest(BaseModel):
     initial_cash: float = 10000.0
     benchmark_ticker: str | None = None
     risk_free_rate: float = 0.04
+    missing_data_policy: MissingDataPolicy = DEFAULT_MISSING_DATA_POLICY
+    cost_assumptions: BacktestCostAssumptions = Field(default_factory=BacktestCostAssumptions)
     stats: dict[str, Any]
 
 

@@ -11,9 +11,20 @@ import numpy as np
 import pandas as pd
 from fastapi import APIRouter, HTTPException
 
+from finbot.core.contracts.missing_data import MissingDataPolicy
 from finbot.core.contracts.regime import MarketRegime, RegimeConfig
 from finbot.services.backtesting.backtest_runner import BacktestRunner
 from finbot.services.backtesting.brokers.commission_schemes import CommInfo_NoCommission
+from finbot.services.backtesting.costs import (
+    FixedSlippage,
+    FixedSpread,
+    FlatCommission,
+    PercentageCommission,
+    ZeroCommission,
+    ZeroSlippage,
+    ZeroSpread,
+    build_cost_summary_from_trades,
+)
 from finbot.services.backtesting.regime import SimpleRegimeDetector, segment_by_regime
 from finbot.services.backtesting.strategies.dip_buy_sma import DipBuySMA
 from finbot.services.backtesting.strategies.dip_buy_stdev import DipBuyStdev
@@ -31,17 +42,24 @@ from finbot.services.portfolio_analytics.benchmark import compute_benchmark_comp
 from finbot.services.portfolio_analytics.rolling import compute_rolling_metrics
 from finbot.utils.data_collection_utils.yfinance.get_history import get_history
 from web.backend.schemas.backtesting import (
+    AppliedBacktestCostAssumptions,
     BacktestBenchmarkStats,
-    CashflowEventRecord,
+    BacktestCostAssumptions,
+    BacktestCostEventRecord,
+    BacktestCostSummary,
+    BacktestMissingDataSummary,
     BacktestRegimePeriod,
     BacktestRegimeSummary,
     BacktestRequest,
     BacktestResponse,
+    CashflowEventRecord,
+    MissingDataTickerSummary,
     RebalanceEventRecord,
     ReturnTableRow,
     StrategyInfo,
     StrategyParam,
     TradeRecord,
+    WalkForwardHandoff,
     WithdrawalDurabilitySummary,
 )
 from web.backend.schemas.portfolio_analytics import RollingMetricsResponse
@@ -190,11 +208,71 @@ def _filter_price_history(
     return filtered
 
 
-def _load_close_series(
+def _missing_data_policy_note(policy: MissingDataPolicy) -> str | None:
+    if policy == MissingDataPolicy.FORWARD_FILL:
+        return "Forward fill carries the last observed price across gaps."
+    if policy == MissingDataPolicy.DROP:
+        return "Drop removes any dates that still contain gaps in the selected history."
+    if policy == MissingDataPolicy.ERROR:
+        return "Error fails fast when any missing values are detected."
+    if policy == MissingDataPolicy.INTERPOLATE:
+        return "Interpolate linearly fills gaps between observed prices."
+    if policy == MissingDataPolicy.BACKFILL:
+        return "Backfill uses future prices and can introduce look-ahead bias."
+    return None
+
+
+def _apply_missing_data_policy(
+    df: pd.DataFrame,
+    *,
+    ticker: str,
+    policy: MissingDataPolicy,
+) -> tuple[pd.DataFrame, MissingDataTickerSummary]:
+    missing_mask = df.isnull()
+    missing_cells = int(missing_mask.sum().sum()) if not df.empty else 0
+    missing_rows = int(missing_mask.any(axis=1).sum()) if not df.empty else 0
+
+    if policy == MissingDataPolicy.FORWARD_FILL:
+        processed = df.ffill()
+    elif policy == MissingDataPolicy.DROP:
+        processed = df.dropna()
+    elif policy == MissingDataPolicy.ERROR:
+        if missing_cells > 0:
+            null_counts = df.isnull().sum()
+            null_cols = null_counts[null_counts > 0].to_dict()
+            raise HTTPException(
+                status_code=400,
+                detail=f"Missing data detected in {ticker} with policy=ERROR. Null counts by column: {null_cols}",
+            )
+        processed = df
+    elif policy == MissingDataPolicy.INTERPOLATE:
+        processed = df.interpolate(method="linear")
+    elif policy == MissingDataPolicy.BACKFILL:
+        processed = df.bfill()
+    else:
+        raise HTTPException(status_code=400, detail=f"Unknown missing data policy: {policy}")
+
+    remaining_missing_cells = int(processed.isnull().sum().sum()) if not processed.empty else 0
+    summary = MissingDataTickerSummary(
+        ticker=ticker,
+        rows_before=len(df),
+        rows_after=len(processed),
+        rows_dropped=max(0, len(df) - len(processed)),
+        missing_rows=missing_rows,
+        missing_cells=missing_cells,
+        remaining_missing_cells=remaining_missing_cells,
+        had_missing_data=missing_cells > 0,
+    )
+    return processed, summary
+
+
+def _load_price_history(
     ticker: str,
     start_date: str | None = None,
     end_date: str | None = None,
-) -> pd.Series:
+    *,
+    missing_data_policy: MissingDataPolicy,
+) -> tuple[pd.DataFrame, MissingDataTickerSummary]:
     try:
         df = get_history(ticker.upper())
     except Exception as exc:
@@ -203,11 +281,172 @@ def _load_close_series(
     if df is None or df.empty:
         raise HTTPException(status_code=400, detail=f"No price data available for {ticker}")
 
-    series = _filter_price_history(df, start_date, end_date)["Close"]
+    filtered = _filter_price_history(df, start_date, end_date)
+    if filtered.empty:
+        raise HTTPException(status_code=400, detail=f"Insufficient price data for {ticker} after filtering")
+
+    processed, summary = _apply_missing_data_policy(
+        filtered,
+        ticker=ticker.upper(),
+        policy=missing_data_policy,
+    )
+    if processed.empty:
+        raise HTTPException(status_code=400, detail=f"No usable price data remains for {ticker} after applying policy")
+
+    return processed, summary
+
+
+def _load_close_series(
+    ticker: str,
+    start_date: str | None = None,
+    end_date: str | None = None,
+    *,
+    missing_data_policy: MissingDataPolicy,
+) -> pd.Series:
+    df, _summary = _load_price_history(
+        ticker,
+        start_date,
+        end_date,
+        missing_data_policy=missing_data_policy,
+    )
+    series = df["Close"]
     if series.empty:
         raise HTTPException(status_code=400, detail=f"Insufficient price data for {ticker} after filtering")
 
     return series.astype(float)
+
+
+def _build_cost_models(cost_assumptions: BacktestCostAssumptions) -> tuple[Any, Any, Any]:
+    if cost_assumptions.commission_mode == "per_share":
+        commission_model = FlatCommission(
+            per_share=cost_assumptions.commission_per_share,
+            min_commission=cost_assumptions.commission_minimum,
+        )
+    elif cost_assumptions.commission_mode == "percentage":
+        commission_model = PercentageCommission(
+            rate=cost_assumptions.commission_bps / 10000.0,
+            min_commission=cost_assumptions.commission_minimum,
+        )
+    else:
+        commission_model = ZeroCommission()
+
+    spread_model = FixedSpread(cost_assumptions.spread_bps) if cost_assumptions.spread_bps > 0 else ZeroSpread()
+    slippage_model = (
+        FixedSlippage(cost_assumptions.slippage_bps) if cost_assumptions.slippage_bps > 0 else ZeroSlippage()
+    )
+    return commission_model, spread_model, slippage_model
+
+
+def _build_applied_cost_assumptions(cost_assumptions: BacktestCostAssumptions) -> AppliedBacktestCostAssumptions:
+    commission_model, spread_model, slippage_model = _build_cost_models(cost_assumptions)
+    return AppliedBacktestCostAssumptions(
+        commission_mode=cost_assumptions.commission_mode,
+        commission_per_share=cost_assumptions.commission_per_share,
+        commission_bps=cost_assumptions.commission_bps,
+        commission_minimum=cost_assumptions.commission_minimum,
+        spread_bps=cost_assumptions.spread_bps,
+        slippage_bps=cost_assumptions.slippage_bps,
+        commission_label=commission_model.get_name(),
+        spread_label=spread_model.get_name(),
+        slippage_label=slippage_model.get_name(),
+        estimated_only=True,
+    )
+
+
+def _build_cost_summary(
+    raw_trades: list[Any],
+    cost_assumptions: BacktestCostAssumptions,
+) -> BacktestCostSummary:
+    commission_model, spread_model, slippage_model = _build_cost_models(cost_assumptions)
+    summary = build_cost_summary_from_trades(
+        raw_trades,
+        commission_model=commission_model,
+        spread_model=spread_model,
+        slippage_model=slippage_model,
+    )
+    return BacktestCostSummary(
+        total_commission=sanitize_value(summary.total_commission) or 0.0,
+        total_spread=sanitize_value(summary.total_spread) or 0.0,
+        total_slippage=sanitize_value(summary.total_slippage) or 0.0,
+        total_costs=sanitize_value(summary.total_costs) or 0.0,
+        costs_by_symbol={symbol: sanitize_value(value) or 0.0 for symbol, value in summary.costs_by_symbol().items()},
+        cost_events=[
+            BacktestCostEventRecord(
+                timestamp=event.timestamp.isoformat(),
+                ticker=event.symbol,
+                cost_type=event.cost_type.value,
+                amount=event.amount,
+                basis=event.basis,
+            )
+            for event in summary.cost_events
+        ],
+    )
+
+
+def _build_missing_data_summary(
+    policy: MissingDataPolicy,
+    ticker_summaries: list[MissingDataTickerSummary],
+) -> BacktestMissingDataSummary:
+    return BacktestMissingDataSummary(
+        policy=policy,
+        total_missing_rows=sum(summary.missing_rows for summary in ticker_summaries),
+        total_missing_cells=sum(summary.missing_cells for summary in ticker_summaries),
+        remaining_missing_cells=sum(summary.remaining_missing_cells for summary in ticker_summaries),
+        note=_missing_data_policy_note(policy),
+        tickers=ticker_summaries,
+    )
+
+
+def _suggest_walk_forward_windows(observation_count: int) -> tuple[int, int, int] | None:
+    if observation_count < 26:
+        return None
+
+    test_window = min(126, max(21, observation_count // 6))
+    train_window = min(504, max(63, observation_count - (test_window * 2)))
+    if train_window + test_window > observation_count:
+        train_window = observation_count - test_window
+    if train_window < 21:
+        test_window = max(5, min(126, observation_count // 4))
+        train_window = observation_count - test_window
+    if train_window < 21 or test_window < 5 or train_window + test_window > observation_count:
+        return None
+
+    step_size = max(1, min(63, max(5, test_window // 2)))
+    return train_window, test_window, step_size
+
+
+def _build_walk_forward_handoff(
+    *,
+    req: BacktestRequest,
+    cleaned_tickers: list[str],
+    strat_kwargs: dict[str, Any],
+    value_history: pd.DataFrame,
+) -> WalkForwardHandoff | None:
+    if value_history is None or value_history.empty:
+        return None
+
+    suggested_windows = _suggest_walk_forward_windows(len(value_history.index))
+    if suggested_windows is None:
+        return None
+
+    train_window, test_window, step_size = suggested_windows
+    start_date = req.start_date or pd.Timestamp(value_history.index[0]).date().isoformat()
+    end_date = req.end_date or pd.Timestamp(value_history.index[-1]).date().isoformat()
+
+    return WalkForwardHandoff(
+        tickers=cleaned_tickers,
+        strategy=req.strategy,
+        strategy_params={key: sanitize_value(value) for key, value in strat_kwargs.items()},
+        start_date=start_date,
+        end_date=end_date,
+        initial_cash=req.initial_cash,
+        train_window=train_window,
+        test_window=test_window,
+        step_size=step_size,
+        anchored=False,
+        include_train=False,
+        reason="Carry this exact backtest configuration into rolling out-of-sample walk-forward analysis.",
+    )
 
 
 def _build_benchmark_response(
@@ -217,6 +456,7 @@ def _build_benchmark_response(
     start_date: str | None,
     end_date: str | None,
     risk_free_rate: float,
+    missing_data_policy: MissingDataPolicy,
 ) -> tuple[BacktestBenchmarkStats, list[dict[str, Any]]]:
     if value_history is None or value_history.empty or "Value" not in value_history.columns:
         raise HTTPException(status_code=500, detail="Backtest did not produce a usable value history")
@@ -225,7 +465,12 @@ def _build_benchmark_response(
     if len(portfolio_series) < 30:
         raise HTTPException(status_code=400, detail="Insufficient backtest observations for benchmark comparison")
 
-    benchmark_series = _load_close_series(benchmark_ticker, start_date, end_date)
+    benchmark_series = _load_close_series(
+        benchmark_ticker,
+        start_date,
+        end_date,
+        missing_data_policy=missing_data_policy,
+    )
 
     common_idx = portfolio_series.index.intersection(benchmark_series.index)
     if len(common_idx) < 30:
@@ -419,7 +664,9 @@ def _build_rebalance_events(
         trades = grouped[trade_date]
         symbols = sorted({str(getattr(trade, "symbol", "")) for trade in trades if getattr(trade, "symbol", "")})
         gross_trade_value = sum(abs(float(getattr(trade, "value", 0.0))) for trade in trades)
-        net_trade_value = sum(float(getattr(trade, "size", 0.0)) * float(getattr(trade, "price", 0.0)) for trade in trades)
+        net_trade_value = sum(
+            float(getattr(trade, "size", 0.0)) * float(getattr(trade, "price", 0.0)) for trade in trades
+        )
 
         event_type = "trade"
         if index == 0 and strategy_name in {"NoRebalance", "Rebalance"}:
@@ -457,6 +704,7 @@ def _build_rolling_metrics_response(
     start_date: str | None,
     end_date: str | None,
     risk_free_rate: float,
+    missing_data_policy: MissingDataPolicy,
     default_window: int = 63,
 ) -> RollingMetricsResponse | None:
     if value_history is None or value_history.empty or "Value" not in value_history.columns:
@@ -471,7 +719,16 @@ def _build_rolling_metrics_response(
     rolling_index = portfolio_returns.index
     if benchmark_ticker is not None:
         try:
-            benchmark_returns = _load_close_series(benchmark_ticker, start_date, end_date).pct_change().dropna()
+            benchmark_returns = (
+                _load_close_series(
+                    benchmark_ticker,
+                    start_date,
+                    end_date,
+                    missing_data_policy=missing_data_policy,
+                )
+                .pct_change()
+                .dropna()
+            )
         except HTTPException:
             return None
         common_idx = portfolio_returns.index.intersection(benchmark_returns.index)
@@ -521,55 +778,40 @@ def _build_rolling_metrics_response(
     )
 
 
-def _build_regime_response(
+def _load_regime_market_history(
     *,
     price_histories: dict[str, pd.DataFrame],
-    value_history: pd.DataFrame,
     primary_ticker: str,
     benchmark_ticker: str | None,
     start_date: str | None,
     end_date: str | None,
-) -> tuple[str | None, list[BacktestRegimeSummary], list[BacktestRegimePeriod]]:
-    if value_history is None or value_history.empty or "Value" not in value_history.columns:
-        return None, [], []
-
+    missing_data_policy: MissingDataPolicy,
+) -> tuple[str, pd.DataFrame | None]:
     reference_ticker = benchmark_ticker or primary_ticker
     market_df = price_histories.get(reference_ticker)
     if market_df is None:
         try:
-            market_df = get_history(reference_ticker)
+            market_df, _summary = _load_price_history(
+                reference_ticker,
+                start_date,
+                end_date,
+                missing_data_policy=missing_data_policy,
+            )
         except Exception:
-            return reference_ticker, [], []
+            return reference_ticker, None
 
     if market_df is None or market_df.empty:
-        return reference_ticker, [], []
+        return reference_ticker, None
 
     filtered_market_df = _filter_price_history(market_df, start_date, end_date)
     if filtered_market_df.empty:
-        return reference_ticker, [], []
+        return reference_ticker, None
 
-    equity_curve = value_history["Value"].dropna().astype(float).sort_index()
-    if len(equity_curve) < 2:
-        return reference_ticker, [], []
+    return reference_ticker, filtered_market_df
 
-    detector = SimpleRegimeDetector()
-    config = RegimeConfig()
-    try:
-        periods = detector.detect(filtered_market_df, config)
-        if not periods:
-            return reference_ticker, [], []
 
-        regime_metrics = segment_by_regime(
-            None,
-            filtered_market_df,
-            detector=detector,
-            config=config,
-            equity_curve=equity_curve,
-        )
-    except ValueError:
-        return reference_ticker, [], []
-
-    summary_rows = [
+def _build_regime_summary_rows(regime_metrics: dict[MarketRegime, Any]) -> list[BacktestRegimeSummary]:
+    return [
         BacktestRegimeSummary(
             regime=regime.value,
             count_periods=regime_metrics[regime].count_periods,
@@ -582,6 +824,8 @@ def _build_regime_response(
         for regime in MarketRegime
     ]
 
+
+def _build_regime_period_rows(periods: list[Any], equity_curve: pd.Series) -> list[BacktestRegimePeriod]:
     period_rows: list[BacktestRegimePeriod] = []
     for period in periods:
         slice_ = equity_curve[(equity_curve.index >= period.start) & (equity_curve.index <= period.end)]
@@ -606,7 +850,59 @@ def _build_regime_response(
             )
         )
 
-    return reference_ticker, summary_rows, period_rows
+    return period_rows
+
+
+def _build_regime_response(
+    *,
+    price_histories: dict[str, pd.DataFrame],
+    value_history: pd.DataFrame,
+    primary_ticker: str,
+    benchmark_ticker: str | None,
+    start_date: str | None,
+    end_date: str | None,
+    missing_data_policy: MissingDataPolicy,
+) -> tuple[str | None, list[BacktestRegimeSummary], list[BacktestRegimePeriod]]:
+    if value_history is None or value_history.empty or "Value" not in value_history.columns:
+        return None, [], []
+
+    reference_ticker, filtered_market_df = _load_regime_market_history(
+        price_histories=price_histories,
+        primary_ticker=primary_ticker,
+        benchmark_ticker=benchmark_ticker,
+        start_date=start_date,
+        end_date=end_date,
+        missing_data_policy=missing_data_policy,
+    )
+    if filtered_market_df is None:
+        return reference_ticker, [], []
+
+    equity_curve = value_history["Value"].dropna().astype(float).sort_index()
+    if len(equity_curve) < 2:
+        return reference_ticker, [], []
+
+    detector = SimpleRegimeDetector()
+    config = RegimeConfig()
+    try:
+        periods = detector.detect(filtered_market_df, config)
+        if not periods:
+            return reference_ticker, [], []
+
+        regime_metrics = segment_by_regime(
+            None,
+            filtered_market_df,
+            detector=detector,
+            config=config,
+            equity_curve=equity_curve,
+        )
+    except ValueError:
+        return reference_ticker, [], []
+
+    return (
+        reference_ticker,
+        _build_regime_summary_rows(regime_metrics),
+        _build_regime_period_rows(periods, equity_curve),
+    )
 
 
 def _validate_tickers(tickers: list[str]) -> list[str]:
@@ -624,7 +920,7 @@ def _validate_allocation_weights(
     ticker_count: int,
     field_name: str,
 ) -> list[float]:
-    if not isinstance(proportions, (list, tuple)):
+    if not isinstance(proportions, list | tuple):
         raise HTTPException(status_code=400, detail=f"{field_name} must be a list of weights")
 
     try:
@@ -642,10 +938,11 @@ def _validate_allocation_weights(
     return weights
 
 
-def _validate_request(req: BacktestRequest, strat_kwargs: dict[str, Any]) -> tuple[list[str], dict[str, Any]]:
-    cleaned_tickers = _validate_tickers(req.tickers)
+def _validate_strategy_asset_requirements(
+    req: BacktestRequest,
+    cleaned_tickers: list[str],
+) -> None:
     strategy_info = STRATEGY_INFO_BY_NAME[req.strategy]
-
     if len(cleaned_tickers) < strategy_info.min_assets:
         raise HTTPException(
             status_code=400,
@@ -655,27 +952,57 @@ def _validate_request(req: BacktestRequest, strat_kwargs: dict[str, Any]) -> tup
     if req.strategy == "DualMomentum" and len(cleaned_tickers) != 2:
         raise HTTPException(status_code=400, detail="DualMomentum requires exactly 2 assets")
 
+
+def _validate_request_metadata(req: BacktestRequest) -> None:
     if req.benchmark_ticker is not None and not req.benchmark_ticker.strip():
         raise HTTPException(status_code=400, detail="benchmark_ticker must not be empty")
 
+    if req.risk_free_rate < 0 or req.risk_free_rate > 1:
+        raise HTTPException(status_code=400, detail="risk_free_rate must be between 0 and 1")
+
+
+def _apply_validated_cashflows(req: BacktestRequest, strat_kwargs: dict[str, Any]) -> None:
     recurring_cashflows, one_time_cashflows = _validate_cashflow_inputs(req)
     if recurring_cashflows:
         strat_kwargs["recurring_cashflows"] = recurring_cashflows
     if one_time_cashflows:
         strat_kwargs["one_time_cashflows"] = one_time_cashflows
 
+
+def _validate_cost_assumptions_input(cost_assumptions: BacktestCostAssumptions) -> None:
+    if cost_assumptions.commission_mode == "per_share" and cost_assumptions.commission_per_share <= 0:
+        raise HTTPException(status_code=400, detail="commission_per_share must be greater than 0 for per_share mode")
+    if cost_assumptions.commission_mode == "percentage" and cost_assumptions.commission_bps <= 0:
+        raise HTTPException(status_code=400, detail="commission_bps must be greater than 0 for percentage mode")
+
+
+def _validate_strategy_allocations(
+    req: BacktestRequest,
+    strat_kwargs: dict[str, Any],
+    *,
+    ticker_count: int,
+) -> None:
     if req.strategy == "NoRebalance":
         strat_kwargs["equity_proportions"] = _validate_allocation_weights(
             strat_kwargs["equity_proportions"],
-            ticker_count=len(cleaned_tickers),
+            ticker_count=ticker_count,
             field_name="equity_proportions",
         )
     elif req.strategy == "Rebalance":
         strat_kwargs["rebal_proportions"] = _validate_allocation_weights(
             strat_kwargs["rebal_proportions"],
-            ticker_count=len(cleaned_tickers),
+            ticker_count=ticker_count,
             field_name="rebal_proportions",
         )
+
+
+def _validate_request(req: BacktestRequest, strat_kwargs: dict[str, Any]) -> tuple[list[str], dict[str, Any]]:
+    cleaned_tickers = _validate_tickers(req.tickers)
+    _validate_strategy_asset_requirements(req, cleaned_tickers)
+    _validate_request_metadata(req)
+    _apply_validated_cashflows(req, strat_kwargs)
+    _validate_cost_assumptions_input(req.cost_assumptions)
+    _validate_strategy_allocations(req, strat_kwargs, ticker_count=len(cleaned_tickers))
 
     return cleaned_tickers, strat_kwargs
 
@@ -706,8 +1033,17 @@ def run_backtest(req: BacktestRequest) -> BacktestResponse:
     # Load price data
     try:
         price_histories: dict[str, pd.DataFrame] = {}
+        missing_data_reports: list[MissingDataTickerSummary] = []
         for ticker in cleaned_tickers:
-            price_histories[ticker] = get_history(ticker)
+            price_histories[ticker], summary = _load_price_history(
+                ticker,
+                req.start_date,
+                req.end_date,
+                missing_data_policy=req.missing_data_policy,
+            )
+            missing_data_reports.append(summary)
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Failed to load price data: {e}") from e
 
@@ -744,12 +1080,14 @@ def run_backtest(req: BacktestRequest) -> BacktestResponse:
     annual_returns = _build_period_return_table(value_hist, "Y")
     benchmark_stats: BacktestBenchmarkStats | None = None
     benchmark_value_history: list[dict[str, Any]] = []
+    missing_data_summary = _build_missing_data_summary(req.missing_data_policy, missing_data_reports)
     rolling_metrics = _build_rolling_metrics_response(
         value_history=value_hist,
         benchmark_ticker=req.benchmark_ticker.strip().upper() if req.benchmark_ticker is not None else None,
         start_date=req.start_date,
         end_date=req.end_date,
         risk_free_rate=req.risk_free_rate,
+        missing_data_policy=req.missing_data_policy,
     )
     regime_reference_ticker, regime_summary, regime_periods = _build_regime_response(
         price_histories=price_histories,
@@ -758,6 +1096,7 @@ def run_backtest(req: BacktestRequest) -> BacktestResponse:
         benchmark_ticker=req.benchmark_ticker.strip().upper() if req.benchmark_ticker is not None else None,
         start_date=req.start_date,
         end_date=req.end_date,
+        missing_data_policy=req.missing_data_policy,
     )
 
     if req.benchmark_ticker is not None:
@@ -767,6 +1106,7 @@ def run_backtest(req: BacktestRequest) -> BacktestResponse:
             start_date=req.start_date,
             end_date=req.end_date,
             risk_free_rate=req.risk_free_rate,
+            missing_data_policy=req.missing_data_policy,
         )
 
     # Parse trades
@@ -788,6 +1128,9 @@ def run_backtest(req: BacktestRequest) -> BacktestResponse:
     except Exception:
         pass  # Trades may not be available for all strategies
 
+    applied_cost_assumptions = _build_applied_cost_assumptions(req.cost_assumptions)
+    cost_summary = _build_cost_summary(raw_trades, req.cost_assumptions)
+
     cashflow_events_raw = runner.get_cashflow_events()
     cashflow_events = [CashflowEventRecord(**event) for event in cashflow_events_raw]
     real_value_history = _build_real_value_history(value_hist, req.inflation_rate)
@@ -803,11 +1146,20 @@ def run_backtest(req: BacktestRequest) -> BacktestResponse:
         value_history=value_hist,
         strategy_name=req.strategy,
     )
+    walk_forward_request = _build_walk_forward_handoff(
+        req=req,
+        cleaned_tickers=cleaned_tickers,
+        strat_kwargs=strat_kwargs,
+        value_history=value_hist,
+    )
 
     return BacktestResponse(
         stats=stats,
         value_history=vh_records,
         trades=trades,
+        applied_cost_assumptions=applied_cost_assumptions,
+        cost_summary=cost_summary,
+        missing_data_summary=missing_data_summary,
         benchmark_stats=benchmark_stats,
         benchmark_value_history=benchmark_value_history,
         rolling_metrics=rolling_metrics,
@@ -821,4 +1173,5 @@ def run_backtest(req: BacktestRequest) -> BacktestResponse:
         rebalance_events=rebalance_events,
         monthly_returns=monthly_returns,
         annual_returns=annual_returns,
+        walk_forward_request=walk_forward_request,
     )

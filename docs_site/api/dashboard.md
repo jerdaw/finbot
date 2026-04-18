@@ -100,7 +100,7 @@ heading_level: 3
 
 **Features:**
 
-- Strategy selection (12 strategies)
+- Strategy selection (13 strategies)
 - Multi-asset backtesting
 - Strategy parameter tuning
 - Performance metrics display

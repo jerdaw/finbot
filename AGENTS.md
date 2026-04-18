@@ -10,7 +10,7 @@ Finbot is a financial data collection, simulation, and backtesting platform that
 - Comprehensive backtesting engine (Backtrader-based with 13 strategies)
 - **Typed contracts** for portable backtests with versioning, serialization, and migration
 - Advanced simulation systems (fund, bond ladder, Monte Carlo, multi-asset Monte Carlo, index simulators)
-- Portfolio optimization (DCA optimizer, rebalance optimizer, Pareto optimizer)
+- Portfolio optimization (DCA optimizer, rebalance optimizer, Pareto optimizer, efficient frontier)
 - **Cost models** and **corporate actions** handling for realistic backtests
 - **Walk-forward analysis** and **market regime detection** for robust strategy evaluation
 - **Experiment tracking** with snapshots, batch observability, and dashboard comparison
@@ -47,7 +47,7 @@ uv run python scripts/update_daily.py
 - Repo contributors should use `uv sync --all-extras`.
 - The root `Dockerfile` builds the CLI image by default; dashboard and API images opt into extras explicitly.
 
-## Current Delivery Status (2026-04-17)
+## Current Delivery Status (2026-04-18)
 
 **P0-P9 complete. P10 remains in progress.**
 
@@ -56,9 +56,9 @@ uv run python scripts/update_daily.py
 - **P7** (93%): External impact & advanced capabilities — 25/27 active items
 - **P8** (100%): Risk Analytics, Portfolio Analytics, Real-Time Data, Factor Analytics
 - **P9** (100%): Agent tooling and runtime hardening — P9.1-P9.4 complete
-- **P10** (in progress): Next.js frontend — 12 task pages complete, the main backtesting page now supports allocation building, benchmark analysis, return tables, experiment lineage, rolling/regime diagnostics, export, cashflow planning, and allocation drift/rebalance inspection; remaining work is the unfinished P10.4 follow-through (cost assumptions, missing-data policy, walk-forward follow-ups, adjacent research pages) plus responsive/mobile/deployment work
+- **P10** (in progress): Next.js frontend — 12 task pages complete, the main backtesting page now supports allocation building, benchmark analysis, return tables, experiment lineage, rolling/regime diagnostics, export, cashflow planning, allocation drift/rebalance inspection, surfaced cost assumptions, missing-data policy reporting, and walk-forward handoff; the simulations, Monte Carlo, and optimizer workspaces now also cover bond ladder, multi-asset Monte Carlo, Pareto, and efficient frontier research; remaining work is responsive/mobile/deployment work, deeper browser-workflow coverage, and later long-tail research additions
 
-**Tracking docs:** `docs/planning/roadmap.md`, `docs/planning/archive/audit-remediation-and-frontend-hardening-2026-04-15.md`, `docs/planning/archive/public-packaging-and-docs-alignment-2026-04-16.md`, `docs/planning/archive/docs-maintenance-and-roadmap-reconciliation-2026-04-16.md`, `docs/planning/archive/backtesting-workflow-expansion-and-research-workspace-pass-2026-04-17.md`, `docs/planning/backtesting-live-readiness-backlog.md`, `docs/planning/priority-5-6-completion-status.md`, `docs/adr/ADR-011-nautilus-decision.md`
+**Tracking docs:** `docs/planning/roadmap.md`, `docs/planning/archive/audit-remediation-and-frontend-hardening-2026-04-15.md`, `docs/planning/archive/public-packaging-and-docs-alignment-2026-04-16.md`, `docs/planning/archive/docs-maintenance-and-roadmap-reconciliation-2026-04-16.md`, `docs/planning/archive/backtesting-workflow-expansion-and-research-workspace-pass-2026-04-17.md`, `docs/planning/archive/backtesting-followthrough-and-adjacent-research-closeout-2026-04-18.md`, `docs/planning/backtesting-live-readiness-backlog.md`, `docs/planning/priority-5-6-completion-status.md`, `docs/adr/ADR-011-nautilus-decision.md`
 
 ## Common Commands
 
@@ -203,6 +203,7 @@ Entry point: `BacktestRunner` in `backtest_runner.py`
 
 - **`dca_optimizer.py`**: DCA grid search across ratios, durations, purchase intervals (multiprocessing)
 - **`pareto_optimizer.py`**: Multi-objective Pareto optimization with dashboard integration
+- **`efficient_frontier.py`**: Long-only historical efficient frontier sampling and highlighted portfolio extraction
 - **`rebalance_optimizer.py`**: Placeholder (see `backtesting/rebalance_optimizer.py` for working version)
 
 #### `finbot/services/health_economics/` — Health Economics Analysis
@@ -276,7 +277,7 @@ Entry point: `web/backend/main.py` (mounted at `/api/`). Requires `uv sync --ext
 
 - **`main.py`**: FastAPI app with CORS, 12 routers registered
 - **`routers/`**: 12 endpoint modules — `backtesting`, `data_status`, `experiments`, `factor_analytics`, `health_economics`, `monte_carlo`, `optimizer`, `portfolio_analytics`, `realtime_quotes`, `risk_analytics`, `simulations`, `walkforward`
-- **`routers/backtesting.py`**: Backtesting API with allocation validation, benchmark analytics, rolling/regime diagnostics, return tables, cashflow durability, and rebalance-event serialization
+- **`routers/backtesting.py`**: Backtesting API with allocation validation, benchmark analytics, rolling/regime diagnostics, return tables, cashflow durability, surfaced cost/missing-data assumptions, walk-forward handoff, and rebalance-event serialization
 - **`routers/experiments.py`**: Experiment list/compare/save API with data snapshot lineage for saved backtests
 - **`schemas/`**: Pydantic request/response models for each router
 - **`services/serializers.py`**: `sanitize_value()` (NaN/Inf→None), `dataframe_to_records()`
@@ -286,7 +287,7 @@ Entry point: `web/backend/main.py` (mounted at `/api/`). Requires `uv sync --ext
 Next.js 16 App Router with React 19, Tailwind CSS v4, shadcn/ui, Recharts, Framer Motion, Zustand.
 
 - **`src/app/`**: Dashboard home + 12 task pages — simulations, backtesting, optimizer, monte-carlo, walk-forward, experiments, risk-analytics, portfolio-analytics, factor-analytics, realtime-quotes, data-status, health-economics
-- **`src/app/backtesting/page.tsx`**: Flagship portfolio research workspace with allocation builder, benchmark controls, export, experiment save, and cashflow/drift/regime views
+- **`src/app/backtesting/page.tsx`**: Flagship portfolio research workspace with allocation builder, benchmark controls, export, experiment save, cashflow/drift/regime views, explicit cost/missing-data controls, and walk-forward handoff
 - **`src/lib/`**: Foundation utilities — `utils.ts` (cn), `api.ts` (apiGet/apiPost), `format.ts` (number formatters), `constants.ts` (nav items, chart colors)
 - **`src/components/`**: Reusable components — `layout/` (sidebar, command-palette, header), `common/` (stat-card, chart-card, data-table, tool-layout, config-panel, empty-state, inline-error, heatmap, metric-badge), `charts/` (recharts-wrappers, line-chart-wrapper, drawdown-chart, lightweight-chart)
 - **`src/stores/`**: Zustand stores — `sidebar-store.ts`, `watchlist-store.ts` (localStorage-persisted)
@@ -316,77 +317,79 @@ Create `.env` file in `finbot/config/` (excluded by `.gitignore`).
 
 ## Key Entry Points
 
-| File                                                              | Purpose                                                                            |
-| ----------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| **Core Contracts**                                                |                                                                                    |
-| `finbot/core/contracts/models.py`                                 | Backtest request/result models, events                                             |
-| `finbot/core/contracts/orders.py`                                 | Order lifecycle tracking                                                           |
-| `finbot/core/contracts/checkpoint.py`                             | State persistence contracts                                                        |
-| `finbot/core/contracts/risk.py`                                   | Risk management rules                                                              |
-| `finbot/core/contracts/schemas.py`                                | Data validation, canonical metrics                                                 |
-| `finbot/core/contracts/optimization.py`                           | Optimization result contracts                                                      |
-| **Execution System**                                              |                                                                                    |
-| `finbot/services/execution/execution_simulator.py`                | Paper trading simulator with latency/risk controls                                 |
-| `finbot/services/execution/checkpoint_manager.py`                 | State checkpoint/restore for disaster recovery                                     |
-| `finbot/services/execution/risk_checker.py`                       | Risk limit enforcement (position, exposure, drawdown)                              |
-| `finbot/services/execution/order_registry.py`                     | Order lookup and lifecycle queries                                                 |
-| **Backtesting**                                                   |                                                                                    |
-| `finbot/services/backtesting/run_backtest.py`                     | Run single backtest                                                                |
-| `finbot/services/backtesting/backtest_batch.py`                   | Run backtests in parallel                                                          |
-| `finbot/services/backtesting/backtest_runner.py`                  | BacktestRunner class (Cerebro wrapper)                                             |
-| `finbot/services/backtesting/strategies/research_wrapper.py`      | Cross-strategy cashflow and allocation-history instrumentation                     |
-| `finbot/services/backtesting/hypothesis_testing.py`               | Statistical hypothesis tests for strategy evaluation                               |
-| **Simulations**                                                   |                                                                                    |
-| `finbot/services/simulation/fund_simulator.py`                    | Simulate leveraged funds with fees                                                 |
-| `finbot/services/simulation/bond_ladder/bond_ladder_simulator.py` | Simulate bond ladders                                                              |
-| `finbot/services/simulation/monte_carlo/monte_carlo_simulator.py` | Monte Carlo simulations                                                            |
-| **Optimization**                                                  |                                                                                    |
-| `finbot/services/optimization/dca_optimizer.py`                   | DCA grid search optimizer                                                          |
-| `finbot/services/optimization/pareto_optimizer.py`                | Multi-objective Pareto optimizer                                                   |
-| **Infrastructure**                                                |                                                                                    |
-| `scripts/update_daily.py`                                         | Daily data update + simulation pipeline                                            |
-| `finbot/cli/main.py`                                              | CLI entry point (`finbot simulate/backtest/optimize/update/status/dashboard`)      |
-| `finbot/dashboard/app.py`                                         | Streamlit dashboard entry point (12 pages)                                         |
-| **Web Application**                                               |                                                                                    |
-| `web/backend/main.py`                                             | FastAPI API server (12 routers, 34 endpoints)                                      |
-| `web/backend/routers/backtesting.py`                              | Primary backtesting API with benchmark/cashflow/regime research outputs            |
-| `web/backend/routers/experiments.py`                              | Save/list/compare experiment runs with snapshot lineage                            |
-| `web/frontend/src/app/backtesting/page.tsx`                       | Main backtesting workspace with allocation builder and research hub                |
-| `web/frontend/src/app/`                                           | Next.js frontend (dashboard home + 12 task pages)                                  |
-| `web/frontend/src/lib/api.ts`                                     | HTTP client (apiGet/apiPost with timeout + error handling)                         |
-| `web/frontend/src/lib/constants.ts`                               | Navigation items, chart colors, shared constants                                   |
-| **Other Services**                                                |                                                                                    |
-| `finbot/services/health_economics/qaly_simulator.py`              | QALY Monte Carlo simulation                                                        |
-| `finbot/services/health_economics/cost_effectiveness.py`          | Cost-effectiveness analysis (ICER/NMB/CEAC)                                        |
-| `finbot/services/health_economics/scenarios/`                     | Clinical scenarios: cancer screening, hypertension, vaccine                        |
-| `finbot/services/data_quality/check_data_freshness.py`            | Data freshness monitoring                                                          |
-| **Risk Analytics**                                                |                                                                                    |
-| `finbot/services/risk_analytics/var.py`                           | VaR / CVaR (historical, parametric, Monte Carlo)                                   |
-| `finbot/services/risk_analytics/stress.py`                        | Parametric stress testing (4 built-in scenarios)                                   |
-| `finbot/services/risk_analytics/kelly.py`                         | Kelly criterion (single + multi-asset)                                             |
-| `finbot/services/risk_analytics/viz.py`                           | 6 risk analytics Plotly charts                                                     |
-| `finbot/core/contracts/risk_analytics.py`                         | Risk analytics result contracts                                                    |
-| **Portfolio Analytics**                                           |                                                                                    |
-| `finbot/services/portfolio_analytics/rolling.py`                  | Rolling Sharpe, vol, beta                                                          |
-| `finbot/services/portfolio_analytics/benchmark.py`                | Alpha, beta, R-squared, tracking error, IR, up/down capture                        |
-| `finbot/services/portfolio_analytics/drawdown.py`                 | Drawdown period detection + underwater curve                                       |
-| `finbot/services/portfolio_analytics/correlation.py`              | HHI, effective N, diversification ratio                                            |
-| `finbot/services/portfolio_analytics/viz.py`                      | 6 portfolio analytics Plotly charts                                                |
-| `finbot/core/contracts/portfolio_analytics.py`                    | Portfolio analytics result contracts                                               |
-| **Real-Time Data**                                                |                                                                                    |
-| `finbot/services/realtime_data/composite_provider.py`             | Multi-provider quote fetcher with fallback + caching                               |
-| `finbot/services/realtime_data/quote_cache.py`                    | Thread-safe TTL cache for quotes                                                   |
-| `finbot/services/realtime_data/_providers/alpaca_provider.py`     | Alpaca IEX feed (US equities)                                                      |
-| `finbot/services/realtime_data/_providers/twelvedata_provider.py` | Twelve Data (US + Canada/TSX)                                                      |
-| `finbot/services/realtime_data/_providers/yfinance_provider.py`   | yfinance fallback (always available)                                               |
-| `finbot/services/realtime_data/viz.py`                            | 3 real-time data Plotly charts                                                     |
-| `finbot/core/contracts/realtime_data.py`                          | Quote, QuoteBatch, ProviderStatus contracts                                        |
-| **Factor Analytics**                                              |                                                                                    |
-| `finbot/services/factor_analytics/factor_regression.py`           | OLS factor regression + rolling R-squared                                          |
-| `finbot/services/factor_analytics/factor_attribution.py`          | Per-factor return contribution decomposition                                       |
-| `finbot/services/factor_analytics/factor_risk.py`                 | Systematic/idiosyncratic variance decomposition                                    |
-| `finbot/services/factor_analytics/viz.py`                         | 5 factor analytics Plotly charts                                                   |
-| `finbot/core/contracts/factor_analytics.py`                       | FactorModelType, FactorRegressionResult, FactorAttributionResult, FactorRiskResult |
+| File                                                                | Purpose                                                                            |
+| ------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| **Core Contracts**                                                  |                                                                                    |
+| `finbot/core/contracts/models.py`                                   | Backtest request/result models, events                                             |
+| `finbot/core/contracts/orders.py`                                   | Order lifecycle tracking                                                           |
+| `finbot/core/contracts/checkpoint.py`                               | State persistence contracts                                                        |
+| `finbot/core/contracts/risk.py`                                     | Risk management rules                                                              |
+| `finbot/core/contracts/schemas.py`                                  | Data validation, canonical metrics                                                 |
+| `finbot/core/contracts/optimization.py`                             | Optimization result contracts                                                      |
+| **Execution System**                                                |                                                                                    |
+| `finbot/services/execution/execution_simulator.py`                  | Paper trading simulator with latency/risk controls                                 |
+| `finbot/services/execution/checkpoint_manager.py`                   | State checkpoint/restore for disaster recovery                                     |
+| `finbot/services/execution/risk_checker.py`                         | Risk limit enforcement (position, exposure, drawdown)                              |
+| `finbot/services/execution/order_registry.py`                       | Order lookup and lifecycle queries                                                 |
+| **Backtesting**                                                     |                                                                                    |
+| `finbot/services/backtesting/run_backtest.py`                       | Run single backtest                                                                |
+| `finbot/services/backtesting/backtest_batch.py`                     | Run backtests in parallel                                                          |
+| `finbot/services/backtesting/backtest_runner.py`                    | BacktestRunner class (Cerebro wrapper)                                             |
+| `finbot/services/backtesting/strategies/research_wrapper.py`        | Cross-strategy cashflow and allocation-history instrumentation                     |
+| `finbot/services/backtesting/hypothesis_testing.py`                 | Statistical hypothesis tests for strategy evaluation                               |
+| **Simulations**                                                     |                                                                                    |
+| `finbot/services/simulation/fund_simulator.py`                      | Simulate leveraged funds with fees                                                 |
+| `finbot/services/simulation/bond_ladder/bond_ladder_simulator.py`   | Simulate bond ladders                                                              |
+| `finbot/services/simulation/monte_carlo/monte_carlo_simulator.py`   | Single-asset Monte Carlo simulation                                                |
+| `finbot/services/simulation/monte_carlo/multi_asset_monte_carlo.py` | Correlated multi-asset Monte Carlo simulation                                      |
+| **Optimization**                                                    |                                                                                    |
+| `finbot/services/optimization/dca_optimizer.py`                     | DCA grid search optimizer                                                          |
+| `finbot/services/optimization/pareto_optimizer.py`                  | Multi-objective Pareto optimizer                                                   |
+| `finbot/services/optimization/efficient_frontier.py`                | Long-only efficient frontier analysis                                              |
+| **Infrastructure**                                                  |                                                                                    |
+| `scripts/update_daily.py`                                           | Daily data update + simulation pipeline                                            |
+| `finbot/cli/main.py`                                                | CLI entry point (`finbot simulate/backtest/optimize/update/status/dashboard`)      |
+| `finbot/dashboard/app.py`                                           | Streamlit dashboard entry point (12 pages)                                         |
+| **Web Application**                                                 |                                                                                    |
+| `web/backend/main.py`                                               | FastAPI API server for the web research surfaces                                   |
+| `web/backend/routers/backtesting.py`                                | Primary backtesting API with benchmark/cashflow/regime research outputs            |
+| `web/backend/routers/experiments.py`                                | Save/list/compare experiment runs with snapshot lineage                            |
+| `web/frontend/src/app/backtesting/page.tsx`                         | Main backtesting workspace with allocation builder and research hub                |
+| `web/frontend/src/app/`                                             | Next.js frontend (dashboard home + 12 task pages)                                  |
+| `web/frontend/src/lib/api.ts`                                       | HTTP client (apiGet/apiPost with timeout + error handling)                         |
+| `web/frontend/src/lib/constants.ts`                                 | Navigation items, chart colors, shared constants                                   |
+| **Other Services**                                                  |                                                                                    |
+| `finbot/services/health_economics/qaly_simulator.py`                | QALY Monte Carlo simulation                                                        |
+| `finbot/services/health_economics/cost_effectiveness.py`            | Cost-effectiveness analysis (ICER/NMB/CEAC)                                        |
+| `finbot/services/health_economics/scenarios/`                       | Clinical scenarios: cancer screening, hypertension, vaccine                        |
+| `finbot/services/data_quality/check_data_freshness.py`              | Data freshness monitoring                                                          |
+| **Risk Analytics**                                                  |                                                                                    |
+| `finbot/services/risk_analytics/var.py`                             | VaR / CVaR (historical, parametric, Monte Carlo)                                   |
+| `finbot/services/risk_analytics/stress.py`                          | Parametric stress testing (4 built-in scenarios)                                   |
+| `finbot/services/risk_analytics/kelly.py`                           | Kelly criterion (single + multi-asset)                                             |
+| `finbot/services/risk_analytics/viz.py`                             | 6 risk analytics Plotly charts                                                     |
+| `finbot/core/contracts/risk_analytics.py`                           | Risk analytics result contracts                                                    |
+| **Portfolio Analytics**                                             |                                                                                    |
+| `finbot/services/portfolio_analytics/rolling.py`                    | Rolling Sharpe, vol, beta                                                          |
+| `finbot/services/portfolio_analytics/benchmark.py`                  | Alpha, beta, R-squared, tracking error, IR, up/down capture                        |
+| `finbot/services/portfolio_analytics/drawdown.py`                   | Drawdown period detection + underwater curve                                       |
+| `finbot/services/portfolio_analytics/correlation.py`                | HHI, effective N, diversification ratio                                            |
+| `finbot/services/portfolio_analytics/viz.py`                        | 6 portfolio analytics Plotly charts                                                |
+| `finbot/core/contracts/portfolio_analytics.py`                      | Portfolio analytics result contracts                                               |
+| **Real-Time Data**                                                  |                                                                                    |
+| `finbot/services/realtime_data/composite_provider.py`               | Multi-provider quote fetcher with fallback + caching                               |
+| `finbot/services/realtime_data/quote_cache.py`                      | Thread-safe TTL cache for quotes                                                   |
+| `finbot/services/realtime_data/_providers/alpaca_provider.py`       | Alpaca IEX feed (US equities)                                                      |
+| `finbot/services/realtime_data/_providers/twelvedata_provider.py`   | Twelve Data (US + Canada/TSX)                                                      |
+| `finbot/services/realtime_data/_providers/yfinance_provider.py`     | yfinance fallback (always available)                                               |
+| `finbot/services/realtime_data/viz.py`                              | 3 real-time data Plotly charts                                                     |
+| `finbot/core/contracts/realtime_data.py`                            | Quote, QuoteBatch, ProviderStatus contracts                                        |
+| **Factor Analytics**                                                |                                                                                    |
+| `finbot/services/factor_analytics/factor_regression.py`             | OLS factor regression + rolling R-squared                                          |
+| `finbot/services/factor_analytics/factor_attribution.py`            | Per-factor return contribution decomposition                                       |
+| `finbot/services/factor_analytics/factor_risk.py`                   | Systematic/idiosyncratic variance decomposition                                    |
+| `finbot/services/factor_analytics/viz.py`                           | 5 factor analytics Plotly charts                                                   |
+| `finbot/core/contracts/factor_analytics.py`                         | FactorModelType, FactorRegressionResult, FactorAttributionResult, FactorRiskResult |
 
 ## Code Style
 
