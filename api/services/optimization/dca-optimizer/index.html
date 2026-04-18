@@ -3262,6 +3262,9 @@
 
 <h1 id="dca-optimizer">DCA Optimizer<a class="headerlink" href="#dca-optimizer" title="Permanent link">&para;</a></h1>
 <p>The DCA (Dollar Cost Averaging) optimizer sweeps front-loading ratios, DCA durations, purchase intervals, and trial windows for a single price series.</p>
+<p>This page documents the DCA-specific optimizer. Finbot's broader optimization
+surface also includes <code>pareto_optimizer</code> for multi-objective strategy sweeps
+and <code>efficient_frontier</code> for long-only portfolio trade-off analysis.</p>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
 <p>The optimizer:</p>
 <ul>
@@ -3710,6 +3713,8 @@ heading_level: 3</p>
 <li><a href="../../../../research/dca-optimization/">Research: DCA Optimization Findings</a> - Detailed research results</li>
 <li><a href="../../simulation/monte-carlo/">Monte Carlo Simulator</a> - Forward-looking risk analysis</li>
 <li><a href="../../backtesting/strategies/">Trading Strategies</a> - Related backtesting context</li>
+<li><code>finbot.services.optimization.pareto_optimizer</code> - Multi-objective backtest comparison</li>
+<li><code>finbot.services.optimization.efficient_frontier</code> - Historical long-only frontier sampling</li>
 <li><a href="https://github.com/jerdaw/finbot/blob/main/docs/benchmarks.md">Performance Benchmarks</a> - Optimization performance analysis</li>
 </ul>
 
