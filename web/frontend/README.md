@@ -6,6 +6,13 @@ The frontend exposes 13 routes in total: the dashboard home page plus 12
 task-specific pages spanning simulations, backtesting, analytics, and health
 economics.
 
+The flagship portfolio-research surfaces are intentionally broader than their
+route names suggest: `simulations` includes leveraged-fund and bond-ladder
+tabs, `monte-carlo` includes single-asset and correlated multi-asset tabs,
+`optimizer` includes DCA, Pareto, and efficient-frontier tabs, and the
+backtesting page carries cost, missing-data, experiment-lineage, and
+walk-forward handoff follow-through directly in the main workspace.
+
 ## Quick Start
 
 ```bash
@@ -37,10 +44,10 @@ corepack pnpm test:e2e   # Playwright smoke coverage (requires backend target)
 ## App Surfaces
 
 - Dashboard home
-- Simulations
-- Backtesting
-- Optimizer
-- Monte Carlo
+- Simulations (leveraged funds + bond ladder)
+- Backtesting (allocation builder + research follow-through)
+- Optimizer (DCA + Pareto + efficient frontier)
+- Monte Carlo (single asset + multi-asset)
 - Walk-Forward
 - Experiments
 - Risk Analytics

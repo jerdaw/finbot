@@ -18,6 +18,8 @@ def multi_asset_monte_carlo(
     n_sims: int = 1000,
     weights: dict[str, float] | None = None,
     start_value: float = 10000.0,
+    *,
+    show_progress: bool = True,
 ) -> dict[str, pd.DataFrame | pd.Series | dict[str, pd.DataFrame]]:
     """Run correlated Monte Carlo simulation across multiple assets.
 
@@ -84,7 +86,8 @@ def multi_asset_monte_carlo(
     asset_trials: dict[str, np.ndarray] = {a: np.zeros((n_sims, sim_periods)) for a in assets}
     portfolio_trials = np.zeros((n_sims, sim_periods))
 
-    for trial in tqdm(range(n_sims), desc="Multi-asset Monte Carlo"):
+    iterator = tqdm(range(n_sims), desc="Multi-asset Monte Carlo") if show_progress else range(n_sims)
+    for trial in iterator:
         # Draw correlated returns: shape (sim_periods, n_assets)
         sim_returns = np.random.default_rng().multivariate_normal(mu, cov, size=sim_periods)
 

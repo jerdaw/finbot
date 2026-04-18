@@ -15,9 +15,7 @@ from finbot.core.contracts import (
     BacktestRunMetadata,
     BacktestRunRequest,
     BacktestRunResult,
-    CostEvent,
     CostSummary,
-    CostType,
     MissingDataPolicy,
 )
 from finbot.core.contracts.costs import CostModel
@@ -27,7 +25,7 @@ from finbot.core.contracts.serialization import build_backtest_run_result_from_s
 from finbot.services.backtesting.analyzers.trade_tracker import TradeInfo
 from finbot.services.backtesting.backtest_runner import BacktestRunner
 from finbot.services.backtesting.brokers.fixed_commission_scheme import FixedCommissionScheme
-from finbot.services.backtesting.costs import ZeroCommission, ZeroSlippage, ZeroSpread
+from finbot.services.backtesting.costs import ZeroCommission, ZeroSlippage, ZeroSpread, build_cost_summary_from_trades
 from finbot.services.backtesting.snapshot_registry import DataSnapshotRegistry
 from finbot.services.backtesting.strategies.dual_momentum import DualMomentum
 from finbot.services.backtesting.strategies.no_rebalance import NoRebalance
@@ -292,74 +290,9 @@ class BacktraderAdapter(BacktestEngine):
 
     def _calculate_costs_from_trades(self, trades: list[TradeInfo]) -> CostSummary:
         """Calculate costs from executed trades using configured cost models."""
-        cost_events: list[CostEvent] = []
-        total_commission = 0.0
-        total_spread = 0.0
-        total_slippage = 0.0
-
-        for trade in trades:
-            # Calculate commission
-            commission = self._commission_model.calculate_cost(
-                symbol=trade.symbol,
-                quantity=abs(trade.size),
-                price=trade.price,
-                timestamp=pd.Timestamp(trade.timestamp),
-            )
-            total_commission += commission
-            if commission > 0:
-                cost_events.append(
-                    CostEvent(
-                        timestamp=pd.Timestamp(trade.timestamp),
-                        symbol=trade.symbol,
-                        cost_type=CostType.COMMISSION,
-                        amount=commission,
-                        basis=self._commission_model.get_name(),
-                    )
-                )
-
-            # Calculate spread
-            spread = self._spread_model.calculate_cost(
-                symbol=trade.symbol,
-                quantity=abs(trade.size),
-                price=trade.price,
-                timestamp=pd.Timestamp(trade.timestamp),
-            )
-            total_spread += spread
-            if spread > 0:
-                cost_events.append(
-                    CostEvent(
-                        timestamp=pd.Timestamp(trade.timestamp),
-                        symbol=trade.symbol,
-                        cost_type=CostType.SPREAD,
-                        amount=spread,
-                        basis=self._spread_model.get_name(),
-                    )
-                )
-
-            # Calculate slippage
-            slippage = self._slippage_model.calculate_cost(
-                symbol=trade.symbol,
-                quantity=abs(trade.size),
-                price=trade.price,
-                timestamp=pd.Timestamp(trade.timestamp),
-            )
-            total_slippage += slippage
-            if slippage > 0:
-                cost_events.append(
-                    CostEvent(
-                        timestamp=pd.Timestamp(trade.timestamp),
-                        symbol=trade.symbol,
-                        cost_type=CostType.SLIPPAGE,
-                        amount=slippage,
-                        basis=self._slippage_model.get_name(),
-                    )
-                )
-
-        return CostSummary(
-            total_commission=total_commission,
-            total_spread=total_spread,
-            total_slippage=total_slippage,
-            total_borrow=0.0,
-            total_market_impact=0.0,
-            cost_events=tuple(cost_events),
+        return build_cost_summary_from_trades(
+            trades,
+            commission_model=self._commission_model,
+            spread_model=self._spread_model,
+            slippage_model=self._slippage_model,
         )

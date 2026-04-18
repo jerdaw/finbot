@@ -20,12 +20,14 @@ High-level analysis and simulation services:
 - **Simulation** (`simulation/`): Financial instrument simulators
   - `fund_simulator`: Simulate leveraged ETFs with fees and borrowing costs
   - `bond_ladder/`: Bond ladder construction and simulation
-  - `monte_carlo/`: Monte Carlo risk analysis
+  - `monte_carlo/`: Single-asset and correlated multi-asset Monte Carlo risk analysis
   - `sim_specific_funds`: Pre-configured fund simulations (SPY, UPRO, TQQQ, etc.)
   - `sim_specific_*_indexes`: Stock and bond index simulations
 
 - **Optimization** (`optimization/`): Portfolio optimization tools
-  - `dca_optimizer`: Dollar-cost averaging strategy optimizer
+  - `dca_optimizer`: Dollar-cost averaging schedule optimizer
+  - `pareto_optimizer`: Multi-objective backtest-result frontier analysis
+  - `efficient_frontier`: Long-only portfolio frontier sampling and summaries
   - `rebalance_optimizer`: Rebalance ratio optimizer (convenience import)
 
 ### Utilities (`finbot/utils/`)

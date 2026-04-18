@@ -78,6 +78,8 @@ def _build_config_hash(req: SaveExperimentRequest, tickers: list[str]) -> str:
         "parameters": req.strategy_params,
         "benchmark_ticker": req.benchmark_ticker,
         "risk_free_rate": req.risk_free_rate,
+        "missing_data_policy": req.missing_data_policy,
+        "cost_assumptions": req.cost_assumptions.model_dump(),
         "source": "web-backtesting",
     }
     return hash_dictionary(hash_input)
@@ -163,8 +165,7 @@ def save_experiment(req: SaveExperimentRequest) -> SaveExperimentResponse:
 
     try:
         histories = {
-            symbol: _load_filtered_history(symbol, req.start_date, req.end_date)
-            for symbol in snapshot_symbols
+            symbol: _load_filtered_history(symbol, req.start_date, req.end_date) for symbol in snapshot_symbols
         }
         min_start = min(df.index.min() for df in histories.values())
         max_end = max(df.index.max() for df in histories.values())
@@ -194,6 +195,8 @@ def save_experiment(req: SaveExperimentRequest) -> SaveExperimentResponse:
             "initial_cash": req.initial_cash,
             "benchmark_ticker": benchmark_ticker,
             "risk_free_rate": req.risk_free_rate,
+            "missing_data_policy": req.missing_data_policy,
+            "cost_assumptions": req.cost_assumptions.model_dump(),
             "save_source": "web-backtesting",
         }
         stats_df = pd.DataFrame([req.stats])

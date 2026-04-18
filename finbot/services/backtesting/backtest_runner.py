@@ -8,8 +8,8 @@ import pandas as pd
 
 from finbot.services.backtesting.analyzers.cv_tracker import CVTracker
 from finbot.services.backtesting.analyzers.trade_tracker import TradeTracker
-from finbot.services.backtesting.strategies.research_wrapper import build_research_strategy
 from finbot.services.backtesting.compute_stats import compute_stats
+from finbot.services.backtesting.strategies.research_wrapper import build_research_strategy
 
 
 class BacktestRunner:

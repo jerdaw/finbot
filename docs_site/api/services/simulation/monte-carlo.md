@@ -1,14 +1,15 @@
 # Monte Carlo Simulator
 
-The Monte Carlo simulator generates probabilistic forecasts of portfolio performance using historical return distributions and random sampling.
+Finbot's Monte Carlo tooling generates probabilistic forecasts of portfolio
+performance using historical return distributions and random sampling.
 
 ## Overview
 
-The Monte Carlo simulator:
+The Monte Carlo surface:
 
 - Generates thousands of possible future return paths
 - Samples from historical return distributions
-- Accounts for portfolio volatility and correlations
+- Supports both single-asset sampling and correlated multi-asset portfolio runs
 - Provides percentile analysis (5th, 25th, 50th, 75th, 95th)
 - Tests withdrawal sustainability and retirement planning
 - Visualizes probability distributions and confidence bands
@@ -47,6 +48,39 @@ print(f"Probability of doubling: {prob_double:.1%}")
       show_root_heading: true
       show_source: true
       heading_level: 3
+
+### Correlated Multi-Asset Portfolio API
+
+::: finbot.services.simulation.monte_carlo.multi_asset_monte_carlo.multi_asset_monte_carlo
+    options:
+      show_root_heading: true
+      show_source: true
+      heading_level: 3
+
+## Multi-Asset Quick Start
+
+```python
+from finbot.services.simulation.monte_carlo.multi_asset_monte_carlo import multi_asset_monte_carlo
+from finbot.utils.data_collection_utils.yfinance.get_history import get_history
+
+price_data = {
+    "SPY": get_history("SPY"),
+    "TLT": get_history("TLT"),
+    "GLD": get_history("GLD"),
+}
+
+result = multi_asset_monte_carlo(
+    price_data=price_data,
+    sim_periods=252 * 10,
+    n_sims=10000,
+    weights={"SPY": 0.5, "TLT": 0.3, "GLD": 0.2},
+    start_value=100000,
+)
+
+print(result["weights"])
+print(result["correlation"])
+print(result["portfolio_trials"].iloc[:, -1].median())
+```
 
 ## Simulation Types
 
@@ -288,5 +322,6 @@ plot_hist(results['trials'])
 
 - [Research: Monte Carlo Risk Analysis](../../../research/monte-carlo-analysis.md) - Detailed findings
 - [Notebook: Monte Carlo Demo](https://github.com/jerdaw/finbot/blob/main/notebooks/04_monte_carlo_risk_analysis.ipynb) - Interactive examples
+- `finbot.services.simulation.monte_carlo.multi_asset_monte_carlo` - Correlation-aware portfolio simulation
 - [Visualization](visualization.md) - Plotting functions
 - [DCA Optimizer](../optimization/dca-optimizer.md) - Complementary optimization approach

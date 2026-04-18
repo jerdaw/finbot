@@ -281,6 +281,8 @@ print(duration_df.head())
 ```
 
 Set `analyze_results=False` when you want the raw per-trial DataFrame instead of the aggregated ratio and duration summaries.
+The broader Finbot research surface also includes Pareto and efficient-frontier
+analysis, but the Python example here focuses on the standalone DCA service.
 
 ## Next Steps
 

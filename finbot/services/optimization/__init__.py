@@ -7,9 +7,11 @@ Provides:
 
 from __future__ import annotations
 
+from finbot.services.optimization.efficient_frontier import compute_efficient_frontier
 from finbot.services.optimization.pareto_optimizer import compute_pareto_front, plot_pareto_front
 
 __all__ = [
+    "compute_efficient_frontier",
     "compute_pareto_front",
     "plot_pareto_front",
 ]

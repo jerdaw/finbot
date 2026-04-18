@@ -11,6 +11,7 @@ and final-value distributions for portfolio analysis and scenario exploration.
 ## What It Supports
 
 - single-asset Monte Carlo sampling
+- correlated multi-asset Monte Carlo with explicit portfolio weights
 - portfolio-level distribution analysis
 - percentile and downside framing for risk communication
 - exploratory retirement and allocation scenario work

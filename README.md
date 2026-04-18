@@ -27,10 +27,10 @@ See [DISCLAIMER.md](DISCLAIMER.md) for complete legal terms, limitations, and ri
 Finbot is a comprehensive platform for quantitative financial analysis, combining:
 
 - **Data Collection**: Automated pipelines for Yahoo Finance, FRED, Alpha Vantage, Google Sheets, Shiller datasets, and BLS
-- **Simulation**: Realistic modeling of leveraged ETFs, bond ladders, indexes, and Monte Carlo scenarios
+- **Simulation**: Realistic modeling of leveraged ETFs, bond ladders, indexes, and single-asset or multi-asset Monte Carlo scenarios
 - **Backtesting**: Engine-agnostic backtesting with 13 strategies, typed contracts, and comprehensive performance metrics
 - **Execution**: Paper trading simulator with realistic latency, risk controls, and state recovery for disaster resilience
-- **Optimization**: Grid-search DCA optimizer and portfolio rebalancing tools
+- **Optimization**: DCA grid search, Pareto analysis, efficient-frontier research, and portfolio rebalancing tools
 - **Analysis**: Walk-forward analysis, market regime detection, and research-grade documentation with statistical significance testing
 
 ### Why Finbot?
@@ -43,7 +43,7 @@ Finbot is a comprehensive platform for quantitative financial analysis, combinin
 - Simulate leveraged funds back to 1950 with realistic cost modeling (fees, spreads, borrowing costs)
 - Backtest any strategy with engine-agnostic contracts (swap Backtrader for NautilusTrader without code changes)
 - Run paper trading with realistic latency, slippage, and execution delays
-- Optimize portfolios across multiple dimensions (allocations, durations, intervals)
+- Optimize portfolios across multiple dimensions (allocations, durations, intervals, and frontier trade-offs)
 - Validate strategies with walk-forward analysis and regime detection
 - Generate publication-ready research with example notebooks
 
@@ -52,8 +52,8 @@ Finbot is a comprehensive platform for quantitative financial analysis, combinin
 - Test rebalancing strategies (60/40, All-Weather, etc.) with realistic execution costs
 - Evaluate leveraged ETF performance vs unleveraged alternatives
 - Model bond ladder mechanics across different yield environments
-- Optimize DCA timing and allocation ratios
-- Generate Monte Carlo risk scenarios for retirement planning
+- Optimize DCA timing, allocation ratios, and return-versus-drawdown trade-offs
+- Generate single-asset or multi-asset Monte Carlo risk scenarios for retirement planning
 - Paper trade with risk controls (position limits, drawdown protection, exposure limits)
 - Analyze strategy performance across market regimes (bull, bear, sideways)
 
@@ -98,12 +98,12 @@ make run-update
 - `make clean` - Remove cache files and build artifacts
 - `make all` - Run full CI pipeline (check + test)
 
-## Current Implementation Status (2026-04-16)
+## Current Implementation Status (2026-04-18)
 
-Priority 0-9 is complete. Priority 10 remains in progress, but the core Next.js frontend, the hardening batch, and the public packaging/docs-alignment pass are all landed.
+Priority 0-9 is complete. Priority 10 remains in progress, but the flagship backtesting workflow and its adjacent research follow-through are now landed.
 
 - **P0-P9 Complete**: Engine-agnostic contracts, Backtrader adapter path, parity gates, cost and corporate-action fidelity, walk-forward analysis, regime detection, experiment tracking, execution simulation, and runtime hardening are in place. Risk analytics, portfolio analytics, real-time quotes, factor analytics, and health economics surfaces are implemented across services and Streamlit.
-- **P10 In Progress**: ✅ P10.1 Next.js frontend completion (12 pages, backend routers, shared UI foundation, ADR-015); ✅ P10.2 frontend hardening and audit remediation (frequency-gap fix, lazy host probing, restored mypy baseline, mocked Playwright smoke coverage, frontend CI gate); ✅ P10.3 public packaging and docs alignment (public health-economics evidence path, claim cleanup, docs wrappers, metrics snapshot, and guided tour). Remaining work includes responsive mobile hardening, deeper browser-flow coverage beyond smoke tests, and production deployment configuration.
+- **P10 In Progress**: ✅ P10.1 Next.js frontend completion (12 pages, backend routers, shared UI foundation, ADR-015); ✅ P10.2 frontend hardening and audit remediation (frequency-gap fix, lazy host probing, restored mypy baseline, mocked Playwright smoke coverage, frontend CI gate); ✅ P10.3 public packaging and docs alignment (public health-economics evidence path, claim cleanup, docs wrappers, metrics snapshot, and guided tour); ✅ the current P10.4 tranche (allocation builder, benchmark/cashflow/regime research, cost and missing-data reporting, walk-forward handoff, experiment lineage, and adjacent bond-ladder / multi-asset Monte Carlo / Pareto / efficient-frontier workspaces). Remaining work includes responsive mobile hardening, deeper browser-flow coverage beyond smoke tests, long-tail research additions, and production deployment configuration.
 - **CI Status**: Core Python quality and test gates run on push and PR to `main`. Frontend quality runs typecheck, production build, and Playwright smoke tests when frontend-relevant files change.
 
 Tracking docs:
@@ -111,6 +111,7 @@ Tracking docs:
 - `docs/planning/roadmap.md`
 - `docs/planning/archive/audit-remediation-and-frontend-hardening-2026-04-15.md`
 - `docs/planning/archive/public-packaging-and-docs-alignment-2026-04-16.md`
+- `docs/planning/archive/backtesting-followthrough-and-adjacent-research-closeout-2026-04-18.md`
 - `docs/adr/ADR-011-nautilus-decision.md`
 - `docs/adr/ADR-015-nextjs-frontend-completion.md`
 
@@ -316,7 +317,7 @@ graph TB
         EXEC[finbot/services/execution/<br/>Paper Trading Simulator, Risk Controls, Checkpoints]
         SIM[finbot/services/simulation/<br/>Fund, Bond Ladder, Monte Carlo]
         BT[finbot/services/backtesting/<br/>13 Strategies, Cost Models, Corporate Actions, Regime Detection]
-        OPT[finbot/services/optimization/<br/>DCA Optimizer, Rebalance Optimizer]
+        OPT[finbot/services/optimization/<br/>DCA, Pareto, Frontier, Rebalance]
         EXP[finbot/services/experiment/<br/>Tracking, Snapshots, Batch Execution]
     end
 
@@ -389,9 +390,9 @@ graph TB
 | `finbot/services/execution/`    | **NEW**: Paper trading simulator with latency, risk controls, state recovery              |
 | `finbot/services/experiment/`   | **NEW**: Experiment tracking and snapshot management                                      |
 | `finbot/utils/`                 | 176-file utility library (data collection, finance, pandas, datetime, plotting, etc.)     |
-| `finbot/services/simulation/`   | Fund, index, bond ladder, Monte Carlo simulators                                          |
+| `finbot/services/simulation/`   | Fund, index, bond ladder, and single-asset or multi-asset Monte Carlo simulators          |
 | `finbot/services/backtesting/`  | Backtesting engine with 13 strategies, cost tracking, corporate actions, regime detection |
-| `finbot/services/optimization/` | DCA and rebalance portfolio optimizers                                                    |
+| `finbot/services/optimization/` | DCA, Pareto, efficient-frontier, and rebalance portfolio optimizers                       |
 | `finbot/cli/`                   | Click-based CLI with 6 commands (simulate, backtest, optimize, update, status, dashboard) |
 | `scripts/`                      | Daily data update pipeline, baseline generation                                           |
 | `notebooks/`                    | 5 example Jupyter notebooks with analysis                                                 |
