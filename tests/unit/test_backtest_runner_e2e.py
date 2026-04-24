@@ -15,7 +15,7 @@ import pytest
 
 from finbot.services.backtesting.backtest_runner import BacktestRunner
 from finbot.services.backtesting.brokers.fixed_commission_scheme import FixedCommissionScheme
-from finbot.services.backtesting.compute_stats import compute_stats
+from finbot.services.backtesting.compute_stats import compute_drawdown_series, compute_max_drawdown, compute_stats
 from finbot.services.backtesting.run_backtest import run_backtest
 from finbot.services.backtesting.strategies.no_rebalance import NoRebalance
 from finbot.services.backtesting.strategies.rebalance import Rebalance
@@ -268,6 +268,13 @@ class TestRunBacktestFunction:
 class TestComputeStats:
     """Tests for compute_stats function."""
 
+    def test_compute_max_drawdown_uses_portfolio_value_path(self):
+        dates = pd.date_range("2020-01-01", periods=5, freq="B")
+        value_history = pd.Series([100.0, 125.0, 110.0, 80.0, 120.0], index=dates)
+
+        assert compute_drawdown_series(value_history).tolist() == pytest.approx([0.0, 0.0, -0.12, -0.36, -0.04])
+        assert compute_max_drawdown(value_history) == pytest.approx(-0.36)
+
     def test_compute_stats_returns_dataframe(self):
         dates = pd.date_range("2020-01-01", periods=252, freq="B")
         rng = np.random.default_rng(42)
@@ -292,6 +299,27 @@ class TestComputeStats:
         assert "CAGR" in stats.columns
         assert "Sharpe" in stats.columns
         assert "Max Drawdown" in stats.columns
+
+    def test_compute_stats_reports_drawdown_consistent_with_chart_formula(self):
+        dates = pd.date_range("2020-01-01", periods=5, freq="B")
+        value_history = pd.Series([10_000.0, 12_500.0, 11_000.0, 8_000.0, 12_000.0], index=dates)
+        cash_history = pd.Series(np.full(5, 500.0), index=dates)
+
+        stats = compute_stats(
+            value_history,
+            cash_history,
+            stocks=("SPY",),
+            strat=None,
+            strat_kwargs={},
+            broker=None,
+            broker_kwargs={},
+            broker_commission=None,
+            sizer=None,
+            sizer_kwargs={},
+            plot=False,
+        )
+
+        assert stats["Max Drawdown"].iloc[0] == pytest.approx(-0.36)
 
     def test_compute_stats_cash_utilization(self):
         dates = pd.date_range("2020-01-01", periods=100, freq="B")

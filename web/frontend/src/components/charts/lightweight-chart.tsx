@@ -5,11 +5,14 @@ import {
   createChart,
   type IChartApi,
   ColorType,
+  PriceScaleMode,
   type Time,
   LineSeries,
   AreaSeries,
 } from "lightweight-charts";
+import { Download } from "lucide-react";
 import { useThemeStore } from "@/stores/theme-store";
+import { Button } from "@/components/ui/button";
 
 interface SeriesData {
   name: string;
@@ -23,6 +26,8 @@ interface LightweightChartProps {
   height?: number;
   type?: "line" | "area";
   className?: string;
+  logScale?: boolean;
+  downloadImageName?: string;
 }
 
 const DEFAULT_COLORS = [
@@ -39,6 +44,8 @@ export function LightweightChart({
   height = 400,
   type = "line",
   className,
+  logScale = false,
+  downloadImageName,
 }: LightweightChartProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
@@ -74,6 +81,7 @@ export function LightweightChart({
       },
       rightPriceScale: {
         borderColor: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)",
+        mode: logScale ? PriceScaleMode.Logarithmic : PriceScaleMode.Normal,
       },
       timeScale: {
         borderColor: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)",
@@ -121,11 +129,59 @@ export function LightweightChart({
     return () => {
       window.removeEventListener("resize", handleResize);
       chart.remove();
+      chartRef.current = null;
     };
-  }, [series, height, type, theme]);
+  }, [series, height, type, theme, logScale]);
+
+  const handleDownloadImage = () => {
+    const chart = chartRef.current;
+    if (!chart || !downloadImageName) return;
+
+    const canvas = chart.takeScreenshot();
+    const anchor = document.createElement("a");
+    anchor.href = canvas.toDataURL("image/png");
+    anchor.download = downloadImageName.endsWith(".png")
+      ? downloadImageName
+      : `${downloadImageName}.png`;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+  };
 
   return (
     <div className={className}>
+      <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex min-w-0 flex-wrap items-center gap-3">
+          {series.map((item, index) => (
+            <span
+              key={`${item.name}-${index}`}
+              className="inline-flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground"
+            >
+              <span
+                className="h-2 w-2 shrink-0 rounded-full"
+                style={{
+                  backgroundColor:
+                    item.color ||
+                    DEFAULT_COLORS[index % DEFAULT_COLORS.length],
+                }}
+              />
+              <span className="truncate">{item.name}</span>
+            </span>
+          ))}
+        </div>
+        {downloadImageName && (
+          <Button
+            type="button"
+            variant="outline"
+            size="xs"
+            className="shrink-0 self-start sm:self-auto"
+            onClick={handleDownloadImage}
+          >
+            <Download className="h-3.5 w-3.5" />
+            PNG
+          </Button>
+        )}
+      </div>
       <div ref={containerRef} className="rounded-lg" />
     </div>
   );

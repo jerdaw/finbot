@@ -1,5 +1,9 @@
 import os
 
+from dotenv import dotenv_values
+
+from finbot.constants.path_constants import CONFIG_DIR
+
 
 class APIKeyManager:
     """Manages API keys from environment variables. Keys are loaded lazily on first access."""
@@ -18,6 +22,20 @@ class APIKeyManager:
         """Initialise the manager with an empty in-memory key cache."""
         self._keys: dict[str, str] = {}
 
+    @staticmethod
+    def _get_from_config_dotenv(key_name: str) -> str | None:
+        """Return an API key from ``finbot/config/.env`` when it is not in the process env."""
+        env_path = CONFIG_DIR / ".env"
+        if not env_path.exists():
+            return None
+
+        value = dotenv_values(env_path).get(key_name)
+        if not value:
+            return None
+
+        os.environ.setdefault(key_name, value)
+        return value
+
     def get_key(self, key_name: str) -> str:
         """Return the API key for *key_name*, loading it from the environment on first access.
 
@@ -31,7 +49,7 @@ class APIKeyManager:
             OSError: If the environment variable is not set or is empty.
         """
         if key_name not in self._keys:
-            value = os.getenv(key_name)
+            value = os.getenv(key_name) or self._get_from_config_dotenv(key_name)
             if not value:
                 raise OSError(f"Couldn't load {key_name} - ensure it's set in the environment.")
             self._keys[key_name] = value

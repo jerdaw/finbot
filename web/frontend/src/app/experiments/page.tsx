@@ -151,7 +151,7 @@ export default function ExperimentsPage() {
             />
 
             {/* Experiment List */}
-            <div className="relative overflow-hidden rounded-xl border border-border/50 bg-card/50">
+            <div className="relative overflow-hidden rounded-lg border border-border/50 bg-card/50">
                 <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
                 <div className="flex flex-col gap-3 border-b border-border/50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
                     <h3 className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">

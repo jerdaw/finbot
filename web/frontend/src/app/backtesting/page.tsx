@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -18,9 +18,14 @@ import { LightweightChart } from "@/components/charts/lightweight-chart";
 import { DrawdownChart } from "@/components/charts/drawdown-chart";
 import { LineChartWrapper } from "@/components/charts/line-chart-wrapper";
 import { DataTable } from "@/components/common/data-table";
+import {
+    Tabs,
+    TabsList,
+    TabsTrigger,
+} from "@/components/ui/tabs";
 import { StatCard } from "@/components/common/stat-card";
 import { PageHeader } from "@/components/common/page-header";
-import { ConfigPanel } from "@/components/common/config-panel";
+import { ConfigPanel, ConfigSection } from "@/components/common/config-panel";
 import { ChartCard } from "@/components/common/chart-card";
 import { ToolLayout } from "@/components/common/tool-layout";
 import { EmptyState } from "@/components/common/empty-state";
@@ -29,7 +34,19 @@ import {
     ChartSkeleton,
     CardSkeleton,
 } from "@/components/common/loading-skeleton";
-import { Activity, Plus, Trash2 } from "lucide-react";
+import {
+    Activity,
+    BarChart3,
+    Download,
+    Eye,
+    EyeOff,
+    LineChart,
+    Plus,
+    Save,
+    Share2,
+    Trash2,
+    X,
+} from "lucide-react";
 import { apiGet, apiPost } from "@/lib/api";
 import {
     formatPercent,
@@ -67,32 +84,79 @@ interface PortfolioAsset {
 }
 
 interface PortfolioPreset {
+    id: string;
+    label: string;
+    description: string;
+    category: "Core" | "Diversified" | "Defensive" | "Tactical";
+    assumption: "live/local" | "simulated" | "proxy" | "unavailable";
+    strategy: "NoRebalance" | "Rebalance";
+    assets: PortfolioAsset[];
+    rebalInterval?: number;
+}
+
+interface SavedPortfolio {
+    id: string;
     label: string;
     strategy: "NoRebalance" | "Rebalance";
     assets: PortfolioAsset[];
+    strategyParams?: Record<string, number>;
+    createdAt: string;
+}
+
+interface ComparisonPortfolio {
+    id: string;
+    label: string;
+    strategy: "NoRebalance" | "Rebalance";
+    assets: PortfolioAsset[];
+    strategyParams?: Record<string, number>;
+    source: "current" | "preset" | "saved";
+}
+
+interface ComparisonRun {
+    portfolio: ComparisonPortfolio;
+    request: BacktestRequest | null;
+    result: BacktestResponse | null;
+    error?: string;
 }
 
 const DEFAULT_PORTFOLIO_ASSETS: PortfolioAsset[] = [
     { ticker: "SPY", weight: 100 },
 ];
 
+const SAVED_PORTFOLIOS_KEY = "finbot-backtesting-saved-portfolios";
+const MAX_COMPARISON_PORTFOLIOS = 5;
+
 const PORTFOLIO_PRESETS: PortfolioPreset[] = [
     {
+        id: "spy-buy-hold",
         label: "SPY Buy & Hold",
+        description: "Single-asset U.S. equity baseline.",
+        category: "Core",
+        assumption: "live/local",
         strategy: "NoRebalance",
         assets: [{ ticker: "SPY", weight: 100 }],
     },
     {
+        id: "sixty-forty",
         label: "60/40",
+        description: "U.S. equity and long Treasury allocation.",
+        category: "Core",
+        assumption: "live/local",
         strategy: "Rebalance",
+        rebalInterval: 253,
         assets: [
             { ticker: "SPY", weight: 60 },
             { ticker: "TLT", weight: 40 },
         ],
     },
     {
+        id: "three-fund",
         label: "Three-Fund",
+        description: "U.S. equity, ex-U.S. equity, and aggregate bonds.",
+        category: "Diversified",
+        assumption: "live/local",
         strategy: "Rebalance",
+        rebalInterval: 253,
         assets: [
             { ticker: "VTI", weight: 50 },
             { ticker: "VXUS", weight: 30 },
@@ -100,8 +164,13 @@ const PORTFOLIO_PRESETS: PortfolioPreset[] = [
         ],
     },
     {
+        id: "all-weather",
         label: "All Weather",
+        description: "Risk-balanced macro mix using common ETF proxies.",
+        category: "Defensive",
+        assumption: "proxy",
         strategy: "Rebalance",
+        rebalInterval: 253,
         assets: [
             { ticker: "SPY", weight: 30 },
             { ticker: "TLT", weight: 40 },
@@ -111,14 +180,77 @@ const PORTFOLIO_PRESETS: PortfolioPreset[] = [
         ],
     },
     {
-        label: "Golden Butterfly",
+        id: "permanent-portfolio",
+        label: "Permanent",
+        description: "Stocks, long bonds, cash-like Treasuries, and gold.",
+        category: "Defensive",
+        assumption: "proxy",
         strategy: "Rebalance",
+        rebalInterval: 253,
+        assets: [
+            { ticker: "SPY", weight: 25 },
+            { ticker: "TLT", weight: 25 },
+            { ticker: "SHY", weight: 25 },
+            { ticker: "GLD", weight: 25 },
+        ],
+    },
+    {
+        id: "golden-butterfly",
+        label: "Golden Butterfly",
+        description: "Permanent-portfolio inspired mix with small-value proxy.",
+        category: "Defensive",
+        assumption: "proxy",
+        strategy: "Rebalance",
+        rebalInterval: 253,
         assets: [
             { ticker: "SPY", weight: 20 },
             { ticker: "IJS", weight: 20 },
             { ticker: "TLT", weight: 20 },
             { ticker: "SHY", weight: 20 },
             { ticker: "GLD", weight: 20 },
+        ],
+    },
+    {
+        id: "hfea",
+        label: "HFEA",
+        description: "Leveraged equity/Treasury allocation; high path risk.",
+        category: "Tactical",
+        assumption: "live/local",
+        strategy: "Rebalance",
+        rebalInterval: 63,
+        assets: [
+            { ticker: "UPRO", weight: 55 },
+            { ticker: "TMF", weight: 45 },
+        ],
+    },
+    {
+        id: "risk-parity-starter",
+        label: "Risk Parity Starter",
+        description: "Balanced ETF proxy mix for a risk-parity-style study.",
+        category: "Diversified",
+        assumption: "proxy",
+        strategy: "Rebalance",
+        rebalInterval: 63,
+        assets: [
+            { ticker: "SPY", weight: 25 },
+            { ticker: "TLT", weight: 35 },
+            { ticker: "GLD", weight: 20 },
+            { ticker: "DBC", weight: 20 },
+        ],
+    },
+    {
+        id: "equal-weight-basket",
+        label: "Equal Weight",
+        description: "Simple equal-weight multi-asset starter basket.",
+        category: "Core",
+        assumption: "live/local",
+        strategy: "Rebalance",
+        rebalInterval: 253,
+        assets: [
+            { ticker: "SPY", weight: 25 },
+            { ticker: "QQQ", weight: 25 },
+            { ticker: "TLT", weight: 25 },
+            { ticker: "GLD", weight: 25 },
         ],
     },
 ];
@@ -251,6 +383,102 @@ function buildExportBaseName(request: BacktestRequest | null): string {
     return slug ? `finbot-${slug}` : "finbot-backtest";
 }
 
+function getNumericStat(
+    stats: Record<string, unknown> | null | undefined,
+    key: string,
+): number | null {
+    const value = stats?.[key];
+    return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function getEndingValue(result: BacktestResponse | null | undefined): number | null {
+    const history = result?.value_history ?? [];
+    const last = history[history.length - 1];
+    const value = last?.Value;
+    return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function buildPortfolioLabel(assets: PortfolioAsset[]): string {
+    const tickers = assets
+        .filter((asset) => asset.ticker.trim().length > 0)
+        .map((asset) => `${asset.ticker.trim().toUpperCase()} ${formatNumber(asset.weight, 0)}%`);
+    return tickers.length > 0 ? tickers.join(" / ") : "Untitled Portfolio";
+}
+
+function cloneAssets(assets: PortfolioAsset[]): PortfolioAsset[] {
+    return assets.map((asset) => ({
+        ticker: asset.ticker.trim().toUpperCase(),
+        weight: Number(asset.weight),
+    }));
+}
+
+function buildPortfolioStrategyParams(
+    portfolioStrategy: "NoRebalance" | "Rebalance",
+    sourceParams: Record<string, number>,
+): Record<string, number> | undefined {
+    if (portfolioStrategy !== "Rebalance") {
+        return undefined;
+    }
+
+    const rebalInterval =
+        typeof sourceParams.rebal_interval === "number"
+            ? sourceParams.rebal_interval
+            : STRATEGY_FALLBACK_PARAMS.Rebalance.rebal_interval;
+
+    return { rebal_interval: rebalInterval };
+}
+
+function buildDrawdownValues(values: Array<number | null>): Array<number | null> {
+    let peak: number | null = null;
+
+    return values.map((value) => {
+        if (value == null || !Number.isFinite(value) || value <= 0) {
+            return null;
+        }
+
+        peak = peak == null ? value : Math.max(peak, value);
+        return (value / peak - 1) * 100;
+    });
+}
+
+function encodeSharedConfig(request: BacktestRequest): string {
+    return encodeURIComponent(JSON.stringify(request));
+}
+
+function decodeSharedConfig(value: string): BacktestRequest | null {
+    try {
+        const parsed = JSON.parse(decodeURIComponent(value));
+        if (!parsed || !Array.isArray(parsed.tickers) || typeof parsed.strategy !== "string") {
+            return null;
+        }
+        return parsed as BacktestRequest;
+    } catch {
+        return null;
+    }
+}
+
+function normalizeRequestForSignature(request: BacktestRequest | null): string | null {
+    if (!request) {
+        return null;
+    }
+
+    return JSON.stringify({
+        tickers: request.tickers,
+        strategy: request.strategy,
+        strategy_params: request.strategy_params,
+        start_date: request.start_date,
+        end_date: request.end_date,
+        initial_cash: request.initial_cash,
+        benchmark_ticker: request.benchmark_ticker ?? "",
+        risk_free_rate: request.risk_free_rate,
+        recurring_cashflows: request.recurring_cashflows ?? [],
+        one_time_cashflows: request.one_time_cashflows ?? [],
+        inflation_rate: request.inflation_rate,
+        missing_data_policy: request.missing_data_policy,
+        cost_assumptions: request.cost_assumptions,
+    });
+}
+
 function buildWalkForwardHref(
     request: WalkForwardHandoff | null | undefined,
 ): string {
@@ -304,8 +532,23 @@ export default function BacktestingPage() {
     const [params, setParams] = useState<Record<string, number>>({});
     const [lastRunRequest, setLastRunRequest] =
         useState<BacktestRequest | null>(null);
+    const [lastComparisonRequest, setLastComparisonRequest] =
+        useState<BacktestRequest | null>(null);
     const [savedExperiment, setSavedExperiment] =
         useState<SaveExperimentResponse | null>(null);
+    const [activeResultTab, setActiveResultTab] = useState("overview");
+    const [portfolioChartLogScale, setPortfolioChartLogScale] =
+        useState(false);
+    const [showPortfolioSeries, setShowPortfolioSeries] = useState(true);
+    const [showBenchmarkSeries, setShowBenchmarkSeries] = useState(true);
+    const [comparisonPortfolios, setComparisonPortfolios] = useState<
+        ComparisonPortfolio[]
+    >([]);
+    const [comparisonRuns, setComparisonRuns] = useState<ComparisonRun[]>([]);
+    const [savedPortfolios, setSavedPortfolios] = useState<SavedPortfolio[]>(
+        [],
+    );
+    const [presetFilter, setPresetFilter] = useState("");
 
     const { data: strategies } = useQuery({
         queryKey: ["strategies"],
@@ -328,6 +571,22 @@ export default function BacktestingPage() {
         portfolioAssets.every(
             (asset) => asset.weight > 0 && asset.ticker.trim().length > 0,
         );
+    const filteredPortfolioPresets = PORTFOLIO_PRESETS.filter((preset) => {
+        const query = presetFilter.trim().toLowerCase();
+        if (!query) {
+            return true;
+        }
+        return [
+            preset.label,
+            preset.description,
+            preset.category,
+            preset.assumption,
+            ...preset.assets.map((asset) => asset.ticker),
+        ]
+            .join(" ")
+            .toLowerCase()
+            .includes(query);
+    });
 
     const mutation = useMutation({
         mutationFn: (req: BacktestRequest) =>
@@ -350,6 +609,59 @@ export default function BacktestingPage() {
         onError: (e) => toast.error(`Save failed: ${e.message}`),
     });
 
+    const comparisonMutation = useMutation({
+        mutationFn: async (portfolios: ComparisonPortfolio[]) => {
+            const baseRequest = buildBacktestRequest();
+            if (!baseRequest) {
+                throw new Error("Fix the current run configuration before comparing portfolios.");
+            }
+
+            const runs = await Promise.all(
+                portfolios.map(async (portfolio): Promise<ComparisonRun> => {
+                    const request = buildComparisonRequest(portfolio, baseRequest);
+                    try {
+                        const comparisonResult = await apiPost<BacktestResponse>(
+                            "/api/backtesting/run",
+                            request,
+                            120000,
+                        );
+                        return {
+                            portfolio,
+                            request,
+                            result: comparisonResult,
+                        };
+                    } catch (error) {
+                        return {
+                            portfolio,
+                            request,
+                            result: null,
+                            error:
+                                error instanceof Error
+                                    ? error.message
+                                    : "Comparison run failed",
+                        };
+                    }
+                }),
+            );
+            return runs;
+        },
+        onSuccess: (runs) => {
+            setComparisonRuns(runs);
+            const firstRequest = runs.find((run) => run.request)?.request;
+            if (firstRequest) {
+                setLastComparisonRequest(firstRequest);
+            }
+            const failed = runs.filter((run) => run.error).length;
+            if (failed > 0) {
+                toast.error(`${failed} comparison run${failed === 1 ? "" : "s"} failed`);
+            } else {
+                toast.success("Comparison complete");
+            }
+            setActiveResultTab("comparison");
+        },
+        onError: (e) => toast.error(`Comparison failed: ${e.message}`),
+    });
+
     const applyStrategy = (name: string) => {
         setStrategy(name);
         const selectedStrategy = strategies?.find(
@@ -368,6 +680,13 @@ export default function BacktestingPage() {
 
     const applyPortfolioPreset = (preset: PortfolioPreset) => {
         applyStrategy(preset.strategy);
+        if (preset.strategy === "Rebalance" && preset.rebalInterval) {
+            const rebalInterval = preset.rebalInterval;
+            setParams((current) => ({
+                ...current,
+                rebal_interval: rebalInterval,
+            }));
+        }
         setPortfolioAssets(preset.assets.map((asset) => ({ ...asset })));
     };
 
@@ -461,6 +780,38 @@ export default function BacktestingPage() {
                         : evenWeight,
             }));
         });
+    };
+
+    const normalizePortfolioWeights = () => {
+        setPortfolioAssets((current) => {
+            const totalWeight = current.reduce(
+                (total, asset) => total + Number(asset.weight),
+                0,
+            );
+            if (totalWeight <= 0) {
+                toast.error("Enter positive weights before normalizing.");
+                return current;
+            }
+
+            const normalized = current.map((asset) => ({
+                ...asset,
+                weight: Number(((asset.weight / totalWeight) * 100).toFixed(2)),
+            }));
+            const roundedTotal = normalized.reduce(
+                (total, asset) => total + asset.weight,
+                0,
+            );
+            const delta = Number((100 - roundedTotal).toFixed(2));
+            return normalized.map((asset, index) =>
+                index === normalized.length - 1
+                    ? { ...asset, weight: Number((asset.weight + delta).toFixed(2)) }
+                    : asset,
+            );
+        });
+    };
+
+    const clearPortfolioAssets = () => {
+        setPortfolioAssets([{ ticker: "", weight: 0 }]);
     };
 
     const buildBacktestRequest = (): BacktestRequest | null => {
@@ -644,6 +995,94 @@ export default function BacktestingPage() {
         };
     };
 
+    const buildComparisonRequest = (
+        portfolio: ComparisonPortfolio,
+        baseRequest: BacktestRequest,
+    ): BacktestRequest => {
+        const cleanedAssets = cloneAssets(portfolio.assets).filter(
+            (asset) => asset.ticker.length > 0,
+        );
+        const weights = cleanedAssets.map((asset) => asset.weight / 100);
+        const strategyParams: Record<string, unknown> = {};
+
+        if (portfolio.strategy === "NoRebalance") {
+            strategyParams.equity_proportions = weights;
+        } else {
+            strategyParams.rebal_proportions = weights;
+            strategyParams.rebal_interval =
+                typeof portfolio.strategyParams?.rebal_interval === "number"
+                    ? portfolio.strategyParams.rebal_interval
+                    : typeof params.rebal_interval === "number"
+                    ? params.rebal_interval
+                    : STRATEGY_FALLBACK_PARAMS.Rebalance.rebal_interval;
+        }
+
+        return {
+            ...baseRequest,
+            tickers: cleanedAssets.map((asset) => asset.ticker),
+            strategy: portfolio.strategy,
+            strategy_params: strategyParams,
+        };
+    };
+
+    const applyBacktestRequestToForm = (request: BacktestRequest) => {
+        setStrategy(request.strategy);
+        setStartDate(request.start_date ?? startDate);
+        setEndDate(request.end_date ?? endDate);
+        setCash(request.initial_cash);
+        setBenchmarkTicker(request.benchmark_ticker ?? "");
+        setRiskFreeRate(request.risk_free_rate ?? 0.04);
+        setMissingDataPolicy(request.missing_data_policy ?? "forward_fill");
+        setCostAssumptions(request.cost_assumptions ?? DEFAULT_COST_ASSUMPTIONS);
+        const contributionRule = request.recurring_cashflows?.find(
+            (rule) => rule.amount > 0,
+        );
+        const withdrawalRule = request.recurring_cashflows?.find(
+            (rule) => rule.amount < 0,
+        );
+        setRecurringContribution(
+            contributionRule?.amount ?? 0,
+        );
+        if (contributionRule?.frequency) {
+            setContributionFrequency(contributionRule.frequency);
+        }
+        setRecurringWithdrawal(
+            Math.abs(withdrawalRule?.amount ?? 0),
+        );
+        if (withdrawalRule?.frequency) {
+            setWithdrawalFrequency(withdrawalRule.frequency);
+        }
+        setOneTimeCashflows(request.one_time_cashflows ?? []);
+        setInflationRate(request.inflation_rate ?? 0.03);
+
+        if (request.strategy === "NoRebalance" || request.strategy === "Rebalance") {
+            const proportions =
+                request.strategy === "NoRebalance"
+                    ? request.strategy_params.equity_proportions
+                    : request.strategy_params.rebal_proportions;
+            const weights = Array.isArray(proportions)
+                ? proportions.map((value) => Number(value) * 100)
+                : request.tickers.map(() => Number((100 / request.tickers.length).toFixed(2)));
+            setPortfolioAssets(
+                request.tickers.map((requestTicker, index) => ({
+                    ticker: requestTicker,
+                    weight: weights[index] ?? 0,
+                })),
+            );
+        } else {
+            setTicker(request.tickers[0] ?? "SPY");
+            setAltTicker(request.tickers[1] ?? "TLT");
+        }
+
+        setParams(
+            Object.fromEntries(
+                Object.entries(request.strategy_params ?? {}).filter(
+                    ([, value]) => typeof value === "number",
+                ),
+            ) as Record<string, number>,
+        );
+    };
+
     const handleRun = () => {
         const request = buildBacktestRequest();
         if (!request) {
@@ -651,6 +1090,162 @@ export default function BacktestingPage() {
         }
         mutation.mutate(request);
     };
+
+    const handleShareConfig = async () => {
+        const request = buildBacktestRequest();
+        if (!request) {
+            return;
+        }
+
+        const url = new URL(window.location.href);
+        url.searchParams.set("config", encodeSharedConfig(request));
+        window.history.replaceState(null, "", url.toString());
+
+        try {
+            await navigator.clipboard.writeText(url.toString());
+            toast.success("Share link copied");
+        } catch {
+            toast.success("Share link added to the address bar");
+        }
+    };
+
+    const handleSavePortfolio = () => {
+        if (!isAllocationStrategy || !allocationIsBalanced) {
+            toast.error("Save a balanced allocation portfolio first.");
+            return;
+        }
+
+        const saved: SavedPortfolio = {
+            id: `portfolio-${Date.now()}`,
+            label: buildPortfolioLabel(portfolioAssets),
+            strategy: strategy as "NoRebalance" | "Rebalance",
+            assets: cloneAssets(portfolioAssets),
+            strategyParams: buildPortfolioStrategyParams(
+                strategy as "NoRebalance" | "Rebalance",
+                params,
+            ),
+            createdAt: new Date().toISOString(),
+        };
+        setSavedPortfolios((current) => [saved, ...current].slice(0, 12));
+        toast.success("Portfolio saved");
+    };
+
+    const applySavedPortfolio = (portfolio: SavedPortfolio) => {
+        applyStrategy(portfolio.strategy);
+        setPortfolioAssets(cloneAssets(portfolio.assets));
+        if (portfolio.strategyParams) {
+            setParams((current) => ({
+                ...current,
+                ...portfolio.strategyParams,
+            }));
+        }
+    };
+
+    const removeSavedPortfolio = (id: string) => {
+        setSavedPortfolios((current) => current.filter((portfolio) => portfolio.id !== id));
+    };
+
+    const addComparisonPortfolio = (
+        portfolio: Omit<ComparisonPortfolio, "id">,
+    ) => {
+        setComparisonPortfolios((current) => {
+            if (current.length >= MAX_COMPARISON_PORTFOLIOS) {
+                toast.error(`Compare up to ${MAX_COMPARISON_PORTFOLIOS} portfolios at a time.`);
+                return current;
+            }
+            return [
+                ...current,
+                {
+                    ...portfolio,
+                    id: `comparison-${Date.now()}-${current.length}`,
+                    assets: cloneAssets(portfolio.assets),
+                    strategyParams: portfolio.strategyParams
+                        ? { ...portfolio.strategyParams }
+                        : undefined,
+                },
+            ];
+        });
+    };
+
+    const handleAddCurrentPortfolioToComparison = () => {
+        if (!isAllocationStrategy || !allocationIsBalanced) {
+            toast.error("Add a balanced allocation portfolio before comparing.");
+            return;
+        }
+
+        addComparisonPortfolio({
+            label: buildPortfolioLabel(portfolioAssets),
+            strategy: strategy as "NoRebalance" | "Rebalance",
+            assets: portfolioAssets,
+            strategyParams: buildPortfolioStrategyParams(
+                strategy as "NoRebalance" | "Rebalance",
+                params,
+            ),
+            source: "current",
+        });
+    };
+
+    const handleAddPresetToComparison = (preset: PortfolioPreset) => {
+        addComparisonPortfolio({
+            label: preset.label,
+            strategy: preset.strategy,
+            assets: preset.assets,
+            strategyParams: buildPortfolioStrategyParams(preset.strategy, {
+                rebal_interval:
+                    preset.rebalInterval ??
+                    STRATEGY_FALLBACK_PARAMS.Rebalance.rebal_interval,
+            }),
+            source: "preset",
+        });
+    };
+
+    const handleAddSavedToComparison = (portfolio: SavedPortfolio) => {
+        addComparisonPortfolio({
+            label: portfolio.label,
+            strategy: portfolio.strategy,
+            assets: portfolio.assets,
+            strategyParams: portfolio.strategyParams,
+            source: "saved",
+        });
+    };
+
+    const removeComparisonPortfolio = (id: string) => {
+        setComparisonPortfolios((current) => current.filter((portfolio) => portfolio.id !== id));
+    };
+
+    const handleRunComparison = () => {
+        if (comparisonPortfolios.length < 2) {
+            toast.error("Add at least two portfolios to compare.");
+            return;
+        }
+        comparisonMutation.mutate(comparisonPortfolios);
+    };
+
+    useEffect(() => {
+        try {
+            const raw = localStorage.getItem(SAVED_PORTFOLIOS_KEY);
+            if (raw) {
+                setSavedPortfolios(JSON.parse(raw) as SavedPortfolio[]);
+            }
+        } catch {
+            setSavedPortfolios([]);
+        }
+
+        const encodedConfig = new URLSearchParams(window.location.search).get("config");
+        if (encodedConfig) {
+            const sharedRequest = decodeSharedConfig(encodedConfig);
+            if (sharedRequest) {
+                applyBacktestRequestToForm(sharedRequest);
+                toast.success("Shared backtest configuration loaded");
+            }
+        }
+        // Shared links and local portfolios should hydrate only once.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem(SAVED_PORTFOLIOS_KEY, JSON.stringify(savedPortfolios));
+    }, [savedPortfolios]);
 
     const handleSaveExperiment = () => {
         if (!result?.stats || !lastRunRequest) {
@@ -745,6 +1340,84 @@ export default function BacktestingPage() {
         toast.success("Backtest CSV exported");
     };
 
+    const handleExportReturnsCsv = () => {
+        const rows = [...monthlyReturns, ...annualReturns];
+        if (rows.length === 0) {
+            toast.error("No return tables are available for this run.");
+            return;
+        }
+
+        downloadFile(
+            buildCsv(
+                rows.map((row) => ({
+                    period: row.period,
+                    start_value: row.start_value,
+                    end_value: row.end_value,
+                    return_pct: row.return_pct,
+                })),
+                ["period", "start_value", "end_value", "return_pct"],
+            ),
+            `${buildExportBaseName(lastRunRequest)}-returns.csv`,
+            "text/csv;charset=utf-8",
+        );
+        toast.success("Returns CSV exported");
+    };
+
+    const handleExportTradesCsv = () => {
+        if (!result?.trades || result.trades.length === 0) {
+            toast.error("No trades are available for this run.");
+            return;
+        }
+
+        downloadFile(
+            buildCsv(result.trades as unknown as Array<Record<string, unknown>>, [
+                "date",
+                "ticker",
+                "action",
+                "size",
+                "price",
+                "value",
+            ]),
+            `${buildExportBaseName(lastRunRequest)}-trades.csv`,
+            "text/csv;charset=utf-8",
+        );
+        toast.success("Trades CSV exported");
+    };
+
+    const handleExportComparisonCsv = () => {
+        const rows = comparisonRuns.map((run) => ({
+            portfolio: run.portfolio.label,
+            status: run.error ? "error" : "complete",
+            ending_value: getEndingValue(run.result ?? undefined),
+            cagr: getNumericStat(run.result?.stats, "CAGR"),
+            roi: getNumericStat(run.result?.stats, "ROI"),
+            sharpe: getNumericStat(run.result?.stats, "Sharpe"),
+            max_drawdown: getNumericStat(run.result?.stats, "Max Drawdown"),
+            error: run.error ?? "",
+        }));
+
+        if (rows.length === 0) {
+            toast.error("Run a portfolio comparison before exporting.");
+            return;
+        }
+
+        downloadFile(
+            buildCsv(rows, [
+                "portfolio",
+                "status",
+                "ending_value",
+                "cagr",
+                "roi",
+                "sharpe",
+                "max_drawdown",
+                "error",
+            ]),
+            `${buildExportBaseName(lastComparisonRequest ?? lastRunRequest)}-comparison.csv`,
+            "text/csv;charset=utf-8",
+        );
+        toast.success("Comparison CSV exported");
+    };
+
     const result = mutation.data;
     const stats = result?.stats;
     const benchmarkStats: BacktestBenchmarkStats | null | undefined =
@@ -773,6 +1446,7 @@ export default function BacktestingPage() {
     const monthlyReturns = result?.monthly_returns ?? [];
     const annualReturns = result?.annual_returns ?? [];
     const walkForwardHref = buildWalkForwardHref(walkForwardRequest);
+    const resultSummaryRequest = result ? lastRunRequest : lastComparisonRequest;
     const costBySymbolRows = Object.entries(
         costSummary?.costs_by_symbol ?? {},
     ).map(([tickerSymbol, total]) => ({
@@ -897,6 +1571,145 @@ export default function BacktestingPage() {
                       : []),
               ]
             : [];
+    const visiblePortfolioChartSeries = comparisonChartSeries.filter((series) => {
+        if (series.name === "Portfolio") {
+            return showPortfolioSeries;
+        }
+        return showBenchmarkSeries;
+    });
+    const normalizedCurrentCostAssumptions: BacktestCostAssumptions = {
+        ...costAssumptions,
+        commission_per_share: Number(costAssumptions.commission_per_share),
+        commission_bps: Number(costAssumptions.commission_bps),
+        commission_minimum: Number(costAssumptions.commission_minimum),
+        spread_bps: Number(costAssumptions.spread_bps),
+        slippage_bps: Number(costAssumptions.slippage_bps),
+    };
+    const currentInputSignature = normalizeRequestForSignature(
+        (() => {
+            const strategyParams: Record<string, unknown> = { ...params };
+            let currentTickers = [ticker.trim().toUpperCase()];
+            const currentRecurringCashflows: RecurringCashflowRule[] = [];
+            const currentOneTimeCashflows = oneTimeCashflows
+                .filter(
+                    (event) =>
+                        event.date.trim().length > 0 ||
+                        event.amount !== 0 ||
+                        (event.label?.trim().length ?? 0) > 0,
+                )
+                .map((event) => ({
+                    date: event.date.trim(),
+                    amount: Number(event.amount),
+                    label: event.label?.trim() || undefined,
+                }));
+
+            if (isAllocationStrategy) {
+                const cleanedAssets = cloneAssets(portfolioAssets).filter(
+                    (asset) => asset.ticker.length > 0,
+                );
+                currentTickers = cleanedAssets.map((asset) => asset.ticker);
+                const currentWeights = cleanedAssets.map((asset) => asset.weight / 100);
+                if (strategy === "NoRebalance") {
+                    strategyParams.equity_proportions = currentWeights;
+                }
+                if (strategy === "Rebalance") {
+                    strategyParams.rebal_proportions = currentWeights;
+                }
+            } else if (needsMultiAsset) {
+                currentTickers = [ticker.trim().toUpperCase(), altTicker.trim().toUpperCase()];
+            }
+
+            if (recurringContribution > 0) {
+                currentRecurringCashflows.push({
+                    amount: recurringContribution,
+                    frequency: contributionFrequency,
+                    start_date: startDate,
+                    end_date: endDate,
+                    label: `Recurring contribution (${contributionFrequency})`,
+                });
+            }
+            if (recurringWithdrawal > 0) {
+                currentRecurringCashflows.push({
+                    amount: -recurringWithdrawal,
+                    frequency: withdrawalFrequency,
+                    start_date: startDate,
+                    end_date: endDate,
+                    label: `Recurring withdrawal (${withdrawalFrequency})`,
+                });
+            }
+
+            return {
+                tickers: currentTickers,
+                strategy,
+                strategy_params: strategyParams,
+                start_date: startDate,
+                end_date: endDate,
+                initial_cash: cash,
+                benchmark_ticker: benchmarkTicker.trim()
+                    ? benchmarkTicker.trim().toUpperCase()
+                    : undefined,
+                risk_free_rate: riskFreeRate,
+                recurring_cashflows:
+                    currentRecurringCashflows.length > 0
+                        ? currentRecurringCashflows
+                        : undefined,
+                one_time_cashflows:
+                    currentOneTimeCashflows.length > 0
+                        ? currentOneTimeCashflows
+                        : undefined,
+                inflation_rate: inflationRate,
+                missing_data_policy: missingDataPolicy,
+                cost_assumptions: normalizedCurrentCostAssumptions,
+            };
+        })(),
+    );
+    const lastRunInputSignature = normalizeRequestForSignature(lastRunRequest);
+    const hasStaleResults =
+        Boolean(result && lastRunInputSignature && currentInputSignature !== lastRunInputSignature);
+    const comparisonRows = comparisonRuns.map((run) => ({
+        portfolio: run.portfolio.label,
+        status: run.error ? "Error" : "Complete",
+        ending_value: getEndingValue(run.result ?? undefined),
+        cagr: getNumericStat(run.result?.stats, "CAGR"),
+        roi: getNumericStat(run.result?.stats, "ROI"),
+        sharpe: getNumericStat(run.result?.stats, "Sharpe"),
+        max_drawdown: getNumericStat(run.result?.stats, "Max Drawdown"),
+        error: run.error ?? "",
+    }));
+    const comparisonResultSeries = comparisonRuns
+        .filter((run) => run.result?.value_history?.length)
+        .map((run, index) => ({
+            name: run.portfolio.label,
+            dates: run.result?.value_history.map((row) => String(row.date)) ?? [],
+            values:
+                run.result?.value_history.map((row) => {
+                    const firstValue = run.result?.value_history[0]?.Value;
+                    const currentValue = row.Value;
+                    if (
+                        typeof firstValue === "number" &&
+                        firstValue !== 0 &&
+                        typeof currentValue === "number"
+                    ) {
+                        return (currentValue / firstValue) * 100;
+                    }
+                    return null;
+                }) ?? [],
+            color:
+                index === 0
+                    ? "#3b82f6"
+                    : index === 1
+                      ? "#22c55e"
+                      : index === 2
+                        ? "#f97316"
+                        : index === 3
+                          ? "#a855f7"
+                          : "#06b6d4",
+        }));
+    const comparisonDrawdownSeries = comparisonResultSeries.map((series) => ({
+        ...series,
+        values: buildDrawdownValues(series.values),
+    }));
+    const hasResultWorkspace = Boolean(stats || comparisonRuns.length > 0);
 
     return (
         <div className="space-y-8">
@@ -904,7 +1717,16 @@ export default function BacktestingPage() {
                 title="Strategy Backtester"
                 description="Run allocation backtests or trading strategies on historical data"
                 actions={
-                    result ? (
+                    <>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={handleShareConfig}
+                        >
+                            <Share2 className="h-3.5 w-3.5" />
+                            Share Setup
+                        </Button>
+                        {result ? (
                         <>
                             {walkForwardRequest && (
                                 <Button asChild type="button" variant="outline">
@@ -918,13 +1740,31 @@ export default function BacktestingPage() {
                                 variant="outline"
                                 onClick={handleExportCsv}
                             >
+                                <Download className="h-3.5 w-3.5" />
                                 Export CSV
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={handleExportReturnsCsv}
+                            >
+                                <Download className="h-3.5 w-3.5" />
+                                Returns
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={handleExportTradesCsv}
+                            >
+                                <Download className="h-3.5 w-3.5" />
+                                Trades
                             </Button>
                             <Button
                                 type="button"
                                 variant="outline"
                                 onClick={handleExportJson}
                             >
+                                <Download className="h-3.5 w-3.5" />
                                 Export JSON
                             </Button>
                             <Button
@@ -940,67 +1780,153 @@ export default function BacktestingPage() {
                                     : "Save Experiment"}
                             </Button>
                         </>
-                    ) : undefined
+                        ) : null}
+                    </>
                 }
             />
 
             <ToolLayout
                 configPanel={
                     <ConfigPanel title="Configuration">
-                        <div className="space-y-2">
-                            <Label className="text-xs text-muted-foreground">
-                                Strategy
-                            </Label>
-                            <Select
-                                value={strategy}
-                                onValueChange={applyStrategy}
-                            >
-                                <SelectTrigger className="border-border/50 bg-background/50">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="border-border/50 bg-popover/95 backdrop-blur-xl">
-                                    {strategies?.map((s) => (
-                                        <SelectItem key={s.name} value={s.name}>
-                                            {s.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            {currentStrategy && (
-                                <p className="text-[11px] leading-relaxed text-muted-foreground/70">
-                                    {currentStrategy.description}
-                                </p>
-                            )}
-                        </div>
+                        <ConfigSection
+                            title="Strategy"
+                            description="Select the backtest template and review its default behavior."
+                            summary={strategy}
+                        >
+                            <div className="space-y-2 lg:col-span-2">
+                                <Label className="text-xs text-muted-foreground">
+                                    Strategy
+                                </Label>
+                                <Select
+                                    value={strategy}
+                                    onValueChange={applyStrategy}
+                                >
+                                    <SelectTrigger className="border-border/50 bg-background/50">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent className="border-border/50 bg-popover/95 backdrop-blur-xl">
+                                        {strategies?.map((s) => (
+                                            <SelectItem
+                                                key={s.name}
+                                                value={s.name}
+                                            >
+                                                {s.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                {currentStrategy && (
+                                    <p className="text-[11px] leading-relaxed text-muted-foreground/70">
+                                        {currentStrategy.description}
+                                    </p>
+                                )}
+                            </div>
+                        </ConfigSection>
 
                         {isAllocationStrategy ? (
-                            <>
-                                <div className="space-y-2">
-                                    <Label className="text-xs text-muted-foreground">
-                                        Preset Portfolios
-                                    </Label>
-                                    <div className="flex flex-wrap gap-2">
-                                        {PORTFOLIO_PRESETS.map((preset) => (
-                                            <Button
+                            <ConfigSection
+                                title="Portfolio"
+                                description="Build or load the allocation that will be tested."
+                                summary={
+                                    <>
+                                        <span>
+                                            {portfolioAssets
+                                                .map((asset) => asset.ticker)
+                                                .join(", ")}
+                                        </span>
+                                        <span
+                                            className={cn(
+                                                allocationIsBalanced
+                                                    ? "text-emerald-600 dark:text-emerald-400"
+                                                    : "text-amber-600 dark:text-amber-400",
+                                            )}
+                                        >
+                                            {formatNumber(
+                                                allocationWeightTotal,
+                                                1,
+                                            )}
+                                            %
+                                        </span>
+                                    </>
+                                }
+                            >
+                                <div className="space-y-3 lg:col-span-5">
+                                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                        <Label className="text-xs text-muted-foreground">
+                                            Preset Portfolios
+                                        </Label>
+                                        <Input
+                                            value={presetFilter}
+                                            onChange={(event) =>
+                                                setPresetFilter(
+                                                    event.target.value,
+                                                )
+                                            }
+                                            placeholder="Search presets or tickers"
+                                            className="h-8 border-border/50 bg-background/50 text-xs sm:max-w-64"
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
+                                        {filteredPortfolioPresets.map((preset) => (
+                                            <div
                                                 key={preset.label}
-                                                type="button"
-                                                variant="outline"
-                                                size="xs"
-                                                onClick={() =>
-                                                    applyPortfolioPreset(preset)
-                                                }
+                                                data-testid={`portfolio-preset-${preset.id}`}
+                                                className="rounded-lg border border-border/50 bg-card/40 p-3"
                                             >
-                                                {preset.label}
-                                            </Button>
+                                                <div className="flex items-start justify-between gap-2">
+                                                    <div className="min-w-0">
+                                                        <p className="truncate text-sm font-semibold text-foreground">
+                                                            {preset.label}
+                                                        </p>
+                                                        <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+                                                            {preset.description}
+                                                        </p>
+                                                    </div>
+                                                    <span className="shrink-0 rounded-md border border-border/50 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                                                        {preset.assumption}
+                                                    </span>
+                                                </div>
+                                                <p className="mt-2 text-[11px] text-muted-foreground/80">
+                                                    {preset.assets
+                                                        .map(
+                                                            (asset) =>
+                                                                `${asset.ticker} ${formatNumber(asset.weight, 0)}%`,
+                                                        )
+                                                        .join(" / ")}
+                                                </p>
+                                                <div className="mt-3 flex flex-wrap gap-2">
+                                                    <Button
+                                                        type="button"
+                                                        variant="outline"
+                                                        size="xs"
+                                                        onClick={() =>
+                                                            applyPortfolioPreset(
+                                                                preset,
+                                                            )
+                                                        }
+                                                    >
+                                                        Load
+                                                    </Button>
+                                                    <Button
+                                                        type="button"
+                                                        variant="ghost"
+                                                        size="xs"
+                                                        onClick={() =>
+                                                            handleAddPresetToComparison(
+                                                                preset,
+                                                            )
+                                                        }
+                                                    >
+                                                        <Plus />
+                                                        Compare
+                                                    </Button>
+                                                </div>
+                                            </div>
                                         ))}
                                     </div>
-                                    <p className="text-[11px] leading-relaxed text-muted-foreground/70">
-                                        Load a canonical allocation, then edit
-                                        the tickers and target weights directly.
-                                    </p>
                                 </div>
 
-                                <div className="space-y-3">
+                                <div className="space-y-3 lg:col-span-3 xl:col-span-4">
                                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                                         <div>
                                             <Label className="text-xs text-muted-foreground">
@@ -1037,6 +1963,44 @@ export default function BacktestingPage() {
                                                 }
                                             >
                                                 Equal Weight
+                                            </Button>
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                size="xs"
+                                                onClick={
+                                                    normalizePortfolioWeights
+                                                }
+                                            >
+                                                Normalize
+                                            </Button>
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                size="xs"
+                                                onClick={clearPortfolioAssets}
+                                            >
+                                                Clear
+                                            </Button>
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                size="xs"
+                                                onClick={handleSavePortfolio}
+                                            >
+                                                <Save />
+                                                Save
+                                            </Button>
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                size="xs"
+                                                onClick={
+                                                    handleAddCurrentPortfolioToComparison
+                                                }
+                                            >
+                                                <Plus />
+                                                Compare
                                             </Button>
                                             <Button
                                                 type="button"
@@ -1102,9 +2066,172 @@ export default function BacktestingPage() {
                                         ))}
                                     </div>
                                 </div>
-                            </>
+
+                                {(savedPortfolios.length > 0 ||
+                                    comparisonPortfolios.length > 0) && (
+                                    <div className="grid grid-cols-1 gap-4 lg:col-span-5 xl:grid-cols-2">
+                                        {savedPortfolios.length > 0 && (
+                                            <div className="rounded-lg border border-border/50 bg-background/30 p-3">
+                                                <div className="mb-3 flex items-center justify-between gap-3">
+                                                    <Label className="text-xs text-muted-foreground">
+                                                        Saved Portfolios
+                                                    </Label>
+                                                    <span className="text-[11px] text-muted-foreground/70">
+                                                        {savedPortfolios.length}
+                                                    </span>
+                                                </div>
+                                                <div className="space-y-2">
+                                                    {savedPortfolios.map(
+                                                        (saved) => (
+                                                            <div
+                                                                key={saved.id}
+                                                                className="flex flex-col gap-2 rounded-md border border-border/40 bg-card/30 p-2 sm:flex-row sm:items-center sm:justify-between"
+                                                            >
+                                                                <div className="min-w-0">
+                                                                    <p className="truncate text-xs font-medium text-foreground">
+                                                                        {saved.label}
+                                                                    </p>
+                                                                    <p className="text-[11px] text-muted-foreground/70">
+                                                                        {saved.strategy}
+                                                                    </p>
+                                                                </div>
+                                                                <div className="flex flex-wrap gap-1.5">
+                                                                    <Button
+                                                                        type="button"
+                                                                        variant="outline"
+                                                                        size="xs"
+                                                                        onClick={() =>
+                                                                            applySavedPortfolio(
+                                                                                saved,
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        Load
+                                                                    </Button>
+                                                                    <Button
+                                                                        type="button"
+                                                                        variant="ghost"
+                                                                        size="xs"
+                                                                        onClick={() =>
+                                                                            handleAddSavedToComparison(
+                                                                                saved,
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        Compare
+                                                                    </Button>
+                                                                    <Button
+                                                                        type="button"
+                                                                        variant="ghost"
+                                                                        size="icon-xs"
+                                                                        onClick={() =>
+                                                                            removeSavedPortfolio(
+                                                                                saved.id,
+                                                                            )
+                                                                        }
+                                                                        aria-label={`Remove ${saved.label}`}
+                                                                    >
+                                                                        <X />
+                                                                    </Button>
+                                                                </div>
+                                                            </div>
+                                                        ),
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {comparisonPortfolios.length > 0 && (
+                                            <div className="rounded-lg border border-border/50 bg-background/30 p-3">
+                                                <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                                    <div>
+                                                        <Label className="text-xs text-muted-foreground">
+                                                            Comparison Queue
+                                                        </Label>
+                                                        <p className="text-[11px] text-muted-foreground/70">
+                                                            Shared dates,
+                                                            cashflows,
+                                                            costs, and data
+                                                            policy.
+                                                        </p>
+                                                    </div>
+                                                    <Button
+                                                        type="button"
+                                                        variant="outline"
+                                                        size="xs"
+                                                        onClick={
+                                                            handleRunComparison
+                                                        }
+                                                        disabled={
+                                                            comparisonMutation.isPending ||
+                                                            comparisonPortfolios.length <
+                                                                2
+                                                        }
+                                                    >
+                                                        <BarChart3 />
+                                                        {comparisonMutation.isPending
+                                                            ? "Comparing..."
+                                                            : "Run Comparison"}
+                                                    </Button>
+                                                </div>
+                                                <div className="space-y-2">
+                                                    {comparisonPortfolios.map(
+                                                        (portfolio) => (
+                                                            <div
+                                                                key={
+                                                                    portfolio.id
+                                                                }
+                                                                className="flex items-center justify-between gap-3 rounded-md border border-border/40 bg-card/30 p-2"
+                                                            >
+                                                                <div className="min-w-0">
+                                                                    <p className="truncate text-xs font-medium text-foreground">
+                                                                        {
+                                                                            portfolio.label
+                                                                        }
+                                                                    </p>
+                                                                    <p className="text-[11px] text-muted-foreground/70">
+                                                                        {
+                                                                            portfolio.strategy
+                                                                        }{" "}
+                                                                        /{" "}
+                                                                        {
+                                                                            portfolio.source
+                                                                        }
+                                                                    </p>
+                                                                </div>
+                                                                <Button
+                                                                    type="button"
+                                                                    variant="ghost"
+                                                                    size="icon-xs"
+                                                                    onClick={() =>
+                                                                        removeComparisonPortfolio(
+                                                                            portfolio.id,
+                                                                        )
+                                                                    }
+                                                                    aria-label={`Remove ${portfolio.label}`}
+                                                                >
+                                                                    <X />
+                                                                </Button>
+                                                            </div>
+                                                        ),
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </ConfigSection>
                         ) : (
-                            <>
+                            <ConfigSection
+                                title="Assets"
+                                description="Choose the instruments used by this strategy."
+                                defaultOpen={false}
+                                summary={
+                                    needsMultiAsset
+                                        ? `${ticker}, ${altTicker}`
+                                        : ticker
+                                }
+                            >
                                 <div className="space-y-2">
                                     <Label className="text-xs text-muted-foreground">
                                         Asset
@@ -1132,10 +2259,16 @@ export default function BacktestingPage() {
                                         />
                                     </div>
                                 )}
-                            </>
+                            </ConfigSection>
                         )}
 
-                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        <ConfigSection
+                            title="Run setup"
+                            description="Set the date window, capital base, benchmark, and risk-free rate."
+                            defaultOpen={false}
+                            summary={`${startDate} to ${endDate} / $${formatNumber(cash, 0)}`}
+                        >
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:col-span-2">
                             <div className="space-y-1.5">
                                 <Label className="text-xs text-muted-foreground">
                                     Start
@@ -1210,20 +2343,20 @@ export default function BacktestingPage() {
                                 className="border-border/50 bg-background/50"
                             />
                         </div>
+                        </ConfigSection>
 
-                        <div className="space-y-3 rounded-xl border border-border/50 bg-background/30 p-3">
-                            <div>
-                                <Label className="text-xs text-muted-foreground">
-                                    Data and Execution Assumptions
-                                </Label>
-                                <p className="text-[11px] leading-relaxed text-muted-foreground/70">
-                                    Surface the gap-handling policy and
-                                    estimated trade frictions used to
-                                    contextualize this run.
-                                </p>
-                            </div>
-
-                            <div className="space-y-2">
+                        <ConfigSection
+                            title="Data and execution assumptions"
+                            description="Surface the gap-handling policy and estimated trade frictions used to contextualize this run."
+                            defaultOpen={false}
+                            summary={`${
+                                MISSING_DATA_POLICY_OPTIONS.find(
+                                    (option) =>
+                                        option.value === missingDataPolicy,
+                                )?.label ?? missingDataPolicy
+                            } / ${costAssumptions.commission_mode}`}
+                        >
+                            <div className="space-y-2 lg:col-span-2">
                                 <Label className="text-xs text-muted-foreground">
                                     Missing Data Policy
                                 </Label>
@@ -1385,7 +2518,7 @@ export default function BacktestingPage() {
                                 </div>
                             )}
 
-                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:col-span-2">
                                 <div className="space-y-1.5">
                                     <Label className="text-xs text-muted-foreground">
                                         Spread (bps)
@@ -1423,21 +2556,24 @@ export default function BacktestingPage() {
                                     />
                                 </div>
                             </div>
-                        </div>
+                        </ConfigSection>
 
-                        <div className="space-y-3 rounded-xl border border-border/50 bg-background/30 p-3">
-                            <div>
-                                <Label className="text-xs text-muted-foreground">
-                                    Cashflow Planning
-                                </Label>
-                                <p className="text-[11px] leading-relaxed text-muted-foreground/70">
-                                    Model recurring savings, portfolio-funded
-                                    withdrawals, and dated one-off events in the
-                                    same backtest run.
-                                </p>
-                            </div>
-
-                            <div className="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(0,1fr)_132px]">
+                        <ConfigSection
+                            title="Cashflow planning"
+                            description="Model recurring savings, portfolio-funded withdrawals, and dated one-off events in the same backtest run."
+                            summary={
+                                recurringContribution ||
+                                recurringWithdrawal ||
+                                oneTimeCashflows.length
+                                    ? `${oneTimeCashflows.length} one-time event${
+                                          oneTimeCashflows.length === 1
+                                              ? ""
+                                              : "s"
+                                      }`
+                                    : "No cashflows"
+                            }
+                        >
+                            <div className="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(0,1fr)_132px] lg:col-span-2">
                                 <Input
                                     type="number"
                                     value={recurringContribution}
@@ -1475,7 +2611,7 @@ export default function BacktestingPage() {
                                 </Select>
                             </div>
 
-                            <div className="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(0,1fr)_132px]">
+                            <div className="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(0,1fr)_132px] lg:col-span-2">
                                 <Input
                                     type="number"
                                     value={recurringWithdrawal}
@@ -1513,7 +2649,7 @@ export default function BacktestingPage() {
                                 </Select>
                             </div>
 
-                            <div className="space-y-2">
+                            <div className="space-y-2 lg:col-span-2">
                                 <Label className="text-xs text-muted-foreground">
                                     Inflation Rate
                                 </Label>
@@ -1631,36 +2767,52 @@ export default function BacktestingPage() {
                                     </div>
                                 )}
                             </div>
-                        </div>
+                        </ConfigSection>
 
                         {/* Dynamic strategy params */}
-                        {currentStrategy?.params.map((p) => (
-                            <div key={p.name} className="space-y-1.5">
-                                <Label className="text-xs text-muted-foreground">
-                                    {p.description || p.name}
-                                </Label>
-                                <Input
-                                    type="number"
-                                    step={p.type === "float" ? 0.01 : 1}
-                                    value={params[p.name] ?? p.default}
-                                    onChange={(e) =>
-                                        setParams((prev) => ({
-                                            ...prev,
-                                            [p.name]: Number(e.target.value),
-                                        }))
-                                    }
-                                    className="border-border/50 bg-background/50"
-                                />
-                            </div>
-                        ))}
+                        {currentStrategy && currentStrategy.params.length > 0 ? (
+                            <ConfigSection
+                                title="Strategy parameters"
+                                description="Fine-tune the selected strategy's numeric inputs."
+                                defaultOpen={false}
+                            >
+                                {currentStrategy.params.map((p) => (
+                                    <div key={p.name} className="space-y-1.5">
+                                        <Label className="text-xs text-muted-foreground">
+                                            {p.description || p.name}
+                                        </Label>
+                                        <Input
+                                            type="number"
+                                            step={p.type === "float" ? 0.01 : 1}
+                                            value={params[p.name] ?? p.default}
+                                            onChange={(e) =>
+                                                setParams((prev) => ({
+                                                    ...prev,
+                                                    [p.name]: Number(
+                                                        e.target.value,
+                                                    ),
+                                                }))
+                                            }
+                                            className="border-border/50 bg-background/50"
+                                        />
+                                    </div>
+                                ))}
+                            </ConfigSection>
+                        ) : null}
 
-                        <Button
-                            className="w-full bg-gradient-to-r from-blue-600 to-blue-500 font-medium text-white shadow-lg shadow-blue-500/20 transition-all hover:shadow-blue-500/30"
-                            onClick={handleRun}
-                            disabled={mutation.isPending}
-                        >
-                            {mutation.isPending ? "Running..." : "Run Backtest"}
-                        </Button>
+                        <div className="col-span-full flex justify-end border-t border-border/40 pt-4">
+                            <div className="w-full sm:w-auto sm:min-w-48">
+                                <Button
+                                    className="w-full bg-gradient-to-r from-blue-600 to-blue-500 font-medium text-white shadow-lg shadow-blue-500/20 transition-all hover:shadow-blue-500/30"
+                                    onClick={handleRun}
+                                    disabled={mutation.isPending}
+                                >
+                                    {mutation.isPending
+                                        ? "Running..."
+                                        : "Run Backtest"}
+                                </Button>
+                            </div>
+                        </div>
                     </ConfigPanel>
                 }
             >
@@ -1676,48 +2828,106 @@ export default function BacktestingPage() {
                     </>
                 )}
 
-                {stats && (
+                {hasResultWorkspace && (
                     <>
                         {/* Metric cards */}
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                            <StatCard
-                                label="CAGR"
-                                value={formatPercent(stats["CAGR"] as number)}
-                                trend={
-                                    (stats["CAGR"] as number) > 0
-                                        ? "up"
-                                        : "down"
-                                }
-                            />
-                            <StatCard
-                                label="Sharpe Ratio"
-                                value={formatNumber(
-                                    stats["Sharpe"] as number,
-                                    3,
-                                )}
-                                trend={
-                                    (stats["Sharpe"] as number) > 0
-                                        ? "up"
-                                        : "down"
-                                }
-                            />
-                            <StatCard
-                                label="Max Drawdown"
-                                value={formatPercent(
-                                    stats["Max Drawdown"] as number,
-                                )}
-                                trend="down"
-                            />
-                            <StatCard
-                                label="ROI"
-                                value={formatPercent(stats["ROI"] as number)}
-                                trend={
-                                    (stats["ROI"] as number) > 0 ? "up" : "down"
-                                }
-                            />
+                        {stats && (
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                                <StatCard
+                                    label="CAGR"
+                                    value={formatPercent(stats["CAGR"] as number)}
+                                    trend={
+                                        (stats["CAGR"] as number) > 0
+                                            ? "up"
+                                            : "down"
+                                    }
+                                />
+                                <StatCard
+                                    label="Sharpe Ratio"
+                                    value={formatNumber(
+                                        stats["Sharpe"] as number,
+                                        3,
+                                    )}
+                                    trend={
+                                        (stats["Sharpe"] as number) > 0
+                                            ? "up"
+                                            : "down"
+                                    }
+                                />
+                                <StatCard
+                                    label="Max Drawdown"
+                                    value={formatPercent(
+                                        stats["Max Drawdown"] as number,
+                                    )}
+                                    trend="down"
+                                />
+                                <StatCard
+                                    label="ROI"
+                                    value={formatPercent(stats["ROI"] as number)}
+                                    trend={
+                                        (stats["ROI"] as number) > 0 ? "up" : "down"
+                                    }
+                                />
+                            </div>
+                        )}
+
+                        <div className="sticky top-16 z-20 rounded-lg border border-border/60 bg-background/90 p-3 shadow-sm backdrop-blur-xl">
+                            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                                <div className="min-w-0">
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        <p className="truncate text-sm font-semibold text-foreground">
+                                            <span data-testid="backtest-result-summary-title">
+                                            {resultSummaryRequest?.tickers.join(" / ") ??
+                                                "Portfolio comparison"}
+                                            </span>
+                                        </p>
+                                        {resultSummaryRequest?.strategy && (
+                                            <span className="rounded-md border border-border/60 bg-muted/30 px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+                                                {resultSummaryRequest.strategy}
+                                            </span>
+                                        )}
+                                        {hasStaleResults && (
+                                            <span className="rounded-md border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[11px] font-medium text-amber-600 dark:text-amber-300">
+                                                Inputs changed
+                                            </span>
+                                        )}
+                                    </div>
+                                    <p className="mt-1 text-xs text-muted-foreground">
+                                        {result
+                                            ? `${lastRunRequest?.start_date} to ${lastRunRequest?.end_date} / ${formatCurrencyPrecise(getEndingValue(result))} ending value`
+                                            : `${comparisonRuns.length} portfolio${comparisonRuns.length === 1 ? "" : "s"} compared with shared dates, cashflows, costs, and data policy`}
+                                    </p>
+                                </div>
+                                <Tabs
+                                    value={activeResultTab}
+                                    onValueChange={setActiveResultTab}
+                                    className="min-w-0"
+                                >
+                                    <TabsList>
+                                        <TabsTrigger value="overview">
+                                            Overview
+                                        </TabsTrigger>
+                                        <TabsTrigger value="comparison">
+                                            Compare
+                                        </TabsTrigger>
+                                        <TabsTrigger value="audit">
+                                            Audit
+                                        </TabsTrigger>
+                                        <TabsTrigger value="cashflows">
+                                            Cashflows
+                                        </TabsTrigger>
+                                        <TabsTrigger value="diagnostics">
+                                            Diagnostics
+                                        </TabsTrigger>
+                                        <TabsTrigger value="returns">
+                                            Returns
+                                        </TabsTrigger>
+                                    </TabsList>
+                                </Tabs>
+                            </div>
                         </div>
 
-                        {savedExperiment && (
+                        {activeResultTab === "audit" && savedExperiment && (
                             <ChartCard title="Experiment Lineage">
                                 <DataTable
                                     columns={[
@@ -1752,7 +2962,9 @@ export default function BacktestingPage() {
                             </ChartCard>
                         )}
 
-                        {costSummary && appliedCostAssumptions && (
+                        {activeResultTab === "audit" &&
+                            costSummary &&
+                            appliedCostAssumptions && (
                             <>
                                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                                     <StatCard
@@ -1840,7 +3052,7 @@ export default function BacktestingPage() {
                             </>
                         )}
 
-                        {missingDataSummary && (
+                        {activeResultTab === "audit" && missingDataSummary && (
                             <ChartCard title="Missing Data Handling">
                                 <div className="mb-3 space-y-1 text-sm text-muted-foreground">
                                     <p>Policy: {missingDataSummary.policy}</p>
@@ -1875,11 +3087,12 @@ export default function BacktestingPage() {
                                         },
                                     ]}
                                     data={missingDataSummary.tickers}
+                                    initialRows={8}
                                 />
                             </ChartCard>
                         )}
 
-                        {walkForwardRequest && (
+                        {activeResultTab === "audit" && walkForwardRequest && (
                             <ChartCard title="Walk-Forward Follow-Up">
                                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                     <div className="space-y-1">
@@ -1904,7 +3117,36 @@ export default function BacktestingPage() {
                             </ChartCard>
                         )}
 
-                        {withdrawalDurability && (
+                        {activeResultTab === "audit" && (
+                            <ChartCard title="Metric Methodology">
+                                <DataTable
+                                    columns={[
+                                        { key: "metric", label: "Metric" },
+                                        { key: "basis", label: "Calculation Basis" },
+                                    ]}
+                                    data={[
+                                        {
+                                            metric: "Max Drawdown",
+                                            basis: "Peak-to-trough decline computed directly from the portfolio value path. This matches the drawdown chart.",
+                                        },
+                                        {
+                                            metric: "CAGR",
+                                            basis: "Annualized compound growth from starting value, ending value, and elapsed trading history.",
+                                        },
+                                        {
+                                            metric: "Sharpe",
+                                            basis: "QuantStats daily-return ratio derived from the same portfolio value history.",
+                                        },
+                                        {
+                                            metric: "ROI",
+                                            basis: "Ending value divided by starting value minus one.",
+                                        },
+                                    ]}
+                                />
+                            </ChartCard>
+                        )}
+
+                        {activeResultTab === "cashflows" && withdrawalDurability && (
                             <>
                                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                                     <StatCard
@@ -2023,13 +3265,14 @@ export default function BacktestingPage() {
                                                 },
                                             ]}
                                             data={cashflowEvents}
+                                            initialRows={12}
                                         />
                                     </ChartCard>
                                 )}
                             </>
                         )}
 
-                        {benchmarkStats && (
+                        {activeResultTab === "overview" && benchmarkStats && (
                             <>
                                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                                     <StatCard
@@ -2091,27 +3334,104 @@ export default function BacktestingPage() {
                             </>
                         )}
 
-                        {benchmarkStats && comparisonChartSeries.length > 0 && (
+                        {activeResultTab === "overview" &&
+                            benchmarkStats &&
+                            comparisonChartSeries.length > 0 && (
                             <ChartCard
                                 title={
                                     benchmarkStats
                                         ? `Portfolio vs ${benchmarkStats.benchmark_name}`
                                         : "Portfolio Value"
                                 }
+                                action={
+                                    <>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="xs"
+                                            onClick={() =>
+                                                setShowPortfolioSeries(
+                                                    (value) => !value,
+                                                )
+                                            }
+                                        >
+                                            {showPortfolioSeries ? (
+                                                <Eye className="h-3.5 w-3.5" />
+                                            ) : (
+                                                <EyeOff className="h-3.5 w-3.5" />
+                                            )}
+                                            Portfolio
+                                        </Button>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="xs"
+                                            onClick={() =>
+                                                setShowBenchmarkSeries(
+                                                    (value) => !value,
+                                                )
+                                            }
+                                        >
+                                            {showBenchmarkSeries ? (
+                                                <Eye className="h-3.5 w-3.5" />
+                                            ) : (
+                                                <EyeOff className="h-3.5 w-3.5" />
+                                            )}
+                                            Benchmark
+                                        </Button>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="xs"
+                                            onClick={() =>
+                                                setPortfolioChartLogScale(
+                                                    (value) => !value,
+                                                )
+                                            }
+                                        >
+                                            <LineChart className="h-3.5 w-3.5" />
+                                            {portfolioChartLogScale
+                                                ? "Linear"
+                                                : "Log"}
+                                        </Button>
+                                    </>
+                                }
                             >
                                 <LightweightChart
-                                    series={comparisonChartSeries}
+                                    series={visiblePortfolioChartSeries}
                                     height={400}
                                     type={benchmarkStats ? "line" : "area"}
+                                    logScale={portfolioChartLogScale}
+                                    downloadImageName={`${buildExportBaseName(lastRunRequest)}-portfolio`}
                                 />
                             </ChartCard>
                         )}
 
                         {/* Portfolio value chart */}
-                        {result?.value_history &&
+                        {activeResultTab === "overview" &&
+                            result?.value_history &&
                             !benchmarkStats &&
                             result.value_history.length > 0 && (
-                                <ChartCard title="Portfolio Value">
+                                <ChartCard
+                                    title="Portfolio Value"
+                                    action={
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="xs"
+                                            onClick={() =>
+                                                setPortfolioChartLogScale(
+                                                    (value) => !value,
+                                                )
+                                            }
+                                        >
+                                            <LineChart className="h-3.5 w-3.5" />
+                                            {portfolioChartLogScale
+                                                ? "Linear"
+                                                : "Log"}
+                                        </Button>
+                                    }
+                                >
                                     <LightweightChart
                                         series={[
                                             {
@@ -2126,12 +3446,15 @@ export default function BacktestingPage() {
                                         ]}
                                         height={400}
                                         type="area"
+                                        logScale={portfolioChartLogScale}
+                                        downloadImageName={`${buildExportBaseName(lastRunRequest)}-portfolio`}
                                     />
                                 </ChartCard>
                             )}
 
                         {/* Drawdown chart */}
-                        {result?.value_history &&
+                        {activeResultTab === "overview" &&
+                            result?.value_history &&
                             result.value_history.length > 0 && (
                                 <ChartCard title="Drawdown">
                                     <DrawdownChart
@@ -2143,7 +3466,7 @@ export default function BacktestingPage() {
                                     />
                                 </ChartCard>
                             )}
-                        {benchmarkStats && (
+                        {activeResultTab === "overview" && benchmarkStats && (
                             <ChartCard title="Benchmark Comparison">
                                 <DataTable
                                     columns={[
@@ -2227,7 +3550,7 @@ export default function BacktestingPage() {
                             </ChartCard>
                         )}
 
-                        {rollingMetrics && (
+                        {activeResultTab === "diagnostics" && rollingMetrics && (
                             <>
                                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                                     <StatCard
@@ -2300,7 +3623,8 @@ export default function BacktestingPage() {
                             </>
                         )}
 
-                        {regimeSummary.length > 0 && (
+                        {activeResultTab === "diagnostics" &&
+                            regimeSummary.length > 0 && (
                             <ChartCard
                                 title={
                                     regimeReferenceTicker
@@ -2360,7 +3684,8 @@ export default function BacktestingPage() {
                             </ChartCard>
                         )}
 
-                        {regimePeriods.length > 0 && (
+                        {activeResultTab === "diagnostics" &&
+                            regimePeriods.length > 0 && (
                             <ChartCard title="Regime Periods">
                                 <DataTable
                                     columns={[
@@ -2418,11 +3743,13 @@ export default function BacktestingPage() {
                                     data={
                                         regimePeriods as BacktestRegimePeriod[]
                                     }
+                                    initialRows={10}
                                 />
                             </ChartCard>
                         )}
 
-                        {allocationChartData.length > 0 && (
+                        {activeResultTab === "diagnostics" &&
+                            allocationChartData.length > 0 && (
                             <>
                                 <ChartCard title="Allocation Drift">
                                     <LineChartWrapper
@@ -2491,7 +3818,8 @@ export default function BacktestingPage() {
                             </>
                         )}
 
-                        {rebalanceEvents.length > 0 && (
+                        {activeResultTab === "diagnostics" &&
+                            rebalanceEvents.length > 0 && (
                             <ChartCard title="Rebalance Log">
                                 <DataTable
                                     columns={[
@@ -2553,11 +3881,243 @@ export default function BacktestingPage() {
                                         },
                                     ]}
                                     data={rebalanceEvents}
+                                    initialRows={12}
                                 />
                             </ChartCard>
                         )}
 
-                        {monthlyReturns.length > 0 && (
+                        {activeResultTab === "comparison" && (
+                            <>
+                                {comparisonRuns.length > 0 ? (
+                                    <>
+                                        <ChartCard
+                                            title="Portfolio Comparison"
+                                            action={
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    size="xs"
+                                                    onClick={
+                                                        handleExportComparisonCsv
+                                                    }
+                                                >
+                                                    <Download className="h-3.5 w-3.5" />
+                                                    CSV
+                                                </Button>
+                                            }
+                                        >
+                                            {comparisonResultSeries.length >
+                                            0 ? (
+                                                <LightweightChart
+                                                    series={
+                                                        comparisonResultSeries
+                                                    }
+                                                    height={400}
+                                                    type="line"
+                                                    downloadImageName={`${buildExportBaseName(lastComparisonRequest ?? lastRunRequest)}-comparison`}
+                                                />
+                                            ) : (
+                                                <p className="text-sm text-muted-foreground">
+                                                    No successful comparison
+                                                    series are available.
+                                                </p>
+                                            )}
+                                        </ChartCard>
+
+                                        <ChartCard title="Comparison Drawdown">
+                                            {comparisonDrawdownSeries.length >
+                                            0 ? (
+                                                <LightweightChart
+                                                    series={
+                                                        comparisonDrawdownSeries
+                                                    }
+                                                    height={300}
+                                                    type="line"
+                                                    downloadImageName={`${buildExportBaseName(lastComparisonRequest ?? lastRunRequest)}-comparison-drawdown`}
+                                                />
+                                            ) : (
+                                                <p className="text-sm text-muted-foreground">
+                                                    No successful comparison
+                                                    drawdown series are
+                                                    available.
+                                                </p>
+                                            )}
+                                        </ChartCard>
+
+                                        <ChartCard title="Comparison Metrics">
+                                            <DataTable
+                                                columns={[
+                                                    {
+                                                        key: "portfolio",
+                                                        label: "Portfolio",
+                                                    },
+                                                    {
+                                                        key: "status",
+                                                        label: "Status",
+                                                    },
+                                                    {
+                                                        key: "ending_value",
+                                                        label: "Ending Value",
+                                                        format: (value) =>
+                                                            formatCurrencyPrecise(
+                                                                value as
+                                                                    | number
+                                                                    | null,
+                                                            ),
+                                                    },
+                                                    {
+                                                        key: "cagr",
+                                                        label: "CAGR",
+                                                        format: (value) =>
+                                                            formatPercent(
+                                                                value as
+                                                                    | number
+                                                                    | null,
+                                                            ),
+                                                    },
+                                                    {
+                                                        key: "roi",
+                                                        label: "ROI",
+                                                        format: (value) =>
+                                                            formatPercent(
+                                                                value as
+                                                                    | number
+                                                                    | null,
+                                                            ),
+                                                    },
+                                                    {
+                                                        key: "sharpe",
+                                                        label: "Sharpe",
+                                                        format: (value) =>
+                                                            formatNumber(
+                                                                value as
+                                                                    | number
+                                                                    | null,
+                                                                3,
+                                                            ),
+                                                    },
+                                                    {
+                                                        key: "max_drawdown",
+                                                        label: "Max Drawdown",
+                                                        format: (value) =>
+                                                            formatPercent(
+                                                                value as
+                                                                    | number
+                                                                    | null,
+                                                            ),
+                                                    },
+                                                    {
+                                                        key: "error",
+                                                        label: "Error",
+                                                    },
+                                                ]}
+                                                data={comparisonRows}
+                                            />
+                                        </ChartCard>
+
+                                        <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+                                            {comparisonRuns.map((run) => (
+                                                <ChartCard
+                                                    key={run.portfolio.id}
+                                                    title={`${run.portfolio.label} Details`}
+                                                >
+                                                    {run.error ? (
+                                                        <InlineError
+                                                            message={run.error}
+                                                        />
+                                                    ) : (
+                                                        <DataTable
+                                                            columns={[
+                                                                {
+                                                                    key: "field",
+                                                                    label: "Field",
+                                                                },
+                                                                {
+                                                                    key: "value",
+                                                                    label: "Value",
+                                                                },
+                                                            ]}
+                                                            data={[
+                                                                {
+                                                                    field: "Tickers",
+                                                                    value:
+                                                                        run.request?.tickers.join(
+                                                                            ", ",
+                                                                        ) ??
+                                                                        "",
+                                                                },
+                                                                {
+                                                                    field: "Strategy",
+                                                                    value:
+                                                                        run.request
+                                                                            ?.strategy ??
+                                                                        "",
+                                                                },
+                                                                {
+                                                                    field: "Ending Value",
+                                                                    value: formatCurrencyPrecise(
+                                                                        getEndingValue(
+                                                                            run.result ??
+                                                                                undefined,
+                                                                        ),
+                                                                    ),
+                                                                },
+                                                                ...Object.entries(
+                                                                    run.result
+                                                                        ?.stats ??
+                                                                        {},
+                                                                ).map(
+                                                                    ([
+                                                                        key,
+                                                                        value,
+                                                                    ]) => ({
+                                                                        field: key,
+                                                                        value:
+                                                                            typeof value ===
+                                                                            "number"
+                                                                                ? key ===
+                                                                                      "Sharpe" ||
+                                                                                  key ===
+                                                                                      "Smart Sharpe"
+                                                                                    ? formatNumber(
+                                                                                          value,
+                                                                                          4,
+                                                                                      )
+                                                                                    : value <
+                                                                                            1 &&
+                                                                                        value >
+                                                                                            -1
+                                                                                      ? formatPercent(
+                                                                                            value,
+                                                                                        )
+                                                                                      : formatNumber(
+                                                                                            value,
+                                                                                            4,
+                                                                                        )
+                                                                                : String(
+                                                                                      value ??
+                                                                                          "N/A",
+                                                                                  ),
+                                                                    }),
+                                                                ),
+                                                            ]}
+                                                            initialRows={8}
+                                                        />
+                                                    )}
+                                                </ChartCard>
+                                            ))}
+                                        </div>
+                                    </>
+                                ) : (
+                                    <EmptyState
+                                        icon={BarChart3}
+                                        message="Add two or more portfolios in the portfolio builder, then run a comparison."
+                                    />
+                                )}
+                            </>
+                        )}
+
+                        {activeResultTab === "returns" && monthlyReturns.length > 0 && (
                             <ChartCard title="Monthly Returns">
                                 <DataTable
                                     columns={[
@@ -2588,11 +4148,12 @@ export default function BacktestingPage() {
                                         },
                                     ]}
                                     data={monthlyReturns as ReturnTableRow[]}
+                                    initialRows={12}
                                 />
                             </ChartCard>
                         )}
 
-                        {annualReturns.length > 0 && (
+                        {activeResultTab === "returns" && annualReturns.length > 0 && (
                             <ChartCard title="Annual Returns">
                                 <DataTable
                                     columns={[
@@ -2623,12 +4184,15 @@ export default function BacktestingPage() {
                                         },
                                     ]}
                                     data={annualReturns as ReturnTableRow[]}
+                                    initialRows={12}
                                 />
                             </ChartCard>
                         )}
 
                         {/* Trades table */}
-                        {result?.trades && result.trades.length > 0 && (
+                        {activeResultTab === "returns" &&
+                            result?.trades &&
+                            result.trades.length > 0 && (
                             <ChartCard
                                 title={`Trades (${result.trades.length})`}
                             >
@@ -2661,11 +4225,13 @@ export default function BacktestingPage() {
                                         },
                                     ]}
                                     data={result.trades}
+                                    initialRows={15}
                                 />
                             </ChartCard>
                         )}
 
                         {/* Full statistics */}
+                        {activeResultTab === "audit" && stats && (
                         <ChartCard title="Full Statistics">
                             <DataTable
                                 columns={[
@@ -2684,8 +4250,10 @@ export default function BacktestingPage() {
                                                 : formatNumber(v, 4)
                                             : String(v ?? "N/A"),
                                 }))}
+                                initialRows={18}
                             />
                         </ChartCard>
+                        )}
                     </>
                 )}
 
@@ -2696,7 +4264,10 @@ export default function BacktestingPage() {
                     />
                 )}
 
-                {!mutation.isPending && !mutation.isError && !result && (
+                {!mutation.isPending &&
+                    !mutation.isError &&
+                    !result &&
+                    comparisonRuns.length === 0 && (
                     <EmptyState
                         icon={Activity}
                         message="Configure parameters and click Run Backtest to see results."

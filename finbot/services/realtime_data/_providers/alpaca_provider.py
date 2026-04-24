@@ -8,7 +8,6 @@ to fetch real-time US equity snapshots.  Requires ``ALPACA_API_KEY`` and
 from __future__ import annotations
 
 import logging
-import os
 from datetime import UTC, datetime
 from typing import Any
 
@@ -22,7 +21,11 @@ _BASE_URL = "https://data.alpaca.markets"
 
 def is_available() -> bool:
     """Return True if Alpaca API keys are configured."""
-    return bool(os.getenv("ALPACA_API_KEY")) and bool(os.getenv("ALPACA_SECRET_KEY"))
+    try:
+        _get_headers()
+    except OSError:
+        return False
+    return True
 
 
 def _get_headers() -> dict[str, str]:

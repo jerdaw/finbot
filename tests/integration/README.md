@@ -50,6 +50,23 @@ uv run pytest tests/integration/ -m slow -v
 uv run pytest tests/integration/ -m "not slow" -v
 ```
 
+### Run External Testfol.io Parity Checks
+
+These tests call the public testfol.io backtest API and are opt-in. The default
+case limit is 1 request.
+
+```bash
+ENV=development DYNACONF_ENV=development FINBOT_RUN_TESTFOLIO_PARITY=1 \
+  uv run pytest tests/integration/test_testfolio_backtest_parity.py \
+  -o addopts="" -m "slow and external" --capture=no -v
+
+# Optional: run all currently defined cases, with a delay between requests.
+ENV=development DYNACONF_ENV=development FINBOT_RUN_TESTFOLIO_PARITY=1 \
+  FINBOT_TESTFOLIO_CASE_LIMIT=2 FINBOT_TESTFOLIO_REQUEST_DELAY_SECONDS=2 \
+  uv run pytest tests/integration/test_testfolio_backtest_parity.py \
+  -o addopts="" -m "slow and external" --capture=no -v
+```
+
 ## Test Categories
 
 ### Fund Simulation Integration Tests
@@ -72,6 +89,14 @@ Tests end-to-end backtesting including:
 - Date range and duration parameters
 - Trade tracking and value history
 - Statistics generation
+
+### Testfol.io Backtest Parity Checks
+**File:** `test_testfolio_backtest_parity.py`
+
+Compares Finbot backtest results against testfol.io for a deliberately small
+set of ETF allocation scenarios. Assertions focus on stable summary metrics:
+ending value, cumulative return, CAGR, max drawdown, annualized volatility, and
+Sharpe ratio.
 
 ### DCA Optimizer Integration Tests
 **File:** `test_dca_optimizer_integration.py`

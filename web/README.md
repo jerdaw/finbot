@@ -100,9 +100,14 @@ Swagger UI available at http://localhost:8000/docs
 ### Backend
 
 - `DYNACONF_ENV` — `development` or `production`
-- `FINBOT_API_CORS_ORIGINS` — Allowed origins (default: `["http://localhost:3000"]`)
+- `FINBOT_API_CORS_ORIGINS` — Allowed origins (default:
+  `["http://localhost:3000", "http://127.0.0.1:3000"]`)
 - `FINBOT_API_HOST` — Bind host (default: `0.0.0.0`)
 - `FINBOT_API_PORT` — Port (default: `8000`)
+- `TWELVEDATA_API_KEY` — Optional Twelve Data quote provider key; may be set in
+  `finbot/config/.env`
+- `ALPACA_API_KEY` / `ALPACA_SECRET_KEY` — Optional Alpaca IEX quote provider
+  keys; may be set in `finbot/config/.env`
 
 ### Frontend
 

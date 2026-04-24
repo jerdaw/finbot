@@ -51,7 +51,7 @@ import type {
 // ---------------------------------------------------------------------------
 function MedicalDisclaimer() {
   return (
-    <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 px-5 py-4 text-sm text-amber-200">
+    <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 px-5 py-4 text-sm text-amber-200">
       <strong>Medical Disclaimer:</strong> This tool is for educational and
       research purposes only. It does not constitute medical advice. All
       parameters are illustrative. Consult qualified healthcare professionals
@@ -133,7 +133,7 @@ function InterventionForm({
   ) => onChange({ ...state, [key]: value });
 
   return (
-    <div className="relative overflow-hidden rounded-xl border border-border/50 bg-card/50">
+    <div className="relative overflow-hidden rounded-lg border border-border/50 bg-card/50">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
       <div className="border-b border-border/50 px-5 py-4">
         <h3 className="text-sm font-semibold">{label}</h3>
@@ -269,15 +269,15 @@ function QALYSimulationTab() {
     : [];
 
   return (
-    <div className="grid grid-cols-1 gap-8 lg:grid-cols-[350px_1fr]">
+    <div className="space-y-8">
       {/* Config panel */}
-      <div className="space-y-4">
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
         <InterventionForm
           state={intervention}
           onChange={setIntervention}
           label="Intervention"
         />
-        <div className="relative overflow-hidden rounded-xl border border-border/50 bg-card/50">
+        <div className="relative overflow-hidden rounded-lg border border-border/50 bg-card/50">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
           <div className="border-b border-border/50 px-5 py-4">
             <h3 className="text-sm font-semibold">Simulation Parameters</h3>
@@ -583,7 +583,7 @@ function CostEffectivenessTab() {
       </div>
 
       {/* Shared parameters */}
-      <div className="relative overflow-hidden rounded-xl border border-border/50 bg-card/50">
+      <div className="relative overflow-hidden rounded-lg border border-border/50 bg-card/50">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
         <div className="border-b border-border/50 px-5 py-4">
           <h3 className="text-sm font-semibold">Analysis Parameters</h3>
@@ -839,7 +839,7 @@ function TreatmentOptimizerTab() {
   const best = result?.best_schedule;
 
   return (
-    <div className="grid grid-cols-1 gap-8 lg:grid-cols-[350px_1fr]">
+    <div className="space-y-8">
       {/* Config panel */}
       <ConfigPanel title="Configuration">
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -1060,7 +1060,7 @@ function ClinicalScenariosTab() {
   return (
     <div className="space-y-8">
       {/* Config */}
-      <div className="relative overflow-hidden rounded-xl border border-border/50 bg-card/50">
+      <div className="relative overflow-hidden rounded-lg border border-border/50 bg-card/50">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
         <div className="border-b border-border/50 px-5 py-4">
           <h3 className="text-sm font-semibold">Run Clinical Scenarios</h3>
@@ -1124,7 +1124,7 @@ function ClinicalScenariosTab() {
             {results.map((r) => (
               <div
                 key={r.scenario_name}
-                className="relative overflow-hidden rounded-xl border border-border/50 bg-card/50"
+                className="relative overflow-hidden rounded-lg border border-border/50 bg-card/50"
               >
                 <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
                 <div className="flex flex-col gap-2 border-b border-border/30 px-5 py-3.5 sm:flex-row sm:items-center sm:justify-between">

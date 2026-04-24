@@ -843,8 +843,12 @@ test.describe("adjacent research workspaces", () => {
         ]);
 
         await expect(page.getByText("Bond Ladder Metrics")).toBeVisible();
-        await expect(page.getByText("1Y-10Y Ladder")).toBeVisible();
-        await expect(page.getByText("BOND_LADDER")).toBeVisible();
+        await expect(
+            page.getByRole("cell", { name: "1Y-10Y Ladder" }),
+        ).toBeVisible();
+        await expect(
+            page.getByRole("cell", { name: "BOND_LADDER" }),
+        ).toBeVisible();
         await expect(pageErrors).toHaveLength(0);
     });
 
@@ -942,6 +946,8 @@ test.describe("backtesting workflows", () => {
             page.getByRole("button", { name: "Run Backtest" }).click(),
         ]);
 
+        await expect(page.getByRole("tab", { name: "Overview" })).toBeVisible();
+        await page.getByRole("tab", { name: "Audit" }).click();
         await expect(page.getByText("Execution Frictions")).toBeVisible();
         await expect(page.getByText("Missing Data Handling")).toBeVisible();
         await expect(page.getByText("Walk-Forward Follow-Up")).toBeVisible();
@@ -951,7 +957,7 @@ test.describe("backtesting workflows", () => {
             page.getByRole("button", { name: "Save Experiment" }).click(),
         ]);
         await expect(page.getByText("Experiment Lineage")).toBeVisible();
-        await expect(page.getByText("bt-001")).toBeVisible();
+        await expect(page.locator("td", { hasText: "bt-001" })).toBeVisible();
 
         await page
             .getByRole("link", { name: "Open Walk-Forward Analysis" })
@@ -1009,6 +1015,136 @@ test.describe("backtesting workflows", () => {
         await expect(
             page.getByText("Each one-time cashflow needs a non-zero amount."),
         ).toBeVisible();
+    });
+
+    test("loads a preset, edits weights, runs, and marks changed inputs stale", async ({
+        page,
+    }) => {
+        const pageErrors = trackPageErrors(page);
+
+        await gotoAndWaitForHeading(page, "/backtesting", "Strategy Backtester");
+
+        await page
+            .getByTestId("portfolio-preset-sixty-forty")
+            .getByRole("button", { name: "Load" })
+            .click();
+        await expect(page.getByPlaceholder("Ticker 2")).toHaveValue("TLT");
+
+        await page.getByLabel("Weight for asset 1").fill("55");
+        await page.getByLabel("Weight for asset 2").fill("45");
+        await Promise.all([
+            waitForApiRequest(page, "/api/backtesting/run"),
+            page.getByRole("button", { name: "Run Backtest" }).click(),
+        ]);
+
+        await expect(page.getByRole("tab", { name: "Overview" })).toBeVisible();
+        await expect(page.getByText("Max Drawdown")).toBeVisible();
+
+        await page.getByLabel("Weight for asset 2").fill("40");
+        await expect(page.getByText("Inputs changed")).toBeVisible();
+        await expect(pageErrors).toHaveLength(0);
+    });
+
+    test("share links round-trip the visible portfolio configuration", async ({
+        page,
+    }) => {
+        const pageErrors = trackPageErrors(page);
+
+        await gotoAndWaitForHeading(page, "/backtesting", "Strategy Backtester");
+
+        await page
+            .getByTestId("portfolio-preset-sixty-forty")
+            .getByRole("button", { name: "Load" })
+            .click();
+        await page.getByRole("button", { name: "Share Setup" }).click();
+
+        await expect(page).toHaveURL(/config=/);
+        const sharedUrl = page.url();
+
+        await page.goto(sharedUrl);
+        await expect(page.getByPlaceholder("Ticker 1")).toHaveValue("SPY");
+        await expect(page.getByPlaceholder("Ticker 2")).toHaveValue("TLT");
+        await expect(page.getByLabel("Weight for asset 1")).toHaveValue("60");
+        await expect(page.getByLabel("Weight for asset 2")).toHaveValue("40");
+        await expect(pageErrors).toHaveLength(0);
+    });
+
+    test("runs mixed-success portfolio comparisons without losing successful results", async ({
+        page,
+    }) => {
+        const pageErrors = trackPageErrors(page);
+
+        await page.route("**/_playwright_api/api/backtesting/run", async (route) => {
+            const body = route.request().postDataJSON() as { tickers?: string[] };
+            if (body.tickers?.includes("TMF")) {
+                await route.fulfill({
+                    status: 500,
+                    contentType: "application/json",
+                    body: JSON.stringify({ detail: "TMF data unavailable" }),
+                });
+                return;
+            }
+            await fulfillJson(route, backtestResponse);
+        });
+
+        await gotoAndWaitForHeading(page, "/backtesting", "Strategy Backtester");
+
+        await page
+            .getByTestId("portfolio-preset-sixty-forty")
+            .getByRole("button", { name: "Compare" })
+            .click();
+        await page
+            .getByTestId("portfolio-preset-hfea")
+            .getByRole("button", { name: "Compare" })
+            .click();
+        await page.getByRole("button", { name: "Run Comparison" }).click();
+
+        await expect(
+            page.getByRole("tab", { name: "Compare" }),
+        ).toHaveAttribute("data-state", "active");
+        await expect(page.getByText("Portfolio Comparison")).toBeVisible();
+        await expect(page.getByText("Comparison Drawdown")).toBeVisible();
+        await expect(page.getByText("Comparison Metrics")).toBeVisible();
+        await expect(page.getByText("HFEA Details")).toBeVisible();
+        await expect(
+            page.getByRole("cell", { name: "TMF data unavailable" }),
+        ).toBeVisible();
+        await expect(pageErrors).toHaveLength(0);
+    });
+
+    test("comparison runs do not mutate an existing single-run summary", async ({
+        page,
+    }) => {
+        const pageErrors = trackPageErrors(page);
+
+        await gotoAndWaitForHeading(page, "/backtesting", "Strategy Backtester");
+
+        await Promise.all([
+            waitForApiRequest(page, "/api/backtesting/run"),
+            page.getByRole("button", { name: "Run Backtest" }).click(),
+        ]);
+        await expect(
+            page.getByTestId("backtest-result-summary-title"),
+        ).toHaveText("SPY");
+
+        await page
+            .getByTestId("portfolio-preset-sixty-forty")
+            .getByRole("button", { name: "Compare" })
+            .click();
+        await page
+            .getByTestId("portfolio-preset-hfea")
+            .getByRole("button", { name: "Compare" })
+            .click();
+        await page.getByRole("button", { name: "Run Comparison" }).click();
+
+        await expect(
+            page.getByRole("tab", { name: "Compare" }),
+        ).toHaveAttribute("data-state", "active");
+        await expect(
+            page.getByTestId("backtest-result-summary-title"),
+        ).toHaveText("SPY");
+        await expect(page.getByText("Portfolio Comparison")).toBeVisible();
+        await expect(pageErrors).toHaveLength(0);
     });
 });
 

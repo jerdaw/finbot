@@ -383,6 +383,7 @@ filterwarnings = [
 ]
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "external: marks tests that call third-party services and require opt-in",
 ]
 
 [tool.bandit]

@@ -1,54 +1,47 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { PanelLeftClose, PanelLeft } from "lucide-react";
+import { PanelTopClose, PanelTopOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface ToolLayoutProps {
   configPanel: ReactNode;
   children: ReactNode;
-  /** Width of config panel on desktop (default: 360px) */
+  /** @deprecated ToolLayout now uses a full-width top configuration workbench. */
   configWidth?: number;
 }
 
 export function ToolLayout({
   configPanel,
   children,
-  configWidth = 360,
 }: ToolLayoutProps) {
   const [configCollapsed, setConfigCollapsed] = useState(false);
 
   return (
-    <div
-      className={cn(
-        "grid min-w-0 items-start gap-6",
-        configCollapsed
-          ? "grid-cols-1"
-          : "grid-cols-1 lg:grid-cols-[var(--config-width)_1fr]",
-      )}
-      style={{ "--config-width": `${configWidth}px` } as React.CSSProperties}
-    >
+    <div className="min-w-0 space-y-5">
       {/* Config panel */}
       <div className={cn("min-w-0", configCollapsed && "hidden")}>
         {configPanel}
       </div>
 
       {/* Results area */}
-      <div className="min-w-0 space-y-6">
-        <div className="flex items-center gap-2">
+      <div className="min-w-0 space-y-5">
+        <div className="hidden min-h-8 items-center justify-end border-b border-border/40 pb-2 lg:flex">
           <Button
             variant="ghost"
-            size="icon"
-            className="hidden h-7 w-7 text-muted-foreground hover:text-foreground lg:flex"
+            size="sm"
+            className="h-7 gap-1.5 px-2 text-xs text-muted-foreground hover:text-foreground"
             onClick={() => setConfigCollapsed(!configCollapsed)}
-            title={configCollapsed ? "Show config panel" : "Hide config panel"}
+            aria-label={configCollapsed ? "Show inputs" : "Hide inputs"}
+            title={configCollapsed ? "Show inputs" : "Hide inputs"}
           >
             {configCollapsed ? (
-              <PanelLeft className="h-3.5 w-3.5" />
+              <PanelTopOpen className="h-3.5 w-3.5" />
             ) : (
-              <PanelLeftClose className="h-3.5 w-3.5" />
+              <PanelTopClose className="h-3.5 w-3.5" />
             )}
+            <span>{configCollapsed ? "Show inputs" : "Hide inputs"}</span>
           </Button>
         </div>
         {children}

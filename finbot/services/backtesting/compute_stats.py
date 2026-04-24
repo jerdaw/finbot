@@ -7,6 +7,24 @@ import pandas as pd
 import quantstats as qs
 
 
+def compute_drawdown_series(value_history: pd.Series) -> pd.Series:
+    """Compute peak-to-trough drawdown from a portfolio value series."""
+    values = value_history.dropna().astype(float)
+    if values.empty:
+        return pd.Series(dtype=float)
+
+    running_peak = values.cummax()
+    return (values / running_peak) - 1.0
+
+
+def compute_max_drawdown(value_history: pd.Series) -> float:
+    """Return the worst drawdown from a portfolio value series."""
+    drawdowns = compute_drawdown_series(value_history)
+    if drawdowns.empty:
+        return 0.0
+    return float(drawdowns.min())
+
+
 def compute_stats(
     value_history: pd.Series,
     cash_history: pd.Series,
@@ -57,7 +75,7 @@ def compute_stats(
     stats["Kelly Criterion"] = value_history.kelly_criterion()  # quantstats extension method
 
     # Volatility & drawdown
-    stats["Max Drawdown"] = value_history.max_drawdown()  # quantstats extension method
+    stats["Max Drawdown"] = compute_max_drawdown(value_history)
     stats["Annualized Volatility"] = value_history.volatility()  # quantstats extension method
     stats["Risk of Ruin"] = value_history.risk_of_ruin()  # quantstats extension method
     stats["Expected Shortfall (cVar)"] = value_history.expected_shortfall()  # quantstats extension method

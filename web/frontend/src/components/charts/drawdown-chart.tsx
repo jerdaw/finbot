@@ -19,6 +19,12 @@ const TOOLTIP_STYLE = {
   boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
 };
 
+function formatDateTick(value: string): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return `${date.getFullYear()}`;
+}
+
 interface DrawdownChartProps {
   data: { date: string; value: number }[];
   height?: number;
@@ -41,6 +47,7 @@ export function DrawdownChart({ data, height = 200 }: DrawdownChartProps) {
           tick={{ fill: "#71717a", fontSize: 11 }}
           axisLine={{ stroke: "rgba(255,255,255,0.06)" }}
           tickLine={false}
+          tickFormatter={formatDateTick}
         />
         <YAxis
           tick={{ fill: "#71717a", fontSize: 11 }}

@@ -2,13 +2,13 @@
 
 **Created:** 2026-02-10
 **Last Updated:** 2026-04-24
-**Status:** Priority 0-10 complete. P11 decision track remains open.
+**Status:** Priority 0-10 and P12 complete. P11 decision track remains open.
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on repository professionalization, public documentation quality, and durable communication surfaces.
 
 See Completed Items table below and git history for details on implemented features.
 
-**Current Plan Record:** None active. Last archived plan: P10 Autonomous Finish Pass (completed 2026-04-24)
+**Current Plan Record:** None active. Last archived plan: `docs/planning/archive/backtesting-ux-product-workflow-hardening-2026-04-24.md`
 
 ---
 
@@ -47,8 +47,15 @@ Closed the remaining autonomous frontend operations work: responsive/mobile layo
 - [ ] Treat Zensical as the intended MkDocs replacement only if strict/deploy behavior is solid and `mkdocstrings` support matures beyond its current preliminary state.
 - [ ] Re-evaluate Finbot only after the simpler sites have migrated successfully and separate API-doc parity checks pass. If Zensical stalls, use Sphinx + MyST as the mature fallback for any future standalone docs rebuild.
 
+## Priority 12: Backtesting UX and Product Workflow Hardening
+
+**Status:** COMPLETE (2026-04-24)
+
+Closed the product-quality backtesting workflow pass: canonical drawdown metrics, tabbed result workspace, stronger portfolio builder and presets, multi-portfolio comparison, share/reuse/export flows, chart controls, and mobile dense-output handling. The archived plan records validation and the maintainability follow-up.
+
 ## Deferred / On Hold Backlog
 
+- [ ] Split `web/frontend/src/app/backtesting/page.tsx` into local backtesting helpers/components before the next large backtesting feature tranche; P12 behavior is complete, but the page remains too large for comfortable long-term maintenance.
 - [ ] Add tests for `approximate_overnight_libor` once stable FRED-backed validation inputs are practical.
 - [ ] Apply the data-driven config pattern to `sim_specific_bond_indexes.py` if that small surface ever grows beyond the current lightweight implementation.
 - [ ] Add options-overlay strategy/tooling once pricing-model depth and options-chain data are available.
@@ -68,6 +75,7 @@ Closed the remaining autonomous frontend operations work: responsive/mobile layo
 
 | Item                                                                      | Completed  | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | :------------------------------------------------------------------------ | :--------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| P12 backtesting UX and product workflow hardening                         | 2026-04-24 | Closed the flagship backtesting workflow gap with value-path drawdown consistency, tabbed result workspaces, portfolio presets and saved portfolios, multi-portfolio comparison, share/export/chart controls, and mobile-safe dense tables. Archive note records validation and explicitly carries forward the component extraction follow-up.                                                                                                                                                     |
 | P10 autonomous frontend finish pass                                       | 2026-04-24 | Closed remaining autonomous P10 operations work: responsive/mobile hardening, deeper mocked Chromium browser workflows, runtime frontend API-origin configuration, frontend and backend health probes, Docker Compose healthchecks, healthy-service dependency gating, stale npm lockfile cleanup, and provider-neutral web deployment documentation. Archive note records validation and deferred follow-up.                                                                                         |
 | Backtesting follow-through + adjacent research closeout (P10.4 tranche 2) | 2026-04-18 | Closed the remaining P10.4 follow-through by surfacing cost assumptions, missing-data handling, and walk-forward handoff in the main backtesting workspace, then broadened simulations, Monte Carlo, and optimizer into bond-ladder, multi-asset Monte Carlo, Pareto, and efficient-frontier research workspaces. Archive note records the closeout and validation surfaces.                                                                                                                     |
 | Backtesting workflow expansion pass (P10.4 tranche 1)                     | 2026-04-17 | Turned the main backtesting page into a broader research workspace: editable allocation builder and presets, benchmark-relative analytics, monthly/annual return tables, saved experiments with snapshot lineage, rolling and regime diagnostics, CSV/JSON export, recurring and one-time cashflow planning, inflation-adjusted durability views, and allocation drift/rebalance logs. Archive note records the initial tranche and links forward to the follow-through closeout.                |

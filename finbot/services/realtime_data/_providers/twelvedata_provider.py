@@ -8,7 +8,6 @@ environment variable.
 from __future__ import annotations
 
 import logging
-import os
 from datetime import UTC, datetime
 from typing import Any
 
@@ -22,7 +21,11 @@ _BASE_URL = "https://api.twelvedata.com"
 
 def is_available() -> bool:
     """Return True if Twelve Data API key is configured."""
-    return bool(os.getenv("TWELVEDATA_API_KEY"))
+    try:
+        _get_api_key()
+    except OSError:
+        return False
+    return True
 
 
 def _get_api_key() -> str:

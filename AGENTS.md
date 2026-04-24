@@ -49,7 +49,7 @@ uv run python scripts/update_daily.py
 
 ## Current Delivery Status (2026-04-24)
 
-**P0-P10 complete. P11 decision track remains open.**
+**P0-P10 and P12 complete. P11 decision track remains open.**
 
 - **P5** (97.8%): documentation, governance, and public-quality improvements — 44/45 items (item 42 blocked on external resources)
 - **P6** (100%): Backtesting-to-live readiness — Epics E0-E6 complete; ADR-011 confirmed **Defer**
@@ -57,8 +57,15 @@ uv run python scripts/update_daily.py
 - **P8** (100%): Risk Analytics, Portfolio Analytics, Real-Time Data, Factor Analytics
 - **P9** (100%): Agent tooling and runtime hardening — P9.1-P9.4 complete
 - **P10** (100%): Next.js frontend — 12 task pages complete, the main backtesting page now supports allocation building, benchmark analysis, return tables, experiment lineage, rolling/regime diagnostics, export, cashflow planning, allocation drift/rebalance inspection, surfaced cost assumptions, missing-data policy reporting, and walk-forward handoff; the simulations, Monte Carlo, and optimizer workspaces now also cover bond ladder, multi-asset Monte Carlo, Pareto, and efficient frontier research; the operational finish pass added responsive/mobile hardening, deeper mocked Chromium workflows, frontend/backend Docker healthchecks, runtime frontend API-origin configuration, and provider-neutral web deployment documentation
+- **P12** (100%): Backtesting UX and product workflow hardening — canonical value-path drawdown metrics, tabbed result workspace, portfolio presets, saved portfolios, multi-portfolio comparison, share/export/chart controls, and mobile-safe dense outputs complete
 
-**Tracking docs:** `docs/planning/roadmap.md`, `docs/planning/archive/audit-remediation-and-frontend-hardening-2026-04-15.md`, `docs/planning/archive/public-packaging-and-docs-alignment-2026-04-16.md`, `docs/planning/archive/docs-maintenance-and-roadmap-reconciliation-2026-04-16.md`, `docs/planning/archive/backtesting-workflow-expansion-and-research-workspace-pass-2026-04-17.md`, `docs/planning/archive/backtesting-followthrough-and-adjacent-research-closeout-2026-04-18.md`, `docs/planning/archive/p10-autonomous-finish-pass-2026-04-24.md`, `docs/planning/backtesting-live-readiness-backlog.md`, `docs/planning/priority-5-6-completion-status.md`, `docs/adr/ADR-011-nautilus-decision.md`
+**Tracking docs:** `docs/planning/roadmap.md`, `docs/planning/archive/audit-remediation-and-frontend-hardening-2026-04-15.md`, `docs/planning/archive/public-packaging-and-docs-alignment-2026-04-16.md`, `docs/planning/archive/docs-maintenance-and-roadmap-reconciliation-2026-04-16.md`, `docs/planning/archive/backtesting-workflow-expansion-and-research-workspace-pass-2026-04-17.md`, `docs/planning/archive/backtesting-followthrough-and-adjacent-research-closeout-2026-04-18.md`, `docs/planning/archive/p10-autonomous-finish-pass-2026-04-24.md`, `docs/planning/archive/backtesting-ux-product-workflow-hardening-2026-04-24.md`, `docs/planning/backtesting-live-readiness-backlog.md`, `docs/planning/priority-5-6-completion-status.md`, `docs/adr/ADR-011-nautilus-decision.md`
+
+## Authorship and Attribution
+
+- Only actual human contributors, `dependabot[bot]`, and `github-actions[bot]` may be listed as authors or contributors in docs, code comments, commits, PR text, changelogs, and release notes.
+- Automated coding tools may help produce changes, but must not be credited, listed as co-authors, or mentioned as contributors.
+- Keep `CLAUDE.md` and `GEMINI.md` as relative symlinks to this file so this rule is shared across tool-specific entry points.
 
 ## Common Commands
 
@@ -505,9 +512,9 @@ See `docs/adr/` for architectural decision records:
 **IMPORTANT:** All commits must list only human authors, co-authors, and contributors.
 
 - **Do:** Attribute commits to human developers
-- **Don't:** Include AI assistants (Claude, Gemini, Codex, ChatGPT, Copilot, etc.) in author, co-author, or contributor fields
-- **Don't:** Add "AI-generated" or "Created with AI" notices in code, docs, or commit messages
-- **Rationale:** Commits represent human accountability. AI tools are instruments, not authors.
+- **Don't:** Include automated coding tools in author, co-author, or contributor fields
+- **Don't:** Add generated-code or tool-authorship notices in code, docs, or commit messages
+- **Rationale:** Commits represent human accountability. Tools are instruments, not authors.
 
 - **Scope:** Applies to all commits and documentation attribution (README, ADRs, research, planning, changelogs, release notes)
 

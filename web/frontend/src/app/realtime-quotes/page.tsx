@@ -19,11 +19,16 @@ import { Zap, Plus, X, RefreshCw } from "lucide-react";
 import { apiPost, apiGet } from "@/lib/api";
 import { formatNumber, formatCurrency } from "@/lib/format";
 import { useWatchlistStore } from "@/stores/watchlist-store";
-import type { QuotesResponse, QuoteSchema, ProviderStatusResponse } from "@/types/api";
+import type {
+  QuotesResponse,
+  QuoteSchema,
+  ProviderStatusResponse,
+  ProviderStatusSchema,
+} from "@/types/api";
 
 function QuoteCard({ q }: { q: QuoteSchema }) {
   return (
-    <div className="relative overflow-hidden rounded-xl border border-border/50 bg-card/50 p-5 gradient-border">
+    <div className="relative overflow-hidden rounded-lg border border-border/50 bg-card/50 p-5 gradient-border">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <span className="text-lg font-bold">{q.symbol}</span>
         <Badge variant="outline" className="text-[10px]">{q.provider}</Badge>
@@ -107,6 +112,45 @@ function QuoteResults({ data, isPending }: { data: QuotesResponse | undefined; i
   );
 }
 
+function ProviderStatusPills({
+  providers,
+  isLoading,
+}: {
+  providers: ProviderStatusSchema[];
+  isLoading: boolean;
+}) {
+  if (isLoading && providers.length === 0) {
+    return (
+      <Badge variant="outline" className="border-border/60 bg-card/60 text-muted-foreground">
+        Checking providers
+      </Badge>
+    );
+  }
+
+  return (
+    <>
+      {providers.map((provider) => (
+        <Badge
+          key={provider.provider}
+          variant="outline"
+          className={
+            provider.is_available
+              ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
+              : "border-border/60 bg-card/60 text-muted-foreground"
+          }
+        >
+          <span
+            className={`mr-1.5 h-1.5 w-1.5 rounded-full ${
+              provider.is_available ? "bg-emerald-400" : "bg-muted-foreground/45"
+            }`}
+          />
+          {provider.provider}
+        </Badge>
+      ))}
+    </>
+  );
+}
+
 export default function RealtimeQuotesPage() {
   const [symbolInput, setSymbolInput] = useState("");
   const [addInput, setAddInput] = useState("");
@@ -159,7 +203,7 @@ export default function RealtimeQuotesPage() {
   const providerStatusQuery = useQuery({
     queryKey: ["provider-status"],
     queryFn: () => apiGet<ProviderStatusResponse>("/api/realtime-quotes/provider-status"),
-    enabled: false,
+    staleTime: 30_000,
   });
 
   const handleCheckStatus = () => {
@@ -175,6 +219,12 @@ export default function RealtimeQuotesPage() {
       <PageHeader
         title="Real-Time Quotes"
         description="Fetch live market data from multiple providers with automatic fallback"
+        actions={
+          <ProviderStatusPills
+            providers={providerStatusQuery.data?.providers ?? []}
+            isLoading={providerStatusQuery.isFetching}
+          />
+        }
       />
 
       <Tabs defaultValue="live" className="space-y-6">
@@ -429,7 +479,7 @@ export default function RealtimeQuotesPage() {
               {providerStatusQuery.data.providers.map((p) => (
                 <div
                   key={p.provider}
-                  className="rounded-xl border border-border/50 bg-card/50 p-5"
+                  className="rounded-lg border border-border/50 bg-card/50 p-5"
                 >
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <span className="font-semibold">{p.provider}</span>

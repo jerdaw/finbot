@@ -139,7 +139,7 @@ function ToolCard({
     const Icon = link.icon;
     return (
         <Link href={link.href}>
-            <div className="group relative h-full overflow-hidden rounded-xl border border-border/50 bg-card/50 p-5 transition-all duration-300 hover:border-border hover:bg-card/80 gradient-border">
+            <div className="group relative h-full overflow-hidden rounded-lg border border-border/50 bg-card/50 p-5 transition-all duration-300 hover:border-border hover:bg-card/80 gradient-border">
                 <div
                     className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${link.color} opacity-0 transition-opacity duration-300 group-hover:opacity-100`}
                 />
@@ -244,7 +244,7 @@ export default function DashboardPage() {
 
             {/* Data freshness badges */}
             {dataStatus && dataStatus.sources.length > 0 && (
-                <div className="rounded-xl border border-border/50 bg-card/50 p-5">
+                <div className="rounded-lg border border-border/50 bg-card/50 p-5">
                     <p className="mb-3 text-xs font-medium tracking-wider text-muted-foreground uppercase">
                         Data Freshness
                     </p>
