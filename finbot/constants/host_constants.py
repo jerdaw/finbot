@@ -118,8 +118,8 @@ class HostSystem:
     cpu_name: str = field(default_factory=lambda: HostSystem.get_cpu_name())
     cpu_cores: int = field(default_factory=lambda: _safe_cpu_count(logical=False))
     cpu_threads: int = field(default_factory=lambda: _safe_cpu_count(logical=True))
-    cpu_speed: float = field(default_factory=_safe_cpu_speed)  # MHz
-    total_memory: float = field(default_factory=_safe_memory_gb)  # GB
+    cpu_speed: float = field(default_factory=lambda: _safe_cpu_speed())  # MHz
+    total_memory: float = field(default_factory=lambda: _safe_memory_gb())  # GB
     disk_storage: float = field(default_factory=lambda: _safe_disk_usage_gb("total"))  # GB
     available_storage: float = field(default_factory=lambda: _safe_disk_usage_gb("free"))  # GB
     used_storage: float = field(default_factory=lambda: _safe_disk_usage_gb("used"))  # GB
