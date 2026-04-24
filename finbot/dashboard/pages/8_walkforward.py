@@ -36,6 +36,7 @@ def _stop_with_info(message: str) -> Never:
     st.stop()
     raise RuntimeError(message)
 
+
 # ── Sidebar ──────────────────────────────────────────────────────────────────
 with st.sidebar:
     st.header("Configuration")

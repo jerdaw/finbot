@@ -32,7 +32,8 @@ def build_cost_summary_from_trades(
         symbol = str(getattr(trade, "symbol", ""))
         quantity = abs(float(getattr(trade, "size", 0.0)))
         price = float(getattr(trade, "price", 0.0))
-        timestamp = pd.Timestamp(getattr(trade, "timestamp", None))
+        timestamp_value = getattr(trade, "timestamp", None)
+        timestamp = pd.Timestamp(timestamp_value) if timestamp_value is not None else pd.Timestamp.utcnow()
 
         commission = commission_model.calculate_cost(
             symbol=symbol,

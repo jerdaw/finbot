@@ -105,8 +105,6 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 20
-          cache: pnpm
-          cache-dependency-path: web/frontend/pnpm-lock.yaml
 
       - name: Enable Corepack
         if: steps.frontend-changes.outputs.frontend_changed == 'true'
@@ -128,7 +126,7 @@ jobs:
         if: steps.frontend-changes.outputs.frontend_changed == 'true'
         run: pnpm exec playwright install --with-deps chromium
 
-      - name: Run Playwright smoke tests
+      - name: Run Playwright workflow tests
         if: steps.frontend-changes.outputs.frontend_changed == 'true'
         run: pnpm test:e2e
 

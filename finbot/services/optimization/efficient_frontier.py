@@ -58,16 +58,19 @@ def compute_efficient_frontier(
     if len(returns_df) < 30:
         raise ValueError(f"Insufficient overlapping data: only {len(returns_df)} common return observations")
 
-    tickers = list(returns_df.columns)
+    tickers = [str(column) for column in returns_df.columns]
+    returns_df.columns = tickers
     annual_returns = returns_df.mean() * 252.0
     annual_cov = returns_df.cov() * 252.0
     correlation = returns_df.corr().to_dict()
+    annual_return_values = annual_returns.to_numpy(dtype=float)
+    annual_cov_values = annual_cov.to_numpy(dtype=float)
 
     rng = np.random.default_rng(seed)
     weights = rng.dirichlet(np.ones(len(tickers)), size=n_portfolios)
 
-    expected_returns = weights @ annual_returns.to_numpy()
-    volatilities = np.sqrt(np.einsum("ij,jk,ik->i", weights, annual_cov.to_numpy(), weights))
+    expected_returns = weights @ annual_return_values
+    volatilities = np.sqrt(np.einsum("ij,jk,ik->i", weights, annual_cov_values, weights))
     sharpe_ratios = np.divide(
         expected_returns - risk_free_rate,
         volatilities,
@@ -91,10 +94,10 @@ def compute_efficient_frontier(
     asset_stats = tuple(
         AssetFrontierStats(
             ticker=ticker,
-            annual_return=float(annual_returns[ticker]),
-            annual_volatility=float(np.sqrt(annual_cov.loc[ticker, ticker])),
+            annual_return=float(annual_return_values[asset_index]),
+            annual_volatility=float(annual_cov_values[asset_index, asset_index] ** 0.5),
         )
-        for ticker in tickers
+        for asset_index, ticker in enumerate(tickers)
     )
 
     return EfficientFrontierResult(
@@ -104,7 +107,7 @@ def compute_efficient_frontier(
         min_volatility=min_volatility,
         asset_stats=asset_stats,
         correlation_matrix={
-            row: {col: float(value) for col, value in values.items()} for row, values in correlation.items()
+            str(row): {str(col): float(value) for col, value in values.items()} for row, values in correlation.items()
         },
     )
 

@@ -393,7 +393,7 @@ class NautilusAdapter(BacktestEngine):
         from nautilus_trader.test_kit.providers import TestInstrumentProvider
         from nautilus_trader.trading.strategy import Strategy
 
-        class BuyAndHoldConfig(StrategyConfig, frozen=True):  # type: ignore[call-arg]  # Nautilus config base supports frozen subclasses at runtime.
+        class BuyAndHoldConfig(StrategyConfig, frozen=True):
             instrument_id: InstrumentId
             bar_type: BarType
             trade_size: Decimal
@@ -591,7 +591,7 @@ class NautilusAdapter(BacktestEngine):
         from nautilus_trader.test_kit.providers import TestInstrumentProvider
         from nautilus_trader.trading.strategy import Strategy
 
-        class DualMomentumNativeConfig(StrategyConfig, frozen=True):  # type: ignore[call-arg]  # Nautilus config base supports frozen subclasses at runtime.
+        class DualMomentumNativeConfig(StrategyConfig, frozen=True):
             instrument_ids: tuple[InstrumentId, InstrumentId]
             bar_types: tuple[BarType, BarType]
             lookback: int
@@ -964,7 +964,7 @@ class NautilusAdapter(BacktestEngine):
         from nautilus_trader.test_kit.providers import TestInstrumentProvider
         from nautilus_trader.trading.strategy import Strategy
 
-        class RiskParityNativeConfig(StrategyConfig, frozen=True):  # type: ignore[call-arg]  # Nautilus config base supports frozen subclasses at runtime.
+        class RiskParityNativeConfig(StrategyConfig, frozen=True):
             instrument_ids: tuple[InstrumentId, ...]
             bar_types: tuple[BarType, ...]
             symbols: tuple[str, ...]

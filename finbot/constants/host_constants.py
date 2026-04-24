@@ -172,7 +172,9 @@ class HostSystem:
         active_interfaces = []
         for interface, addrs in interfaces:
             for addr in addrs:
-                if getattr(addr, "family", None) == socket.AF_INET and not getattr(addr, "address", "").startswith("127."):
+                if getattr(addr, "family", None) == socket.AF_INET and not getattr(addr, "address", "").startswith(
+                    "127."
+                ):
                     active_interfaces.append(interface)
                     break  # Only add each interface once
         return ", ".join(active_interfaces) if active_interfaces else "None"

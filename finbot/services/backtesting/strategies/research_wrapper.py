@@ -46,6 +46,13 @@ def _parse_date(value: str | date | datetime | None) -> date | None:
     return datetime.fromisoformat(value).date()
 
 
+def _parse_required_date(value: str | date | datetime | None) -> date:
+    parsed_date = _parse_date(value)
+    if parsed_date is None:
+        raise ValueError("One-time cashflow rules require a date")
+    return parsed_date
+
+
 def _period_key(current_date: date, frequency: str) -> tuple[int, ...]:
     if frequency == "monthly":
         return (current_date.year, current_date.month)
@@ -73,7 +80,7 @@ def _build_one_time_cashflows(rules: list[dict[str, Any]] | None) -> list[_OneTi
     return [
         _OneTimeCashflowRule(
             amount=float(rule["amount"]),
-            date=_parse_date(rule["date"]),
+            date=_parse_required_date(rule["date"]),
             label=str(rule.get("label") or "One-time cashflow"),
         )
         for rule in (rules or [])
@@ -94,11 +101,11 @@ class _ResearchWorkflowMixin:
         self._one_time_cashflows.sort(key=lambda rule: rule.date)
         super().__init__(**kwargs)
 
-    def _current_date(self) -> date:
+    def _current_date(self: Any) -> date:
         return bt.num2date(self.datetime[0]).date()
 
     def _record_cashflow_event(
-        self,
+        self: Any,
         *,
         amount: float,
         scheduled_date: date,
@@ -119,7 +126,7 @@ class _ResearchWorkflowMixin:
             }
         )
 
-    def _apply_cashflows(self) -> None:
+    def _apply_cashflows(self: Any) -> None:
         current_date = self._current_date()
 
         for rule in self._recurring_cashflows:
@@ -142,20 +149,20 @@ class _ResearchWorkflowMixin:
                 source="recurring",
             )
 
-        for rule in self._one_time_cashflows:
-            if rule.applied or current_date < rule.date:
+        for one_time_rule in self._one_time_cashflows:
+            if one_time_rule.applied or current_date < one_time_rule.date:
                 continue
-            self.broker.add_cash(rule.amount)
-            rule.applied = True
+            self.broker.add_cash(one_time_rule.amount)
+            one_time_rule.applied = True
             self._record_cashflow_event(
-                amount=rule.amount,
-                scheduled_date=rule.date,
+                amount=one_time_rule.amount,
+                scheduled_date=one_time_rule.date,
                 applied_date=current_date,
-                label=rule.label,
+                label=one_time_rule.label,
                 source="one_time",
             )
 
-    def _record_allocation_snapshot(self) -> None:
+    def _record_allocation_snapshot(self: Any) -> None:
         total_value = float(self.broker.get_value())
         current_date = self._current_date().isoformat()
         snapshot: dict[str, Any] = {"date": current_date}
@@ -170,10 +177,12 @@ class _ResearchWorkflowMixin:
 
         self._allocation_history.append(snapshot)
 
-    def next(self) -> None:
+    def next(self: Any) -> None:
         self._apply_cashflows()
         self._record_allocation_snapshot()
-        super().next()
+        parent_next = getattr(super(), "next", None)
+        if parent_next is not None:
+            parent_next()
 
     def get_cashflow_events(self) -> list[dict[str, Any]]:
         return list(self._cashflow_events)

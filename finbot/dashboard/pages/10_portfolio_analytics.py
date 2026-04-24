@@ -126,7 +126,9 @@ with tab1:
 
         st.session_state["roll_result"] = roll_result
 
-    roll_result = _require_result(roll_result, "Configure settings in the sidebar and click **Compute Rolling Metrics**.")
+    roll_result = _require_result(
+        roll_result, "Configure settings in the sidebar and click **Compute Rolling Metrics**."
+    )
 
     valid_sharpe = [x for x in roll_result.sharpe if x == x]  # filter NaN
     valid_vol = [x for x in roll_result.volatility if x == x]
@@ -197,7 +199,9 @@ with tab2:
         st.session_state["bench_p_rets"] = bench_p_rets
         st.session_state["bench_b_rets"] = bench_b_rets
 
-    bench_result = _require_result(bench_result, "Configure settings in the sidebar and click **Run Benchmark Comparison**.")
+    bench_result = _require_result(
+        bench_result, "Configure settings in the sidebar and click **Run Benchmark Comparison**."
+    )
 
     col1, col2, col3 = st.columns(3)
     col4, col5, col6 = st.columns(3)
@@ -332,7 +336,9 @@ with tab4:
 
         st.session_state["corr_result"] = corr_result
 
-    corr_result = _require_result(corr_result, "Configure settings in the sidebar and click **Run Correlation Analysis**.")
+    corr_result = _require_result(
+        corr_result, "Configure settings in the sidebar and click **Run Correlation Analysis**."
+    )
 
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("HHI (Concentration)", f"{corr_result.herfindahl_index:.3f}")

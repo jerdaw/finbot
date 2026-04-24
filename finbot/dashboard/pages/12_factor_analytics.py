@@ -169,7 +169,9 @@ with tab1:
 
         st.session_state["fa_reg_result"] = reg_result
 
-    reg_result = _require_result(reg_result, "Upload a factor CSV, configure settings, and click **Run Factor Regression**.")
+    reg_result = _require_result(
+        reg_result, "Upload a factor CSV, configure settings, and click **Run Factor Regression**."
+    )
 
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Alpha (ann.)", f"{reg_result.alpha:.2%}")
@@ -287,7 +289,9 @@ with tab3:
 
         st.session_state["fa_risk_result"] = risk_result
 
-    risk_result = _require_result(risk_result, "Run a factor regression first (Tab 1), then click **Run Risk Decomposition**.")
+    risk_result = _require_result(
+        risk_result, "Run a factor regression first (Tab 1), then click **Run Risk Decomposition**."
+    )
 
     col1, col2, col3 = st.columns(3)
     col1.metric("Systematic Var", f"{risk_result.systematic_variance:.6f}")
