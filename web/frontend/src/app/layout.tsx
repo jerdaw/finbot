@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { unstable_noStore as noStore } from "next/cache";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "@/components/layout/providers";
@@ -26,9 +27,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  noStore();
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <body
+        data-api-base-url={apiBaseUrl}
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>

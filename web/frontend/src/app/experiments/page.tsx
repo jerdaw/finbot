@@ -153,11 +153,11 @@ export default function ExperimentsPage() {
             {/* Experiment List */}
             <div className="relative overflow-hidden rounded-xl border border-border/50 bg-card/50">
                 <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-                <div className="flex items-center justify-between border-b border-border/50 px-5 py-4">
+                <div className="flex flex-col gap-3 border-b border-border/50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
                     <h3 className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                         Experiment Runs
                     </h3>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                         <Button
                             variant="outline"
                             size="sm"
@@ -189,7 +189,7 @@ export default function ExperimentsPage() {
 
                     {experiments && experiments.length > 0 && (
                         <div className="space-y-1">
-                            <div className="grid grid-cols-[40px_1.2fr_.8fr_.9fr_.9fr_.9fr_1.1fr] gap-2 border-b border-border/30 pb-2 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+                            <div className="hidden grid-cols-[40px_1.2fr_.8fr_.9fr_.9fr_.9fr_1.1fr] gap-2 border-b border-border/30 pb-2 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase lg:grid">
                                 <span />
                                 <span>Run ID</span>
                                 <span>Engine</span>
@@ -200,48 +200,116 @@ export default function ExperimentsPage() {
                             </div>
 
                             {experiments.map((exp) => (
-                                <div
-                                    key={exp.run_id}
-                                    className={`grid cursor-pointer grid-cols-[40px_1.2fr_.8fr_.9fr_.9fr_.9fr_1.1fr] gap-2 rounded-lg px-1 py-2.5 text-sm transition-all duration-200 hover:bg-accent/30 ${
-                                        selectedIds.has(exp.run_id)
-                                            ? "bg-accent/20"
-                                            : ""
-                                    }`}
-                                    onClick={() => toggleSelection(exp.run_id)}
-                                >
-                                    <div className="flex items-center justify-center">
-                                        <input
-                                            type="checkbox"
-                                            checked={selectedIds.has(
-                                                exp.run_id,
-                                            )}
-                                            onChange={() =>
-                                                toggleSelection(exp.run_id)
-                                            }
-                                            className="h-4 w-4 rounded border-border"
-                                        />
-                                    </div>
-                                    <span className="truncate font-mono text-xs">
-                                        {exp.run_id}
-                                    </span>
-                                    <Badge
-                                        variant="outline"
-                                        className="w-fit border-border/50"
+                                <div key={exp.run_id}>
+                                    <div
+                                        data-testid={`experiment-card-${exp.run_id}`}
+                                        className={`cursor-pointer rounded-lg border border-border/30 p-3 transition-all duration-200 hover:bg-accent/30 lg:hidden ${
+                                            selectedIds.has(exp.run_id)
+                                                ? "bg-accent/20"
+                                                : ""
+                                        }`}
+                                        onClick={() =>
+                                            toggleSelection(exp.run_id)
+                                        }
                                     >
-                                        {exp.engine_name}
-                                    </Badge>
-                                    <span>{exp.strategy_name}</span>
-                                    <span className="text-muted-foreground">
-                                        {new Date(
-                                            exp.created_at,
-                                        ).toLocaleDateString()}
-                                    </span>
-                                    <span className="truncate font-mono text-xs text-muted-foreground">
-                                        {exp.config_hash}
-                                    </span>
-                                    <span className="truncate font-mono text-xs text-muted-foreground">
-                                        {exp.data_snapshot_id}
-                                    </span>
+                                        <div className="flex items-start gap-3">
+                                            <input
+                                                type="checkbox"
+                                                aria-label={`Select experiment ${exp.run_id}`}
+                                                checked={selectedIds.has(
+                                                    exp.run_id,
+                                                )}
+                                                onClick={(e) =>
+                                                    e.stopPropagation()
+                                                }
+                                                onChange={(e) => {
+                                                    e.stopPropagation();
+                                                    toggleSelection(exp.run_id);
+                                                }}
+                                                className="mt-0.5 h-4 w-4 rounded border-border"
+                                            />
+                                            <div className="min-w-0 flex-1 space-y-2">
+                                                <div className="flex flex-wrap items-center gap-2">
+                                                    <Badge
+                                                        variant="outline"
+                                                        className="w-fit border-border/50"
+                                                    >
+                                                        {exp.engine_name}
+                                                    </Badge>
+                                                    <span className="text-sm font-medium">
+                                                        {exp.strategy_name}
+                                                    </span>
+                                                </div>
+                                                <div className="space-y-1 text-xs text-muted-foreground">
+                                                    <p className="truncate font-mono text-foreground">
+                                                        {exp.run_id}
+                                                    </p>
+                                                    <p>
+                                                        Created{" "}
+                                                        {new Date(
+                                                            exp.created_at,
+                                                        ).toLocaleDateString()}
+                                                    </p>
+                                                    <p className="truncate font-mono">
+                                                        Config {exp.config_hash}
+                                                    </p>
+                                                    <p className="truncate font-mono">
+                                                        Snapshot{" "}
+                                                        {exp.data_snapshot_id}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div
+                                        data-testid={`experiment-row-${exp.run_id}`}
+                                        className={`hidden cursor-pointer grid-cols-[40px_1.2fr_.8fr_.9fr_.9fr_.9fr_1.1fr] gap-2 rounded-lg px-1 py-2.5 text-sm transition-all duration-200 hover:bg-accent/30 lg:grid ${
+                                            selectedIds.has(exp.run_id)
+                                                ? "bg-accent/20"
+                                                : ""
+                                        }`}
+                                        onClick={() => toggleSelection(exp.run_id)}
+                                    >
+                                        <div className="flex items-center justify-center">
+                                            <input
+                                                type="checkbox"
+                                                aria-label={`Select experiment ${exp.run_id}`}
+                                                checked={selectedIds.has(
+                                                    exp.run_id,
+                                                )}
+                                                onClick={(e) =>
+                                                    e.stopPropagation()
+                                                }
+                                                onChange={(e) => {
+                                                    e.stopPropagation();
+                                                    toggleSelection(exp.run_id);
+                                                }}
+                                                className="h-4 w-4 rounded border-border"
+                                            />
+                                        </div>
+                                        <span className="truncate font-mono text-xs">
+                                            {exp.run_id}
+                                        </span>
+                                        <Badge
+                                            variant="outline"
+                                            className="w-fit border-border/50"
+                                        >
+                                            {exp.engine_name}
+                                        </Badge>
+                                        <span>{exp.strategy_name}</span>
+                                        <span className="text-muted-foreground">
+                                            {new Date(
+                                                exp.created_at,
+                                            ).toLocaleDateString()}
+                                        </span>
+                                        <span className="truncate font-mono text-xs text-muted-foreground">
+                                            {exp.config_hash}
+                                        </span>
+                                        <span className="truncate font-mono text-xs text-muted-foreground">
+                                            {exp.data_snapshot_id}
+                                        </span>
+                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -259,7 +327,7 @@ export default function ExperimentsPage() {
             {/* Comparison Results */}
             {compareMutation.isPending && (
                 <>
-                    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                         <CardSkeleton />
                         <CardSkeleton />
                         <CardSkeleton />
@@ -336,7 +404,7 @@ export default function ExperimentsPage() {
                                         <p className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                                             Metric Rankings
                                         </p>
-                                        <div className="flex flex-wrap gap-4 text-xs">
+                                        <div className="flex flex-wrap gap-3 text-xs">
                                             {numericMetricKeys
                                                 .filter((k) => {
                                                     const bw = bestWorstMap[k];
@@ -378,7 +446,7 @@ export default function ExperimentsPage() {
                                                     return (
                                                         <div
                                                             key={key}
-                                                            className="flex items-center gap-1"
+                                                            className="flex flex-wrap items-center gap-1"
                                                         >
                                                             <span className="font-medium">
                                                                 {formatSnakeLabel(

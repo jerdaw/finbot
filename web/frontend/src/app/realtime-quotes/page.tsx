@@ -24,7 +24,7 @@ import type { QuotesResponse, QuoteSchema, ProviderStatusResponse } from "@/type
 function QuoteCard({ q }: { q: QuoteSchema }) {
   return (
     <div className="relative overflow-hidden rounded-xl border border-border/50 bg-card/50 p-5 gradient-border">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <span className="text-lg font-bold">{q.symbol}</span>
         <Badge variant="outline" className="text-[10px]">{q.provider}</Badge>
       </div>
@@ -33,7 +33,7 @@ function QuoteCard({ q }: { q: QuoteSchema }) {
         <MetricBadge value={q.change} format={(v) => `$${v.toFixed(2)}`} />
         <MetricBadge value={q.change_percent} format={(v) => `${v.toFixed(2)}%`} />
       </div>
-      <div className="mt-3 grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+      <div className="mt-3 grid grid-cols-1 gap-2 text-xs text-muted-foreground sm:grid-cols-2">
         <span>Vol: {q.volume?.toLocaleString() ?? "N/A"}</span>
         <span>Open: {formatNumber(q.open)}</span>
         <span>High: {formatNumber(q.high)}</span>
@@ -213,7 +213,7 @@ export default function RealtimeQuotesPage() {
 
           {/* Summary stat cards */}
           {liveQuotes && liveQuotes.length > 0 && (
-            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <StatCard
                 label="Symbols"
                 value={String(liveQuotes.length)}
@@ -350,7 +350,7 @@ export default function RealtimeQuotesPage() {
 
           {/* Summary stat cards */}
           {watchlistQuotes && watchlistQuotes.length > 0 && (
-            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <StatCard
                 label="Symbols"
                 value={String(watchlistQuotes.length)}
@@ -431,7 +431,7 @@ export default function RealtimeQuotesPage() {
                   key={p.provider}
                   className="rounded-xl border border-border/50 bg-card/50 p-5"
                 >
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <span className="font-semibold">{p.provider}</span>
                     <Badge
                       variant="outline"

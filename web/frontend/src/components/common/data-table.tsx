@@ -46,7 +46,7 @@ export function DataTable({ columns, data, className }: DataTableProps) {
     : data;
 
   return (
-    <div className={cn("overflow-hidden rounded-lg", className)}>
+    <div className={cn("w-full min-w-0 overflow-x-auto rounded-lg", className)}>
       <Table>
         <TableHeader>
           <TableRow className="border-border/50 hover:bg-transparent">

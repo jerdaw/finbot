@@ -147,7 +147,7 @@ function InterventionForm({
             onChange={(e) => set("name", e.target.value)}
           />
         </div>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <div className="space-y-1">
             <Label className="text-xs text-muted-foreground">Cost / Year ($)</Label>
             <Input
@@ -167,7 +167,7 @@ function InterventionForm({
             />
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <div className="space-y-1">
             <Label className="text-xs text-muted-foreground">Utility Gain</Label>
             <Input
@@ -189,7 +189,7 @@ function InterventionForm({
             />
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <div className="space-y-1">
             <Label className="text-xs text-muted-foreground">Mortality Reduction</Label>
             <Input
@@ -283,7 +283,7 @@ function QALYSimulationTab() {
             <h3 className="text-sm font-semibold">Simulation Parameters</h3>
           </div>
           <div className="space-y-3 p-5">
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               <div className="space-y-1">
                 <Label className="text-xs text-muted-foreground">Baseline Utility</Label>
                 <Input
@@ -305,7 +305,7 @@ function QALYSimulationTab() {
                 />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               <div className="space-y-1">
                 <Label className="text-xs text-muted-foreground">Time Horizon (years)</Label>
                 <Input
@@ -353,7 +353,7 @@ function QALYSimulationTab() {
       <div className="space-y-8">
         {mutation.isPending && (
           <>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <CardSkeleton />
               <CardSkeleton />
             </div>
@@ -365,7 +365,7 @@ function QALYSimulationTab() {
         {result && (
           <>
             {/* Stat cards */}
-            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <StatCard
                 label="Mean Cost"
                 value={formatCurrency(result.mean_cost)}
@@ -589,7 +589,7 @@ function CostEffectivenessTab() {
           <h3 className="text-sm font-semibold">Analysis Parameters</h3>
         </div>
         <div className="space-y-3 p-5">
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
             <div className="space-y-1">
               <Label className="text-xs text-muted-foreground">Comparator</Label>
               <Select value={comparator} onValueChange={setComparator}>
@@ -637,7 +637,7 @@ function CostEffectivenessTab() {
               />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-5">
             <div className="space-y-1">
               <Label className="text-xs text-muted-foreground">Simulations</Label>
               <Input
@@ -842,7 +842,7 @@ function TreatmentOptimizerTab() {
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-[350px_1fr]">
       {/* Config panel */}
       <ConfigPanel title="Configuration">
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <div className="space-y-1">
             <Label className="text-xs text-muted-foreground">Cost / Dose ($)</Label>
             <Input
@@ -862,7 +862,7 @@ function TreatmentOptimizerTab() {
             />
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <div className="space-y-1">
             <Label className="text-xs text-muted-foreground">QALY Gain / Dose</Label>
             <Input
@@ -908,7 +908,7 @@ function TreatmentOptimizerTab() {
             Comma-separated treatment durations in years
           </p>
         </div>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <div className="space-y-1">
             <Label className="text-xs text-muted-foreground">WTP Threshold ($)</Label>
             <Input
@@ -942,7 +942,7 @@ function TreatmentOptimizerTab() {
       <div className="space-y-8">
         {mutation.isPending && (
           <>
-            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <CardSkeleton />
               <CardSkeleton />
               <CardSkeleton />
@@ -956,7 +956,7 @@ function TreatmentOptimizerTab() {
           <>
             {/* Best schedule cards */}
             {best && (
-              <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <StatCard
                   label="Best Frequency"
                   value={`${best["frequency"] ?? best["freq"] ?? "N/A"}x/yr`}
@@ -1127,7 +1127,7 @@ function ClinicalScenariosTab() {
                 className="relative overflow-hidden rounded-xl border border-border/50 bg-card/50"
               >
                 <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-                <div className="flex items-center justify-between border-b border-border/30 px-5 py-3.5">
+                <div className="flex flex-col gap-2 border-b border-border/30 px-5 py-3.5 sm:flex-row sm:items-center sm:justify-between">
                   <h3 className="text-sm font-semibold">
                     {r.scenario_name}
                   </h3>

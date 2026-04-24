@@ -55,7 +55,7 @@ function WalkForwardPageFallback() {
                 description="Test strategy robustness with rolling train/test windows"
             />
 
-            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <CardSkeleton />
                 <CardSkeleton />
                 <CardSkeleton />
@@ -286,7 +286,7 @@ function WalkForwardPageContent() {
                             )}
                         </div>
 
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                             <div className="space-y-1">
                                 <Label className="text-xs text-muted-foreground">
                                     Start Date
@@ -385,7 +385,7 @@ function WalkForwardPageContent() {
                             </p>
                         </div>
 
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between gap-3">
                             <Label className="text-xs text-muted-foreground">
                                 Anchored
                             </Label>
@@ -399,7 +399,7 @@ function WalkForwardPageContent() {
                             and grows. Rolling: fixed-size sliding window.
                         </p>
 
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between gap-3">
                             <Label className="text-xs text-muted-foreground">
                                 Include Train Metrics
                             </Label>
@@ -448,7 +448,7 @@ function WalkForwardPageContent() {
             >
                 {mutation.isPending && (
                     <>
-                        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                             <CardSkeleton />
                             <CardSkeleton />
                             <CardSkeleton />
@@ -462,7 +462,7 @@ function WalkForwardPageContent() {
                 {summary && result && (
                     <>
                         {/* Summary stat cards */}
-                        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                             <StatCard
                                 label="Avg CAGR"
                                 value={formatPercent(

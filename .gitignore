@@ -200,6 +200,7 @@ interrogate_badge.svg
 
 # Frontend tooling artifacts
 node_modules/
+web/frontend/package-lock.json
 web/frontend/.next/
 web/frontend/playwright-report/
 web/frontend/test-results/

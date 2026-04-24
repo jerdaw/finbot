@@ -141,7 +141,7 @@ function SingleAssetMonteCarloWorkspace() {
         >
             {mutation.isPending && (
                 <>
-                    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                         <CardSkeleton />
                         <CardSkeleton />
                         <CardSkeleton />
@@ -154,7 +154,7 @@ function SingleAssetMonteCarloWorkspace() {
 
             {stats && result && (
                 <>
-                    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                         <StatCard
                             label="Median Final Value"
                             value={formatCurrency(stats["median"] ?? null)}
@@ -357,7 +357,7 @@ function MultiAssetMonteCarloWorkspace() {
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                         <div className="space-y-2">
                             <Label className="text-xs text-muted-foreground">
                                 Simulation Periods
@@ -423,7 +423,7 @@ function MultiAssetMonteCarloWorkspace() {
         >
             {mutation.isPending && (
                 <>
-                    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                         <CardSkeleton />
                         <CardSkeleton />
                         <CardSkeleton />
@@ -436,7 +436,7 @@ function MultiAssetMonteCarloWorkspace() {
 
             {stats && result && (
                 <>
-                    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                         <StatCard
                             label="Median Portfolio Value"
                             value={formatCurrency(stats["median"] ?? null)}

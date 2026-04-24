@@ -144,7 +144,7 @@ function ToolCard({
                     className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${link.color} opacity-0 transition-opacity duration-300 group-hover:opacity-100`}
                 />
                 <div className="relative">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-3">
                         <Icon
                             className={`${large ? "h-6 w-6" : "h-5 w-5"} ${link.iconColor}`}
                         />

@@ -1,5 +1,11 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 const DEFAULT_TIMEOUT = 120_000;
+
+function getBaseUrl(): string {
+  const runtimeBaseUrl =
+    typeof document !== "undefined" ? document.body.dataset.apiBaseUrl : undefined;
+  const baseUrl = runtimeBaseUrl ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+  return baseUrl.replace(/\/$/, "");
+}
 
 async function request<T>(
   url: string,
@@ -10,7 +16,7 @@ async function request<T>(
   const timer = setTimeout(() => controller.abort(), timeout);
 
   try {
-    const res = await fetch(`${BASE_URL}${url}`, {
+    const res = await fetch(`${getBaseUrl()}${url}`, {
       ...init,
       signal: controller.signal,
     });

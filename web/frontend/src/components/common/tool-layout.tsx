@@ -22,7 +22,7 @@ export function ToolLayout({
   return (
     <div
       className={cn(
-        "grid gap-6",
+        "grid min-w-0 items-start gap-6",
         configCollapsed
           ? "grid-cols-1"
           : "grid-cols-1 lg:grid-cols-[var(--config-width)_1fr]",
@@ -30,7 +30,7 @@ export function ToolLayout({
       style={{ "--config-width": `${configWidth}px` } as React.CSSProperties}
     >
       {/* Config panel */}
-      <div className={cn(configCollapsed && "hidden")}>
+      <div className={cn("min-w-0", configCollapsed && "hidden")}>
         {configPanel}
       </div>
 

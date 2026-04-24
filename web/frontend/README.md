@@ -38,8 +38,26 @@ cd web/frontend
 corepack pnpm dev        # local development server
 corepack pnpm typecheck  # TypeScript validation
 corepack pnpm build      # production build
-corepack pnpm test:e2e   # Playwright smoke coverage (requires backend target)
+corepack pnpm test:e2e   # mocked Chromium Playwright coverage; CI-only unless explicitly needed
 ```
+
+## Runtime Configuration
+
+- `NEXT_PUBLIC_API_URL` is the browser-facing API base URL.
+- The app reads that value from the server-rendered layout at runtime, so a
+  deployed container can change the API origin without rebuilding the frontend
+  bundle.
+- For local Docker with separate published ports, use `http://localhost:8000`.
+- For production, use the externally reachable API origin and make sure the
+  backend allows the frontend origin through `FINBOT_API_CORS_ORIGINS`.
+- The root Compose file does not require `finbot/config/.env` for basic local
+  web startup; add that file only when you need real API keys or other local
+  secrets inside containers.
+
+## Health Checks
+
+- Frontend readiness endpoint: `GET /healthz`
+- Backend readiness endpoint: `GET /api/health`
 
 ## App Surfaces
 
@@ -60,6 +78,7 @@ corepack pnpm test:e2e   # Playwright smoke coverage (requires backend target)
 ## Notes
 
 - The frontend depends on the FastAPI backend in `web/backend/`.
+- `pnpm-lock.yaml` is the canonical frontend lockfile; do not add npm or yarn lockfiles.
 - Shared client utilities live in `src/lib/`.
 - Reusable UI components live in `src/components/`.
 - Health-economics and analytics pages are part of the same product surface,

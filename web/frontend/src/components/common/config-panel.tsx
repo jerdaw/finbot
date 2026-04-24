@@ -13,7 +13,7 @@ export function ConfigPanel({ title, children, className }: ConfigPanelProps) {
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm",
+        "relative min-w-0 overflow-hidden rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm",
         "h-fit lg:sticky lg:top-20",
         className,
       )}
@@ -24,7 +24,7 @@ export function ConfigPanel({ title, children, className }: ConfigPanelProps) {
           {title}
         </h3>
       </div>
-      <div className="space-y-4 p-5">{children}</div>
+      <div className="min-w-0 space-y-4 p-5">{children}</div>
     </div>
   );
 }

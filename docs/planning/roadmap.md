@@ -1,14 +1,14 @@
 # Finbot Roadmap
 
 **Created:** 2026-02-10
-**Last Updated:** 2026-04-18
-**Status:** Priority 0-9 complete. P10 in progress. P11 decision track remains open.
+**Last Updated:** 2026-04-24
+**Status:** Priority 0-10 complete. P11 decision track remains open.
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on repository professionalization, public documentation quality, and durable communication surfaces.
 
 See Completed Items table below and git history for details on implemented features.
 
-**Current Plan Record:** None active. Last archived plan: Backtesting Follow-Through and Adjacent Research Closeout (completed 2026-04-18)
+**Current Plan Record:** None active. Last archived plan: P10 Autonomous Finish Pass (completed 2026-04-24)
 
 ---
 
@@ -19,29 +19,21 @@ captured in archive notes and the completed-items table below.
 
 ## Priority 10: Next.js Frontend
 
+**Status:** COMPLETE (2026-04-24)
+
 ### P10.4 Allocation Backtester and Portfolio Research Workflow
 
-**Status:** IN PROGRESS (2026-04-18; flagship workflow, follow-through reporting, and adjacent research surfaces shipped, deferred expansion items remain)
+**Status:** COMPLETE (2026-04-24)
 
-- [x] First slice on the current backtesting page: editable allocation rows, explicit weight validation, and canonical preset portfolios for `NoRebalance` and `Rebalance`
-- [x] Add benchmark selection and benchmark-relative views to the allocation workflow
-- [x] Add cashflow and retirement modeling: recurring contributions, withdrawals, one-time events, inflation-adjusted views, and withdrawal durability analysis
-- [x] Expand one-run result inspection with monthly/yearly returns tables and benchmark-relative overlays
-- [x] Continue one-run result inspection with rolling metrics and export
-- [x] Continue one-run result inspection with allocation drift and rebalance logs
-- [x] Connect backtests to Finbot's existing moat with saved runs as experiments and snapshot lineage
-- [x] Continue moat integration with regime-aware diagnostics in the main backtest result
-- [x] Continue moat integration with surfaced cost assumptions, missing-data policy, and walk-forward follow-ups
-- [x] Surface adjacent portfolio research pages already supported by the repo's service layer: bond ladder, Pareto optimizer, multi-asset Monte Carlo, and efficient frontier
-- [ ] Long-tail suite expansion: Black-Litterman, fund screener, autocorrelation, cointegration, PCA, and similar institutional-style add-ons -- **Deferred**: keep roadmap focus on finishing the core backtesting workflow first
+Flagship workflow, follow-through reporting, and adjacent research surfaces shipped across the 2026-04-17, 2026-04-18, and 2026-04-24 P10 tranches. The completed workflow includes editable allocations, benchmark-relative analytics, cashflow and retirement modeling, return tables, rolling/regime diagnostics, export, allocation drift/rebalance inspection, experiment lineage, surfaced cost and missing-data assumptions, walk-forward handoff, bond ladder, multi-asset Monte Carlo, Pareto optimization, efficient frontier, responsive/mobile hardening, mocked Chromium workflow coverage, and provider-neutral Docker deployment readiness.
 
 **Why This Was Added:** The 2026-04-17 competitor refresh in `docs/research/2026-04-17-testfolio-portfolio-visualizer-competitive-analysis-refresh.md` confirmed that Finbot has closed several surrounding analytics gaps but still trails testfolio and Portfolio Visualizer in the core portfolio backtesting workflow. The next frontend push should therefore prioritize turning the current strategy runner into a portfolio research workspace rather than adding more isolated analytics first.
 
-### P10 Remaining / Future
+### P10.5 Autonomous Frontend Finish Pass
 
-- [ ] Expand Playwright from mocked smoke coverage to deeper user workflows and broader browser coverage when GitHub Actions minutes allow
-- [ ] Responsive mobile testing and fixes
-- [ ] Production deployment configuration (Docker, env vars)
+**Status:** COMPLETE (2026-04-24)
+
+Closed the remaining autonomous frontend operations work: responsive/mobile layout safety, deeper mocked Chromium browser workflows, runtime frontend API-origin configuration, frontend/backend health endpoints, Compose healthchecks, healthy-service dependency gating, stale artifact cleanup, and web deployment documentation.
 
 ## Priority 11: Documentation Platform Governance
 
@@ -63,9 +55,12 @@ captured in archive notes and the completed-items table below.
 - [ ] Investigate epidemiological backtesting only if the project adds a purpose-built non-finance simulator rather than stretching Backtrader beyond fit.
 - [ ] Define a protected-branch-compatible human-authored replay workflow for low-risk Dependabot updates if manual handling becomes burdensome.
 - [ ] Keep broad dependency batches and major GitHub Action upgrades on human-authored replay branches rather than direct bot merges.
+- [ ] Revisit broader browser coverage only when GitHub Actions minutes or budget allow Firefox/WebKit or heavier browser matrices; keep the current frontend suite mocked and Chromium-only.
 - [ ] Finalize a human-approved project logo or brand guide before reopening branding work.
 - [ ] Record the planned overview and tutorial videos plus the project poster once user-provided narration/design assets exist.
-- [ ] Revisit phase-2 real-time work such as WebSocket streaming, live execution, and intraday bar caching only after the current frontend and deployment backlog is closed.
+- [ ] Choose a production hosting target, public domain/TLS setup, and secret-management path before adding provider-specific deployment manifests or infrastructure code.
+- [ ] Schedule long-tail institutional research additions such as Black-Litterman, fund screener, autocorrelation, cointegration, PCA, and similar add-ons as later product work.
+- [ ] Revisit phase-2 real-time work such as WebSocket streaming, live execution, and intraday bar caching only after production hosting decisions are settled.
 
 ---
 
@@ -73,6 +68,7 @@ captured in archive notes and the completed-items table below.
 
 | Item                                                                      | Completed  | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | :------------------------------------------------------------------------ | :--------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| P10 autonomous frontend finish pass                                       | 2026-04-24 | Closed remaining autonomous P10 operations work: responsive/mobile hardening, deeper mocked Chromium browser workflows, runtime frontend API-origin configuration, frontend and backend health probes, Docker Compose healthchecks, healthy-service dependency gating, stale npm lockfile cleanup, and provider-neutral web deployment documentation. Archive note records validation and deferred follow-up.                                                                                         |
 | Backtesting follow-through + adjacent research closeout (P10.4 tranche 2) | 2026-04-18 | Closed the remaining P10.4 follow-through by surfacing cost assumptions, missing-data handling, and walk-forward handoff in the main backtesting workspace, then broadened simulations, Monte Carlo, and optimizer into bond-ladder, multi-asset Monte Carlo, Pareto, and efficient-frontier research workspaces. Archive note records the closeout and validation surfaces.                                                                                                                     |
 | Backtesting workflow expansion pass (P10.4 tranche 1)                     | 2026-04-17 | Turned the main backtesting page into a broader research workspace: editable allocation builder and presets, benchmark-relative analytics, monthly/annual return tables, saved experiments with snapshot lineage, rolling and regime diagnostics, CSV/JSON export, recurring and one-time cashflow planning, inflation-adjusted durability views, and allocation drift/rebalance logs. Archive note records the initial tranche and links forward to the follow-through closeout.                |
 | Docs maintenance and roadmap reconciliation (post-P10.3)                  | 2026-04-16 | Normalized remaining public-doc markdown diagnostics, pruned obsolete application and planning artifacts, reconciled archive references to retired plan files, verified agent-file symlink and ownership coverage, confirmed there were no open PRs or extra branches to handle, and limited remaining roadmap work to Playwright depth, responsive fixes, and deployment configuration. Archive note records verification and follow-up.                                                        |

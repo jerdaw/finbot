@@ -1054,7 +1054,7 @@ export default function BacktestingPage() {
                                         {portfolioAssets.map((asset, index) => (
                                             <div
                                                 key={`${asset.ticker}-${index}`}
-                                                className="grid grid-cols-[minmax(0,1fr)_96px_auto] gap-2"
+                                                className="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(0,1fr)_96px_auto]"
                                             >
                                                 <Input
                                                     value={asset.ticker}
@@ -1135,7 +1135,7 @@ export default function BacktestingPage() {
                             </>
                         )}
 
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                             <div className="space-y-1.5">
                                 <Label className="text-xs text-muted-foreground">
                                     Start
@@ -1295,7 +1295,7 @@ export default function BacktestingPage() {
 
                             {costAssumptions.commission_mode ===
                                 "per_share" && (
-                                <div className="grid grid-cols-2 gap-3">
+                                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                                     <div className="space-y-1.5">
                                         <Label className="text-xs text-muted-foreground">
                                             Per Share ($)
@@ -1341,7 +1341,7 @@ export default function BacktestingPage() {
 
                             {costAssumptions.commission_mode ===
                                 "percentage" && (
-                                <div className="grid grid-cols-2 gap-3">
+                                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                                     <div className="space-y-1.5">
                                         <Label className="text-xs text-muted-foreground">
                                             Commission (bps)
@@ -1385,7 +1385,7 @@ export default function BacktestingPage() {
                                 </div>
                             )}
 
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                                 <div className="space-y-1.5">
                                     <Label className="text-xs text-muted-foreground">
                                         Spread (bps)
@@ -1437,7 +1437,7 @@ export default function BacktestingPage() {
                                 </p>
                             </div>
 
-                            <div className="grid grid-cols-[minmax(0,1fr)_132px] gap-2">
+                            <div className="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(0,1fr)_132px]">
                                 <Input
                                     type="number"
                                     value={recurringContribution}
@@ -1475,7 +1475,7 @@ export default function BacktestingPage() {
                                 </Select>
                             </div>
 
-                            <div className="grid grid-cols-[minmax(0,1fr)_132px] gap-2">
+                            <div className="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(0,1fr)_132px]">
                                 <Input
                                     type="number"
                                     value={recurringWithdrawal}
@@ -1531,7 +1531,7 @@ export default function BacktestingPage() {
                             </div>
 
                             <div className="space-y-2">
-                                <div className="flex items-center justify-between gap-2">
+                                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                                     <div>
                                         <Label className="text-xs text-muted-foreground">
                                             One-Time Events
@@ -1558,7 +1558,7 @@ export default function BacktestingPage() {
                                             (event, index) => (
                                                 <div
                                                     key={`${event.date}-${index}`}
-                                                    className="grid grid-cols-[132px_minmax(0,1fr)_minmax(0,1fr)_auto] gap-2"
+                                                    className="grid grid-cols-1 gap-2 sm:grid-cols-[132px_minmax(0,1fr)_minmax(0,1fr)_auto]"
                                                 >
                                                     <Input
                                                         type="date"
@@ -1574,6 +1574,7 @@ export default function BacktestingPage() {
                                                             )
                                                         }
                                                         className="border-border/50 bg-background/50"
+                                                        aria-label={`Date for cashflow event ${index + 1}`}
                                                     />
                                                     <Input
                                                         type="number"
@@ -1591,6 +1592,7 @@ export default function BacktestingPage() {
                                                         }
                                                         placeholder="Amount"
                                                         className="border-border/50 bg-background/50"
+                                                        aria-label={`Amount for cashflow event ${index + 1}`}
                                                     />
                                                     <Input
                                                         value={
@@ -1608,6 +1610,7 @@ export default function BacktestingPage() {
                                                         }
                                                         placeholder="Optional label"
                                                         className="border-border/50 bg-background/50"
+                                                        aria-label={`Label for cashflow event ${index + 1}`}
                                                     />
                                                     <Button
                                                         type="button"
@@ -1663,7 +1666,7 @@ export default function BacktestingPage() {
             >
                 {mutation.isPending && (
                     <>
-                        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                             <CardSkeleton />
                             <CardSkeleton />
                             <CardSkeleton />
@@ -1676,7 +1679,7 @@ export default function BacktestingPage() {
                 {stats && (
                     <>
                         {/* Metric cards */}
-                        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                             <StatCard
                                 label="CAGR"
                                 value={formatPercent(stats["CAGR"] as number)}
@@ -1751,7 +1754,7 @@ export default function BacktestingPage() {
 
                         {costSummary && appliedCostAssumptions && (
                             <>
-                                <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                                     <StatCard
                                         label="Estimated Costs"
                                         value={formatCurrencyPrecise(
@@ -1878,7 +1881,7 @@ export default function BacktestingPage() {
 
                         {walkForwardRequest && (
                             <ChartCard title="Walk-Forward Follow-Up">
-                                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                     <div className="space-y-1">
                                         <p className="text-sm text-muted-foreground">
                                             {walkForwardRequest.reason}
@@ -1903,7 +1906,7 @@ export default function BacktestingPage() {
 
                         {withdrawalDurability && (
                             <>
-                                <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                                     <StatCard
                                         label="Withdrawal Plan"
                                         value={
@@ -2028,7 +2031,7 @@ export default function BacktestingPage() {
 
                         {benchmarkStats && (
                             <>
-                                <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                                     <StatCard
                                         label="Alpha"
                                         value={formatBenchmarkValue(
@@ -2059,7 +2062,7 @@ export default function BacktestingPage() {
                                     />
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                                     <StatCard
                                         label="Tracking Error"
                                         value={formatBenchmarkValue(
@@ -2226,7 +2229,7 @@ export default function BacktestingPage() {
 
                         {rollingMetrics && (
                             <>
-                                <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                                     <StatCard
                                         label="Mean Rolling Sharpe"
                                         value={formatBenchmarkValue(

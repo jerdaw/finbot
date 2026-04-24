@@ -30,14 +30,14 @@ export function Header({ onMobileMenuOpen, onCommandPaletteOpen }: HeaderProps) 
   const title = current?.label || "Dashboard";
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b border-border/50 bg-background/60 px-4 backdrop-blur-xl lg:px-6">
+    <header className="sticky top-0 z-30 flex min-h-14 flex-wrap items-center gap-3 border-b border-border/50 bg-background/60 px-4 py-2 backdrop-blur-xl lg:px-6">
       {onMobileMenuOpen && <MobileMenuButton onClick={onMobileMenuOpen} />}
 
-      <h1 className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">
+      <h1 className="min-w-0 flex-1 text-sm font-semibold tracking-wide text-muted-foreground uppercase">
         {title}
       </h1>
 
-      <div className="ml-auto flex items-center gap-2">
+      <div className="ml-auto flex w-full flex-wrap items-center justify-end gap-2 sm:w-auto sm:flex-nowrap">
         {/* Command palette trigger */}
         {onCommandPaletteOpen && (
           <Tooltip delayDuration={0}>
@@ -85,7 +85,7 @@ export function Header({ onMobileMenuOpen, onCommandPaletteOpen }: HeaderProps) 
 
         <Badge
           variant="outline"
-          className="border-yellow-500/30 bg-yellow-500/5 text-[10px] font-medium tracking-wider text-yellow-500 uppercase"
+          className="hidden border-yellow-500/30 bg-yellow-500/5 text-[10px] font-medium tracking-wider text-yellow-500 uppercase sm:inline-flex"
         >
           Educational Only
         </Badge>

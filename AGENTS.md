@@ -47,18 +47,18 @@ uv run python scripts/update_daily.py
 - Repo contributors should use `uv sync --all-extras`.
 - The root `Dockerfile` builds the CLI image by default; dashboard and API images opt into extras explicitly.
 
-## Current Delivery Status (2026-04-18)
+## Current Delivery Status (2026-04-24)
 
-**P0-P9 complete. P10 remains in progress.**
+**P0-P10 complete. P11 decision track remains open.**
 
 - **P5** (97.8%): documentation, governance, and public-quality improvements — 44/45 items (item 42 blocked on external resources)
 - **P6** (100%): Backtesting-to-live readiness — Epics E0-E6 complete; ADR-011 confirmed **Defer**
 - **P7** (93%): External impact & advanced capabilities — 25/27 active items
 - **P8** (100%): Risk Analytics, Portfolio Analytics, Real-Time Data, Factor Analytics
 - **P9** (100%): Agent tooling and runtime hardening — P9.1-P9.4 complete
-- **P10** (in progress): Next.js frontend — 12 task pages complete, the main backtesting page now supports allocation building, benchmark analysis, return tables, experiment lineage, rolling/regime diagnostics, export, cashflow planning, allocation drift/rebalance inspection, surfaced cost assumptions, missing-data policy reporting, and walk-forward handoff; the simulations, Monte Carlo, and optimizer workspaces now also cover bond ladder, multi-asset Monte Carlo, Pareto, and efficient frontier research; remaining work is responsive/mobile/deployment work, deeper browser-workflow coverage, and later long-tail research additions
+- **P10** (100%): Next.js frontend — 12 task pages complete, the main backtesting page now supports allocation building, benchmark analysis, return tables, experiment lineage, rolling/regime diagnostics, export, cashflow planning, allocation drift/rebalance inspection, surfaced cost assumptions, missing-data policy reporting, and walk-forward handoff; the simulations, Monte Carlo, and optimizer workspaces now also cover bond ladder, multi-asset Monte Carlo, Pareto, and efficient frontier research; the operational finish pass added responsive/mobile hardening, deeper mocked Chromium workflows, frontend/backend Docker healthchecks, runtime frontend API-origin configuration, and provider-neutral web deployment documentation
 
-**Tracking docs:** `docs/planning/roadmap.md`, `docs/planning/archive/audit-remediation-and-frontend-hardening-2026-04-15.md`, `docs/planning/archive/public-packaging-and-docs-alignment-2026-04-16.md`, `docs/planning/archive/docs-maintenance-and-roadmap-reconciliation-2026-04-16.md`, `docs/planning/archive/backtesting-workflow-expansion-and-research-workspace-pass-2026-04-17.md`, `docs/planning/archive/backtesting-followthrough-and-adjacent-research-closeout-2026-04-18.md`, `docs/planning/backtesting-live-readiness-backlog.md`, `docs/planning/priority-5-6-completion-status.md`, `docs/adr/ADR-011-nautilus-decision.md`
+**Tracking docs:** `docs/planning/roadmap.md`, `docs/planning/archive/audit-remediation-and-frontend-hardening-2026-04-15.md`, `docs/planning/archive/public-packaging-and-docs-alignment-2026-04-16.md`, `docs/planning/archive/docs-maintenance-and-roadmap-reconciliation-2026-04-16.md`, `docs/planning/archive/backtesting-workflow-expansion-and-research-workspace-pass-2026-04-17.md`, `docs/planning/archive/backtesting-followthrough-and-adjacent-research-closeout-2026-04-18.md`, `docs/planning/archive/p10-autonomous-finish-pass-2026-04-24.md`, `docs/planning/backtesting-live-readiness-backlog.md`, `docs/planning/priority-5-6-completion-status.md`, `docs/adr/ADR-011-nautilus-decision.md`
 
 ## Common Commands
 
@@ -88,7 +88,7 @@ cd web/frontend && corepack pnpm install        # install frontend deps (Node 20
 cd web/frontend && corepack pnpm dev            # frontend on :3000
 DYNACONF_ENV=development uv run uvicorn web.backend.main:app --reload  # backend on :8000
 cd web/frontend && corepack pnpm typecheck      # type-check frontend
-cd web/frontend && NEXT_PUBLIC_API_URL=http://127.0.0.1:3100/_playwright_api corepack pnpm test:e2e  # mocked browser smoke suite; usually CI-only
+cd web/frontend && NEXT_PUBLIC_API_URL=http://127.0.0.1:3100/_playwright_api corepack pnpm test:e2e  # mocked Chromium browser suite; keep CI-only unless explicitly needed
 
 # Docker
 make docker-build                # build image
@@ -292,7 +292,7 @@ Next.js 16 App Router with React 19, Tailwind CSS v4, shadcn/ui, Recharts, Frame
 - **`src/components/`**: Reusable components — `layout/` (sidebar, command-palette, header), `common/` (stat-card, chart-card, data-table, tool-layout, config-panel, empty-state, inline-error, heatmap, metric-badge), `charts/` (recharts-wrappers, line-chart-wrapper, drawdown-chart, lightweight-chart)
 - **`src/stores/`**: Zustand stores — `sidebar-store.ts`, `watchlist-store.ts` (localStorage-persisted)
 - **`src/types/api.ts`**: TypeScript interfaces for all API request/response types
-- **`tests/e2e/`**: Mocked Playwright smoke coverage for `/` plus all 12 app routes and one mobile navigation path
+- **`tests/e2e/`**: Mocked Chromium Playwright coverage for route smoke checks, key research workflows, guardrails, and mobile navigation
 
 ### Data Storage
 
@@ -439,7 +439,7 @@ Source in `docs_site/` (index, user-guide, api, research, contributing, changelo
 GitHub Actions (`.github/workflows/ci.yml`) on push/PR to main:
 
 - Lint (`ruff check`), format (`ruff format --check`), type check (`mypy`), security (`bandit`, `pip-audit`)
-- Frontend quality (`pnpm typecheck`, `pnpm build`, mocked Playwright smoke tests) when frontend-relevant files change
+- Frontend quality (`pnpm typecheck`, `pnpm build`, mocked Chromium workflow tests) when frontend-relevant files change
 - Tests: `pytest --cov` on Python 3.11, 3.12, 3.13
 - Parity gate: Golden strategy tests (GS-01, GS-02, GS-03)
 - Performance regression: benchmarks vs `tests/performance/baseline.json` (fails if >20% slower)

@@ -332,7 +332,7 @@ export default function FactorAnalyticsPage() {
                   </p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                   <div className="space-y-1">
                     <Label className="text-xs text-muted-foreground">
                       Start Date
@@ -370,7 +370,7 @@ export default function FactorAnalyticsPage() {
             {/* Loading skeletons */}
             {isPending && (
               <>
-                <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                   <CardSkeleton />
                   <CardSkeleton />
                   <CardSkeleton />
@@ -383,7 +383,7 @@ export default function FactorAnalyticsPage() {
             {/* Regression results */}
             {regressionData && !isPending && (
               <>
-                <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                   <StatCard
                     label="Alpha"
                     value={formatPercent(regressionData.alpha)}
@@ -505,7 +505,7 @@ export default function FactorAnalyticsPage() {
         <TabsContent value="attribution" className="mt-0 space-y-6">
           {isPending && (
             <>
-              <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <CardSkeleton />
                 <CardSkeleton />
                 <CardSkeleton />
@@ -523,7 +523,7 @@ export default function FactorAnalyticsPage() {
 
           {attributionData && !isPending && (
             <>
-              <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <StatCard
                   label="Total Return"
                   value={formatPercent(attributionData.total_return)}
@@ -589,7 +589,7 @@ export default function FactorAnalyticsPage() {
         <TabsContent value="risk" className="mt-0 space-y-6">
           {isPending && (
             <>
-              <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <CardSkeleton />
                 <CardSkeleton />
                 <CardSkeleton />
@@ -607,7 +607,7 @@ export default function FactorAnalyticsPage() {
 
           {riskData && !isPending && (
             <>
-              <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <StatCard
                   label="Systematic Variance"
                   value={formatNumber(riskData.systematic_variance, 6)}

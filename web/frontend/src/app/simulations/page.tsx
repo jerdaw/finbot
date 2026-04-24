@@ -180,7 +180,7 @@ function FundSimulationsWorkspace() {
             {isLoading ? (
                 <>
                     <ChartSkeleton />
-                    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                         <CardSkeleton />
                         <CardSkeleton />
                         <CardSkeleton />
@@ -206,7 +206,7 @@ function FundSimulationsWorkspace() {
 
                     {data.metrics.length > 0 && (
                         <>
-                            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                                 {data.metrics.slice(0, 4).map((metric) => (
                                     <StatCard
                                         key={metric.ticker}
@@ -325,7 +325,7 @@ function BondLadderWorkspace() {
         <ToolLayout
             configPanel={
                 <ConfigPanel title="Bond Ladder">
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                         <div className="space-y-2">
                             <Label className="text-xs text-muted-foreground">
                                 Min Maturity (Years)
@@ -407,7 +407,7 @@ function BondLadderWorkspace() {
             {mutation.isPending && (
                 <>
                     <ChartSkeleton />
-                    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                         <CardSkeleton />
                         <CardSkeleton />
                         <CardSkeleton />
@@ -418,7 +418,7 @@ function BondLadderWorkspace() {
 
             {result && (
                 <>
-                    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                         <StatCard
                             label="Ladder CAGR"
                             value={formatPercent(ladderMetric?.cagr ?? null)}

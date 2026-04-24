@@ -168,7 +168,7 @@ function VaRTab() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             <div className="space-y-1">
               <Label className="text-xs text-muted-foreground">
                 Start Date
@@ -203,7 +203,7 @@ function VaRTab() {
     >
       {mutation.isPending && (
         <>
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <CardSkeleton />
             <CardSkeleton />
             <CardSkeleton />
@@ -216,7 +216,7 @@ function VaRTab() {
       {data && !mutation.isPending && (
         <>
           {/* Primary stat cards */}
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <StatCard
               label="Historical VaR"
               value={formatPercent(data.historical.var_)}
@@ -241,7 +241,7 @@ function VaRTab() {
 
           {/* Dollar VaR cards when portfolio value is specified */}
           {hasDollarVaR && (
-            <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <StatCard
                 label="Historical VaR ($)"
                 value={formatCurrency(data.historical.var_dollars)}
@@ -426,7 +426,7 @@ function StressTestTab() {
             {STRESS_SCENARIOS.map((s) => (
               <div
                 key={s.key}
-                className="flex items-center justify-between"
+                className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"
               >
                 <Label className="text-xs text-muted-foreground">
                   {s.label}
@@ -452,7 +452,7 @@ function StressTestTab() {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             <div className="space-y-1">
               <Label className="text-xs text-muted-foreground">
                 Start Date
@@ -487,7 +487,7 @@ function StressTestTab() {
     >
       {mutation.isPending && (
         <>
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <CardSkeleton />
             <CardSkeleton />
             <CardSkeleton />
@@ -500,7 +500,7 @@ function StressTestTab() {
       {results && results.length > 0 && !mutation.isPending && (
         <>
           {/* Worst scenario stat cards */}
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <StatCard
               label="Worst Scenario"
               value={worstResult?.scenario_name ?? "N/A"}
@@ -708,7 +708,7 @@ function KellyTab() {
     <ToolLayout
       configPanel={
         <ConfigPanel title="Kelly Criterion Configuration">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <Label className="text-xs text-muted-foreground">
               {multiAsset ? "Multi-Asset Mode" : "Single Asset Mode"}
             </Label>
@@ -737,7 +737,7 @@ function KellyTab() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 <div className="space-y-1">
                   <Label className="text-xs text-muted-foreground">
                     Start Date
@@ -787,7 +787,7 @@ function KellyTab() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 <div className="space-y-1">
                   <Label className="text-xs text-muted-foreground">
                     Start Date
@@ -827,7 +827,7 @@ function KellyTab() {
       {/* Single-asset loading */}
       {!multiAsset && kellyMutation.isPending && (
         <>
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <CardSkeleton />
             <CardSkeleton />
             <CardSkeleton />
@@ -840,7 +840,7 @@ function KellyTab() {
       {/* Single-asset results */}
       {!multiAsset && singleData && !kellyMutation.isPending && (
         <>
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <StatCard
               label="Full Kelly"
               value={formatPercent(singleData.full_kelly)}
@@ -959,7 +959,7 @@ function KellyTab() {
       {/* Multi-asset loading */}
       {multiAsset && multiKellyMutation.isPending && (
         <>
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <CardSkeleton />
             <CardSkeleton />
           </div>
@@ -970,7 +970,7 @@ function KellyTab() {
       {/* Multi-asset results */}
       {multiAsset && multiData && !multiKellyMutation.isPending && (
         <>
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <StatCard
               label="Assets"
               value={formatNumber(multiData.n_assets, 0)}

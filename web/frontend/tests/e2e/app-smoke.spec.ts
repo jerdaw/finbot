@@ -345,6 +345,197 @@ const efficientFrontierResponse = {
     },
 };
 
+const backtestResponse = {
+    stats: {
+        CAGR: 0.1245,
+        Sharpe: 1.214,
+        "Max Drawdown": -0.118,
+        ROI: 0.422,
+    },
+    value_history: [
+        { date: "2024-01-01", Value: 10000 },
+        { date: "2024-02-01", Value: 10350 },
+        { date: "2024-03-01", Value: 10422 },
+    ],
+    trades: [
+        {
+            date: "2024-01-02",
+            ticker: "SPY",
+            action: "BUY",
+            size: 50,
+            price: 200,
+            value: 10000,
+        },
+    ],
+    applied_cost_assumptions: {
+        commission_mode: "percentage",
+        commission_per_share: 0.001,
+        commission_bps: 1,
+        commission_minimum: 0,
+        spread_bps: 2,
+        slippage_bps: 1,
+        commission_label: "1 bps percentage commission",
+        spread_label: "2 bps spread",
+        slippage_label: "1 bps slippage",
+        estimated_only: true,
+    },
+    cost_summary: {
+        total_commission: 4.25,
+        total_spread: 2.1,
+        total_slippage: 1.3,
+        total_costs: 7.65,
+        costs_by_symbol: { SPY: 7.65 },
+        cost_events: [],
+    },
+    missing_data_summary: {
+        policy: "forward_fill",
+        total_missing_rows: 1,
+        total_missing_cells: 1,
+        remaining_missing_cells: 0,
+        note: "Forward-filled a single missing observation in SPY.",
+        tickers: [
+            {
+                ticker: "SPY",
+                rows_before: 3,
+                rows_after: 3,
+                rows_dropped: 0,
+                missing_rows: 1,
+                missing_cells: 1,
+                remaining_missing_cells: 0,
+                had_missing_data: true,
+            },
+        ],
+    },
+    benchmark_stats: {
+        alpha: 0.012,
+        beta: 0.98,
+        r_squared: 0.94,
+        tracking_error: 0.031,
+        information_ratio: 0.56,
+        up_capture: 1.05,
+        down_capture: 0.92,
+        benchmark_name: "SPY",
+        n_observations: 3,
+    },
+    benchmark_value_history: [
+        { date: "2024-01-01", Value: 10000 },
+        { date: "2024-02-01", Value: 10200 },
+        { date: "2024-03-01", Value: 10310 },
+    ],
+    rolling_metrics: {
+        window: 63,
+        n_obs: 3,
+        sharpe: [1.0, 1.1, 1.2],
+        volatility: [0.11, 0.105, 0.102],
+        beta: [0.95, 0.98, 1.0],
+        dates: ["2024-01-01", "2024-02-01", "2024-03-01"],
+        mean_sharpe: 1.1,
+        mean_vol: 0.106,
+        mean_beta: 0.977,
+    },
+    regime_reference_ticker: "SPY",
+    regime_summary: [
+        {
+            regime: "Bull",
+            count_periods: 1,
+            total_days: 63,
+            cagr: 0.1245,
+            volatility: 0.13,
+            sharpe: 1.21,
+            total_return: 0.0422,
+        },
+    ],
+    regime_periods: [
+        {
+            regime: "Bull",
+            start: "2024-01-01",
+            end: "2024-03-01",
+            days: 63,
+            market_return: 0.031,
+            market_volatility: 0.14,
+            portfolio_return: 0.0422,
+            portfolio_volatility: 0.12,
+        },
+    ],
+    cashflow_events: [
+        {
+            scheduled_date: "2024-02-01",
+            applied_date: "2024-02-01",
+            label: "Monthly contribution",
+            source: "recurring",
+            direction: "contribution",
+            amount: 500,
+            cash_after: 500,
+            portfolio_value_after: 10850,
+        },
+    ],
+    real_value_history: [
+        { date: "2024-01-01", Value: 10000 },
+        { date: "2024-02-01", Value: 10280 },
+        { date: "2024-03-01", Value: 10310 },
+    ],
+    withdrawal_durability: {
+        survived_to_end: true,
+        depletion_date: null,
+        ending_nominal_value: 10422,
+        ending_real_value: 10310,
+        min_nominal_value: 10000,
+        min_real_value: 10000,
+        total_contributions: 500,
+        total_withdrawals: 0,
+        net_cashflow: 500,
+        real_total_return: 0.031,
+        inflation_rate: 0.02,
+    },
+    allocation_history: [
+        { date: "2024-01-01", SPY: 1 },
+        { date: "2024-02-01", SPY: 1 },
+        { date: "2024-03-01", SPY: 1 },
+    ],
+    rebalance_events: [
+        {
+            date: "2024-01-01",
+            event_type: "initial_allocation",
+            trade_count: 1,
+            symbols: ["SPY"],
+            gross_trade_value: 10000,
+            net_trade_value: 0,
+            portfolio_value: 10000,
+            cash_after: 0,
+        },
+    ],
+    monthly_returns: [
+        {
+            period: "2024-01",
+            start_value: 10000,
+            end_value: 10350,
+            return_pct: 0.035,
+        },
+    ],
+    annual_returns: [
+        {
+            period: "2024",
+            start_value: 10000,
+            end_value: 10422,
+            return_pct: 0.0422,
+        },
+    ],
+    walk_forward_request: {
+        tickers: ["SPY"],
+        strategy: "NoRebalance",
+        strategy_params: { equity_proportions: [1] },
+        start_date: "2010-01-01",
+        end_date: "2024-12-31",
+        initial_cash: 10000,
+        train_window: 756,
+        test_window: 126,
+        step_size: 63,
+        anchored: false,
+        include_train: false,
+        reason: "Carry this allocation into walk-forward validation.",
+    },
+};
+
 const experiments = [
     {
         run_id: "run-001",
@@ -363,6 +554,87 @@ const experiments = [
         data_snapshot_id: "snap-def456",
     },
 ];
+
+const experimentCompareResponse = {
+    assumptions: [
+        {
+            run_id: "run-001",
+            strategy: "NoRebalance",
+            engine: "backtrader",
+            created_at: "2024-01-01T12:00:00Z",
+            config_hash: "abc123",
+            data_snapshot_id: "snap-abc123",
+            symbols: ["SPY"],
+        },
+        {
+            run_id: "run-002",
+            strategy: "DualMomentum",
+            engine: "backtrader",
+            created_at: "2024-01-02T12:00:00Z",
+            config_hash: "def456",
+            data_snapshot_id: "snap-def456",
+            symbols: ["SPY", "TLT"],
+        },
+    ],
+    metrics: [
+        {
+            run_id: "run-001",
+            strategy: "NoRebalance",
+            cagr: 0.12,
+            sharpe: 1.05,
+            max_drawdown: -0.11,
+        },
+        {
+            run_id: "run-002",
+            strategy: "DualMomentum",
+            cagr: 0.1,
+            sharpe: 0.96,
+            max_drawdown: -0.08,
+        },
+    ],
+};
+
+const saveExperimentResponse = {
+    run_id: "bt-001",
+    strategy_name: "NoRebalance",
+    created_at: "2024-03-02T14:30:00Z",
+    config_hash: "cfg-001",
+    data_snapshot_id: "snap-001",
+};
+
+const walkForwardResponse = {
+    config: {
+        strategy: "NoRebalance",
+        tickers: ["SPY"],
+    },
+    windows: [
+        {
+            window_id: 1,
+            train_start: "2021-01-01",
+            train_end: "2023-12-31",
+            test_start: "2024-01-01",
+            test_end: "2024-06-30",
+            metrics: {
+                CAGR: 0.11,
+                Sharpe: 0.88,
+                "Max Drawdown": -0.09,
+            },
+        },
+    ],
+    summary_metrics: {
+        avg_cagr: 0.11,
+        avg_sharpe: 0.88,
+        worst_drawdown: -0.09,
+    },
+    summary_table: [
+        {
+            window: "W1",
+            cagr: 0.11,
+            sharpe: 0.88,
+            max_drawdown: -0.09,
+        },
+    ],
+};
 
 const providerStatus = {
     providers: [
@@ -465,6 +737,38 @@ async function mockApi(page: Page): Promise<void> {
         }
 
         if (
+            request.method() === "POST" &&
+            apiPath === "/api/backtesting/run"
+        ) {
+            await fulfillJson(route, backtestResponse);
+            return;
+        }
+
+        if (
+            request.method() === "POST" &&
+            apiPath === "/api/experiments/save"
+        ) {
+            await fulfillJson(route, saveExperimentResponse);
+            return;
+        }
+
+        if (
+            request.method() === "POST" &&
+            apiPath === "/api/experiments/compare"
+        ) {
+            await fulfillJson(route, experimentCompareResponse);
+            return;
+        }
+
+        if (
+            request.method() === "POST" &&
+            apiPath === "/api/walk-forward/run"
+        ) {
+            await fulfillJson(route, walkForwardResponse);
+            return;
+        }
+
+        if (
             request.method() === "GET" &&
             apiPath === "/api/realtime-quotes/provider-status"
         ) {
@@ -483,6 +787,31 @@ test.beforeEach(async ({ page }) => {
     await mockApi(page);
 });
 
+async function gotoAndWaitForHeading(
+    page: Page,
+    path: string,
+    heading: string | RegExp,
+): Promise<void> {
+    await page.goto(path);
+    await expect(
+        page.locator("main").getByRole("heading", { name: heading }),
+    ).toBeVisible();
+}
+
+async function waitForApiRequest(
+    page: Page,
+    apiPath: string,
+): Promise<void> {
+    await page.waitForRequest((request) => {
+        const url = new URL(request.url());
+        return url.pathname === `/_playwright_api${apiPath}`;
+    });
+}
+
+function visibleByTestId(page: Page, testId: string) {
+    return page.locator(`[data-testid="${testId}"]:visible`);
+}
+
 function trackPageErrors(page: Page): string[] {
     const pageErrors: string[] = [];
     page.on("pageerror", (error) => pageErrors.push(error.message));
@@ -493,12 +822,7 @@ for (const route of APP_ROUTES) {
     test(`smoke loads ${route.path}`, async ({ page }) => {
         const pageErrors = trackPageErrors(page);
 
-        await page.goto(route.path);
-        await page.waitForLoadState("networkidle");
-
-        await expect(
-            page.locator("main").getByRole("heading", { name: route.heading }),
-        ).toBeVisible();
+        await gotoAndWaitForHeading(page, route.path, route.heading);
         await expect(pageErrors).toHaveLength(0);
     });
 }
@@ -507,11 +831,16 @@ test.describe("adjacent research workspaces", () => {
     test("simulations runs the bond ladder tab", async ({ page }) => {
         const pageErrors = trackPageErrors(page);
 
-        await page.goto("/simulations");
-        await page.waitForLoadState("networkidle");
+        await gotoAndWaitForHeading(page, "/simulations", "Research Simulations");
 
         await page.getByRole("tab", { name: "Bond Ladder" }).click();
-        await page.getByRole("button", { name: "Run Bond Ladder" }).click();
+        await expect(
+            page.getByRole("heading", { name: "Bond Ladder" }),
+        ).toBeVisible();
+        await Promise.all([
+            waitForApiRequest(page, "/api/simulations/bond-ladder/run"),
+            page.getByRole("button", { name: "Run Bond Ladder" }).click(),
+        ]);
 
         await expect(page.getByText("Bond Ladder Metrics")).toBeVisible();
         await expect(page.getByText("1Y-10Y Ladder")).toBeVisible();
@@ -522,17 +851,22 @@ test.describe("adjacent research workspaces", () => {
     test("monte carlo runs single and multi-asset tabs", async ({ page }) => {
         const pageErrors = trackPageErrors(page);
 
-        await page.goto("/monte-carlo");
-        await page.waitForLoadState("networkidle");
+        await gotoAndWaitForHeading(page, "/monte-carlo", "Monte Carlo Lab");
 
-        await page.getByRole("button", { name: "Run Simulation" }).click();
+        await Promise.all([
+            waitForApiRequest(page, "/api/monte-carlo/run"),
+            page.getByRole("button", { name: "Run Simulation" }).click(),
+        ]);
         await expect(page.getByText("Price Path Fan Chart")).toBeVisible();
         await expect(page.getByText("Simulation Statistics")).toBeVisible();
 
         await page.getByRole("tab", { name: "Multi-Asset" }).click();
-        await page
-            .getByRole("button", { name: "Run Multi-Asset Simulation" })
-            .click();
+        await Promise.all([
+            waitForApiRequest(page, "/api/monte-carlo/multi-asset/run"),
+            page
+                .getByRole("button", { name: "Run Multi-Asset Simulation" })
+                .click(),
+        ]);
 
         await expect(page.getByText("Portfolio Fan Chart")).toBeVisible();
         await expect(
@@ -549,23 +883,31 @@ test.describe("adjacent research workspaces", () => {
     }) => {
         const pageErrors = trackPageErrors(page);
 
-        await page.goto("/optimizer");
-        await page.waitForLoadState("networkidle");
+        await gotoAndWaitForHeading(page, "/optimizer", "Portfolio Optimizer");
 
-        await page.getByRole("button", { name: "Run DCA Optimizer" }).click();
+        await Promise.all([
+            waitForApiRequest(page, "/api/optimizer/run"),
+            page.getByRole("button", { name: "Run DCA Optimizer" }).click(),
+        ]);
         await expect(page.getByText("Performance by DCA Ratio")).toBeVisible();
 
         await page.getByRole("tab", { name: "Pareto" }).click();
-        await page.getByRole("button", { name: "Run Pareto Sweep" }).click();
+        await Promise.all([
+            waitForApiRequest(page, "/api/optimizer/pareto/run"),
+            page.getByRole("button", { name: "Run Pareto Sweep" }).click(),
+        ]);
         await expect(page.getByText("Pareto-Optimal Strategies")).toBeVisible();
         await expect(
             page.getByRole("cell", { name: "NoRebalance" }),
         ).toBeVisible();
 
         await page.getByRole("tab", { name: "Efficient Frontier" }).click();
-        await page
-            .getByRole("button", { name: "Run Efficient Frontier" })
-            .click();
+        await Promise.all([
+            waitForApiRequest(page, "/api/optimizer/efficient-frontier/run"),
+            page
+                .getByRole("button", { name: "Run Efficient Frontier" })
+                .click(),
+        ]);
         await expect(page.getByText("Highlighted Portfolios")).toBeVisible();
         await expect(
             page.getByRole("cell", { name: "Max Sharpe" }),
@@ -577,13 +919,172 @@ test.describe("adjacent research workspaces", () => {
     });
 });
 
+test.describe("backtesting workflows", () => {
+    test("runs a backtest, saves an experiment, and hands off to walk-forward", async ({
+        page,
+    }) => {
+        const pageErrors = trackPageErrors(page);
+
+        await gotoAndWaitForHeading(page, "/backtesting", "Strategy Backtester");
+
+        await expect(
+            page.getByRole("button", { name: "Save Experiment" }),
+        ).toHaveCount(0);
+        await expect(
+            page.getByRole("button", { name: "Export CSV" }),
+        ).toHaveCount(0);
+        await expect(
+            page.getByRole("button", { name: "Export JSON" }),
+        ).toHaveCount(0);
+
+        await Promise.all([
+            waitForApiRequest(page, "/api/backtesting/run"),
+            page.getByRole("button", { name: "Run Backtest" }).click(),
+        ]);
+
+        await expect(page.getByText("Execution Frictions")).toBeVisible();
+        await expect(page.getByText("Missing Data Handling")).toBeVisible();
+        await expect(page.getByText("Walk-Forward Follow-Up")).toBeVisible();
+
+        await Promise.all([
+            waitForApiRequest(page, "/api/experiments/save"),
+            page.getByRole("button", { name: "Save Experiment" }).click(),
+        ]);
+        await expect(page.getByText("Experiment Lineage")).toBeVisible();
+        await expect(page.getByText("bt-001")).toBeVisible();
+
+        await page
+            .getByRole("link", { name: "Open Walk-Forward Analysis" })
+            .click();
+
+        await expect(page).toHaveURL(/\/walk-forward\?/);
+        await expect(page.locator('input[value="SPY"]').first()).toBeVisible();
+        await expect(page.locator('input[value="10000"]').first()).toBeVisible();
+        await expect(page.locator('input[value="756"]').first()).toBeVisible();
+        await expect(pageErrors).toHaveLength(0);
+    });
+
+    test("blocks runs when allocation weights do not sum to 100%", async ({
+        page,
+    }) => {
+        await gotoAndWaitForHeading(page, "/backtesting", "Strategy Backtester");
+
+        await page.getByRole("button", { name: "Add Asset" }).click();
+        await page.getByPlaceholder("Ticker 2").fill("TLT");
+        await page.getByLabel("Weight for asset 1").fill("60");
+        await page.getByLabel("Weight for asset 2").fill("30");
+
+        await page.getByRole("button", { name: "Run Backtest" }).click();
+
+        await expect(
+            page.getByText("Allocation weights must add up to 100%."),
+        ).toBeVisible();
+    });
+
+    test("blocks runs when allocation tickers are duplicated", async ({
+        page,
+    }) => {
+        await gotoAndWaitForHeading(page, "/backtesting", "Strategy Backtester");
+
+        await page.getByRole("button", { name: "Add Asset" }).click();
+        await page.getByPlaceholder("Ticker 2").fill("SPY");
+        await page.getByLabel("Weight for asset 1").fill("50");
+        await page.getByLabel("Weight for asset 2").fill("50");
+
+        await page.getByRole("button", { name: "Run Backtest" }).click();
+
+        await expect(
+            page.getByText("Each asset ticker must be unique."),
+        ).toBeVisible();
+    });
+
+    test("blocks runs when one-time cashflow entries are incomplete", async ({
+        page,
+    }) => {
+        await gotoAndWaitForHeading(page, "/backtesting", "Strategy Backtester");
+
+        await page.getByRole("button", { name: "Add Event" }).click();
+        await page.getByRole("button", { name: "Run Backtest" }).click();
+
+        await expect(
+            page.getByText("Each one-time cashflow needs a non-zero amount."),
+        ).toBeVisible();
+    });
+});
+
+test.describe("experiment comparison", () => {
+    test("compares selected experiment runs", async ({ page }) => {
+        const pageErrors = trackPageErrors(page);
+
+        await gotoAndWaitForHeading(page, "/experiments", "Experiments");
+
+        const firstExperiment = visibleByTestId(page, "experiment-row-run-001")
+            .or(visibleByTestId(page, "experiment-card-run-001"));
+        const secondExperiment = visibleByTestId(page, "experiment-row-run-002")
+            .or(visibleByTestId(page, "experiment-card-run-002"));
+
+        await expect(firstExperiment).toBeVisible();
+        await expect(secondExperiment).toBeVisible();
+        await firstExperiment.click();
+        await secondExperiment.click();
+        await Promise.all([
+            waitForApiRequest(page, "/api/experiments/compare"),
+            page.getByRole("button", { name: "Compare (2)" }).click(),
+        ]);
+
+        await expect(page.getByText("Assumptions Comparison")).toBeVisible();
+        await expect(page.getByText("Metrics Comparison")).toBeVisible();
+        await expect(page.getByText("Metric Rankings")).toBeVisible();
+        await expect(pageErrors).toHaveLength(0);
+    });
+});
+
+test.describe("walk-forward handoff", () => {
+    test("prefills the walk-forward form from URL parameters and can run", async ({
+        page,
+    }) => {
+        const pageErrors = trackPageErrors(page);
+
+        await gotoAndWaitForHeading(
+            page,
+            "/walk-forward?tickers=SPY%2CTLT&strategy=NoRebalance&start_date=2015-01-01&end_date=2024-12-31&initial_cash=15000&train_window=756&test_window=126&step_size=63&anchored=true&include_train=true&strategy_params=%7B%22equity_proportions%22%3A%5B0.6%2C0.4%5D%7D",
+            "Walk-Forward Analysis",
+        );
+
+        await expect(page.locator('input[value="SPY,TLT"]').first()).toBeVisible();
+        await expect(page.locator('input[value="15000"]').first()).toBeVisible();
+        await expect(page.locator('input[value="756"]').first()).toBeVisible();
+
+        await Promise.all([
+            waitForApiRequest(page, "/api/walk-forward/run"),
+            page.getByRole("button", { name: "Run Walk-Forward" }).click(),
+        ]);
+
+        await expect(page.getByText("Summary Table")).toBeVisible();
+        await expect(page.getByText("Timeline")).toBeVisible();
+        await expect(pageErrors).toHaveLength(0);
+    });
+});
+
 test.describe("mobile navigation", () => {
     test.use({ viewport: { width: 390, height: 844 } });
 
-    test("opens the mobile menu and navigates to Health Economics", async ({
+    test("opens the mobile menu and navigates across core routes", async ({
         page,
     }) => {
+        const pageErrors = trackPageErrors(page);
+
         await page.goto("/");
+        await page.getByRole("button", { name: "Open menu" }).click();
+        await page.getByRole("link", { name: "Backtesting" }).click();
+
+        await expect(page).toHaveURL(/\/backtesting$/);
+        await expect(
+            page
+                .locator("main")
+                .getByRole("heading", { name: "Strategy Backtester" }),
+        ).toBeVisible();
+
         await page.getByRole("button", { name: "Open menu" }).click();
         await page.getByRole("link", { name: "Health Economics" }).click();
 
@@ -593,5 +1094,14 @@ test.describe("mobile navigation", () => {
                 .locator("main")
                 .getByRole("heading", { name: "Health Economics" }),
         ).toBeVisible();
+
+        await page.getByRole("button", { name: "Open menu" }).click();
+        await page.getByRole("link", { name: "Monte Carlo" }).click();
+
+        await expect(page).toHaveURL(/\/monte-carlo$/);
+        await expect(
+            page.locator("main").getByRole("heading", { name: "Monte Carlo Lab" }),
+        ).toBeVisible();
+        await expect(pageErrors).toHaveLength(0);
     });
 });

@@ -28,7 +28,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <CommandPalette open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen} />
       <div
         className={cn(
-          "min-h-screen transition-all duration-300",
+          "min-h-screen min-w-0 transition-all duration-300",
           isDesktop ? (collapsed ? "ml-16" : "ml-60") : "ml-0",
         )}
       >
@@ -36,7 +36,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           onMobileMenuOpen={!isDesktop ? handleMobileMenuOpen : undefined}
           onCommandPaletteOpen={handleCommandPaletteOpen}
         />
-        <main className="p-4 sm:p-6 lg:p-8">
+        <main className="min-w-0 p-4 sm:p-6 lg:p-8">
           <ErrorBoundary>
             <PageTransition>{children}</PageTransition>
           </ErrorBoundary>

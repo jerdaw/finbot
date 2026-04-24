@@ -152,7 +152,7 @@ function RollingMetricsTab() {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             <div className="space-y-1">
               <Label className="text-xs text-muted-foreground">
                 Start Date
@@ -187,7 +187,7 @@ function RollingMetricsTab() {
     >
       {mutation.isPending && (
         <>
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <CardSkeleton />
             <CardSkeleton />
             <CardSkeleton />
@@ -198,7 +198,7 @@ function RollingMetricsTab() {
 
       {data && (
         <>
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <StatCard
               label="Mean Rolling Sharpe"
               value={formatNumber(data.mean_sharpe, 3)}
@@ -351,7 +351,7 @@ function BenchmarkTab() {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             <div className="space-y-1">
               <Label className="text-xs text-muted-foreground">
                 Start Date
@@ -386,12 +386,12 @@ function BenchmarkTab() {
     >
       {mutation.isPending && (
         <>
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <CardSkeleton />
             <CardSkeleton />
             <CardSkeleton />
           </div>
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <CardSkeleton />
             <CardSkeleton />
             <CardSkeleton />
@@ -402,7 +402,7 @@ function BenchmarkTab() {
       {data && (
         <>
           {/* Row 1 */}
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <StatCard
               label="Alpha"
               value={formatPercent(data.alpha)}
@@ -423,7 +423,7 @@ function BenchmarkTab() {
           </div>
 
           {/* Row 2 */}
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <StatCard
               label="Tracking Error"
               value={formatPercent(data.tracking_error)}
@@ -555,7 +555,7 @@ function DrawdownTab() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             <div className="space-y-1">
               <Label className="text-xs text-muted-foreground">
                 Start Date
@@ -590,7 +590,7 @@ function DrawdownTab() {
     >
       {mutation.isPending && (
         <>
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <CardSkeleton />
             <CardSkeleton />
             <CardSkeleton />
@@ -603,7 +603,7 @@ function DrawdownTab() {
 
       {data && (
         <>
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <StatCard
               label="Max Drawdown"
               value={formatPercent(data.max_depth)}
@@ -830,7 +830,7 @@ function CorrelationTab() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             <div className="space-y-1">
               <Label className="text-xs text-muted-foreground">
                 Start Date
@@ -865,7 +865,7 @@ function CorrelationTab() {
     >
       {mutation.isPending && (
         <>
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <CardSkeleton />
             <CardSkeleton />
             <CardSkeleton />
@@ -878,7 +878,7 @@ function CorrelationTab() {
 
       {data && (
         <>
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <StatCard
               label="HHI"
               value={formatNumber(data.herfindahl_index, 4)}

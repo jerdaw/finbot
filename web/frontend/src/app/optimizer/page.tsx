@@ -221,7 +221,7 @@ function DcaWorkspace() {
         >
             {mutation.isPending && (
                 <>
-                    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                         <CardSkeleton />
                         <CardSkeleton />
                         <CardSkeleton />
@@ -235,7 +235,7 @@ function DcaWorkspace() {
 
             {result && (
                 <>
-                    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                         <StatCard
                             label="Best Ratio"
                             value={
@@ -454,7 +454,7 @@ function ParetoWorkspace() {
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                         <div className="space-y-2">
                             <Label className="text-xs text-muted-foreground">
                                 Start Date
@@ -539,7 +539,7 @@ function ParetoWorkspace() {
         >
             {mutation.isPending && (
                 <>
-                    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                         <CardSkeleton />
                         <CardSkeleton />
                         <CardSkeleton />
@@ -552,7 +552,7 @@ function ParetoWorkspace() {
 
             {result && (
                 <>
-                    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                         <StatCard
                             label="Strategies Evaluated"
                             value={formatNumber(result.n_evaluated, 0)}
@@ -732,7 +732,7 @@ function EfficientFrontierWorkspace() {
                         />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                         <div className="space-y-2">
                             <Label className="text-xs text-muted-foreground">
                                 Start Date
@@ -761,7 +761,7 @@ function EfficientFrontierWorkspace() {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                         <div className="space-y-2">
                             <Label className="text-xs text-muted-foreground">
                                 Risk-Free Rate
@@ -809,7 +809,7 @@ function EfficientFrontierWorkspace() {
         >
             {mutation.isPending && (
                 <>
-                    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                         <CardSkeleton />
                         <CardSkeleton />
                         <CardSkeleton />
@@ -822,7 +822,7 @@ function EfficientFrontierWorkspace() {
 
             {result && (
                 <>
-                    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                         <StatCard
                             label="Sampled Portfolios"
                             value={formatNumber(result.portfolios.length, 0)}

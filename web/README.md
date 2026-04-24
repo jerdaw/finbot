@@ -41,6 +41,14 @@ Open http://localhost:3000
 docker compose up finbot-api finbot-web
 ```
 
+The local Docker path publishes the backend on `http://localhost:8000` and the
+frontend on `http://localhost:3000`. The browser-facing frontend must use a
+browser-reachable API origin, so the Compose setup points `NEXT_PUBLIC_API_URL`
+at `http://localhost:8000` rather than the internal Docker service hostname.
+The Compose file now treats `finbot/config/.env` as optional, so the stack can
+start without local API keys. Create that file only if you need provider-backed
+features that require secrets.
+
 ## Representative API Endpoints
 
 | Endpoint                                    | Method | Description                        |
@@ -98,7 +106,32 @@ Swagger UI available at http://localhost:8000/docs
 
 ### Frontend
 
-- `NEXT_PUBLIC_API_URL` — Backend API URL (default: `http://localhost:8000`)
+- `NEXT_PUBLIC_API_URL` — Browser-reachable backend API URL (default: `http://localhost:8000`)
+
+## Deployment Notes
+
+### Local Docker
+
+- `docker compose up finbot-api finbot-web` exposes the API on `:8000` and the
+  frontend on `:3000`.
+- Compose healthchecks verify `GET /api/health` for the backend and `GET /healthz`
+  for the frontend before considering the services healthy.
+- The frontend reads `NEXT_PUBLIC_API_URL` at runtime from the server-rendered
+  app shell, so changing the container environment changes the browser API base
+  URL without rebuilding the client bundle.
+
+### Production-Style Docker
+
+- Set `NEXT_PUBLIC_API_URL` to the externally reachable API origin, not an
+  internal container hostname. Example: `https://api.example.com`.
+- Set `FINBOT_API_CORS_ORIGINS` to include the deployed frontend origin.
+  Example: `["https://app.example.com"]`.
+- If you place both services behind a reverse proxy, route external traffic to
+  the frontend on port `3000` and the API on port `8000`, or terminate both
+  behind separate public origins and keep `NEXT_PUBLIC_API_URL` aligned with the
+  API origin.
+- Keep `/healthz` and `/api/health` available to the proxy or orchestrator for
+  readiness checks.
 
 ## Project Structure
 

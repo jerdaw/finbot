@@ -45,6 +45,12 @@ build
 dist
 *.egg-info
 __pycache__
+node_modules
+web/frontend/node_modules
+web/frontend/package-lock.json
+web/frontend/.next
+web/frontend/playwright-report
+web/frontend/test-results
 
 # Misc
 *.log

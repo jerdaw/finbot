@@ -32,5 +32,5 @@ Complete the existing Next.js frontend rather than redesign from scratch:
 
 **Negative:**
 - Two frontends (Streamlit + Next.js) coexist — Streamlit dashboard remains for backward compatibility
-- Frontend requires `npm install` and Node.js in addition to Python
+- Frontend requires `pnpm install` and Node.js in addition to Python
 - Real-time quotes page depends on external API keys (Alpaca, Twelve Data) for full functionality

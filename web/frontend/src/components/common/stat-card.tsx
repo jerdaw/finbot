@@ -23,7 +23,7 @@ export function StatCard({ label, value, trend, icon, className }: StatCardProps
       {/* Subtle top gradient accent */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between gap-3">
         <p className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
           {label}
         </p>
@@ -33,8 +33,8 @@ export function StatCard({ label, value, trend, icon, className }: StatCardProps
           </div>
         )}
       </div>
-      <div className="mt-3 flex items-end gap-2">
-        <p className="stat-value text-2xl font-bold tracking-tight">{value}</p>
+      <div className="mt-3 flex flex-wrap items-end gap-2">
+        <p className="stat-value break-words text-2xl font-bold tracking-tight">{value}</p>
         {trend && trend !== "neutral" && (
           <span
             className={cn(

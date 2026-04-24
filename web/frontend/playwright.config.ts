@@ -20,10 +20,12 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "./node_modules/.bin/next start --hostname 127.0.0.1 --port 3100",
+    command: "./scripts/run-playwright-server.sh",
     url: "http://127.0.0.1:3100",
-    reuseExistingServer: false,
+    reuseExistingServer: !process.env.CI,
     env: {
+      HOSTNAME: "127.0.0.1",
+      PORT: "3100",
       NEXT_PUBLIC_API_URL: "http://127.0.0.1:3100/_playwright_api",
       NEXT_TELEMETRY_DISABLED: "1",
     },

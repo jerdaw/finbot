@@ -98,13 +98,13 @@ make run-update
 - `make clean` - Remove cache files and build artifacts
 - `make all` - Run full CI pipeline (check + test)
 
-## Current Implementation Status (2026-04-18)
+## Current Implementation Status (2026-04-24)
 
-Priority 0-9 is complete. Priority 10 remains in progress, but the flagship backtesting workflow and its adjacent research follow-through are now landed.
+Priority 0-10 is complete. Priority 11 remains a documentation-platform decision track.
 
 - **P0-P9 Complete**: Engine-agnostic contracts, Backtrader adapter path, parity gates, cost and corporate-action fidelity, walk-forward analysis, regime detection, experiment tracking, execution simulation, and runtime hardening are in place. Risk analytics, portfolio analytics, real-time quotes, factor analytics, and health economics surfaces are implemented across services and Streamlit.
-- **P10 In Progress**: ✅ P10.1 Next.js frontend completion (12 pages, backend routers, shared UI foundation, ADR-015); ✅ P10.2 frontend hardening and audit remediation (frequency-gap fix, lazy host probing, restored mypy baseline, mocked Playwright smoke coverage, frontend CI gate); ✅ P10.3 public packaging and docs alignment (public health-economics evidence path, claim cleanup, docs wrappers, metrics snapshot, and guided tour); ✅ the current P10.4 tranche (allocation builder, benchmark/cashflow/regime research, cost and missing-data reporting, walk-forward handoff, experiment lineage, and adjacent bond-ladder / multi-asset Monte Carlo / Pareto / efficient-frontier workspaces). Remaining work includes responsive mobile hardening, deeper browser-flow coverage beyond smoke tests, long-tail research additions, and production deployment configuration.
-- **CI Status**: Core Python quality and test gates run on push and PR to `main`. Frontend quality runs typecheck, production build, and Playwright smoke tests when frontend-relevant files change.
+- **P10 Complete**: Next.js frontend completion, frontend hardening, public packaging alignment, the allocation backtesting research workspace, adjacent bond-ladder / multi-asset Monte Carlo / Pareto / efficient-frontier workspaces, responsive/mobile hardening, deeper mocked Chromium workflows, and provider-neutral Docker deployment readiness are landed.
+- **CI Status**: Core Python quality and test gates run on push and PR to `main`. Frontend quality runs typecheck, production build, and mocked Chromium browser workflows when frontend-relevant files change.
 
 Tracking docs:
 
@@ -112,6 +112,7 @@ Tracking docs:
 - `docs/planning/archive/audit-remediation-and-frontend-hardening-2026-04-15.md`
 - `docs/planning/archive/public-packaging-and-docs-alignment-2026-04-16.md`
 - `docs/planning/archive/backtesting-followthrough-and-adjacent-research-closeout-2026-04-18.md`
+- `docs/planning/archive/p10-autonomous-finish-pass-2026-04-24.md`
 - `docs/adr/ADR-011-nautilus-decision.md`
 - `docs/adr/ADR-015-nextjs-frontend-completion.md`
 
