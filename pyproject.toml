@@ -31,7 +31,7 @@ dependencies = [
     "quantstats>=0.0.81,<1",
     "pyportfolioopt>=1.5.5,<2",
     "pyarrow>=14.0.1",
-    "matplotlib>=3.8.2,<4",
+    "matplotlib>=3.10.9,<4",
     "seaborn>=0.13.0,<0.14",
     "plotly>=5.18.0,<6",
     "tqdm>=4.66.1,<5",
@@ -59,7 +59,7 @@ dependencies = [
     "filterpy>=1.4.5,<2",
     "beautifulsoup4>=4.12.2,<5",
     "python-dotenv>=1.0.0,<2",
-    "click>=8.3.2,<9",
+    "click>=8.3.3,<9",
 ]
 
 [project.optional-dependencies]
@@ -67,10 +67,10 @@ dashboard = [
     "streamlit>=1.56.0,<2",
 ]
 web = [
-    "fastapi>=0.135.3,<1",
-    "pydantic>=2.13.0,<3",
-    "pydantic-settings>=2.0,<3",
-    "uvicorn>=0.44.0,<1",
+    "fastapi>=0.136.1,<1",
+    "pydantic>=2.13.3,<3",
+    "pydantic-settings>=2.14.0,<3",
+    "uvicorn>=0.46.0,<1",
 ]
 nautilus = [
     "nautilus-trader>=1.225.0,<2",
@@ -90,11 +90,11 @@ finbot = "finbot.cli.main:cli"
 
 [dependency-groups]
 dev = [
-    "pre-commit>=3.6.0,<5",
-    "mypy>=1.20.1,<2",
-    "ruff>=0.15.10,<0.16",
+    "pre-commit>=4.6.0,<5",
+    "mypy>=1.20.2,<2",
+    "ruff>=0.15.12,<0.16",
     "pytest>=9.0.3,<10",
-    "hypothesis>=6.151.14,<7",
+    "hypothesis>=6.152.3,<7",
     "bandit>=1.7.6,<2",
     "ssort>=0.16.0,<0.17",
     "pyupgrade>=3.15.0,<4",
@@ -103,7 +103,7 @@ dev = [
     "pandas-stubs>=2.1.1.230928,<3",
     "types-tqdm>=4.67.3.20260408,<5",
     "types-beautifulsoup4>=4.12.0.20240106,<5",
-    "google-api-python-client-stubs>=1.23.0,<2",
+    "google-api-python-client-stubs>=1.35.0,<2",
     "types-seaborn>=0.13.1.20240115,<1",
     "pytest-cov>=7.1.0,<8",
     "mkdocs>=1.6.1,<2",
