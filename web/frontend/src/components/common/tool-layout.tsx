@@ -19,29 +19,34 @@ export function ToolLayout({
   const [configCollapsed, setConfigCollapsed] = useState(false);
 
   return (
-    <div className="min-w-0 space-y-5">
-      {/* Config panel */}
-      <div className={cn("min-w-0", configCollapsed && "hidden")}>
+    <div className="min-w-0 space-y-6">
+      {/* Config panel (Bounded Width) */}
+      <div
+        className={cn(
+          "mx-auto w-full max-w-[1400px]",
+          configCollapsed && "hidden"
+        )}
+      >
         {configPanel}
       </div>
 
-      {/* Results area */}
-      <div className="min-w-0 space-y-5">
-        <div className="hidden min-h-8 items-center justify-end border-b border-border/40 pb-2 lg:flex">
+      {/* Results area (Full Width) */}
+      <div className="min-w-0 flex-1 space-y-8 w-full">
+        <div className="hidden min-h-8 items-center justify-end border-b border-border/40 pb-2 xl:flex">
           <Button
             variant="ghost"
             size="sm"
-            className="h-7 gap-1.5 px-2 text-xs text-muted-foreground hover:text-foreground"
+            className="h-7 gap-1.5 px-2 text-xs font-medium text-muted-foreground hover:text-foreground"
             onClick={() => setConfigCollapsed(!configCollapsed)}
-            aria-label={configCollapsed ? "Show inputs" : "Hide inputs"}
-            title={configCollapsed ? "Show inputs" : "Hide inputs"}
+            aria-label={configCollapsed ? "Show configuration" : "Hide configuration"}
+            title={configCollapsed ? "Show configuration" : "Hide configuration"}
           >
             {configCollapsed ? (
-              <PanelTopOpen className="h-3.5 w-3.5" />
+              <PanelTopOpen className="h-4 w-4" />
             ) : (
-              <PanelTopClose className="h-3.5 w-3.5" />
+              <PanelTopClose className="h-4 w-4" />
             )}
-            <span>{configCollapsed ? "Show inputs" : "Hide inputs"}</span>
+            <span>{configCollapsed ? "Show Configuration" : "Hide Configuration"}</span>
           </Button>
         </div>
         {children}

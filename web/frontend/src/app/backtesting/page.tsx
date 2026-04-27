@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -54,6 +54,7 @@ import {
     formatCurrencyPrecise,
 } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { useBacktestStore } from "@/stores/backtest-store";
 import type {
     AppliedBacktestCostAssumptions,
     StrategyInfo,
@@ -77,11 +78,18 @@ import type {
     WithdrawalDurabilitySummary,
     WalkForwardHandoff,
 } from "@/types/api";
+import type {
+    PortfolioAsset,
+    SavedPortfolio,
+    ComparisonPortfolio,
+    ComparisonRun,
+} from "@/stores/backtest-store";
+import { DEFAULT_COST_ASSUMPTIONS } from "@/stores/backtest-store";
 
-interface PortfolioAsset {
-    ticker: string;
-    weight: number;
-}
+
+
+
+const MAX_COMPARISON_PORTFOLIOS = 5;
 
 interface PortfolioPreset {
     id: string;
@@ -93,38 +101,6 @@ interface PortfolioPreset {
     assets: PortfolioAsset[];
     rebalInterval?: number;
 }
-
-interface SavedPortfolio {
-    id: string;
-    label: string;
-    strategy: "NoRebalance" | "Rebalance";
-    assets: PortfolioAsset[];
-    strategyParams?: Record<string, number>;
-    createdAt: string;
-}
-
-interface ComparisonPortfolio {
-    id: string;
-    label: string;
-    strategy: "NoRebalance" | "Rebalance";
-    assets: PortfolioAsset[];
-    strategyParams?: Record<string, number>;
-    source: "current" | "preset" | "saved";
-}
-
-interface ComparisonRun {
-    portfolio: ComparisonPortfolio;
-    request: BacktestRequest | null;
-    result: BacktestResponse | null;
-    error?: string;
-}
-
-const DEFAULT_PORTFOLIO_ASSETS: PortfolioAsset[] = [
-    { ticker: "SPY", weight: 100 },
-];
-
-const SAVED_PORTFOLIOS_KEY = "finbot-backtesting-saved-portfolios";
-const MAX_COMPARISON_PORTFOLIOS = 5;
 
 const PORTFOLIO_PRESETS: PortfolioPreset[] = [
     {
@@ -307,14 +283,6 @@ const COMMISSION_MODE_OPTIONS = [
     { label: "Percentage", value: "percentage" },
 ] as const;
 
-const DEFAULT_COST_ASSUMPTIONS: BacktestCostAssumptions = {
-    commission_mode: "none",
-    commission_per_share: 0.001,
-    commission_bps: 1,
-    commission_minimum: 0,
-    spread_bps: 0,
-    slippage_bps: 0,
-};
 
 function getMetricTrend(
     value: number | null | undefined,
@@ -504,51 +472,40 @@ function buildWalkForwardHref(
 }
 
 export default function BacktestingPage() {
-    const [ticker, setTicker] = useState("SPY");
-    const [altTicker, setAltTicker] = useState("TLT");
-    const [portfolioAssets, setPortfolioAssets] = useState<PortfolioAsset[]>(
-        DEFAULT_PORTFOLIO_ASSETS,
-    );
-    const [strategy, setStrategy] = useState("NoRebalance");
-    const [startDate, setStartDate] = useState("2015-01-01");
-    const [endDate, setEndDate] = useState("2024-12-31");
-    const [cash, setCash] = useState(10000);
-    const [benchmarkTicker, setBenchmarkTicker] = useState("");
-    const [riskFreeRate, setRiskFreeRate] = useState(0.04);
-    const [recurringContribution, setRecurringContribution] = useState(0);
-    const [contributionFrequency, setContributionFrequency] =
-        useState<RecurringCashflowRule["frequency"]>("monthly");
-    const [recurringWithdrawal, setRecurringWithdrawal] = useState(0);
-    const [withdrawalFrequency, setWithdrawalFrequency] =
-        useState<RecurringCashflowRule["frequency"]>("monthly");
-    const [inflationRate, setInflationRate] = useState(0.03);
-    const [oneTimeCashflows, setOneTimeCashflows] = useState<
-        OneTimeCashflowEvent[]
-    >([]);
-    const [missingDataPolicy, setMissingDataPolicy] =
-        useState<MissingDataPolicy>("forward_fill");
-    const [costAssumptions, setCostAssumptions] =
-        useState<BacktestCostAssumptions>(DEFAULT_COST_ASSUMPTIONS);
-    const [params, setParams] = useState<Record<string, number>>({});
-    const [lastRunRequest, setLastRunRequest] =
-        useState<BacktestRequest | null>(null);
-    const [lastComparisonRequest, setLastComparisonRequest] =
-        useState<BacktestRequest | null>(null);
-    const [savedExperiment, setSavedExperiment] =
-        useState<SaveExperimentResponse | null>(null);
-    const [activeResultTab, setActiveResultTab] = useState("overview");
-    const [portfolioChartLogScale, setPortfolioChartLogScale] =
-        useState(false);
-    const [showPortfolioSeries, setShowPortfolioSeries] = useState(true);
-    const [showBenchmarkSeries, setShowBenchmarkSeries] = useState(true);
-    const [comparisonPortfolios, setComparisonPortfolios] = useState<
-        ComparisonPortfolio[]
-    >([]);
-    const [comparisonRuns, setComparisonRuns] = useState<ComparisonRun[]>([]);
-    const [savedPortfolios, setSavedPortfolios] = useState<SavedPortfolio[]>(
-        [],
-    );
-    const [presetFilter, setPresetFilter] = useState("");
+    // ---------------------------------------------------------------------------
+    // Centralised state — all fields persisted to localStorage via zustand/persist
+    // ---------------------------------------------------------------------------
+    const {
+        ticker, setTicker,
+        altTicker, setAltTicker,
+        portfolioAssets, setPortfolioAssets,
+        strategy, setStrategy,
+        startDate, setStartDate,
+        endDate, setEndDate,
+        cash, setCash,
+        benchmarkTicker, setBenchmarkTicker,
+        riskFreeRate, setRiskFreeRate,
+        recurringContribution, setRecurringContribution,
+        contributionFrequency, setContributionFrequency,
+        recurringWithdrawal, setRecurringWithdrawal,
+        withdrawalFrequency, setWithdrawalFrequency,
+        inflationRate, setInflationRate,
+        oneTimeCashflows, setOneTimeCashflows,
+        missingDataPolicy, setMissingDataPolicy,
+        costAssumptions, setCostAssumptions,
+        params, setParams,
+        lastRunRequest, setLastRunRequest,
+        lastComparisonRequest, setLastComparisonRequest,
+        savedExperiment, setSavedExperiment,
+        activeResultTab, setActiveResultTab,
+        portfolioChartLogScale, setPortfolioChartLogScale,
+        showPortfolioSeries, setShowPortfolioSeries,
+        showBenchmarkSeries, setShowBenchmarkSeries,
+        comparisonPortfolios, setComparisonPortfolios,
+        comparisonRuns, setComparisonRuns,
+        savedPortfolios, setSavedPortfolios,
+        presetFilter, setPresetFilter,
+    } = useBacktestStore();
 
     const { data: strategies } = useQuery({
         queryKey: ["strategies"],
@@ -1221,16 +1178,10 @@ export default function BacktestingPage() {
         comparisonMutation.mutate(comparisonPortfolios);
     };
 
-    useEffect(() => {
-        try {
-            const raw = localStorage.getItem(SAVED_PORTFOLIOS_KEY);
-            if (raw) {
-                setSavedPortfolios(JSON.parse(raw) as SavedPortfolio[]);
-            }
-        } catch {
-            setSavedPortfolios([]);
-        }
 
+    // Load shared backtest configuration from URL ?config= param (once on mount).
+    // Note: savedPortfolios is now persisted automatically by the zustand store.
+    useEffect(() => {
         const encodedConfig = new URLSearchParams(window.location.search).get("config");
         if (encodedConfig) {
             const sharedRequest = decodeSharedConfig(encodedConfig);
@@ -1239,13 +1190,10 @@ export default function BacktestingPage() {
                 toast.success("Shared backtest configuration loaded");
             }
         }
-        // Shared links and local portfolios should hydrate only once.
+        // Shared links should hydrate only once.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    useEffect(() => {
-        localStorage.setItem(SAVED_PORTFOLIOS_KEY, JSON.stringify(savedPortfolios));
-    }, [savedPortfolios]);
 
     const handleSaveExperiment = () => {
         if (!result?.stats || !lastRunRequest) {
@@ -1793,7 +1741,7 @@ export default function BacktestingPage() {
                             description="Select the backtest template and review its default behavior."
                             summary={strategy}
                         >
-                            <div className="space-y-2 lg:col-span-2">
+                            <div className="space-y-2 col-span-full md:col-span-2 lg:col-span-1">
                                 <Label className="text-xs text-muted-foreground">
                                     Strategy
                                 </Label>
@@ -1850,9 +1798,9 @@ export default function BacktestingPage() {
                                     </>
                                 }
                             >
-                                <div className="space-y-3 lg:col-span-5">
+                                <div className="space-y-4 col-span-full">
                                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                                        <Label className="text-xs text-muted-foreground">
+                                        <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                                             Preset Portfolios
                                         </Label>
                                         <Input
@@ -1866,7 +1814,7 @@ export default function BacktestingPage() {
                                             className="h-8 border-border/50 bg-background/50 text-xs sm:max-w-64"
                                         />
                                     </div>
-                                    <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
+                                    <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
                                         {filteredPortfolioPresets.map((preset) => (
                                             <div
                                                 key={preset.label}
@@ -1926,10 +1874,10 @@ export default function BacktestingPage() {
                                     </div>
                                 </div>
 
-                                <div className="space-y-3 lg:col-span-3 xl:col-span-4">
+                                <div className="space-y-4 col-span-full">
                                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                                         <div>
-                                            <Label className="text-xs text-muted-foreground">
+                                            <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                                                 Assets and Weights
                                             </Label>
                                             <p className="text-[11px] leading-relaxed text-muted-foreground/70">
@@ -2069,9 +2017,9 @@ export default function BacktestingPage() {
 
                                 {(savedPortfolios.length > 0 ||
                                     comparisonPortfolios.length > 0) && (
-                                    <div className="grid grid-cols-1 gap-4 lg:col-span-5 xl:grid-cols-2">
+                                    <div className="grid grid-cols-1 gap-6 xl:grid-cols-2 col-span-full">
                                         {savedPortfolios.length > 0 && (
-                                            <div className="rounded-lg border border-border/50 bg-background/30 p-3">
+                                            <div className="rounded-lg border border-border/50 bg-background/50 p-4">
                                                 <div className="mb-3 flex items-center justify-between gap-3">
                                                     <Label className="text-xs text-muted-foreground">
                                                         Saved Portfolios
@@ -2142,7 +2090,7 @@ export default function BacktestingPage() {
                                         )}
 
                                         {comparisonPortfolios.length > 0 && (
-                                            <div className="rounded-lg border border-border/50 bg-background/30 p-3">
+                                            <div className="rounded-lg border border-border/50 bg-background/50 p-3">
                                                 <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                                                     <div>
                                                         <Label className="text-xs text-muted-foreground">

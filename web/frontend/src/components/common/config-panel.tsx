@@ -28,14 +28,14 @@ export function ConfigPanel({ title, children, className }: ConfigPanelProps) {
         className,
       )}
     >
-      <div className="border-b border-border/60 bg-muted/20 px-4 py-3">
-        <h3 className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+      <div className="border-b border-border/60 bg-muted/20 px-5 py-4">
+        <h3 className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
           {title}
         </h3>
       </div>
       <div
         className={cn(
-          "grid min-w-0 grid-cols-1 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5",
+          "grid min-w-0 grid-cols-1 gap-6 p-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4",
           "[&>*]:min-w-0 [&>button:last-child]:self-end",
         )}
       >
@@ -66,7 +66,7 @@ export function ConfigSection({
       <button
         type="button"
         className={cn(
-          "flex w-full items-center justify-between gap-4 px-4 py-3 text-left transition-colors hover:bg-muted/20",
+          "flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-muted/20",
           open && "border-b border-border/40",
         )}
         aria-expanded={open}
@@ -74,11 +74,11 @@ export function ConfigSection({
         onClick={() => setOpen((value) => !value)}
       >
         <span className="min-w-0">
-          <span className="block text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+          <span className="block text-xs font-bold tracking-wider text-muted-foreground uppercase">
             {title}
           </span>
           {description && open ? (
-            <span className="mt-0.5 block text-[11px] leading-relaxed text-muted-foreground/70">
+            <span className="mt-1 block text-xs leading-relaxed text-muted-foreground/70">
               {description}
             </span>
           ) : null}
@@ -98,7 +98,7 @@ export function ConfigSection({
       {open ? (
         <div
           id={contentId}
-          className="grid min-w-0 grid-cols-1 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 [&>*]:min-w-0"
+          className="grid min-w-0 grid-cols-1 gap-6 p-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 [&>*]:min-w-0"
         >
           {children}
         </div>
