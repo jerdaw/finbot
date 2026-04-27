@@ -1,14 +1,14 @@
 # Finbot Roadmap
 
 **Created:** 2026-02-10
-**Last Updated:** 2026-04-24
-**Status:** Priority 0-10 and P12 complete. P11 decision track remains open.
+**Last Updated:** 2026-04-27
+**Status:** Priority 0-10 and P12 complete. P11 decision track remains open. Archived `bb`/`backbetter` reuse audit complete with follow-up items queued.
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on repository professionalization, public documentation quality, and durable communication surfaces.
 
 See Completed Items table below and git history for details on implemented features.
 
-**Current Plan Record:** None active. Last archived plan: `docs/planning/archive/backtesting-ux-product-workflow-hardening-2026-04-24.md`
+**Current Plan Record:** None active. Last archived plan: `docs/planning/archive/archived-bb-backbetter-incorporation-audit-2026-04-27.md`
 
 ---
 
@@ -16,6 +16,22 @@ See Completed Items table below and git history for details on implemented featu
 
 Completed detail sections are trimmed out of the main roadmap body once they are
 captured in archive notes and the completed-items table below.
+
+## Archived Repo Reuse Audit Follow-Up
+
+**Status:** AUDIT COMPLETE (2026-04-27)
+
+The archived `jerdaw/bb` and `jerdaw/backbetter` repos were reconciled against
+current Finbot. The audit found no production code that should be ported
+directly. `bb` is primarily a historical ancestor whose useful modules are
+already represented under `finbot/`; `backbetter` is only a minimal package
+scaffold. Follow-up is limited to documentation/test polish:
+
+- [ ] Add a concise missing-data method/tradeoff reference to the current docs site.
+- [ ] Add or improve a deterministic logging queue/nonblocking regression test during the next logging maintenance pass.
+- [ ] Review current outlier/data-integrity utility coverage before exposing those utilities more prominently.
+- [ ] Convert archived provider notebooks into small contributor examples only where current wrappers lack examples.
+- [ ] Decide whether old Backtrader PDFs should be referenced externally; do not commit the PDFs without license/storage review.
 
 ## Priority 10: Next.js Frontend
 
@@ -56,6 +72,7 @@ Closed the product-quality backtesting workflow pass: canonical drawdown metrics
 ## Deferred / On Hold Backlog
 
 - [ ] Split `web/frontend/src/app/backtesting/page.tsx` into local backtesting helpers/components before the next large backtesting feature tranche; P12 behavior is complete, but the page remains too large for comfortable long-term maintenance.
+- [ ] Do not port archived `bb`/`backbetter` code wholesale; only pursue the narrow docs/test follow-ups recorded in `docs/planning/archive/archived-bb-backbetter-incorporation-audit-2026-04-27.md`.
 - [ ] Add tests for `approximate_overnight_libor` once stable FRED-backed validation inputs are practical.
 - [ ] Apply the data-driven config pattern to `sim_specific_bond_indexes.py` if that small surface ever grows beyond the current lightweight implementation.
 - [ ] Add options-overlay strategy/tooling once pricing-model depth and options-chain data are available.
@@ -75,6 +92,7 @@ Closed the product-quality backtesting workflow pass: canonical drawdown metrics
 
 | Item                                                                      | Completed  | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | :------------------------------------------------------------------------ | :--------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Archived `bb`/`backbetter` incorporation audit                            | 2026-04-27 | Audited archived `jerdaw/bb` and `jerdaw/backbetter` against current Finbot. All 290 tracked `bb` files were reconciled by bucket; no direct production port is recommended. Follow-up is limited to missing-data docs, optional logging/utility test polish, optional provider examples, and Backtrader reference handling. Archive note records crosswalk, reject list, and modernization requirements.                                                                                           |
 | P12 backtesting UX and product workflow hardening                         | 2026-04-24 | Closed the flagship backtesting workflow gap with value-path drawdown consistency, tabbed result workspaces, portfolio presets and saved portfolios, multi-portfolio comparison, share/export/chart controls, and mobile-safe dense tables. Archive note records validation and explicitly carries forward the component extraction follow-up.                                                                                                                                                     |
 | P10 autonomous frontend finish pass                                       | 2026-04-24 | Closed remaining autonomous P10 operations work: responsive/mobile hardening, deeper mocked Chromium browser workflows, runtime frontend API-origin configuration, frontend and backend health probes, Docker Compose healthchecks, healthy-service dependency gating, stale npm lockfile cleanup, and provider-neutral web deployment documentation. Archive note records validation and deferred follow-up.                                                                                         |
 | Backtesting follow-through + adjacent research closeout (P10.4 tranche 2) | 2026-04-18 | Closed the remaining P10.4 follow-through by surfacing cost assumptions, missing-data handling, and walk-forward handoff in the main backtesting workspace, then broadened simulations, Monte Carlo, and optimizer into bond-ladder, multi-asset Monte Carlo, Pareto, and efficient-frontier research workspaces. Archive note records the closeout and validation surfaces.                                                                                                                     |
