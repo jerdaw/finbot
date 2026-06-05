@@ -253,7 +253,7 @@ Sensitive information is automatically redacted from logs. The following paramet
 **Example:**
 ```python
 # This parameter
-{"api_key": "sk-12345", "symbol": "SPY"}
+{"api_key": "<example-api-key>", "symbol": "SPY"}
 
 # Becomes
 {"api_key": "***REDACTED***", "symbol": "SPY"}
@@ -378,7 +378,7 @@ Each audit log entry contains:
 }
 ```
 
-## Compliance and Retention
+## Review and Retention
 
 ### Log Retention Policy
 
@@ -386,11 +386,11 @@ Each audit log entry contains:
 - **Rotation:** Files rotate at 5MB
 - **Archival:** Old logs are automatically deleted by the rotating file handler
 
-### Compliance Considerations
+### Review Considerations
 
 Audit logs can support:
 
-- **Regulatory compliance** - Track all operations for audit purposes
+- **Operational review** - Track operations for internal troubleshooting
 - **Debugging** - Trace operation history and failures
 - **Performance monitoring** - Identify bottlenecks and slow operations
 - **Security** - Track API usage and detect anomalies

@@ -1,6 +1,6 @@
 # DCA Optimization Findings: Optimal Asset Allocation Strategies
 
-**Author:** Finbot Research Team
+**Author:** Jeremy Dawson
 **Date:** 2026-02-10
 **Status:** Published
 **Related Notebook:** `notebooks/02_dca_optimization_results.ipynb`

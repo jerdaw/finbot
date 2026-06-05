@@ -19,7 +19,7 @@ Quick commands and workflows for publishing to TestPyPI.
 # 4. Add token to GitHub Secrets
 # → GitHub repo → Settings → Secrets → Actions
 # → Name: TEST_PYPI_API_TOKEN
-# → Value: pypi-XXXXXXXXXXXXXXXX
+# → Value: <test-pypi-token>
 ```
 
 ## Publishing via GitHub Actions (Recommended)
@@ -47,7 +47,7 @@ uv build
 # Publish to TestPyPI
 uv publish \
   --publish-url https://test.pypi.org/legacy/ \
-  --token pypi-YOUR_TOKEN_HERE
+  --token <test-pypi-token>
 ```
 
 ## Testing Installation

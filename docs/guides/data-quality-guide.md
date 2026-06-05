@@ -765,14 +765,12 @@ def update_polygon_data() -> None:
     finbot update
     ```
 
-2. **Set up automated monitoring (cron/systemd):**
+2. **Schedule local checks with your preferred scheduler:**
 
     ```bash
-    # Daily update at 6 PM (after market close)
-    0 18 * * 1-5 cd /path/to/finbot && finbot update
-
-    # Daily status check at 7 PM
-    0 19 * * * cd /path/to/finbot && finbot status --stale-only
+    # Example commands for a local scheduler
+    finbot update
+    finbot status --stale-only
     ```
 
 3. **Monitor log files for errors:**
@@ -792,7 +790,7 @@ def update_polygon_data() -> None:
     finbot update
 
     # Troubleshooting
-     finbot --verbose update
+    finbot --verbose update
     ```
 
 ### Performance
@@ -843,7 +841,7 @@ def update_polygon_data() -> None:
 
 - [ ] Audit data quality metrics
 - [ ] Review and update data source registry
-- [ ] Test disaster recovery (restore from backup)
+- [ ] Review recovery assumptions with non-sensitive sample data
 - [ ] Update data collection utilities for API changes
 
 ---
@@ -876,7 +874,7 @@ def update_polygon_data() -> None:
 
 1. Recent logs: `tail -n 100 logs/finbot.log`
 2. Network connectivity: `ping finance.yahoo.com`
-3. API keys: `env | grep API_KEY`
+3. API keys: verify required environment variables are set without printing values
 4. Disk space: `df -h`
 
 **Still stuck?** File an issue with:

@@ -1,14 +1,14 @@
 # Finbot Roadmap
 
 **Created:** 2026-02-10
-**Last Updated:** 2026-04-27
-**Status:** Priority 0-10 and P12 complete. P11 decision track remains open. Archived `bb`/`backbetter` reuse audit complete with follow-up items queued.
+**Last Updated:** 2026-06-04
+**Status:** Priority 0-10 and P12 complete. P11 decision track remains open. Archived `bb`/`backbetter` reuse audit and public GitHub cleanup complete with follow-up items queued.
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on repository professionalization, public documentation quality, and durable communication surfaces.
 
 See Completed Items table below and git history for details on implemented features.
 
-**Current Plan Record:** None active. Last archived plan: `docs/planning/archive/archived-bb-backbetter-incorporation-audit-2026-04-27.md`
+**Current Plan Record:** None active. Last archived plan: `docs/planning/archive/public-github-cleanup-2026-06-04.md`
 
 ---
 
@@ -80,6 +80,8 @@ Closed the product-quality backtesting workflow pass: canonical drawdown metrics
 - [ ] Define a protected-branch-compatible human-authored replay workflow for low-risk Dependabot updates if manual handling becomes burdensome.
 - [ ] Keep broad dependency batches and major GitHub Action upgrades on human-authored replay branches rather than direct bot merges.
 - [ ] Revisit broader browser coverage only when GitHub Actions minutes or budget allow Firefox/WebKit or heavier browser matrices; keep the current frontend suite mocked and Chromium-only.
+- [ ] Run a dedicated secret scanner (`gitleaks` or `trufflehog`) when the tool is available in CI or local maintenance environments.
+- [ ] Re-check tracked parquet golden datasets with a parquet-capable runtime during the next binary data audit.
 - [ ] Finalize a human-approved project logo or brand guide before reopening branding work.
 - [ ] Record the planned overview and tutorial videos plus the project poster once user-provided narration/design assets exist.
 - [ ] Choose a production hosting target, public domain/TLS setup, and secret-management path before adding provider-specific deployment manifests or infrastructure code.
@@ -92,6 +94,7 @@ Closed the product-quality backtesting workflow pass: canonical drawdown metrics
 
 | Item                                                                      | Completed  | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | :------------------------------------------------------------------------ | :--------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Public GitHub cleanup                                                     | 2026-06-04 | Strengthened educational/research disclaimers, added the public documentation boundary, generalized private paths and token-like examples, added ignored local private-note patterns, replaced non-human team author labels with the actual human author, verified agent symlinks and human-only commit authorship, and recorded scanner/parquet tooling follow-ups.                                                                                                                                 |
 | Archived `bb`/`backbetter` incorporation audit                            | 2026-04-27 | Audited archived `jerdaw/bb` and `jerdaw/backbetter` against current Finbot. All 290 tracked `bb` files were reconciled by bucket; no direct production port is recommended. Follow-up is limited to missing-data docs, optional logging/utility test polish, optional provider examples, and Backtrader reference handling. Archive note records crosswalk, reject list, and modernization requirements.                                                                                           |
 | P12 backtesting UX and product workflow hardening                         | 2026-04-24 | Closed the flagship backtesting workflow gap with value-path drawdown consistency, tabbed result workspaces, portfolio presets and saved portfolios, multi-portfolio comparison, share/export/chart controls, and mobile-safe dense tables. Archive note records validation and explicitly carries forward the component extraction follow-up.                                                                                                                                                     |
 | P10 autonomous frontend finish pass                                       | 2026-04-24 | Closed remaining autonomous P10 operations work: responsive/mobile hardening, deeper mocked Chromium browser workflows, runtime frontend API-origin configuration, frontend and backend health probes, Docker Compose healthchecks, healthy-service dependency gating, stale npm lockfile cleanup, and provider-neutral web deployment documentation. Archive note records validation and deferred follow-up.                                                                                         |

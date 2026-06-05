@@ -38,8 +38,7 @@ API tokens are the recommended authentication method for uploading packages.
      - After first successful upload, create a project-specific token for better security
 5. Click "Create token"
 6. **IMPORTANT**: Copy the token immediately - it will only be shown once
-   - Format: `pypi-AgEIcHlwaS5vcmc...` (starts with `pypi-`)
-   - Store securely (you'll add it to GitHub Secrets next)
+   - Store it in a password manager until it is added as a repository secret
 
 ### 3. Add Token to GitHub Secrets
 
@@ -48,7 +47,7 @@ API tokens are the recommended authentication method for uploading packages.
 3. Click "New repository secret"
 4. Create the secret:
    - **Name**: `TEST_PYPI_API_TOKEN`
-   - **Value**: Paste the entire token (including the `pypi-` prefix)
+   - **Value**: Paste the token value from your password manager
 5. Click "Add secret"
 
 ## Publishing Methods
@@ -109,7 +108,7 @@ uv build
 # Publish to TestPyPI
 uv publish \
   --publish-url https://test.pypi.org/legacy/ \
-  --token pypi-YOUR_TOKEN_HERE
+  --token <test-pypi-token>
 ```
 
 **When to use:**
@@ -266,7 +265,7 @@ git push origin main test-v1.0.1
 
 **Solution**:
 - Verify the GitHub Secret `TEST_PYPI_API_TOKEN` is set correctly
-- Ensure the token starts with `pypi-`
+- Ensure the token value was copied completely
 - Generate a new token if needed
 - Check token scope includes upload permissions
 

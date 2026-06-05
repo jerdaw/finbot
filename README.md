@@ -11,7 +11,7 @@
 
 ## IMPORTANT DISCLAIMER
 
-**Finbot is for educational and research purposes only. This software does not constitute financial, investment, or medical advice. Past performance is not indicative of future results. You use this software entirely at your own risk.**
+**Finbot is for educational and research purposes only. This software does not constitute financial, investment, legal, medical, or professional advice. Past performance is not indicative of future results. You use this software entirely at your own risk.**
 
 See [DISCLAIMER.md](DISCLAIMER.md) for complete legal terms, limitations, and risk disclosures. By using this software, you acknowledge that:
 
@@ -30,7 +30,7 @@ Finbot is a comprehensive platform for quantitative financial analysis, combinin
 - **Simulation**: Realistic modeling of leveraged ETFs, bond ladders, indexes, and single-asset or multi-asset Monte Carlo scenarios
 - **Backtesting**: Engine-agnostic backtesting with 13 strategies, typed contracts, and comprehensive performance metrics
 - **Execution**: Paper trading simulator with realistic latency, risk controls, and state recovery for disaster resilience
-- **Optimization**: DCA grid search, Pareto analysis, efficient-frontier research, and portfolio rebalancing tools
+- **Optimization**: DCA grid search, Pareto analysis, efficient-frontier research, and example portfolio rebalancing tools
 - **Analysis**: Walk-forward analysis, market regime detection, and research-grade documentation with statistical significance testing
 
 ### Why Finbot?
@@ -43,7 +43,7 @@ Finbot is a comprehensive platform for quantitative financial analysis, combinin
 - Simulate leveraged funds back to 1950 with realistic cost modeling (fees, spreads, borrowing costs)
 - Backtest any strategy with engine-agnostic contracts (swap Backtrader for NautilusTrader without code changes)
 - Run paper trading with realistic latency, slippage, and execution delays
-- Optimize portfolios across multiple dimensions (allocations, durations, intervals, and frontier trade-offs)
+- Explore example portfolio configurations across multiple dimensions (allocations, durations, intervals, and frontier trade-offs)
 - Validate strategies with walk-forward analysis and regime detection
 - Generate publication-ready research with example notebooks
 
@@ -52,8 +52,8 @@ Finbot is a comprehensive platform for quantitative financial analysis, combinin
 - Test rebalancing strategies (60/40, All-Weather, etc.) with realistic execution costs
 - Evaluate leveraged ETF performance vs unleveraged alternatives
 - Model bond ladder mechanics across different yield environments
-- Optimize DCA timing, allocation ratios, and return-versus-drawdown trade-offs
-- Generate single-asset or multi-asset Monte Carlo risk scenarios for retirement planning
+- Explore DCA timing, allocation ratios, and return-versus-drawdown trade-offs
+- Generate single-asset or multi-asset Monte Carlo risk scenarios for educational long-horizon planning examples
 - Paper trade with risk controls (position limits, drawdown protection, exposure limits)
 - Analyze strategy performance across market regimes (bull, bear, sideways)
 
@@ -122,6 +122,10 @@ Tracking docs:
 | ----------- | --------------- |
 | **Python**  | 3.11+           |
 | **uv**      | 0.9+            |
+
+## Public Documentation Boundary
+
+This repository contains public project documentation and reproducible development information. Deployment details, credentials, monitoring configuration, private operational notes, and environment-specific production paths are intentionally excluded from public documentation.
 
 ### Docker (Alternative)
 
@@ -447,7 +451,7 @@ Built for reliability and scale:
 Explore comprehensive analyses demonstrating all major features:
 
 1. **[Fund Simulation Demo](notebooks/01_fund_simulation_demo.ipynb)** - Compare simulated vs actual ETF performance (SPY, UPRO, TQQQ)
-2. **[DCA Optimization Results](notebooks/02_dca_optimization_results.ipynb)** - Find optimal portfolio allocations and timing
+2. **[DCA Optimization Results](notebooks/02_dca_optimization_results.ipynb)** - Explore candidate portfolio allocations and timing
 3. **[Backtest Strategy Comparison](notebooks/03_backtest_strategy_comparison.ipynb)** - Compare all 13 strategies with risk-return analysis
 4. **[Monte Carlo Risk Analysis](notebooks/04_monte_carlo_risk_analysis.ipynb)** - Portfolio risk scenarios and VaR analysis
 5. **[Bond Ladder Analysis](notebooks/05_bond_ladder_analysis.ipynb)** - Bond ladder construction and yield curve modeling
@@ -465,7 +469,7 @@ Each notebook includes:
 Selected research and methodology documents:
 
 - **[Leveraged ETF Simulation Accuracy](docs/research/leveraged-etf-simulation-accuracy.md)** - Tracking error analysis and methodology validation
-- **[DCA Optimization Findings](docs/research/dca-optimization-findings.md)** - Optimal allocations across market regimes
+- **[DCA Optimization Findings](docs/research/dca-optimization-findings.md)** - Candidate allocations across market regimes
 - **[Strategy Backtest Results](docs/research/strategy-backtest-results.md)** - Backtesting results and statistical analysis
 - **[Health Economics Methodology](docs/research/health-economics-methodology.md)** - QALY simulation, cost-effectiveness analysis, and treatment optimization methodology
 

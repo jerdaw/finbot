@@ -800,32 +800,32 @@ state-isolation issue:
 
 Validation recorded in this pass:
 
-- `PATH=/home/jer/.local/node-v20.19.0-linux-x64/bin:$PATH ./node_modules/.bin/tsc --noEmit`
-- `PATH=/home/jer/.local/node-v20.19.0-linux-x64/bin:$PATH NEXT_TELEMETRY_DISABLED=1 NEXT_PUBLIC_API_URL=http://127.0.0.1:3100/_playwright_api ./node_modules/.bin/next build`
-- `/home/jer/.local/bin/uv run pytest tests/unit/test_backtest_runner_e2e.py::TestComputeStats -q -s`
-- `PATH=/home/jer/.local/node-v20.19.0-linux-x64/bin:$PATH NEXT_PUBLIC_API_URL=http://127.0.0.1:3100/_playwright_api ./node_modules/.bin/playwright test tests/e2e/app-smoke.spec.ts -g "backtesting workflows"`
+- `corepack pnpm typecheck`
+- `NEXT_TELEMETRY_DISABLED=1 NEXT_PUBLIC_API_URL=http://127.0.0.1:3100/_playwright_api corepack pnpm build`
+- `uv run pytest tests/unit/test_backtest_runner_e2e.py::TestComputeStats -q -s`
+- `NEXT_PUBLIC_API_URL=http://127.0.0.1:3100/_playwright_api corepack pnpm exec playwright test tests/e2e/app-smoke.spec.ts -g "backtesting workflows"`
 - Desktop and mobile screenshots were captured during closeout and removed
   during the maintenance cleanup pass; the durable validation record is the
   command list above.
 
 Additional verification from the follow-up review:
 
-- `/home/jer/.local/bin/uv run pytest tests/unit/test_backtest_runner_e2e.py -o addopts="" -q -s`
-- `/home/jer/.local/bin/uv run pytest tests/unit/test_web_backend_routers.py -o addopts="" -q -s`
-- `/home/jer/.local/bin/uv run ruff check finbot/services/backtesting/compute_stats.py tests/unit/test_backtest_runner_e2e.py`
-- `PATH=/home/jer/.local/node-v20.19.0-linux-x64/bin:$PATH ./node_modules/.bin/playwright test tests/e2e/app-smoke.spec.ts`
+- `uv run pytest tests/unit/test_backtest_runner_e2e.py -o addopts="" -q -s`
+- `uv run pytest tests/unit/test_web_backend_routers.py -o addopts="" -q -s`
+- `uv run ruff check finbot/services/backtesting/compute_stats.py tests/unit/test_backtest_runner_e2e.py`
+- `corepack pnpm exec playwright test tests/e2e/app-smoke.spec.ts`
 - `git diff --check`
 - Desktop result, desktop comparison, and mobile result screenshots were
   captured during review and removed during the maintenance cleanup pass.
 
 Second-review validation:
 
-- `PATH=/home/jer/.local/node-v20.19.0-linux-x64/bin:$PATH ./node_modules/.bin/tsc --noEmit`
-- `PATH=/home/jer/.local/node-v20.19.0-linux-x64/bin:$PATH NEXT_TELEMETRY_DISABLED=1 NEXT_PUBLIC_API_URL=http://127.0.0.1:3100/_playwright_api ./node_modules/.bin/next build`
-- `/home/jer/.local/bin/uv run pytest tests/unit/test_backtest_runner_e2e.py::TestComputeStats -q -s`
-- `/home/jer/.local/bin/uv run pytest tests/unit/test_backtest_runner_e2e.py -o addopts="" -q -s`
-- `/home/jer/.local/bin/uv run pytest tests/unit/test_web_backend_routers.py -o addopts="" -q -s`
-- `PATH=/home/jer/.local/node-v20.19.0-linux-x64/bin:$PATH NEXT_PUBLIC_API_URL=http://127.0.0.1:3100/_playwright_api ./node_modules/.bin/playwright test tests/e2e/app-smoke.spec.ts` (27 passed)
+- `corepack pnpm typecheck`
+- `NEXT_TELEMETRY_DISABLED=1 NEXT_PUBLIC_API_URL=http://127.0.0.1:3100/_playwright_api corepack pnpm build`
+- `uv run pytest tests/unit/test_backtest_runner_e2e.py::TestComputeStats -q -s`
+- `uv run pytest tests/unit/test_backtest_runner_e2e.py -o addopts="" -q -s`
+- `uv run pytest tests/unit/test_web_backend_routers.py -o addopts="" -q -s`
+- `NEXT_PUBLIC_API_URL=http://127.0.0.1:3100/_playwright_api corepack pnpm exec playwright test tests/e2e/app-smoke.spec.ts` (27 passed)
 - `git diff --check`
 - Desktop comparison-after-single and mobile returns-table screenshots were
   captured during second review and removed during the maintenance cleanup pass.

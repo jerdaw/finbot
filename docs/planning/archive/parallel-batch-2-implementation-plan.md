@@ -12,7 +12,7 @@ Execute 4 Priority 5 tasks in parallel: 2 small + 2 medium items focusing on CI/
 ## Tasks
 
 ### Task 1: Item 36 - Conventional Commit Linting
-**Agent:** commit-linting
+**Workstream:** commit-linting
 **Priority:** Priority 5.7 (Professional Polish)
 **Effort:** S (1-2 hours)
 **Status:** 🟡 In Progress
@@ -40,7 +40,7 @@ Execute 4 Priority 5 tasks in parallel: 2 small + 2 medium items focusing on CI/
 **Types:** feat, fix, docs, style, refactor, test, chore, perf, ci, build, revert
 
 ### Task 2: Item 33 - Performance Regression Testing
-**Agent:** performance-regression
+**Workstream:** performance-regression
 **Priority:** Priority 5.6 (Quality & Testing)
 **Effort:** M (2-4 hours)
 **Status:** 🟡 In Progress
@@ -57,7 +57,7 @@ Execute 4 Priority 5 tasks in parallel: 2 small + 2 medium items focusing on CI/
 - Baseline metrics documented
 
 ### Task 3: Item 41 - Docs Build Status Badge
-**Agent:** docs-badge
+**Workstream:** docs-badge
 **Priority:** Priority 5.7 (Professional Polish)
 **Effort:** S (10 min)
 **Status:** 🟡 In Progress
@@ -74,7 +74,7 @@ Execute 4 Priority 5 tasks in parallel: 2 small + 2 medium items focusing on CI/
 - Links to docs workflow runs
 
 ### Task 4: Item 37 - Release Automation Workflow
-**Agent:** release-automation
+**Workstream:** release-automation
 **Priority:** Priority 5.7 (Professional Polish)
 **Effort:** M (2-4 hours)
 **Status:** 🟡 In Progress

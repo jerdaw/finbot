@@ -3,7 +3,7 @@
 **Report Date:** 2026-02-16
 **Phase:** Phase 2 (Backtrader Adapter and Parity Harness)
 **Sprint:** Sprint 2 (Complete)
-**Authors:** Platform Engineering Team
+**Author:** Jeremy Dawson
 **Status:** Active Development - Parity Validation Complete
 
 ---
@@ -574,6 +574,6 @@ From `docs/planning/parity-tolerance-spec.md`:
 
 ---
 
-**Report Prepared By:** Platform Engineering Team
+**Report Prepared By:** Jeremy Dawson
 **Review Date:** 2026-02-16
 **Next Review:** After E2-T3 completion (GS-02/03 parity) or start of Epic E3

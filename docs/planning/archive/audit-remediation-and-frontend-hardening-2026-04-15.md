@@ -38,9 +38,9 @@ This batch was scoped to fix those issues without broadening into unrelated feat
 
 ## Verification
 
-- `/home/jer/.local/bin/uv run ruff check finbot web tests .github`
-- `/home/jer/.local/bin/uv run mypy finbot/`
-- `/home/jer/.local/bin/uv run pytest tests/unit/test_datetime_utils.py tests/unit/test_config.py -q --capture=no`
+- `uv run ruff check finbot web tests .github`
+- `uv run mypy finbot/`
+- `uv run pytest tests/unit/test_datetime_utils.py tests/unit/test_config.py -q --capture=no`
 - `cd web/frontend && corepack pnpm typecheck`
 - `cd web/frontend && NEXT_PUBLIC_API_URL=http://127.0.0.1:3100/_playwright_api corepack pnpm build`
 

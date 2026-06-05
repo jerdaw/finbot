@@ -30,17 +30,16 @@ Follow these steps to enable TestPyPI publishing for finbot.
    - **Scope**: Select "Entire account" (for first-time setup)
 4. Click "Create token"
 5. **IMPORTANT**: Copy the token immediately
-   - It starts with `pypi-`
-   - Format: `pypi-AgEIcHlwaS5vcmc...`
+   - Store it in a password manager until it is added as a repository secret.
    - It will only be shown once
 
 ## Step 4: Add Token to GitHub Secrets
 
-1. Go to https://github.com/jerdaw/finbot/settings/secrets/actions
+1. Go to your repository's Settings -> Secrets and variables -> Actions page
 2. Click "New repository secret"
 3. Configure the secret:
    - **Name**: `TEST_PYPI_API_TOKEN`
-   - **Value**: Paste the entire token (including `pypi-` prefix)
+   - **Value**: Paste the token value from your password manager
 4. Click "Add secret"
 
 ## Step 5: Verify Setup
@@ -107,7 +106,7 @@ rm -rf test-env
 ### "Invalid or non-existent authentication information"
 
 - Verify `TEST_PYPI_API_TOKEN` is set correctly in GitHub Secrets
-- Ensure the token includes the `pypi-` prefix
+- Ensure the token value was copied completely
 - Token may have expired - generate a new one
 
 ### "File already exists"

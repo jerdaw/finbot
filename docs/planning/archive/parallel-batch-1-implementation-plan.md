@@ -12,7 +12,7 @@ Execute 6 high-value tasks in parallel: E6-T3 decision memo + 5 Priority 5 quick
 ## Tasks
 
 ### Task 1: E6-T3 - Fill in Decision Memo (ADR-011)
-**Agent:** decision-memo
+**Workstream:** decision-memo
 **Priority:** Epic E6 (Critical path)
 **Effort:** S (1-2 hours)
 **Status:** 🟡 In Progress
@@ -32,7 +32,7 @@ Execute 6 high-value tasks in parallel: E6-T3 decision memo + 5 Priority 5 quick
 - Next steps defined
 
 ### Task 2: Priority 5.25 - Financial Disclaimer
-**Agent:** disclaimer
+**Workstream:** disclaimer
 **Priority:** Priority 5 (Ethics & Professionalism)
 **Effort:** S (1 hour)
 **Status:** 🟡 In Progress
@@ -49,7 +49,7 @@ Execute 6 high-value tasks in parallel: E6-T3 decision memo + 5 Priority 5 quick
 - Visible in multiple locations
 
 ### Task 3: Priority 5.35 - CODEOWNERS File
-**Agent:** codeowners
+**Workstream:** codeowners
 **Priority:** Priority 5 (Governance)
 **Effort:** S (10 min)
 **Status:** 🟡 In Progress
@@ -62,7 +62,7 @@ Execute 6 high-value tasks in parallel: E6-T3 decision memo + 5 Priority 5 quick
 - Automatic review requests enabled
 
 ### Task 4: Priority 5.27 - Dependency License Auditing
-**Agent:** licenses
+**Workstream:** licenses
 **Priority:** Priority 5 (Legal Compliance)
 **Effort:** S (1-2 hours)
 **Status:** 🟡 In Progress
@@ -78,7 +78,7 @@ Execute 6 high-value tasks in parallel: E6-T3 decision memo + 5 Priority 5 quick
 - No incompatible licenses found
 
 ### Task 5: Priority 5.45 - Clean Up Stale Directories
-**Agent:** cleanup
+**Workstream:** cleanup
 **Priority:** Priority 5 (Professional Polish)
 **Effort:** S (30 min)
 **Status:** 🟡 In Progress
@@ -92,7 +92,7 @@ Execute 6 high-value tasks in parallel: E6-T3 decision memo + 5 Priority 5 quick
 - No broken imports
 
 ### Task 6: Priority 5.44 - Data Freshness Monitoring Documentation
-**Agent:** data-quality-docs
+**Workstream:** data-quality-docs
 **Priority:** Priority 5 (Operations Documentation)
 **Effort:** S (2-4 hours)
 **Status:** 🟡 In Progress

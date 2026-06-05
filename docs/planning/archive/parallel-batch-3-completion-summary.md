@@ -251,7 +251,7 @@ One missing piece completed manually:
    - Copy token (starts with `pypi-`)
 
 3. **Add to GitHub Secrets**
-   - Go to: https://github.com/jerdaw/finbot/settings/secrets/actions
+   - Go to: repository Settings -> Secrets and variables -> Actions
    - Click "New repository secret"
    - Name: `TEST_PYPI_API_TOKEN`
    - Value: Paste token

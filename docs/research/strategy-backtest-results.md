@@ -1,6 +1,6 @@
 # Strategy Backtest Results: Comparative Analysis of 10 Trading Strategies
 
-**Author:** Finbot Research Team
+**Author:** Jeremy Dawson
 **Date:** 2026-02-10
 **Status:** Published
 **Related Notebook:** `notebooks/03_backtest_strategy_comparison.ipynb`

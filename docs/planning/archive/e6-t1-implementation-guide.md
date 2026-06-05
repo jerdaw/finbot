@@ -34,7 +34,7 @@ Here's your implementation roadmap:
 
 ### Add to pyproject.toml
 
-Edit `/home/jer/localsync/finbot/pyproject.toml`:
+Edit `<repo-root>/pyproject.toml`:
 
 ```toml
 [project]
@@ -47,7 +47,7 @@ dependencies = [
 ### Install
 
 ```bash
-cd /home/jer/localsync/finbot
+cd <repo-root>
 uv sync
 ```
 
@@ -68,7 +68,7 @@ Before implementing the adapter, familiarize yourself with Nautilus:
 ### Create a learning script
 
 ```bash
-mkdir -p /home/jer/localsync/finbot/scratch/
+mkdir -p scratch/
 ```
 
 Create `scratch/nautilus_hello_world.py`:

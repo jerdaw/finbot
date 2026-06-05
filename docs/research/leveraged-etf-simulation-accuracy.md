@@ -1,6 +1,6 @@
 # Leveraged ETF Simulation Accuracy: Methodology and Findings
 
-**Author:** Finbot Research Team
+**Author:** Jeremy Dawson
 **Date:** 2026-02-10
 **Status:** Published
 **Related Notebook:** `notebooks/01_fund_simulation_demo.ipynb`

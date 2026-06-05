@@ -7,7 +7,7 @@ _Reading time: ~8 minutes_
 
 It started with a spreadsheet.
 
-Like many people interested in personal finance, I started my investing journey with a few cells in Excel, manually tracking my portfolio performance. I'd pull prices from Google Finance every weekend, paste them in, and stare at the numbers. Was I doing well? Better than just holding the S&P 500? Better than a bond ladder? I genuinely didn't know. The spreadsheet could tell me what _had_ happened, but it couldn't tell me what _would_ happen — or more importantly, what _would have_ happened if I'd done something different.
+Like many people interested in quantitative finance, I started with a few cells in Excel, manually testing example allocation ideas against public price data. A spreadsheet could show what _had_ happened, but it could not show what _would_ happen - or more importantly, what _would have_ happened under a different set of rules.
 
 That question — "what would have happened?" — eventually became Finbot.
 

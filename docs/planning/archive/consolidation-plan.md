@@ -6,7 +6,7 @@
 
 ## Summary
 
-Consolidated three repos (`finbot`, `bb`, `backbetter`) from `/home/jer/localsync/old-finance/` into a single new repo at `/home/jer/localsync/finbot/`.
+Consolidated three local source repos (`finbot`, `bb`, `backbetter`) into this repository.
 
 ## Phases Completed
 

@@ -53,11 +53,11 @@ research workspace instead of adding more disconnected analytics pages.
 
 ## Verification
 
-- `cd /home/jer/repos/finbot/web/frontend && corepack pnpm typecheck`
-- `/home/jer/repos/finbot/.venv/bin/python -m pytest tests/unit/test_web_backend_routers.py -q`
-- `/home/jer/repos/finbot/.venv/bin/python -m pytest tests/unit/test_rolling_metrics.py -q`
-- `/home/jer/repos/finbot/.venv/bin/python -m pytest tests/unit/test_backtest_runner_e2e.py -q`
-- `/home/jer/repos/finbot/.venv/bin/python -m pytest tests/unit/test_imports.py -q`
+- `cd web/frontend && corepack pnpm typecheck`
+- `python -m pytest tests/unit/test_web_backend_routers.py -q`
+- `python -m pytest tests/unit/test_rolling_metrics.py -q`
+- `python -m pytest tests/unit/test_backtest_runner_e2e.py -q`
+- `python -m pytest tests/unit/test_imports.py -q`
 
 Playwright was intentionally not run locally. The repo already scopes browser
 workflow depth to GitHub Actions while the project remains on the free-tier CI

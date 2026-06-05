@@ -12,7 +12,7 @@ Execute 3 Priority 5 medium-sized tasks in parallel: automated changelog generat
 ## Tasks
 
 ### Task 1: Item 38 - Automated Changelog Generation
-**Agent:** changelog-automation
+**Workstream:** changelog-automation
 **Priority:** Priority 5.7 (Professional Polish)
 **Effort:** S (2-4 hours)
 **Status:** 🟡 In Progress
@@ -41,7 +41,7 @@ Execute 3 Priority 5 medium-sized tasks in parallel: automated changelog generat
 **Preference:** Python-based or standalone binary (avoid npm)
 
 ### Task 2: Item 39 - Publish to TestPyPI
-**Agent:** testpypi-publishing
+**Workstream:** testpypi-publishing
 **Priority:** Priority 5.7 (Professional Polish)
 **Effort:** M (2-4 hours)
 **Status:** 🟡 In Progress
@@ -67,7 +67,7 @@ Execute 3 Priority 5 medium-sized tasks in parallel: automated changelog generat
 - Provide clear instructions for manual steps
 
 ### Task 3: Item 28 - Docker Security Scanning
-**Agent:** docker-security
+**Workstream:** docker-security
 **Priority:** Priority 5.5 (Ethics, Privacy & Security)
 **Effort:** M (2-4 hours)
 **Status:** 🟡 In Progress

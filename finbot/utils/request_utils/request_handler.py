@@ -108,7 +108,7 @@ Example workflows:
 
     # API with authentication
     handler = RequestHandler()
-    headers = {"Authorization": "Bearer YOUR_TOKEN"}
+    headers = {"Authorization": "Bearer <api-token>"}
     data = handler.make_json_request("https://api.example.com/secure", headers=headers)
     ```
 

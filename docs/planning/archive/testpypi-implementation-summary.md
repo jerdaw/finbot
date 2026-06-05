@@ -129,7 +129,7 @@ The user must complete these steps before the workflow can run:
    - **IMPORTANT**: Copy token immediately (starts with `pypi-`)
 
 4. **Add Token to GitHub Secrets**
-   - URL: https://github.com/jerdaw/finbot/settings/secrets/actions
+   - Location: repository Settings -> Secrets and variables -> Actions
    - Name: `TEST_PYPI_API_TOKEN`
    - Value: Full token including `pypi-` prefix
 
@@ -159,7 +159,7 @@ git push origin test-v1.0.0
 **Option 3: Local Publishing**
 ```bash
 uv build
-uv publish --publish-url https://test.pypi.org/legacy/ --token pypi-YOUR_TOKEN
+uv publish --publish-url https://test.pypi.org/legacy/ --token <test-pypi-token>
 ```
 
 ### Test Installation
@@ -266,7 +266,7 @@ finbot status
 **Repository URLs**:
 - Workflow file: https://github.com/jerdaw/finbot/blob/main/.github/workflows/publish-testpypi.yml
 - Actions page: https://github.com/jerdaw/finbot/actions
-- Secrets settings: https://github.com/jerdaw/finbot/settings/secrets/actions
+- Secrets settings: repository Settings -> Secrets and variables -> Actions
 
 ## Completion Checklist
 
