@@ -1,6 +1,5 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { ToolLayout } from "@/components/common/tool-layout";
 import { EmptyState } from "@/components/common/empty-state";
@@ -12,19 +11,15 @@ import {
 import {
     Activity,
 } from "lucide-react";
-import { apiGet } from "@/lib/api";
 import { formatCurrencyPrecise } from "@/lib/format";
 import { useBacktestStore } from "@/stores/backtest-store";
 import type {
-    StrategyInfo,
     BacktestRequest,
 } from "@/types/api";
 import type {
     ComparisonPortfolio,
 } from "@/stores/backtest-store";
-import {
-    PORTFOLIO_PRESETS,
-} from "@/app/backtesting/backtesting-options";
+import { PORTFOLIO_PRESETS } from "@/app/backtesting/backtesting-options";
 import {
     getEndingValue,
 } from "@/lib/backtest-utils";
@@ -37,6 +32,7 @@ import {
     buildBacktestRequestPayload,
     buildComparisonBacktestRequest,
 } from "@/app/backtesting/backtesting-request-builder";
+import { useBacktestingConfigurationData } from "@/app/backtesting/use-backtesting-configuration-data";
 import { useBacktestingFormActions } from "@/app/backtesting/use-backtesting-form-actions";
 import { useBacktestingMutations } from "@/app/backtesting/use-backtesting-mutations";
 import { useBacktestingPortfolioActions } from "@/app/backtesting/use-backtesting-portfolio-actions";
@@ -78,42 +74,18 @@ export default function BacktestingPage() {
         presetFilter, setPresetFilter,
     } = useBacktestStore();
 
-    const { data: strategies } = useQuery({
-        queryKey: ["strategies"],
-        queryFn: () => apiGet<StrategyInfo[]>("/api/backtesting/strategies"),
-    });
-
-    const currentStrategy = strategies?.find((s) => s.name === strategy);
-    const isAllocationStrategy =
-        strategy === "NoRebalance" || strategy === "Rebalance";
-    const needsMultiAsset =
-        !isAllocationStrategy &&
-        currentStrategy &&
-        currentStrategy.min_assets > 1;
-    const allocationWeightTotal = portfolioAssets.reduce(
-        (total, asset) => total + asset.weight,
-        0,
-    );
-    const allocationIsBalanced =
-        Math.abs(allocationWeightTotal - 100) <= 0.1 &&
-        portfolioAssets.every(
-            (asset) => asset.weight > 0 && asset.ticker.trim().length > 0,
-        );
-    const filteredPortfolioPresets = PORTFOLIO_PRESETS.filter((preset) => {
-        const query = presetFilter.trim().toLowerCase();
-        if (!query) {
-            return true;
-        }
-        return [
-            preset.label,
-            preset.description,
-            preset.category,
-            preset.assumption,
-            ...preset.assets.map((asset) => asset.ticker),
-        ]
-            .join(" ")
-            .toLowerCase()
-            .includes(query);
+    const {
+        strategies,
+        currentStrategy,
+        isAllocationStrategy,
+        needsMultiAsset,
+        allocationWeightTotal,
+        allocationIsBalanced,
+        filteredPortfolioPresets,
+    } = useBacktestingConfigurationData({
+        strategy,
+        portfolioAssets,
+        presetFilter,
     });
 
     const {
