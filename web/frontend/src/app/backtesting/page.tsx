@@ -28,7 +28,6 @@ import type {
     BacktestRequest,
     BacktestResponse,
     OneTimeCashflowEvent,
-    RecurringCashflowRule,
     SaveExperimentRequest,
     SaveExperimentResponse,
 } from "@/types/api";
@@ -62,6 +61,10 @@ import { PortfolioBuilderSection } from "@/app/backtesting/components/portfolio-
 import { ResultWorkspaceSection } from "@/app/backtesting/components/result-workspace-section";
 import { useBacktestExports } from "@/app/backtesting/use-backtest-exports";
 import { buildBacktestResultData } from "@/app/backtesting/backtesting-result-data";
+import {
+    buildBacktestRequestPayload,
+    buildComparisonBacktestRequest,
+} from "@/app/backtesting/backtesting-request-builder";
 
 export default function BacktestingPage() {
     // ---------------------------------------------------------------------------
@@ -364,215 +367,41 @@ export default function BacktestingPage() {
     };
 
     const buildBacktestRequest = (): BacktestRequest | null => {
-        const strategyParams: Record<string, unknown> = { ...params };
-        let tickers: string[] = [];
-        const recurringCashflows: RecurringCashflowRule[] = [];
-        const normalizedCostAssumptions: BacktestCostAssumptions = {
-            ...costAssumptions,
-            commission_per_share: Number(costAssumptions.commission_per_share),
-            commission_bps: Number(costAssumptions.commission_bps),
-            commission_minimum: Number(costAssumptions.commission_minimum),
-            spread_bps: Number(costAssumptions.spread_bps),
-            slippage_bps: Number(costAssumptions.slippage_bps),
-        };
-
-        if (
-            Object.values(normalizedCostAssumptions)
-                .filter((value) => typeof value === "number")
-                .some(
-                    (value) =>
-                        !Number.isFinite(value as number) ||
-                        (value as number) < 0,
-                )
-        ) {
-            toast.error(
-                "Cost assumptions must be finite, non-negative numbers.",
-            );
-            return null;
-        }
-        if (
-            normalizedCostAssumptions.commission_mode === "per_share" &&
-            normalizedCostAssumptions.commission_per_share <= 0
-        ) {
-            toast.error("Per-share commission must be greater than 0.");
-            return null;
-        }
-        if (
-            normalizedCostAssumptions.commission_mode === "percentage" &&
-            normalizedCostAssumptions.commission_bps <= 0
-        ) {
-            toast.error("Percentage commission must be greater than 0 bps.");
-            return null;
-        }
-
-        if (recurringContribution > 0) {
-            recurringCashflows.push({
-                amount: recurringContribution,
-                frequency: contributionFrequency,
-                start_date: startDate,
-                end_date: endDate,
-                label: `Recurring contribution (${contributionFrequency})`,
-            });
-        }
-        if (recurringWithdrawal > 0) {
-            recurringCashflows.push({
-                amount: -recurringWithdrawal,
-                frequency: withdrawalFrequency,
-                start_date: startDate,
-                end_date: endDate,
-                label: `Recurring withdrawal (${withdrawalFrequency})`,
-            });
-        }
-
-        const normalizedOneTimeCashflows = oneTimeCashflows
-            .filter(
-                (event) =>
-                    event.date.trim().length > 0 ||
-                    event.amount !== 0 ||
-                    (event.label?.trim().length ?? 0) > 0,
-            )
-            .map((event) => ({
-                date: event.date.trim(),
-                amount: Number(event.amount),
-                label: event.label?.trim() || undefined,
-            }));
-
-        for (const event of normalizedOneTimeCashflows) {
-            if (!event.date) {
-                toast.error("Each one-time cashflow needs an applied date.");
-                return null;
-            }
-            if (!Number.isFinite(event.amount) || event.amount === 0) {
-                toast.error("Each one-time cashflow needs a non-zero amount.");
-                return null;
-            }
-        }
-
-        if (isAllocationStrategy) {
-            const cleanedAssets = portfolioAssets
-                .map((asset) => ({
-                    ticker: asset.ticker.trim().toUpperCase(),
-                    weight: asset.weight,
-                }))
-                .filter((asset) => asset.ticker.length > 0);
-
-            if (cleanedAssets.length === 0) {
-                toast.error(
-                    "Add at least one asset before running the allocation backtest.",
-                );
-                return null;
-            }
-            if (cleanedAssets.some((asset) => asset.weight <= 0)) {
-                toast.error("Allocation weights must be greater than 0%.");
-                return null;
-            }
-            if (
-                new Set(cleanedAssets.map((asset) => asset.ticker)).size !==
-                cleanedAssets.length
-            ) {
-                toast.error("Each asset ticker must be unique.");
-                return null;
-            }
-
-            const totalWeight = cleanedAssets.reduce(
-                (total, asset) => total + asset.weight,
-                0,
-            );
-            if (Math.abs(totalWeight - 100) > 0.1) {
-                toast.error("Allocation weights must add up to 100%.");
-                return null;
-            }
-
-            tickers = cleanedAssets.map((asset) => asset.ticker);
-            const normalizedWeights = cleanedAssets.map(
-                (asset) => asset.weight / 100,
-            );
-            if (strategy === "NoRebalance") {
-                strategyParams.equity_proportions = normalizedWeights;
-            }
-            if (strategy === "Rebalance") {
-                strategyParams.rebal_proportions = normalizedWeights;
-            }
-        } else {
-            const primaryTicker = ticker.trim().toUpperCase();
-            if (!primaryTicker) {
-                toast.error(
-                    "Enter an asset ticker before running the backtest.",
-                );
-                return null;
-            }
-
-            tickers = [primaryTicker];
-            if (needsMultiAsset) {
-                const secondaryTicker = altTicker.trim().toUpperCase();
-                if (!secondaryTicker) {
-                    toast.error(
-                        "Enter a second asset for the selected strategy.",
-                    );
-                    return null;
-                }
-                if (secondaryTicker === primaryTicker) {
-                    toast.error(
-                        "Use two distinct assets for the selected strategy.",
-                    );
-                    return null;
-                }
-                tickers = [primaryTicker, secondaryTicker];
-            }
-        }
-
-        return {
-            tickers,
+        const requestResult = buildBacktestRequestPayload({
+            params,
+            costAssumptions,
+            recurringContribution,
+            contributionFrequency,
+            recurringWithdrawal,
+            withdrawalFrequency,
+            startDate,
+            endDate,
+            oneTimeCashflows,
+            isAllocationStrategy,
+            portfolioAssets,
             strategy,
-            strategy_params: strategyParams,
-            start_date: startDate,
-            end_date: endDate,
-            initial_cash: cash,
-            benchmark_ticker: benchmarkTicker.trim()
-                ? benchmarkTicker.trim().toUpperCase()
-                : undefined,
-            risk_free_rate: riskFreeRate,
-            recurring_cashflows:
-                recurringCashflows.length > 0 ? recurringCashflows : undefined,
-            one_time_cashflows:
-                normalizedOneTimeCashflows.length > 0
-                    ? normalizedOneTimeCashflows
-                    : undefined,
-            inflation_rate: inflationRate,
-            missing_data_policy: missingDataPolicy,
-            cost_assumptions: normalizedCostAssumptions,
-        };
+            ticker,
+            altTicker,
+            needsMultiAsset,
+            cash,
+            benchmarkTicker,
+            riskFreeRate,
+            inflationRate,
+            missingDataPolicy,
+        });
+        if (requestResult.error) {
+            toast.error(requestResult.error);
+            return null;
+        }
+
+        return requestResult.request;
     };
 
     const buildComparisonRequest = (
         portfolio: ComparisonPortfolio,
         baseRequest: BacktestRequest,
-    ): BacktestRequest => {
-        const cleanedAssets = cloneAssets(portfolio.assets).filter(
-            (asset) => asset.ticker.length > 0,
-        );
-        const weights = cleanedAssets.map((asset) => asset.weight / 100);
-        const strategyParams: Record<string, unknown> = {};
-
-        if (portfolio.strategy === "NoRebalance") {
-            strategyParams.equity_proportions = weights;
-        } else {
-            strategyParams.rebal_proportions = weights;
-            strategyParams.rebal_interval =
-                typeof portfolio.strategyParams?.rebal_interval === "number"
-                    ? portfolio.strategyParams.rebal_interval
-                    : typeof params.rebal_interval === "number"
-                    ? params.rebal_interval
-                    : STRATEGY_FALLBACK_PARAMS.Rebalance.rebal_interval;
-        }
-
-        return {
-            ...baseRequest,
-            tickers: cleanedAssets.map((asset) => asset.ticker),
-            strategy: portfolio.strategy,
-            strategy_params: strategyParams,
-        };
-    };
+    ): BacktestRequest =>
+        buildComparisonBacktestRequest({ portfolio, baseRequest, params });
 
     const applyBacktestRequestToForm = (request: BacktestRequest) => {
         setStrategy(request.strategy);
