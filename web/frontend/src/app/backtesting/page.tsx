@@ -7,13 +7,6 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import { PageHeader } from "@/components/common/page-header";
 import { ConfigPanel, ConfigSection } from "@/components/common/config-panel";
 import { ChartCard } from "@/components/common/chart-card";
@@ -107,6 +100,7 @@ import { AssumptionsSection } from "@/app/backtesting/components/assumptions-sec
 import { CashflowPlanningSection } from "@/app/backtesting/components/cashflow-planning-section";
 import { StrategyParametersSection } from "@/app/backtesting/components/strategy-parameters-section";
 import { StrategyAssetsSection } from "@/app/backtesting/components/strategy-assets-section";
+import { StrategySelectorSection } from "@/app/backtesting/components/strategy-selector-section";
 
 export default function BacktestingPage() {
     // ---------------------------------------------------------------------------
@@ -1382,40 +1376,12 @@ export default function BacktestingPage() {
             <ToolLayout
                 configPanel={
                     <ConfigPanel title="Configuration">
-                        <ConfigSection
-                            title="Strategy"
-                            description="Select the backtest template and review its default behavior."
-                            summary={strategy}
-                        >
-                            <div className="space-y-2 col-span-full md:col-span-2 lg:col-span-1">
-                                <Label className="text-xs text-muted-foreground">
-                                    Strategy
-                                </Label>
-                                <Select
-                                    value={strategy}
-                                    onValueChange={applyStrategy}
-                                >
-                                    <SelectTrigger className="border-border/50 bg-background/50">
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent className="border-border/50 bg-popover/95 backdrop-blur-xl">
-                                        {strategies?.map((s) => (
-                                            <SelectItem
-                                                key={s.name}
-                                                value={s.name}
-                                            >
-                                                {s.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                {currentStrategy && (
-                                    <p className="text-[11px] leading-relaxed text-muted-foreground/70">
-                                        {currentStrategy.description}
-                                    </p>
-                                )}
-                            </div>
-                        </ConfigSection>
+                        <StrategySelectorSection
+                            strategy={strategy}
+                            strategies={strategies}
+                            currentStrategy={currentStrategy}
+                            onStrategyChange={applyStrategy}
+                        />
 
                         {isAllocationStrategy ? (
                             <ConfigSection
