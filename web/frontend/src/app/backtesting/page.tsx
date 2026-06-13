@@ -79,397 +79,39 @@ import type {
     WalkForwardHandoff,
 } from "@/types/api";
 import type {
-    PortfolioAsset,
     SavedPortfolio,
     ComparisonPortfolio,
     ComparisonRun,
 } from "@/stores/backtest-store";
 import { DEFAULT_COST_ASSUMPTIONS } from "@/stores/backtest-store";
-
-
-
-
-const MAX_COMPARISON_PORTFOLIOS = 5;
-
-interface PortfolioPreset {
-    id: string;
-    label: string;
-    description: string;
-    category: "Core" | "Diversified" | "Defensive" | "Tactical";
-    assumption: "live/local" | "simulated" | "proxy" | "unavailable";
-    strategy: "NoRebalance" | "Rebalance";
-    assets: PortfolioAsset[];
-    rebalInterval?: number;
-}
-
-const PORTFOLIO_PRESETS: PortfolioPreset[] = [
-    {
-        id: "spy-buy-hold",
-        label: "SPY Buy & Hold",
-        description: "Single-asset U.S. equity baseline.",
-        category: "Core",
-        assumption: "live/local",
-        strategy: "NoRebalance",
-        assets: [{ ticker: "SPY", weight: 100 }],
-    },
-    {
-        id: "sixty-forty",
-        label: "60/40",
-        description: "U.S. equity and long Treasury allocation.",
-        category: "Core",
-        assumption: "live/local",
-        strategy: "Rebalance",
-        rebalInterval: 253,
-        assets: [
-            { ticker: "SPY", weight: 60 },
-            { ticker: "TLT", weight: 40 },
-        ],
-    },
-    {
-        id: "three-fund",
-        label: "Three-Fund",
-        description: "U.S. equity, ex-U.S. equity, and aggregate bonds.",
-        category: "Diversified",
-        assumption: "live/local",
-        strategy: "Rebalance",
-        rebalInterval: 253,
-        assets: [
-            { ticker: "VTI", weight: 50 },
-            { ticker: "VXUS", weight: 30 },
-            { ticker: "BND", weight: 20 },
-        ],
-    },
-    {
-        id: "all-weather",
-        label: "All Weather",
-        description: "Risk-balanced macro mix using common ETF proxies.",
-        category: "Defensive",
-        assumption: "proxy",
-        strategy: "Rebalance",
-        rebalInterval: 253,
-        assets: [
-            { ticker: "SPY", weight: 30 },
-            { ticker: "TLT", weight: 40 },
-            { ticker: "IEF", weight: 15 },
-            { ticker: "GLD", weight: 7.5 },
-            { ticker: "DBC", weight: 7.5 },
-        ],
-    },
-    {
-        id: "permanent-portfolio",
-        label: "Permanent",
-        description: "Stocks, long bonds, cash-like Treasuries, and gold.",
-        category: "Defensive",
-        assumption: "proxy",
-        strategy: "Rebalance",
-        rebalInterval: 253,
-        assets: [
-            { ticker: "SPY", weight: 25 },
-            { ticker: "TLT", weight: 25 },
-            { ticker: "SHY", weight: 25 },
-            { ticker: "GLD", weight: 25 },
-        ],
-    },
-    {
-        id: "golden-butterfly",
-        label: "Golden Butterfly",
-        description: "Permanent-portfolio inspired mix with small-value proxy.",
-        category: "Defensive",
-        assumption: "proxy",
-        strategy: "Rebalance",
-        rebalInterval: 253,
-        assets: [
-            { ticker: "SPY", weight: 20 },
-            { ticker: "IJS", weight: 20 },
-            { ticker: "TLT", weight: 20 },
-            { ticker: "SHY", weight: 20 },
-            { ticker: "GLD", weight: 20 },
-        ],
-    },
-    {
-        id: "hfea",
-        label: "HFEA",
-        description: "Leveraged equity/Treasury allocation; high path risk.",
-        category: "Tactical",
-        assumption: "live/local",
-        strategy: "Rebalance",
-        rebalInterval: 63,
-        assets: [
-            { ticker: "UPRO", weight: 55 },
-            { ticker: "TMF", weight: 45 },
-        ],
-    },
-    {
-        id: "risk-parity-starter",
-        label: "Risk Parity Starter",
-        description: "Balanced ETF proxy mix for a risk-parity-style study.",
-        category: "Diversified",
-        assumption: "proxy",
-        strategy: "Rebalance",
-        rebalInterval: 63,
-        assets: [
-            { ticker: "SPY", weight: 25 },
-            { ticker: "TLT", weight: 35 },
-            { ticker: "GLD", weight: 20 },
-            { ticker: "DBC", weight: 20 },
-        ],
-    },
-    {
-        id: "equal-weight-basket",
-        label: "Equal Weight",
-        description: "Simple equal-weight multi-asset starter basket.",
-        category: "Core",
-        assumption: "live/local",
-        strategy: "Rebalance",
-        rebalInterval: 253,
-        assets: [
-            { ticker: "SPY", weight: 25 },
-            { ticker: "QQQ", weight: 25 },
-            { ticker: "TLT", weight: 25 },
-            { ticker: "GLD", weight: 25 },
-        ],
-    },
-];
-
-const STRATEGY_FALLBACK_PARAMS: Record<string, Record<string, number>> = {
-    Rebalance: { rebal_interval: 63 },
-    SMACrossover: { fast_ma: 50, slow_ma: 200 },
-};
-
-const CASHFLOW_FREQUENCY_OPTIONS = [
-    { label: "Monthly", value: "monthly" },
-    { label: "Quarterly", value: "quarterly" },
-    { label: "Yearly", value: "yearly" },
-] as const;
-
-const MISSING_DATA_POLICY_OPTIONS: Array<{
-    label: string;
-    value: MissingDataPolicy;
-    description: string;
-}> = [
-    {
-        label: "Forward Fill",
-        value: "forward_fill",
-        description: "Carry the last observed price across gaps.",
-    },
-    {
-        label: "Drop Gaps",
-        value: "drop",
-        description: "Remove dates that still contain missing values.",
-    },
-    {
-        label: "Error",
-        value: "error",
-        description:
-            "Fail fast when a selected series contains missing values.",
-    },
-    {
-        label: "Interpolate",
-        value: "interpolate",
-        description:
-            "Linearly interpolate missing prices between observations.",
-    },
-    {
-        label: "Backfill",
-        value: "backfill",
-        description:
-            "Use the next observed price. This can introduce look-ahead bias.",
-    },
-];
-
-const COMMISSION_MODE_OPTIONS = [
-    { label: "None", value: "none" },
-    { label: "Per Share", value: "per_share" },
-    { label: "Percentage", value: "percentage" },
-] as const;
-
-
-function getMetricTrend(
-    value: number | null | undefined,
-): "up" | "down" | "neutral" {
-    if (value == null) {
-        return "neutral";
-    }
-    return value > 0 ? "up" : value < 0 ? "down" : "neutral";
-}
-
-function formatBenchmarkValue(
-    value: number | null | undefined,
-    formatter: (value: number | null | undefined) => string,
-): string {
-    return value == null ? "N/A" : formatter(value);
-}
-
-function downloadFile(
-    content: string,
-    fileName: string,
-    mimeType: string,
-): void {
-    const blob = new Blob([content], { type: mimeType });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = fileName;
-    document.body.appendChild(anchor);
-    anchor.click();
-    anchor.remove();
-    URL.revokeObjectURL(url);
-}
-
-function escapeCsvValue(value: unknown): string {
-    if (value == null) {
-        return "";
-    }
-
-    const normalized = String(value).replace(/"/g, '""');
-    return /[",\n]/.test(normalized) ? `"${normalized}"` : normalized;
-}
-
-function buildCsv(
-    rows: Array<Record<string, unknown>>,
-    columns: string[],
-): string {
-    const header = columns.join(",");
-    const body = rows.map((row) =>
-        columns.map((column) => escapeCsvValue(row[column])).join(","),
-    );
-    return [header, ...body].join("\n");
-}
-
-function buildExportBaseName(request: BacktestRequest | null): string {
-    if (!request) {
-        return "finbot-backtest";
-    }
-
-    const slug = [request.strategy, ...request.tickers]
-        .join("-")
-        .toLowerCase()
-        .replace(/[^a-z0-9-]+/g, "-")
-        .replace(/-+/g, "-")
-        .replace(/^-|-$/g, "");
-
-    return slug ? `finbot-${slug}` : "finbot-backtest";
-}
-
-function getNumericStat(
-    stats: Record<string, unknown> | null | undefined,
-    key: string,
-): number | null {
-    const value = stats?.[key];
-    return typeof value === "number" && Number.isFinite(value) ? value : null;
-}
-
-function getEndingValue(result: BacktestResponse | null | undefined): number | null {
-    const history = result?.value_history ?? [];
-    const last = history[history.length - 1];
-    const value = last?.Value;
-    return typeof value === "number" && Number.isFinite(value) ? value : null;
-}
-
-function buildPortfolioLabel(assets: PortfolioAsset[]): string {
-    const tickers = assets
-        .filter((asset) => asset.ticker.trim().length > 0)
-        .map((asset) => `${asset.ticker.trim().toUpperCase()} ${formatNumber(asset.weight, 0)}%`);
-    return tickers.length > 0 ? tickers.join(" / ") : "Untitled Portfolio";
-}
-
-function cloneAssets(assets: PortfolioAsset[]): PortfolioAsset[] {
-    return assets.map((asset) => ({
-        ticker: asset.ticker.trim().toUpperCase(),
-        weight: Number(asset.weight),
-    }));
-}
-
-function buildPortfolioStrategyParams(
-    portfolioStrategy: "NoRebalance" | "Rebalance",
-    sourceParams: Record<string, number>,
-): Record<string, number> | undefined {
-    if (portfolioStrategy !== "Rebalance") {
-        return undefined;
-    }
-
-    const rebalInterval =
-        typeof sourceParams.rebal_interval === "number"
-            ? sourceParams.rebal_interval
-            : STRATEGY_FALLBACK_PARAMS.Rebalance.rebal_interval;
-
-    return { rebal_interval: rebalInterval };
-}
-
-function buildDrawdownValues(values: Array<number | null>): Array<number | null> {
-    let peak: number | null = null;
-
-    return values.map((value) => {
-        if (value == null || !Number.isFinite(value) || value <= 0) {
-            return null;
-        }
-
-        peak = peak == null ? value : Math.max(peak, value);
-        return (value / peak - 1) * 100;
-    });
-}
-
-function encodeSharedConfig(request: BacktestRequest): string {
-    return encodeURIComponent(JSON.stringify(request));
-}
-
-function decodeSharedConfig(value: string): BacktestRequest | null {
-    try {
-        const parsed = JSON.parse(decodeURIComponent(value));
-        if (!parsed || !Array.isArray(parsed.tickers) || typeof parsed.strategy !== "string") {
-            return null;
-        }
-        return parsed as BacktestRequest;
-    } catch {
-        return null;
-    }
-}
-
-function normalizeRequestForSignature(request: BacktestRequest | null): string | null {
-    if (!request) {
-        return null;
-    }
-
-    return JSON.stringify({
-        tickers: request.tickers,
-        strategy: request.strategy,
-        strategy_params: request.strategy_params,
-        start_date: request.start_date,
-        end_date: request.end_date,
-        initial_cash: request.initial_cash,
-        benchmark_ticker: request.benchmark_ticker ?? "",
-        risk_free_rate: request.risk_free_rate,
-        recurring_cashflows: request.recurring_cashflows ?? [],
-        one_time_cashflows: request.one_time_cashflows ?? [],
-        inflation_rate: request.inflation_rate,
-        missing_data_policy: request.missing_data_policy,
-        cost_assumptions: request.cost_assumptions,
-    });
-}
-
-function buildWalkForwardHref(
-    request: WalkForwardHandoff | null | undefined,
-): string {
-    if (!request) {
-        return "/walk-forward";
-    }
-
-    const params = new URLSearchParams();
-    params.set("tickers", request.tickers.join(","));
-    params.set("strategy", request.strategy);
-    params.set("start_date", request.start_date);
-    params.set("end_date", request.end_date);
-    params.set("initial_cash", String(request.initial_cash));
-    params.set("train_window", String(request.train_window));
-    params.set("test_window", String(request.test_window));
-    params.set("step_size", String(request.step_size));
-    params.set("anchored", String(request.anchored));
-    params.set("include_train", String(request.include_train));
-    if (Object.keys(request.strategy_params).length > 0) {
-        params.set("strategy_params", JSON.stringify(request.strategy_params));
-    }
-    return `/walk-forward?${params.toString()}`;
-}
+import {
+    CASHFLOW_FREQUENCY_OPTIONS,
+    COMMISSION_MODE_OPTIONS,
+    MAX_COMPARISON_PORTFOLIOS,
+    MISSING_DATA_POLICY_OPTIONS,
+    PORTFOLIO_PRESETS,
+    STRATEGY_FALLBACK_PARAMS,
+    type PortfolioPreset,
+} from "@/app/backtesting/backtesting-options";
+import {
+    buildDrawdownValues,
+    buildPortfolioLabel,
+    buildPortfolioStrategyParams,
+    buildWalkForwardHref,
+    cloneAssets,
+    decodeSharedConfig,
+    encodeSharedConfig,
+    formatBenchmarkValue,
+    getEndingValue,
+    getMetricTrend,
+    getNumericStat,
+    normalizeRequestForSignature,
+} from "@/lib/backtest-utils";
+import {
+    buildCsv,
+    buildExportBaseName,
+    downloadFile,
+} from "@/lib/export-utils";
 
 export default function BacktestingPage() {
     // ---------------------------------------------------------------------------
@@ -1080,6 +722,7 @@ export default function BacktestingPage() {
             strategyParams: buildPortfolioStrategyParams(
                 strategy as "NoRebalance" | "Rebalance",
                 params,
+                STRATEGY_FALLBACK_PARAMS.Rebalance.rebal_interval,
             ),
             createdAt: new Date().toISOString(),
         };
@@ -1137,6 +780,7 @@ export default function BacktestingPage() {
             strategyParams: buildPortfolioStrategyParams(
                 strategy as "NoRebalance" | "Rebalance",
                 params,
+                STRATEGY_FALLBACK_PARAMS.Rebalance.rebal_interval,
             ),
             source: "current",
         });
@@ -1147,11 +791,15 @@ export default function BacktestingPage() {
             label: preset.label,
             strategy: preset.strategy,
             assets: preset.assets,
-            strategyParams: buildPortfolioStrategyParams(preset.strategy, {
-                rebal_interval:
-                    preset.rebalInterval ??
-                    STRATEGY_FALLBACK_PARAMS.Rebalance.rebal_interval,
-            }),
+            strategyParams: buildPortfolioStrategyParams(
+                preset.strategy,
+                {
+                    rebal_interval:
+                        preset.rebalInterval ??
+                        STRATEGY_FALLBACK_PARAMS.Rebalance.rebal_interval,
+                },
+                STRATEGY_FALLBACK_PARAMS.Rebalance.rebal_interval,
+            ),
             source: "preset",
         });
     };

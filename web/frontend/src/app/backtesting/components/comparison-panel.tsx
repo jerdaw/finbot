@@ -36,12 +36,12 @@ export function ComparisonPanel() {
                 <DataTable
                     data={comparisonData}
                     columns={[
-                        { header: "Portfolio", accessorKey: "portfolio" },
-                        { header: "Status", accessorKey: "status" },
-                        { header: "Ending Value", accessorKey: "endingValue" },
-                        { header: "CAGR", accessorKey: "cagr" },
-                        { header: "Max Drawdown", accessorKey: "maxDrawdown" },
-                        { header: "Sharpe", accessorKey: "sharpe" }
+                        { key: "portfolio", label: "Portfolio" },
+                        { key: "status", label: "Status" },
+                        { key: "endingValue", label: "Ending Value" },
+                        { key: "cagr", label: "CAGR" },
+                        { key: "maxDrawdown", label: "Max Drawdown" },
+                        { key: "sharpe", label: "Sharpe" },
                     ]}
                 />
             </div>

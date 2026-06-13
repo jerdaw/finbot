@@ -399,6 +399,28 @@ result.warnings          # list[str]: Non-blocking warnings
 result.file_path         # Path: Source file path
 ```
 
+---
+
+## Missing Data Policy Reference
+
+Backtests and data-quality checks should treat missing observations as an
+explicit assumption, not as a silent preprocessing detail. Finbot's backtesting
+contracts expose five missing-data policies:
+
+| Policy | What it does | Good fit | Tradeoff |
+| ------ | ------------ | -------- | -------- |
+| `FORWARD_FILL` | Carries the last known value forward. | Sparse market-data gaps where preserving continuity matters. | Can understate stale-price risk and hide upstream data issues. |
+| `DROP` | Removes rows with missing observations after alignment. | Research runs where complete shared dates matter more than sample length. | Shortens the sample and can bias results if gaps cluster by asset or period. |
+| `ERROR` | Fails fast when missing data is detected. | Validation, regression tests, production checks, and high-trust reports. | Requires clean inputs before the run can proceed. |
+| `INTERPOLATE` | Uses linear interpolation between known values. | Smooth economic series or exploratory diagnostics over small gaps. | Can invent prices that were never tradable and should be avoided for execution realism. |
+| `BACKFILL` | Uses the next known value to fill earlier gaps. | Initial warm-up gaps in controlled offline analysis. | Leaks future information if used in a chronological backtest. |
+
+Practical default: use `FORWARD_FILL` for routine exploratory backtests, use
+`ERROR` for validation or published evidence, and document any `DROP`,
+`INTERPOLATE`, or `BACKFILL` run in the result assumptions. Before changing the
+policy, inspect the gap count and where gaps occur; a few isolated market-holiday
+alignment gaps are different from a symbol missing an entire regime.
+
 ### Example: Validating Price History
 
 ```python
