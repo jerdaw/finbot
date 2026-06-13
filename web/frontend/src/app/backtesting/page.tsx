@@ -14,9 +14,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { LightweightChart } from "@/components/charts/lightweight-chart";
-import { DrawdownChart } from "@/components/charts/drawdown-chart";
-import { DataTable } from "@/components/common/data-table";
 import {
     Tabs,
     TabsList,
@@ -37,9 +34,6 @@ import {
     Activity,
     BarChart3,
     Download,
-    Eye,
-    EyeOff,
-    LineChart,
     Plus,
     Save,
     Share2,
@@ -115,6 +109,8 @@ import {
 import { ReturnsTab } from "@/app/backtesting/components/returns-tab";
 import { AuditTab } from "@/app/backtesting/components/audit-tab";
 import { DiagnosticsTab } from "@/app/backtesting/components/diagnostics-tab";
+import { CashflowsTab } from "@/app/backtesting/components/cashflows-tab";
+import { OverviewTab } from "@/app/backtesting/components/overview-tab";
 
 export default function BacktestingPage() {
     // ---------------------------------------------------------------------------
@@ -2542,408 +2538,44 @@ export default function BacktestingPage() {
                             />
                         )}
 
-                        {activeResultTab === "cashflows" && withdrawalDurability && (
-                            <>
-                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                                    <StatCard
-                                        label="Withdrawal Plan"
-                                        value={
-                                            withdrawalDurability.survived_to_end
-                                                ? "Survived"
-                                                : "Depleted"
-                                        }
-                                        trend={
-                                            withdrawalDurability.survived_to_end
-                                                ? "up"
-                                                : "down"
-                                        }
-                                    />
-                                    <StatCard
-                                        label="Real Ending Value"
-                                        value={formatCurrencyPrecise(
-                                            withdrawalDurability.ending_real_value,
-                                        )}
-                                        trend={getMetricTrend(
-                                            withdrawalDurability.real_total_return,
-                                        )}
-                                    />
-                                    <StatCard
-                                        label="Total Withdrawals"
-                                        value={formatCurrencyPrecise(
-                                            withdrawalDurability.total_withdrawals,
-                                        )}
-                                        trend="neutral"
-                                    />
-                                    <StatCard
-                                        label="Net Cashflow"
-                                        value={formatCurrencyPrecise(
-                                            withdrawalDurability.net_cashflow,
-                                        )}
-                                        trend={getMetricTrend(
-                                            withdrawalDurability.net_cashflow,
-                                        )}
-                                    />
-                                </div>
-
-                                {inflationAdjustedSeries.length > 0 && (
-                                    <ChartCard
-                                        title={`Nominal vs Real Value (${formatPercent(withdrawalDurability.inflation_rate)} inflation)`}
-                                    >
-                                        <LightweightChart
-                                            series={inflationAdjustedSeries}
-                                            height={360}
-                                            type="line"
-                                        />
-                                    </ChartCard>
-                                )}
-
-                                {cashflowEvents.length > 0 && (
-                                    <ChartCard title="Cashflow Log">
-                                        <DataTable
-                                            columns={[
-                                                {
-                                                    key: "scheduled_date",
-                                                    label: "Scheduled",
-                                                    format: (value) =>
-                                                        new Date(
-                                                            String(value),
-                                                        ).toLocaleDateString(),
-                                                },
-                                                {
-                                                    key: "applied_date",
-                                                    label: "Applied",
-                                                    format: (value) =>
-                                                        new Date(
-                                                            String(value),
-                                                        ).toLocaleDateString(),
-                                                },
-                                                {
-                                                    key: "label",
-                                                    label: "Label",
-                                                },
-                                                {
-                                                    key: "source",
-                                                    label: "Type",
-                                                },
-                                                {
-                                                    key: "direction",
-                                                    label: "Direction",
-                                                },
-                                                {
-                                                    key: "amount",
-                                                    label: "Amount",
-                                                    format: (value) =>
-                                                        formatCurrencyPrecise(
-                                                            value as
-                                                                | number
-                                                                | null,
-                                                        ),
-                                                },
-                                                {
-                                                    key: "cash_after",
-                                                    label: "Cash After",
-                                                    format: (value) =>
-                                                        formatCurrencyPrecise(
-                                                            value as
-                                                                | number
-                                                                | null,
-                                                        ),
-                                                },
-                                                {
-                                                    key: "portfolio_value_after",
-                                                    label: "Portfolio After",
-                                                    format: (value) =>
-                                                        formatCurrencyPrecise(
-                                                            value as
-                                                                | number
-                                                                | null,
-                                                        ),
-                                                },
-                                            ]}
-                                            data={cashflowEvents}
-                                            initialRows={12}
-                                        />
-                                    </ChartCard>
-                                )}
-                            </>
-                        )}
-
-                        {activeResultTab === "overview" && benchmarkStats && (
-                            <>
-                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                                    <StatCard
-                                        label="Alpha"
-                                        value={formatBenchmarkValue(
-                                            benchmarkStats.alpha,
-                                            formatPercent,
-                                        )}
-                                        trend={getMetricTrend(
-                                            benchmarkStats.alpha,
-                                        )}
-                                    />
-                                    <StatCard
-                                        label="Beta"
-                                        value={formatBenchmarkValue(
-                                            benchmarkStats.beta,
-                                            (value) =>
-                                                formatNumber(value ?? null, 3),
-                                        )}
-                                        trend="neutral"
-                                    />
-                                    <StatCard
-                                        label="R-Squared"
-                                        value={formatBenchmarkValue(
-                                            benchmarkStats.r_squared,
-                                            (value) =>
-                                                formatNumber(value ?? null, 3),
-                                        )}
-                                        trend="neutral"
-                                    />
-                                </div>
-
-                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                                    <StatCard
-                                        label="Tracking Error"
-                                        value={formatBenchmarkValue(
-                                            benchmarkStats.tracking_error,
-                                            formatPercent,
-                                        )}
-                                        trend="neutral"
-                                    />
-                                    <StatCard
-                                        label="Information Ratio"
-                                        value={formatBenchmarkValue(
-                                            benchmarkStats.information_ratio,
-                                            (value) =>
-                                                formatNumber(value ?? null, 3),
-                                        )}
-                                        trend={getMetricTrend(
-                                            benchmarkStats.information_ratio,
-                                        )}
-                                    />
-                                    <StatCard
-                                        label="Up/Down Capture"
-                                        value={`${formatBenchmarkValue(benchmarkStats.up_capture, formatPercent)} / ${formatBenchmarkValue(benchmarkStats.down_capture, formatPercent)}`}
-                                        trend="neutral"
-                                    />
-                                </div>
-                            </>
-                        )}
-
-                        {activeResultTab === "overview" &&
-                            benchmarkStats &&
-                            comparisonChartSeries.length > 0 && (
-                            <ChartCard
-                                title={
-                                    benchmarkStats
-                                        ? `Portfolio vs ${benchmarkStats.benchmark_name}`
-                                        : "Portfolio Value"
+                        {activeResultTab === "cashflows" && (
+                            <CashflowsTab
+                                withdrawalDurability={withdrawalDurability}
+                                inflationAdjustedSeries={
+                                    inflationAdjustedSeries
                                 }
-                                action={
-                                    <>
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            size="xs"
-                                            onClick={() =>
-                                                setShowPortfolioSeries(
-                                                    (value) => !value,
-                                                )
-                                            }
-                                        >
-                                            {showPortfolioSeries ? (
-                                                <Eye className="h-3.5 w-3.5" />
-                                            ) : (
-                                                <EyeOff className="h-3.5 w-3.5" />
-                                            )}
-                                            Portfolio
-                                        </Button>
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            size="xs"
-                                            onClick={() =>
-                                                setShowBenchmarkSeries(
-                                                    (value) => !value,
-                                                )
-                                            }
-                                        >
-                                            {showBenchmarkSeries ? (
-                                                <Eye className="h-3.5 w-3.5" />
-                                            ) : (
-                                                <EyeOff className="h-3.5 w-3.5" />
-                                            )}
-                                            Benchmark
-                                        </Button>
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            size="xs"
-                                            onClick={() =>
-                                                setPortfolioChartLogScale(
-                                                    (value) => !value,
-                                                )
-                                            }
-                                        >
-                                            <LineChart className="h-3.5 w-3.5" />
-                                            {portfolioChartLogScale
-                                                ? "Linear"
-                                                : "Log"}
-                                        </Button>
-                                    </>
-                                }
-                            >
-                                <LightweightChart
-                                    series={visiblePortfolioChartSeries}
-                                    height={400}
-                                    type={benchmarkStats ? "line" : "area"}
-                                    logScale={portfolioChartLogScale}
-                                    downloadImageName={`${buildExportBaseName(lastRunRequest)}-portfolio`}
-                                />
-                            </ChartCard>
+                                cashflowEvents={cashflowEvents}
+                            />
                         )}
 
-                        {/* Portfolio value chart */}
-                        {activeResultTab === "overview" &&
-                            result?.value_history &&
-                            !benchmarkStats &&
-                            result.value_history.length > 0 && (
-                                <ChartCard
-                                    title="Portfolio Value"
-                                    action={
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            size="xs"
-                                            onClick={() =>
-                                                setPortfolioChartLogScale(
-                                                    (value) => !value,
-                                                )
-                                            }
-                                        >
-                                            <LineChart className="h-3.5 w-3.5" />
-                                            {portfolioChartLogScale
-                                                ? "Linear"
-                                                : "Log"}
-                                        </Button>
-                                    }
-                                >
-                                    <LightweightChart
-                                        series={[
-                                            {
-                                                name: "Value",
-                                                dates: result.value_history.map(
-                                                    (r) => String(r.date),
-                                                ),
-                                                values: result.value_history.map(
-                                                    (r) => r.Value as number,
-                                                ),
-                                            },
-                                        ]}
-                                        height={400}
-                                        type="area"
-                                        logScale={portfolioChartLogScale}
-                                        downloadImageName={`${buildExportBaseName(lastRunRequest)}-portfolio`}
-                                    />
-                                </ChartCard>
-                            )}
-
-                        {/* Drawdown chart */}
-                        {activeResultTab === "overview" &&
-                            result?.value_history &&
-                            result.value_history.length > 0 && (
-                                <ChartCard title="Drawdown">
-                                    <DrawdownChart
-                                        data={result.value_history.map((r) => ({
-                                            date: String(r.date),
-                                            value: r.Value as number,
-                                        }))}
-                                        height={200}
-                                    />
-                                </ChartCard>
-                            )}
-                        {activeResultTab === "overview" && benchmarkStats && (
-                            <ChartCard title="Benchmark Comparison">
-                                <DataTable
-                                    columns={[
-                                        { key: "metric", label: "Metric" },
-                                        { key: "value", label: "Value" },
-                                    ]}
-                                    data={[
-                                        {
-                                            metric: "Benchmark",
-                                            value: benchmarkStats.benchmark_name,
-                                        },
-                                        {
-                                            metric: "Observations",
-                                            value: String(
-                                                benchmarkStats.n_observations,
-                                            ),
-                                        },
-                                        {
-                                            metric: "Alpha",
-                                            value: formatBenchmarkValue(
-                                                benchmarkStats.alpha,
-                                                formatPercent,
-                                            ),
-                                        },
-                                        {
-                                            metric: "Beta",
-                                            value: formatBenchmarkValue(
-                                                benchmarkStats.beta,
-                                                (value) =>
-                                                    formatNumber(
-                                                        value ?? null,
-                                                        4,
-                                                    ),
-                                            ),
-                                        },
-                                        {
-                                            metric: "R-Squared",
-                                            value: formatBenchmarkValue(
-                                                benchmarkStats.r_squared,
-                                                (value) =>
-                                                    formatNumber(
-                                                        value ?? null,
-                                                        4,
-                                                    ),
-                                            ),
-                                        },
-                                        {
-                                            metric: "Tracking Error",
-                                            value: formatBenchmarkValue(
-                                                benchmarkStats.tracking_error,
-                                                formatPercent,
-                                            ),
-                                        },
-                                        {
-                                            metric: "Information Ratio",
-                                            value: formatBenchmarkValue(
-                                                benchmarkStats.information_ratio,
-                                                (value) =>
-                                                    formatNumber(
-                                                        value ?? null,
-                                                        4,
-                                                    ),
-                                            ),
-                                        },
-                                        {
-                                            metric: "Up Capture",
-                                            value: formatBenchmarkValue(
-                                                benchmarkStats.up_capture,
-                                                formatPercent,
-                                            ),
-                                        },
-                                        {
-                                            metric: "Down Capture",
-                                            value: formatBenchmarkValue(
-                                                benchmarkStats.down_capture,
-                                                formatPercent,
-                                            ),
-                                        },
-                                    ]}
-                                />
-                            </ChartCard>
+                        {activeResultTab === "overview" && (
+                            <OverviewTab
+                                benchmarkStats={benchmarkStats}
+                                comparisonChartSeries={comparisonChartSeries}
+                                visiblePortfolioChartSeries={
+                                    visiblePortfolioChartSeries
+                                }
+                                valueHistory={result?.value_history ?? []}
+                                portfolioChartLogScale={
+                                    portfolioChartLogScale
+                                }
+                                showPortfolioSeries={showPortfolioSeries}
+                                showBenchmarkSeries={showBenchmarkSeries}
+                                exportBaseName={buildExportBaseName(
+                                    lastRunRequest,
+                                )}
+                                onTogglePortfolioSeries={() =>
+                                    setShowPortfolioSeries((value) => !value)
+                                }
+                                onToggleBenchmarkSeries={() =>
+                                    setShowBenchmarkSeries((value) => !value)
+                                }
+                                onToggleLogScale={() =>
+                                    setPortfolioChartLogScale(
+                                        (value) => !value,
+                                    )
+                                }
+                            />
                         )}
 
                         {activeResultTab === "diagnostics" && (
