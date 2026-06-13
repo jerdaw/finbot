@@ -6,7 +6,6 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/common/page-header";
-import { ConfigPanel } from "@/components/common/config-panel";
 import { ToolLayout } from "@/components/common/tool-layout";
 import { EmptyState } from "@/components/common/empty-state";
 import { InlineError } from "@/components/common/inline-error";
@@ -51,13 +50,7 @@ import {
     encodeSharedConfig,
     getEndingValue,
 } from "@/lib/backtest-utils";
-import { RunSetupSection } from "@/app/backtesting/components/run-setup-section";
-import { AssumptionsSection } from "@/app/backtesting/components/assumptions-section";
-import { CashflowPlanningSection } from "@/app/backtesting/components/cashflow-planning-section";
-import { StrategyParametersSection } from "@/app/backtesting/components/strategy-parameters-section";
-import { StrategyAssetsSection } from "@/app/backtesting/components/strategy-assets-section";
-import { StrategySelectorSection } from "@/app/backtesting/components/strategy-selector-section";
-import { PortfolioBuilderSection } from "@/app/backtesting/components/portfolio-builder-section";
+import { BacktestingConfigurationPanel } from "@/app/backtesting/components/backtesting-configuration-panel";
 import { ResultWorkspaceSection } from "@/app/backtesting/components/result-workspace-section";
 import { useBacktestExports } from "@/app/backtesting/use-backtest-exports";
 import { buildBacktestResultData } from "@/app/backtesting/backtesting-result-data";
@@ -793,129 +786,81 @@ export default function BacktestingPage() {
 
             <ToolLayout
                 configPanel={
-                    <ConfigPanel title="Configuration">
-                        <StrategySelectorSection
-                            strategy={strategy}
-                            strategies={strategies}
-                            currentStrategy={currentStrategy}
-                            onStrategyChange={applyStrategy}
-                        />
-
-                        {isAllocationStrategy ? (
-                            <PortfolioBuilderSection
-                                portfolioAssets={portfolioAssets}
-                                allocationIsBalanced={allocationIsBalanced}
-                                allocationWeightTotal={allocationWeightTotal}
-                                presetFilter={presetFilter}
-                                filteredPortfolioPresets={
-                                    filteredPortfolioPresets
-                                }
-                                savedPortfolios={savedPortfolios}
-                                comparisonPortfolios={comparisonPortfolios}
-                                comparisonIsPending={
-                                    comparisonMutation.isPending
-                                }
-                                onPresetFilterChange={setPresetFilter}
-                                onApplyPreset={applyPortfolioPreset}
-                                onAddPresetToComparison={
-                                    handleAddPresetToComparison
-                                }
-                                onEqualizeWeights={equalizePortfolioWeights}
-                                onNormalizeWeights={normalizePortfolioWeights}
-                                onClearAssets={clearPortfolioAssets}
-                                onSavePortfolio={handleSavePortfolio}
-                                onAddCurrentToComparison={
-                                    handleAddCurrentPortfolioToComparison
-                                }
-                                onAddAsset={addPortfolioAsset}
-                                onUpdateTicker={updatePortfolioTicker}
-                                onUpdateWeight={updatePortfolioWeight}
-                                onRemoveAsset={removePortfolioAsset}
-                                onApplySavedPortfolio={applySavedPortfolio}
-                                onAddSavedToComparison={
-                                    handleAddSavedToComparison
-                                }
-                                onRemoveSavedPortfolio={removeSavedPortfolio}
-                                onRunComparison={handleRunComparison}
-                                onRemoveComparisonPortfolio={
-                                    removeComparisonPortfolio
-                                }
-                            />
-                        ) : (
-                            <StrategyAssetsSection
-                                ticker={ticker}
-                                altTicker={altTicker}
-                                needsMultiAsset={Boolean(needsMultiAsset)}
-                                onTickerChange={setTicker}
-                                onAltTickerChange={setAltTicker}
-                            />
-                        )}
-
-                        <RunSetupSection
-                            startDate={startDate}
-                            endDate={endDate}
-                            cash={cash}
-                            benchmarkTicker={benchmarkTicker}
-                            riskFreeRate={riskFreeRate}
-                            onStartDateChange={setStartDate}
-                            onEndDateChange={setEndDate}
-                            onCashChange={setCash}
-                            onBenchmarkTickerChange={setBenchmarkTicker}
-                            onRiskFreeRateChange={setRiskFreeRate}
-                        />
-
-                        <AssumptionsSection
-                            missingDataPolicy={missingDataPolicy}
-                            costAssumptions={costAssumptions}
-                            onMissingDataPolicyChange={setMissingDataPolicy}
-                            onCostAssumptionChange={updateCostAssumption}
-                        />
-
-                        <CashflowPlanningSection
-                            recurringContribution={recurringContribution}
-                            contributionFrequency={contributionFrequency}
-                            recurringWithdrawal={recurringWithdrawal}
-                            withdrawalFrequency={withdrawalFrequency}
-                            inflationRate={inflationRate}
-                            oneTimeCashflows={oneTimeCashflows}
-                            onRecurringContributionChange={
-                                setRecurringContribution
-                            }
-                            onContributionFrequencyChange={
-                                setContributionFrequency
-                            }
-                            onRecurringWithdrawalChange={
-                                setRecurringWithdrawal
-                            }
-                            onWithdrawalFrequencyChange={
-                                setWithdrawalFrequency
-                            }
-                            onInflationRateChange={setInflationRate}
-                            onOneTimeCashflowChange={updateOneTimeCashflow}
-                            onAddOneTimeCashflow={addOneTimeCashflow}
-                            onRemoveOneTimeCashflow={removeOneTimeCashflow}
-                        />
-
-                        <StrategyParametersSection
-                            strategy={currentStrategy}
-                            params={params}
-                            onParamsChange={setParams}
-                        />
-
-                        <div className="col-span-full flex justify-end border-t border-border/40 pt-4">
-                            <div className="w-full sm:w-auto sm:min-w-48">
-                                <Button
-                                    className="w-full bg-gradient-to-r from-blue-600 to-blue-500 font-medium text-white shadow-lg shadow-blue-500/20 transition-all hover:shadow-blue-500/30"
-                                    onClick={handleRun}
-                                    disabled={mutation.isPending}
-                                >
-                                    {mutation.isPending
-                                        ? "Running..."
-                                        : "Run Backtest"}
-                                </Button>
-                            </div>
-                        </div>
-                    </ConfigPanel>
+                    <BacktestingConfigurationPanel
+                        strategy={strategy}
+                        strategies={strategies}
+                        currentStrategy={currentStrategy}
+                        isAllocationStrategy={isAllocationStrategy}
+                        ticker={ticker}
+                        altTicker={altTicker}
+                        needsMultiAsset={Boolean(needsMultiAsset)}
+                        portfolioAssets={portfolioAssets}
+                        allocationIsBalanced={allocationIsBalanced}
+                        allocationWeightTotal={allocationWeightTotal}
+                        presetFilter={presetFilter}
+                        filteredPortfolioPresets={filteredPortfolioPresets}
+                        savedPortfolios={savedPortfolios}
+                        comparisonPortfolios={comparisonPortfolios}
+                        comparisonIsPending={comparisonMutation.isPending}
+                        startDate={startDate}
+                        endDate={endDate}
+                        cash={cash}
+                        benchmarkTicker={benchmarkTicker}
+                        riskFreeRate={riskFreeRate}
+                        missingDataPolicy={missingDataPolicy}
+                        costAssumptions={costAssumptions}
+                        recurringContribution={recurringContribution}
+                        contributionFrequency={contributionFrequency}
+                        recurringWithdrawal={recurringWithdrawal}
+                        withdrawalFrequency={withdrawalFrequency}
+                        inflationRate={inflationRate}
+                        oneTimeCashflows={oneTimeCashflows}
+                        params={params}
+                        runIsPending={mutation.isPending}
+                        onStrategyChange={applyStrategy}
+                        onTickerChange={setTicker}
+                        onAltTickerChange={setAltTicker}
+                        onPresetFilterChange={setPresetFilter}
+                        onApplyPreset={applyPortfolioPreset}
+                        onAddPresetToComparison={handleAddPresetToComparison}
+                        onEqualizeWeights={equalizePortfolioWeights}
+                        onNormalizeWeights={normalizePortfolioWeights}
+                        onClearAssets={clearPortfolioAssets}
+                        onSavePortfolio={handleSavePortfolio}
+                        onAddCurrentToComparison={
+                            handleAddCurrentPortfolioToComparison
+                        }
+                        onAddAsset={addPortfolioAsset}
+                        onUpdateTicker={updatePortfolioTicker}
+                        onUpdateWeight={updatePortfolioWeight}
+                        onRemoveAsset={removePortfolioAsset}
+                        onApplySavedPortfolio={applySavedPortfolio}
+                        onAddSavedToComparison={handleAddSavedToComparison}
+                        onRemoveSavedPortfolio={removeSavedPortfolio}
+                        onRunComparison={handleRunComparison}
+                        onRemoveComparisonPortfolio={
+                            removeComparisonPortfolio
+                        }
+                        onStartDateChange={setStartDate}
+                        onEndDateChange={setEndDate}
+                        onCashChange={setCash}
+                        onBenchmarkTickerChange={setBenchmarkTicker}
+                        onRiskFreeRateChange={setRiskFreeRate}
+                        onMissingDataPolicyChange={setMissingDataPolicy}
+                        onCostAssumptionChange={updateCostAssumption}
+                        onRecurringContributionChange={
+                            setRecurringContribution
+                        }
+                        onContributionFrequencyChange={setContributionFrequency}
+                        onRecurringWithdrawalChange={setRecurringWithdrawal}
+                        onWithdrawalFrequencyChange={setWithdrawalFrequency}
+                        onInflationRateChange={setInflationRate}
+                        onOneTimeCashflowChange={updateOneTimeCashflow}
+                        onAddOneTimeCashflow={addOneTimeCashflow}
+                        onRemoveOneTimeCashflow={removeOneTimeCashflow}
+                        onParamsChange={setParams}
+                        onRun={handleRun}
+                    />
                 }
             >
                 {mutation.isPending && (
