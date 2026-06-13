@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/select";
 import { LightweightChart } from "@/components/charts/lightweight-chart";
 import { DrawdownChart } from "@/components/charts/drawdown-chart";
-import { LineChartWrapper } from "@/components/charts/line-chart-wrapper";
 import { DataTable } from "@/components/common/data-table";
 import {
     Tabs,
@@ -64,14 +63,11 @@ import type {
     BacktestBenchmarkStats,
     BacktestMissingDataSummary,
     CashflowEventRecord,
-    BacktestRegimePeriod,
-    BacktestRegimeSummary,
     BacktestResponse,
     MissingDataPolicy,
     OneTimeCashflowEvent,
     RebalanceEventRecord,
     RecurringCashflowRule,
-    ReturnTableRow,
     RollingMetricsResponse,
     SaveExperimentRequest,
     SaveExperimentResponse,
@@ -112,6 +108,13 @@ import {
     buildExportBaseName,
     downloadFile,
 } from "@/lib/export-utils";
+import {
+    ComparisonResultsTab,
+    type ComparisonMetricsRow,
+} from "@/app/backtesting/components/comparison-results-tab";
+import { ReturnsTab } from "@/app/backtesting/components/returns-tab";
+import { AuditTab } from "@/app/backtesting/components/audit-tab";
+import { DiagnosticsTab } from "@/app/backtesting/components/diagnostics-tab";
 
 export default function BacktestingPage() {
     // ---------------------------------------------------------------------------
@@ -1262,7 +1265,7 @@ export default function BacktestingPage() {
     const lastRunInputSignature = normalizeRequestForSignature(lastRunRequest);
     const hasStaleResults =
         Boolean(result && lastRunInputSignature && currentInputSignature !== lastRunInputSignature);
-    const comparisonRows = comparisonRuns.map((run) => ({
+    const comparisonRows: ComparisonMetricsRow[] = comparisonRuns.map((run) => ({
         portfolio: run.portfolio.label,
         status: run.error ? "Error" : "Complete",
         ending_value: getEndingValue(run.result ?? undefined),
@@ -1305,6 +1308,9 @@ export default function BacktestingPage() {
         ...series,
         values: buildDrawdownValues(series.values),
     }));
+    const comparisonExportBaseName = buildExportBaseName(
+        lastComparisonRequest ?? lastRunRequest,
+    );
     const hasResultWorkspace = Boolean(stats || comparisonRuns.length > 0);
 
     return (
@@ -2523,223 +2529,17 @@ export default function BacktestingPage() {
                             </div>
                         </div>
 
-                        {activeResultTab === "audit" && savedExperiment && (
-                            <ChartCard title="Experiment Lineage">
-                                <DataTable
-                                    columns={[
-                                        { key: "field", label: "Field" },
-                                        { key: "value", label: "Value" },
-                                    ]}
-                                    data={[
-                                        {
-                                            field: "Run ID",
-                                            value: savedExperiment.run_id,
-                                        },
-                                        {
-                                            field: "Strategy",
-                                            value: savedExperiment.strategy_name,
-                                        },
-                                        {
-                                            field: "Created At",
-                                            value: new Date(
-                                                savedExperiment.created_at,
-                                            ).toLocaleString(),
-                                        },
-                                        {
-                                            field: "Config Hash",
-                                            value: savedExperiment.config_hash,
-                                        },
-                                        {
-                                            field: "Data Snapshot",
-                                            value: savedExperiment.data_snapshot_id,
-                                        },
-                                    ]}
-                                />
-                            </ChartCard>
-                        )}
-
-                        {activeResultTab === "audit" &&
-                            costSummary &&
-                            appliedCostAssumptions && (
-                            <>
-                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                                    <StatCard
-                                        label="Estimated Costs"
-                                        value={formatCurrencyPrecise(
-                                            costSummary.total_costs,
-                                        )}
-                                        trend="down"
-                                    />
-                                    <StatCard
-                                        label="Commission"
-                                        value={formatCurrencyPrecise(
-                                            costSummary.total_commission,
-                                        )}
-                                        trend="down"
-                                    />
-                                    <StatCard
-                                        label="Spread"
-                                        value={formatCurrencyPrecise(
-                                            costSummary.total_spread,
-                                        )}
-                                        trend="down"
-                                    />
-                                    <StatCard
-                                        label="Slippage"
-                                        value={formatCurrencyPrecise(
-                                            costSummary.total_slippage,
-                                        )}
-                                        trend="down"
-                                    />
-                                </div>
-
-                                <ChartCard title="Execution Frictions">
-                                    <DataTable
-                                        columns={[
-                                            { key: "field", label: "Field" },
-                                            { key: "value", label: "Value" },
-                                        ]}
-                                        data={[
-                                            {
-                                                field: "Commission Model",
-                                                value: appliedCostAssumptions.commission_label,
-                                            },
-                                            {
-                                                field: "Spread Model",
-                                                value: appliedCostAssumptions.spread_label,
-                                            },
-                                            {
-                                                field: "Slippage Model",
-                                                value: appliedCostAssumptions.slippage_label,
-                                            },
-                                            {
-                                                field: "Equity Curve Impact",
-                                                value: appliedCostAssumptions.estimated_only
-                                                    ? "Estimated separately from the equity curve"
-                                                    : "Applied directly to the equity curve",
-                                            },
-                                        ]}
-                                    />
-                                </ChartCard>
-
-                                {costBySymbolRows.length > 0 && (
-                                    <ChartCard title="Estimated Costs by Symbol">
-                                        <DataTable
-                                            columns={[
-                                                {
-                                                    key: "ticker",
-                                                    label: "Ticker",
-                                                },
-                                                {
-                                                    key: "total_cost",
-                                                    label: "Estimated Cost",
-                                                    format: (value) =>
-                                                        formatCurrencyPrecise(
-                                                            value as
-                                                                | number
-                                                                | null,
-                                                        ),
-                                                },
-                                            ]}
-                                            data={costBySymbolRows}
-                                        />
-                                    </ChartCard>
-                                )}
-                            </>
-                        )}
-
-                        {activeResultTab === "audit" && missingDataSummary && (
-                            <ChartCard title="Missing Data Handling">
-                                <div className="mb-3 space-y-1 text-sm text-muted-foreground">
-                                    <p>Policy: {missingDataSummary.policy}</p>
-                                    {missingDataSummary.note && (
-                                        <p>{missingDataSummary.note}</p>
-                                    )}
-                                </div>
-                                <DataTable
-                                    columns={[
-                                        { key: "ticker", label: "Ticker" },
-                                        {
-                                            key: "had_missing_data",
-                                            label: "Had Gaps",
-                                            format: (value) =>
-                                                value ? "Yes" : "No",
-                                        },
-                                        {
-                                            key: "missing_rows",
-                                            label: "Missing Rows",
-                                        },
-                                        {
-                                            key: "missing_cells",
-                                            label: "Missing Cells",
-                                        },
-                                        {
-                                            key: "rows_dropped",
-                                            label: "Rows Dropped",
-                                        },
-                                        {
-                                            key: "remaining_missing_cells",
-                                            label: "Remaining Gaps",
-                                        },
-                                    ]}
-                                    data={missingDataSummary.tickers}
-                                    initialRows={8}
-                                />
-                            </ChartCard>
-                        )}
-
-                        {activeResultTab === "audit" && walkForwardRequest && (
-                            <ChartCard title="Walk-Forward Follow-Up">
-                                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                                    <div className="space-y-1">
-                                        <p className="text-sm text-muted-foreground">
-                                            {walkForwardRequest.reason}
-                                        </p>
-                                        <p className="text-xs text-muted-foreground/70">
-                                            Suggested windows: train{" "}
-                                            {walkForwardRequest.train_window}{" "}
-                                            days, test{" "}
-                                            {walkForwardRequest.test_window}{" "}
-                                            days, step{" "}
-                                            {walkForwardRequest.step_size} days.
-                                        </p>
-                                    </div>
-                                    <Button asChild>
-                                        <Link href={walkForwardHref}>
-                                            Open Walk-Forward Analysis
-                                        </Link>
-                                    </Button>
-                                </div>
-                            </ChartCard>
-                        )}
-
                         {activeResultTab === "audit" && (
-                            <ChartCard title="Metric Methodology">
-                                <DataTable
-                                    columns={[
-                                        { key: "metric", label: "Metric" },
-                                        { key: "basis", label: "Calculation Basis" },
-                                    ]}
-                                    data={[
-                                        {
-                                            metric: "Max Drawdown",
-                                            basis: "Peak-to-trough decline computed directly from the portfolio value path. This matches the drawdown chart.",
-                                        },
-                                        {
-                                            metric: "CAGR",
-                                            basis: "Annualized compound growth from starting value, ending value, and elapsed trading history.",
-                                        },
-                                        {
-                                            metric: "Sharpe",
-                                            basis: "QuantStats daily-return ratio derived from the same portfolio value history.",
-                                        },
-                                        {
-                                            metric: "ROI",
-                                            basis: "Ending value divided by starting value minus one.",
-                                        },
-                                    ]}
-                                />
-                            </ChartCard>
+                            <AuditTab
+                                savedExperiment={savedExperiment}
+                                costSummary={costSummary}
+                                appliedCostAssumptions={appliedCostAssumptions}
+                                costBySymbolRows={costBySymbolRows}
+                                missingDataSummary={missingDataSummary}
+                                walkForwardRequest={walkForwardRequest}
+                                walkForwardHref={walkForwardHref}
+                                stats={stats}
+                            />
                         )}
 
                         {activeResultTab === "cashflows" && withdrawalDurability && (
@@ -3146,710 +2946,41 @@ export default function BacktestingPage() {
                             </ChartCard>
                         )}
 
-                        {activeResultTab === "diagnostics" && rollingMetrics && (
-                            <>
-                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                                    <StatCard
-                                        label="Mean Rolling Sharpe"
-                                        value={formatBenchmarkValue(
-                                            rollingMetrics.mean_sharpe,
-                                            (value) =>
-                                                formatNumber(value ?? null, 3),
-                                        )}
-                                        trend={getMetricTrend(
-                                            rollingMetrics.mean_sharpe,
-                                        )}
-                                    />
-                                    <StatCard
-                                        label="Mean Rolling Vol"
-                                        value={formatBenchmarkValue(
-                                            rollingMetrics.mean_vol,
-                                            formatPercent,
-                                        )}
-                                        trend="neutral"
-                                    />
-                                    {rollingMetrics.mean_beta != null && (
-                                        <StatCard
-                                            label="Mean Rolling Beta"
-                                            value={formatNumber(
-                                                rollingMetrics.mean_beta,
-                                                3,
-                                            )}
-                                            trend="neutral"
-                                        />
-                                    )}
-                                </div>
-
-                                {rollingChartData.length > 0 && (
-                                    <ChartCard
-                                        title={`Rolling Diagnostics (${rollingMetrics.window}-day)`}
-                                    >
-                                        <LineChartWrapper
-                                            data={
-                                                rollingChartData as Record<
-                                                    string,
-                                                    unknown
-                                                >[]
-                                            }
-                                            xKey="date"
-                                            series={[
-                                                {
-                                                    key: "sharpe",
-                                                    color: "#2563eb",
-                                                },
-                                                {
-                                                    key: "volatility",
-                                                    color: "#f97316",
-                                                },
-                                                ...(rollingMetrics.beta
-                                                    ? [
-                                                          {
-                                                              key: "beta",
-                                                              color: "#16a34a",
-                                                          },
-                                                      ]
-                                                    : []),
-                                            ]}
-                                            height={360}
-                                            referenceY={0}
-                                            referenceLabel="Zero"
-                                        />
-                                    </ChartCard>
-                                )}
-                            </>
-                        )}
-
-                        {activeResultTab === "diagnostics" &&
-                            regimeSummary.length > 0 && (
-                            <ChartCard
-                                title={
-                                    regimeReferenceTicker
-                                        ? `Regime Summary (${regimeReferenceTicker})`
-                                        : "Regime Summary"
-                                }
-                            >
-                                <DataTable
-                                    columns={[
-                                        { key: "regime", label: "Regime" },
-                                        {
-                                            key: "count_periods",
-                                            label: "Periods",
-                                        },
-                                        {
-                                            key: "total_days",
-                                            label: "Days",
-                                        },
-                                        {
-                                            key: "cagr",
-                                            label: "CAGR",
-                                            format: (value) =>
-                                                formatPercent(
-                                                    value as number | null,
-                                                ),
-                                        },
-                                        {
-                                            key: "volatility",
-                                            label: "Volatility",
-                                            format: (value) =>
-                                                formatPercent(
-                                                    value as number | null,
-                                                ),
-                                        },
-                                        {
-                                            key: "sharpe",
-                                            label: "Sharpe",
-                                            format: (value) =>
-                                                formatNumber(
-                                                    value as number | null,
-                                                    3,
-                                                ),
-                                        },
-                                        {
-                                            key: "total_return",
-                                            label: "Total Return",
-                                            format: (value) =>
-                                                formatPercent(
-                                                    value as number | null,
-                                                ),
-                                        },
-                                    ]}
-                                    data={
-                                        regimeSummary as BacktestRegimeSummary[]
-                                    }
-                                />
-                            </ChartCard>
-                        )}
-
-                        {activeResultTab === "diagnostics" &&
-                            regimePeriods.length > 0 && (
-                            <ChartCard title="Regime Periods">
-                                <DataTable
-                                    columns={[
-                                        { key: "regime", label: "Regime" },
-                                        {
-                                            key: "start",
-                                            label: "Start",
-                                            format: (value) =>
-                                                new Date(
-                                                    String(value),
-                                                ).toLocaleDateString(),
-                                        },
-                                        {
-                                            key: "end",
-                                            label: "End",
-                                            format: (value) =>
-                                                new Date(
-                                                    String(value),
-                                                ).toLocaleDateString(),
-                                        },
-                                        { key: "days", label: "Days" },
-                                        {
-                                            key: "market_return",
-                                            label: "Market Return",
-                                            format: (value) =>
-                                                formatPercent(
-                                                    value as number | null,
-                                                ),
-                                        },
-                                        {
-                                            key: "market_volatility",
-                                            label: "Market Vol",
-                                            format: (value) =>
-                                                formatPercent(
-                                                    value as number | null,
-                                                ),
-                                        },
-                                        {
-                                            key: "portfolio_return",
-                                            label: "Portfolio Return",
-                                            format: (value) =>
-                                                formatPercent(
-                                                    value as number | null,
-                                                ),
-                                        },
-                                        {
-                                            key: "portfolio_volatility",
-                                            label: "Portfolio Vol",
-                                            format: (value) =>
-                                                formatPercent(
-                                                    value as number | null,
-                                                ),
-                                        },
-                                    ]}
-                                    data={
-                                        regimePeriods as BacktestRegimePeriod[]
-                                    }
-                                    initialRows={10}
-                                />
-                            </ChartCard>
-                        )}
-
-                        {activeResultTab === "diagnostics" &&
-                            allocationChartData.length > 0 && (
-                            <>
-                                <ChartCard title="Allocation Drift">
-                                    <LineChartWrapper
-                                        data={allocationChartData}
-                                        xKey="date"
-                                        series={allocationSeriesKeys.map(
-                                            (key, index) => ({
-                                                key,
-                                                color:
-                                                    index === 0
-                                                        ? "#2563eb"
-                                                        : index === 1
-                                                          ? "#16a34a"
-                                                          : index === 2
-                                                            ? "#f97316"
-                                                            : undefined,
-                                            }),
-                                        )}
-                                        height={360}
-                                    />
-                                </ChartCard>
-
-                                {allocationDriftSummary.length > 0 && (
-                                    <ChartCard title="Allocation Drift Summary">
-                                        <DataTable
-                                            columns={[
-                                                {
-                                                    key: "ticker",
-                                                    label: "Ticker",
-                                                },
-                                                {
-                                                    key: "target_weight",
-                                                    label: "Target",
-                                                    format: (value) =>
-                                                        formatPercent(
-                                                            value as
-                                                                | number
-                                                                | null,
-                                                        ),
-                                                },
-                                                {
-                                                    key: "latest_weight",
-                                                    label: "Latest",
-                                                    format: (value) =>
-                                                        formatPercent(
-                                                            value as
-                                                                | number
-                                                                | null,
-                                                        ),
-                                                },
-                                                {
-                                                    key: "max_drift",
-                                                    label: "Max Drift",
-                                                    format: (value) =>
-                                                        formatPercent(
-                                                            value as
-                                                                | number
-                                                                | null,
-                                                        ),
-                                                },
-                                            ]}
-                                            data={allocationDriftSummary}
-                                        />
-                                    </ChartCard>
-                                )}
-                            </>
-                        )}
-
-                        {activeResultTab === "diagnostics" &&
-                            rebalanceEvents.length > 0 && (
-                            <ChartCard title="Rebalance Log">
-                                <DataTable
-                                    columns={[
-                                        {
-                                            key: "date",
-                                            label: "Date",
-                                            format: (value) =>
-                                                new Date(
-                                                    String(value),
-                                                ).toLocaleDateString(),
-                                        },
-                                        {
-                                            key: "event_type",
-                                            label: "Event",
-                                        },
-                                        {
-                                            key: "trade_count",
-                                            label: "Trades",
-                                        },
-                                        {
-                                            key: "symbols",
-                                            label: "Symbols",
-                                            format: (value) =>
-                                                Array.isArray(value)
-                                                    ? value.join(", ")
-                                                    : String(value ?? ""),
-                                        },
-                                        {
-                                            key: "gross_trade_value",
-                                            label: "Gross Value",
-                                            format: (value) =>
-                                                formatCurrencyPrecise(
-                                                    value as number | null,
-                                                ),
-                                        },
-                                        {
-                                            key: "net_trade_value",
-                                            label: "Net Flow",
-                                            format: (value) =>
-                                                formatCurrencyPrecise(
-                                                    value as number | null,
-                                                ),
-                                        },
-                                        {
-                                            key: "portfolio_value",
-                                            label: "Portfolio",
-                                            format: (value) =>
-                                                formatCurrencyPrecise(
-                                                    value as number | null,
-                                                ),
-                                        },
-                                        {
-                                            key: "cash_after",
-                                            label: "Cash After",
-                                            format: (value) =>
-                                                formatCurrencyPrecise(
-                                                    value as number | null,
-                                                ),
-                                        },
-                                    ]}
-                                    data={rebalanceEvents}
-                                    initialRows={12}
-                                />
-                            </ChartCard>
+                        {activeResultTab === "diagnostics" && (
+                            <DiagnosticsTab
+                                rollingMetrics={rollingMetrics}
+                                rollingChartData={rollingChartData}
+                                regimeSummary={regimeSummary}
+                                regimePeriods={regimePeriods}
+                                regimeReferenceTicker={regimeReferenceTicker}
+                                allocationChartData={allocationChartData}
+                                allocationSeriesKeys={allocationSeriesKeys}
+                                allocationDriftSummary={allocationDriftSummary}
+                                rebalanceEvents={rebalanceEvents}
+                            />
                         )}
 
                         {activeResultTab === "comparison" && (
-                            <>
-                                {comparisonRuns.length > 0 ? (
-                                    <>
-                                        <ChartCard
-                                            title="Portfolio Comparison"
-                                            action={
-                                                <Button
-                                                    type="button"
-                                                    variant="outline"
-                                                    size="xs"
-                                                    onClick={
-                                                        handleExportComparisonCsv
-                                                    }
-                                                >
-                                                    <Download className="h-3.5 w-3.5" />
-                                                    CSV
-                                                </Button>
-                                            }
-                                        >
-                                            {comparisonResultSeries.length >
-                                            0 ? (
-                                                <LightweightChart
-                                                    series={
-                                                        comparisonResultSeries
-                                                    }
-                                                    height={400}
-                                                    type="line"
-                                                    downloadImageName={`${buildExportBaseName(lastComparisonRequest ?? lastRunRequest)}-comparison`}
-                                                />
-                                            ) : (
-                                                <p className="text-sm text-muted-foreground">
-                                                    No successful comparison
-                                                    series are available.
-                                                </p>
-                                            )}
-                                        </ChartCard>
-
-                                        <ChartCard title="Comparison Drawdown">
-                                            {comparisonDrawdownSeries.length >
-                                            0 ? (
-                                                <LightweightChart
-                                                    series={
-                                                        comparisonDrawdownSeries
-                                                    }
-                                                    height={300}
-                                                    type="line"
-                                                    downloadImageName={`${buildExportBaseName(lastComparisonRequest ?? lastRunRequest)}-comparison-drawdown`}
-                                                />
-                                            ) : (
-                                                <p className="text-sm text-muted-foreground">
-                                                    No successful comparison
-                                                    drawdown series are
-                                                    available.
-                                                </p>
-                                            )}
-                                        </ChartCard>
-
-                                        <ChartCard title="Comparison Metrics">
-                                            <DataTable
-                                                columns={[
-                                                    {
-                                                        key: "portfolio",
-                                                        label: "Portfolio",
-                                                    },
-                                                    {
-                                                        key: "status",
-                                                        label: "Status",
-                                                    },
-                                                    {
-                                                        key: "ending_value",
-                                                        label: "Ending Value",
-                                                        format: (value) =>
-                                                            formatCurrencyPrecise(
-                                                                value as
-                                                                    | number
-                                                                    | null,
-                                                            ),
-                                                    },
-                                                    {
-                                                        key: "cagr",
-                                                        label: "CAGR",
-                                                        format: (value) =>
-                                                            formatPercent(
-                                                                value as
-                                                                    | number
-                                                                    | null,
-                                                            ),
-                                                    },
-                                                    {
-                                                        key: "roi",
-                                                        label: "ROI",
-                                                        format: (value) =>
-                                                            formatPercent(
-                                                                value as
-                                                                    | number
-                                                                    | null,
-                                                            ),
-                                                    },
-                                                    {
-                                                        key: "sharpe",
-                                                        label: "Sharpe",
-                                                        format: (value) =>
-                                                            formatNumber(
-                                                                value as
-                                                                    | number
-                                                                    | null,
-                                                                3,
-                                                            ),
-                                                    },
-                                                    {
-                                                        key: "max_drawdown",
-                                                        label: "Max Drawdown",
-                                                        format: (value) =>
-                                                            formatPercent(
-                                                                value as
-                                                                    | number
-                                                                    | null,
-                                                            ),
-                                                    },
-                                                    {
-                                                        key: "error",
-                                                        label: "Error",
-                                                    },
-                                                ]}
-                                                data={comparisonRows}
-                                            />
-                                        </ChartCard>
-
-                                        <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-                                            {comparisonRuns.map((run) => (
-                                                <ChartCard
-                                                    key={run.portfolio.id}
-                                                    title={`${run.portfolio.label} Details`}
-                                                >
-                                                    {run.error ? (
-                                                        <InlineError
-                                                            message={run.error}
-                                                        />
-                                                    ) : (
-                                                        <DataTable
-                                                            columns={[
-                                                                {
-                                                                    key: "field",
-                                                                    label: "Field",
-                                                                },
-                                                                {
-                                                                    key: "value",
-                                                                    label: "Value",
-                                                                },
-                                                            ]}
-                                                            data={[
-                                                                {
-                                                                    field: "Tickers",
-                                                                    value:
-                                                                        run.request?.tickers.join(
-                                                                            ", ",
-                                                                        ) ??
-                                                                        "",
-                                                                },
-                                                                {
-                                                                    field: "Strategy",
-                                                                    value:
-                                                                        run.request
-                                                                            ?.strategy ??
-                                                                        "",
-                                                                },
-                                                                {
-                                                                    field: "Ending Value",
-                                                                    value: formatCurrencyPrecise(
-                                                                        getEndingValue(
-                                                                            run.result ??
-                                                                                undefined,
-                                                                        ),
-                                                                    ),
-                                                                },
-                                                                ...Object.entries(
-                                                                    run.result
-                                                                        ?.stats ??
-                                                                        {},
-                                                                ).map(
-                                                                    ([
-                                                                        key,
-                                                                        value,
-                                                                    ]) => ({
-                                                                        field: key,
-                                                                        value:
-                                                                            typeof value ===
-                                                                            "number"
-                                                                                ? key ===
-                                                                                      "Sharpe" ||
-                                                                                  key ===
-                                                                                      "Smart Sharpe"
-                                                                                    ? formatNumber(
-                                                                                          value,
-                                                                                          4,
-                                                                                      )
-                                                                                    : value <
-                                                                                            1 &&
-                                                                                        value >
-                                                                                            -1
-                                                                                      ? formatPercent(
-                                                                                            value,
-                                                                                        )
-                                                                                      : formatNumber(
-                                                                                            value,
-                                                                                            4,
-                                                                                        )
-                                                                                : String(
-                                                                                      value ??
-                                                                                          "N/A",
-                                                                                  ),
-                                                                    }),
-                                                                ),
-                                                            ]}
-                                                            initialRows={8}
-                                                        />
-                                                    )}
-                                                </ChartCard>
-                                            ))}
-                                        </div>
-                                    </>
-                                ) : (
-                                    <EmptyState
-                                        icon={BarChart3}
-                                        message="Add two or more portfolios in the portfolio builder, then run a comparison."
-                                    />
-                                )}
-                            </>
-                        )}
-
-                        {activeResultTab === "returns" && monthlyReturns.length > 0 && (
-                            <ChartCard title="Monthly Returns">
-                                <DataTable
-                                    columns={[
-                                        { key: "period", label: "Period" },
-                                        {
-                                            key: "start_value",
-                                            label: "Start Value",
-                                            format: (value) =>
-                                                formatCurrencyPrecise(
-                                                    value as number | null,
-                                                ),
-                                        },
-                                        {
-                                            key: "end_value",
-                                            label: "End Value",
-                                            format: (value) =>
-                                                formatCurrencyPrecise(
-                                                    value as number | null,
-                                                ),
-                                        },
-                                        {
-                                            key: "return_pct",
-                                            label: "Return",
-                                            format: (value) =>
-                                                formatPercent(
-                                                    value as number | null,
-                                                ),
-                                        },
-                                    ]}
-                                    data={monthlyReturns as ReturnTableRow[]}
-                                    initialRows={12}
-                                />
-                            </ChartCard>
-                        )}
-
-                        {activeResultTab === "returns" && annualReturns.length > 0 && (
-                            <ChartCard title="Annual Returns">
-                                <DataTable
-                                    columns={[
-                                        { key: "period", label: "Year" },
-                                        {
-                                            key: "start_value",
-                                            label: "Start Value",
-                                            format: (value) =>
-                                                formatCurrencyPrecise(
-                                                    value as number | null,
-                                                ),
-                                        },
-                                        {
-                                            key: "end_value",
-                                            label: "End Value",
-                                            format: (value) =>
-                                                formatCurrencyPrecise(
-                                                    value as number | null,
-                                                ),
-                                        },
-                                        {
-                                            key: "return_pct",
-                                            label: "Return",
-                                            format: (value) =>
-                                                formatPercent(
-                                                    value as number | null,
-                                                ),
-                                        },
-                                    ]}
-                                    data={annualReturns as ReturnTableRow[]}
-                                    initialRows={12}
-                                />
-                            </ChartCard>
-                        )}
-
-                        {/* Trades table */}
-                        {activeResultTab === "returns" &&
-                            result?.trades &&
-                            result.trades.length > 0 && (
-                            <ChartCard
-                                title={`Trades (${result.trades.length})`}
-                            >
-                                <DataTable
-                                    columns={[
-                                        { key: "date", label: "Date" },
-                                        { key: "ticker", label: "Ticker" },
-                                        { key: "action", label: "Action" },
-                                        {
-                                            key: "size",
-                                            label: "Size",
-                                            format: (v) =>
-                                                formatNumber(v as number, 0),
-                                        },
-                                        {
-                                            key: "price",
-                                            label: "Price",
-                                            format: (v) =>
-                                                formatCurrencyPrecise(
-                                                    v as number,
-                                                ),
-                                        },
-                                        {
-                                            key: "value",
-                                            label: "Value",
-                                            format: (v) =>
-                                                formatCurrencyPrecise(
-                                                    v as number,
-                                                ),
-                                        },
-                                    ]}
-                                    data={result.trades}
-                                    initialRows={15}
-                                />
-                            </ChartCard>
-                        )}
-
-                        {/* Full statistics */}
-                        {activeResultTab === "audit" && stats && (
-                        <ChartCard title="Full Statistics">
-                            <DataTable
-                                columns={[
-                                    { key: "metric", label: "Metric" },
-                                    { key: "value", label: "Value" },
-                                ]}
-                                data={Object.entries(stats).map(([k, v]) => ({
-                                    metric: k,
-                                    value:
-                                        typeof v === "number"
-                                            ? v < 1 &&
-                                              v > -1 &&
-                                              k !== "Sharpe" &&
-                                              k !== "Smart Sharpe"
-                                                ? formatPercent(v)
-                                                : formatNumber(v, 4)
-                                            : String(v ?? "N/A"),
-                                }))}
-                                initialRows={18}
+                            <ComparisonResultsTab
+                                comparisonRuns={comparisonRuns}
+                                comparisonRows={comparisonRows}
+                                comparisonResultSeries={comparisonResultSeries}
+                                comparisonDrawdownSeries={
+                                    comparisonDrawdownSeries
+                                }
+                                exportBaseName={comparisonExportBaseName}
+                                onExportCsv={handleExportComparisonCsv}
                             />
-                        </ChartCard>
                         )}
+
+                        {activeResultTab === "returns" && (
+                            <ReturnsTab
+                                monthlyReturns={monthlyReturns}
+                                annualReturns={annualReturns}
+                                trades={result?.trades ?? []}
+                            />
+                        )}
+
                     </>
                 )}
 
