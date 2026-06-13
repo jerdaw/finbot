@@ -1,14 +1,14 @@
 # Finbot Roadmap
 
 **Created:** 2026-02-10
-**Last Updated:** 2026-06-04
-**Status:** Priority 0-10 and P12 complete. P11 decision track remains open. Archived `bb`/`backbetter` reuse audit and public GitHub cleanup complete with follow-up items queued.
+**Last Updated:** 2026-06-13
+**Status:** Priority 0-10 and P12 complete. P11 decision track remains open. Safe autonomous docs/test/verification follow-ups are complete; the remaining archived-reuse item is a Backtrader PDF licensing/storage decision.
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on repository professionalization, public documentation quality, and durable communication surfaces.
 
 See Completed Items table below and git history for details on implemented features.
 
-**Current Plan Record:** None active. Last archived plan: `docs/planning/archive/public-github-cleanup-2026-06-04.md`
+**Current Plan Record:** None active. Last archived plan: `docs/planning/archive/autonomous-maintenance-follow-up-2026-06-13.md`
 
 ---
 
@@ -19,18 +19,19 @@ captured in archive notes and the completed-items table below.
 
 ## Archived Repo Reuse Audit Follow-Up
 
-**Status:** AUDIT COMPLETE (2026-04-27)
+**Status:** AUDIT FOLLOW-UP MOSTLY COMPLETE (2026-06-13)
 
 The archived `jerdaw/bb` and `jerdaw/backbetter` repos were reconciled against
 current Finbot. The audit found no production code that should be ported
 directly. `bb` is primarily a historical ancestor whose useful modules are
 already represented under `finbot/`; `backbetter` is only a minimal package
-scaffold. Follow-up is limited to documentation/test polish:
+scaffold. Follow-up is limited to documentation/test polish and
+external-reference decisions:
 
-- [ ] Add a concise missing-data method/tradeoff reference to the current docs site.
-- [ ] Add or improve a deterministic logging queue/nonblocking regression test during the next logging maintenance pass.
-- [ ] Review current outlier/data-integrity utility coverage before exposing those utilities more prominently.
-- [ ] Convert archived provider notebooks into small contributor examples only where current wrappers lack examples.
+- [x] Add a concise missing-data method/tradeoff reference to the current docs site.
+- [x] Add or improve a deterministic logging queue/nonblocking regression test during the next logging maintenance pass.
+- [x] Review current outlier/data-integrity utility coverage before exposing those utilities more prominently.
+- [x] Convert archived provider notebooks into small contributor examples only where current wrappers lack examples.
 - [ ] Decide whether old Backtrader PDFs should be referenced externally; do not commit the PDFs without license/storage review.
 
 ## Priority 10: Next.js Frontend
@@ -71,7 +72,7 @@ Closed the product-quality backtesting workflow pass: canonical drawdown metrics
 
 ## Deferred / On Hold Backlog
 
-- [ ] Split `web/frontend/src/app/backtesting/page.tsx` into local backtesting helpers/components before the next large backtesting feature tranche; P12 behavior is complete, but the page remains too large for comfortable long-term maintenance.
+- [ ] Continue splitting `web/frontend/src/app/backtesting/page.tsx` into local backtesting helpers/components before the next large backtesting feature tranche; P12 behavior is complete and static options/helpers have been extracted, but the page remains too large for comfortable long-term maintenance.
 - [ ] Do not port archived `bb`/`backbetter` code wholesale; only pursue the narrow docs/test follow-ups recorded in `docs/planning/archive/archived-bb-backbetter-incorporation-audit-2026-04-27.md`.
 - [ ] Add tests for `approximate_overnight_libor` once stable FRED-backed validation inputs are practical.
 - [ ] Apply the data-driven config pattern to `sim_specific_bond_indexes.py` if that small surface ever grows beyond the current lightweight implementation.
@@ -80,8 +81,6 @@ Closed the product-quality backtesting workflow pass: canonical drawdown metrics
 - [ ] Define a protected-branch-compatible human-authored replay workflow for low-risk Dependabot updates if manual handling becomes burdensome.
 - [ ] Keep broad dependency batches and major GitHub Action upgrades on human-authored replay branches rather than direct bot merges.
 - [ ] Revisit broader browser coverage only when GitHub Actions minutes or budget allow Firefox/WebKit or heavier browser matrices; keep the current frontend suite mocked and Chromium-only.
-- [ ] Run a dedicated secret scanner (`gitleaks` or `trufflehog`) when the tool is available in CI or local maintenance environments.
-- [ ] Re-check tracked parquet golden datasets with a parquet-capable runtime during the next binary data audit.
 - [ ] Finalize a human-approved project logo or brand guide before reopening branding work.
 - [ ] Record the planned overview and tutorial videos plus the project poster once user-provided narration/design assets exist.
 - [ ] Choose a production hosting target, public domain/TLS setup, and secret-management path before adding provider-specific deployment manifests or infrastructure code.
@@ -94,6 +93,7 @@ Closed the product-quality backtesting workflow pass: canonical drawdown metrics
 
 | Item                                                                      | Completed  | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | :------------------------------------------------------------------------ | :--------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Autonomous maintenance follow-up                                           | 2026-06-13 | Closed safe archived-reuse and public-cleanup follow-ups: missing-data policy tradeoff docs, provider-wrapper examples, deterministic queue-logging coverage, implemented outlier/data-integrity utility tests, Gitleaks git-history and tracked-worktree scans, tracked parquet content checks, and a behavior-preserving backtesting frontend extraction/typecheck pass. Backtrader PDF handling remains an external license/storage decision.                                          |
 | Public GitHub cleanup                                                     | 2026-06-04 | Strengthened educational/research disclaimers, added the public documentation boundary, generalized private paths and token-like examples, added ignored local private-note patterns, replaced non-human team author labels with the actual human author, verified agent symlinks and human-only commit authorship, and recorded scanner/parquet tooling follow-ups.                                                                                                                                 |
 | Archived `bb`/`backbetter` incorporation audit                            | 2026-04-27 | Audited archived `jerdaw/bb` and `jerdaw/backbetter` against current Finbot. All 290 tracked `bb` files were reconciled by bucket; no direct production port is recommended. Follow-up is limited to missing-data docs, optional logging/utility test polish, optional provider examples, and Backtrader reference handling. Archive note records crosswalk, reject list, and modernization requirements.                                                                                           |
 | P12 backtesting UX and product workflow hardening                         | 2026-04-24 | Closed the flagship backtesting workflow gap with value-path drawdown consistency, tabbed result workspaces, portfolio presets and saved portfolios, multi-portfolio comparison, share/export/chart controls, and mobile-safe dense tables. Archive note records validation and explicitly carries forward the component extraction follow-up.                                                                                                                                                     |

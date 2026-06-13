@@ -38,7 +38,7 @@ RUN set -eux; \
     uv sync --frozen --no-dev --no-install-project $extra_args
 
 # Keep pip on a patched version to avoid known container CVEs.
-RUN uv pip install --python /app/.venv/bin/python pip==26.0
+RUN uv pip install --python /app/.venv/bin/python pip==26.1
 
 # Stage 2: Runtime image
 FROM python:3.12-slim AS runtime
@@ -49,7 +49,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PATH="/app/.venv/bin:$PATH"
 
 # Patch system pip in the runtime image to address Trivy-reported CVEs.
-RUN python -m pip install --no-cache-dir --upgrade pip==26.0
+RUN python -m pip install --no-cache-dir --upgrade pip==26.1
 
 # Apply system security updates
 RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*

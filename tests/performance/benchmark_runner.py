@@ -85,6 +85,11 @@ def generate_synthetic_price_data(n_days: int, start_price: float = 100.0) -> pd
     return df
 
 
+def generate_synthetic_yield_data(index: pd.DatetimeIndex, annual_yield_pct: float = 5.0) -> pd.DataFrame:
+    """Generate deterministic overnight yield data for isolated benchmarks."""
+    return pd.DataFrame({"Yield": np.full(len(index), annual_yield_pct)}, index=index)
+
+
 def benchmark_fund_simulator(n_days: int = 2520, n_runs: int = 10) -> dict[str, Any]:
     """Benchmark fund_simulator performance.
 
@@ -97,6 +102,7 @@ def benchmark_fund_simulator(n_days: int = 2520, n_runs: int = 10) -> dict[str, 
     """
     # Generate test data
     price_df = generate_synthetic_price_data(n_days)
+    libor_yield_df = generate_synthetic_yield_data(price_df.index)
 
     # Warm-up run
     _ = fund_simulator(
@@ -105,6 +111,7 @@ def benchmark_fund_simulator(n_days: int = 2520, n_runs: int = 10) -> dict[str, 
         annual_er_pct=0.91 / 100,
         percent_daily_spread_cost=0.015 / 100,
         fund_swap_pct=2.5 / 3,
+        libor_yield_df=libor_yield_df,
     )
 
     # Benchmark runs with memory tracking
@@ -121,6 +128,7 @@ def benchmark_fund_simulator(n_days: int = 2520, n_runs: int = 10) -> dict[str, 
             annual_er_pct=0.91 / 100,
             percent_daily_spread_cost=0.015 / 100,
             fund_swap_pct=2.5 / 3,
+            libor_yield_df=libor_yield_df,
         )
         end = time.perf_counter()
 

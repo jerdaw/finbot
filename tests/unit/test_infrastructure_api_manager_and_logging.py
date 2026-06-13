@@ -216,3 +216,38 @@ def test_setup_queue_helpers(monkeypatch: pytest.MonkeyPatch) -> None:
     assert isinstance(queue_handler_b, logging.Handler)
     assert listener_a.started is True
     assert listener_b.started is True
+
+
+def test_queue_logging_enqueues_without_synchronous_handler_emit(monkeypatch: pytest.MonkeyPatch) -> None:
+    class _FailingSyncHandler(logging.Handler):
+        def emit(self, record: logging.LogRecord) -> None:
+            raise AssertionError("downstream handler should only be invoked by QueueListener")
+
+    class _DummyListener:
+        def __init__(self, _queue, *handlers: logging.Handler) -> None:
+            self.handlers = handlers
+            self.started = False
+
+        def start(self) -> None:
+            self.started = True
+
+        def stop(self) -> None:
+            self.started = False
+
+    base_logger = logging.getLogger("finbot.queue.enqueue.test")
+    base_logger.handlers = [_FailingSyncHandler()]
+    base_logger.setLevel(logging.INFO)
+    base_logger.propagate = False
+
+    monkeypatch.setattr("finbot.config.logging_config.dictConfig", lambda _cfg: None)
+    monkeypatch.setattr("finbot.config.logging_config.logging.getLogger", lambda _name=None: base_logger)
+    monkeypatch.setattr("finbot.config.logging_config.QueueListener", _DummyListener)
+    monkeypatch.setattr("finbot.config.logging_config.atexit.register", lambda _fn: None)
+
+    queue_handler, listener = _setup_queue_logging({"version": 1}, "finbot.queue.enqueue.test")
+    base_logger.addHandler(queue_handler)
+    base_logger.info("queued message")
+
+    queued_record = queue_handler.queue.get_nowait()
+    assert queued_record.getMessage() == "queued message"
+    assert listener.started is True

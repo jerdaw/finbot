@@ -18,19 +18,23 @@ class TestAlpacaProviderAvailability:
     def test_available_when_keys_set(self) -> None:
         from finbot.services.realtime_data._providers import alpaca_provider
 
-        with patch.dict("os.environ", {"ALPACA_API_KEY": "key", "ALPACA_SECRET_KEY": "secret"}):
+        with patch.object(
+            alpaca_provider,
+            "_get_headers",
+            return_value={"APCA-API-KEY-ID": "key", "APCA-API-SECRET-KEY": "secret"},
+        ):
             assert alpaca_provider.is_available() is True
 
     def test_unavailable_when_key_missing(self) -> None:
         from finbot.services.realtime_data._providers import alpaca_provider
 
-        with patch.dict("os.environ", {}, clear=True):
+        with patch.object(alpaca_provider, "_get_headers", side_effect=OSError("missing key")):
             assert alpaca_provider.is_available() is False
 
     def test_unavailable_when_secret_missing(self) -> None:
         from finbot.services.realtime_data._providers import alpaca_provider
 
-        with patch.dict("os.environ", {"ALPACA_API_KEY": "key"}, clear=True):
+        with patch.object(alpaca_provider, "_get_headers", side_effect=OSError("missing secret")):
             assert alpaca_provider.is_available() is False
 
 
@@ -144,13 +148,13 @@ class TestTwelveDataProviderAvailability:
     def test_available_when_key_set(self) -> None:
         from finbot.services.realtime_data._providers import twelvedata_provider
 
-        with patch.dict("os.environ", {"TWELVEDATA_API_KEY": "key"}):
+        with patch.object(twelvedata_provider, "_get_api_key", return_value="key"):
             assert twelvedata_provider.is_available() is True
 
     def test_unavailable_when_key_missing(self) -> None:
         from finbot.services.realtime_data._providers import twelvedata_provider
 
-        with patch.dict("os.environ", {}, clear=True):
+        with patch.object(twelvedata_provider, "_get_api_key", side_effect=OSError("missing key")):
             assert twelvedata_provider.is_available() is False
 
 
