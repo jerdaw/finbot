@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { ToolLayout } from "@/components/common/tool-layout";
@@ -31,8 +30,6 @@ import {
     PORTFOLIO_PRESETS,
 } from "@/app/backtesting/backtesting-options";
 import {
-    decodeSharedConfig,
-    encodeSharedConfig,
     getEndingValue,
 } from "@/lib/backtest-utils";
 import { BacktestingConfigurationPanel } from "@/app/backtesting/components/backtesting-configuration-panel";
@@ -46,6 +43,7 @@ import {
 } from "@/app/backtesting/backtesting-request-builder";
 import { useBacktestingFormActions } from "@/app/backtesting/use-backtesting-form-actions";
 import { useBacktestingPortfolioActions } from "@/app/backtesting/use-backtesting-portfolio-actions";
+import { useBacktestingRunActions } from "@/app/backtesting/use-backtesting-run-actions";
 
 export default function BacktestingPage() {
     // ---------------------------------------------------------------------------
@@ -295,61 +293,19 @@ export default function BacktestingPage() {
     ): BacktestRequest =>
         buildComparisonBacktestRequest({ portfolio, baseRequest, params });
 
-    const handleRun = () => {
-        const request = buildBacktestRequest();
-        if (!request) {
-            return;
-        }
-        mutation.mutate(request);
-    };
-
-    const handleShareConfig = async () => {
-        const request = buildBacktestRequest();
-        if (!request) {
-            return;
-        }
-
-        const url = new URL(window.location.href);
-        url.searchParams.set("config", encodeSharedConfig(request));
-        window.history.replaceState(null, "", url.toString());
-
-        try {
-            await navigator.clipboard.writeText(url.toString());
-            toast.success("Share link copied");
-        } catch {
-            toast.success("Share link added to the address bar");
-        }
-    };
-
-    // Load shared backtest configuration from URL ?config= param (once on mount).
-    // Note: savedPortfolios is now persisted automatically by the zustand store.
-    useEffect(() => {
-        const encodedConfig = new URLSearchParams(window.location.search).get("config");
-        if (encodedConfig) {
-            const sharedRequest = decodeSharedConfig(encodedConfig);
-            if (sharedRequest) {
-                applyBacktestRequestToForm(sharedRequest);
-                toast.success("Shared backtest configuration loaded");
-            }
-        }
-        // Shared links should hydrate only once.
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-
-    const handleSaveExperiment = () => {
-        if (!result?.stats || !lastRunRequest) {
-            toast.error("Run a backtest before saving an experiment.");
-            return;
-        }
-
-        saveExperimentMutation.mutate({
-            ...lastRunRequest,
-            stats: result.stats,
-        });
-    };
-
     const result = mutation.data;
+    const {
+        handleRun,
+        handleShareConfig,
+        handleSaveExperiment,
+    } = useBacktestingRunActions({
+        buildBacktestRequest,
+        runBacktest: mutation.mutate,
+        saveExperiment: saveExperimentMutation.mutate,
+        result,
+        lastRunRequest,
+        applyBacktestRequestToForm,
+    });
     const {
         stats,
         benchmarkStats,
