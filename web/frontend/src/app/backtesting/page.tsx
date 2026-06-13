@@ -106,6 +106,7 @@ import { RunSetupSection } from "@/app/backtesting/components/run-setup-section"
 import { AssumptionsSection } from "@/app/backtesting/components/assumptions-section";
 import { CashflowPlanningSection } from "@/app/backtesting/components/cashflow-planning-section";
 import { StrategyParametersSection } from "@/app/backtesting/components/strategy-parameters-section";
+import { StrategyAssetsSection } from "@/app/backtesting/components/strategy-assets-section";
 
 export default function BacktestingPage() {
     // ---------------------------------------------------------------------------
@@ -1815,44 +1816,13 @@ export default function BacktestingPage() {
                                 )}
                             </ConfigSection>
                         ) : (
-                            <ConfigSection
-                                title="Assets"
-                                description="Choose the instruments used by this strategy."
-                                defaultOpen={false}
-                                summary={
-                                    needsMultiAsset
-                                        ? `${ticker}, ${altTicker}`
-                                        : ticker
-                                }
-                            >
-                                <div className="space-y-2">
-                                    <Label className="text-xs text-muted-foreground">
-                                        Asset
-                                    </Label>
-                                    <Input
-                                        value={ticker}
-                                        onChange={(e) =>
-                                            setTicker(e.target.value)
-                                        }
-                                        className="border-border/50 bg-background/50"
-                                    />
-                                </div>
-
-                                {needsMultiAsset && (
-                                    <div className="space-y-2">
-                                        <Label className="text-xs text-muted-foreground">
-                                            Second Asset
-                                        </Label>
-                                        <Input
-                                            value={altTicker}
-                                            onChange={(e) =>
-                                                setAltTicker(e.target.value)
-                                            }
-                                            className="border-border/50 bg-background/50"
-                                        />
-                                    </div>
-                                )}
-                            </ConfigSection>
+                            <StrategyAssetsSection
+                                ticker={ticker}
+                                altTicker={altTicker}
+                                needsMultiAsset={Boolean(needsMultiAsset)}
+                                onTickerChange={setTicker}
+                                onAltTickerChange={setAltTicker}
+                            />
                         )}
 
                         <RunSetupSection
