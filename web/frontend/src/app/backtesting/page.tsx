@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/common/page-header";
 import { ConfigPanel } from "@/components/common/config-panel";
-import { ChartCard } from "@/components/common/chart-card";
 import { ToolLayout } from "@/components/common/tool-layout";
 import { EmptyState } from "@/components/common/empty-state";
 import { InlineError } from "@/components/common/inline-error";
@@ -18,7 +17,6 @@ import {
 import {
     Activity,
     Download,
-    Save,
     Share2,
 } from "lucide-react";
 import { apiGet, apiPost } from "@/lib/api";
@@ -77,16 +75,7 @@ import {
     buildExportBaseName,
     downloadFile,
 } from "@/lib/export-utils";
-import {
-    ComparisonResultsTab,
-    type ComparisonMetricsRow,
-} from "@/app/backtesting/components/comparison-results-tab";
-import { ReturnsTab } from "@/app/backtesting/components/returns-tab";
-import { AuditTab } from "@/app/backtesting/components/audit-tab";
-import { DiagnosticsTab } from "@/app/backtesting/components/diagnostics-tab";
-import { CashflowsTab } from "@/app/backtesting/components/cashflows-tab";
-import { OverviewTab } from "@/app/backtesting/components/overview-tab";
-import { ResultWorkspaceSummary } from "@/app/backtesting/components/result-workspace-summary";
+import type { ComparisonMetricsRow } from "@/app/backtesting/components/comparison-results-tab";
 import { RunSetupSection } from "@/app/backtesting/components/run-setup-section";
 import { AssumptionsSection } from "@/app/backtesting/components/assumptions-section";
 import { CashflowPlanningSection } from "@/app/backtesting/components/cashflow-planning-section";
@@ -94,6 +83,7 @@ import { StrategyParametersSection } from "@/app/backtesting/components/strategy
 import { StrategyAssetsSection } from "@/app/backtesting/components/strategy-assets-section";
 import { StrategySelectorSection } from "@/app/backtesting/components/strategy-selector-section";
 import { PortfolioBuilderSection } from "@/app/backtesting/components/portfolio-builder-section";
+import { ResultWorkspaceSection } from "@/app/backtesting/components/result-workspace-section";
 
 export default function BacktestingPage() {
     // ---------------------------------------------------------------------------
@@ -1506,113 +1496,71 @@ export default function BacktestingPage() {
                 )}
 
                 {hasResultWorkspace && (
-                    <>
-                        <ResultWorkspaceSummary
-                            stats={stats}
-                            title={
-                                resultSummaryRequest?.tickers.join(" / ") ??
-                                "Portfolio comparison"
-                            }
-                            strategy={resultSummaryRequest?.strategy}
-                            detail={
-                                result
-                                    ? `${lastRunRequest?.start_date} to ${lastRunRequest?.end_date} / ${formatCurrencyPrecise(getEndingValue(result))} ending value`
-                                    : `${comparisonRuns.length} portfolio${comparisonRuns.length === 1 ? "" : "s"} compared with shared dates, cashflows, costs, and data policy`
-                            }
-                            hasStaleResults={hasStaleResults}
-                            activeTab={activeResultTab}
-                            onTabChange={setActiveResultTab}
-                        />
-
-                        {activeResultTab === "audit" && (
-                            <AuditTab
-                                savedExperiment={savedExperiment}
-                                costSummary={costSummary}
-                                appliedCostAssumptions={appliedCostAssumptions}
-                                costBySymbolRows={costBySymbolRows}
-                                missingDataSummary={missingDataSummary}
-                                walkForwardRequest={walkForwardRequest}
-                                walkForwardHref={walkForwardHref}
-                                stats={stats}
-                            />
+                    <ResultWorkspaceSection
+                        stats={stats}
+                        title={
+                            resultSummaryRequest?.tickers.join(" / ") ??
+                            "Portfolio comparison"
+                        }
+                        strategy={resultSummaryRequest?.strategy}
+                        detail={
+                            result
+                                ? `${lastRunRequest?.start_date} to ${lastRunRequest?.end_date} / ${formatCurrencyPrecise(getEndingValue(result))} ending value`
+                                : `${comparisonRuns.length} portfolio${comparisonRuns.length === 1 ? "" : "s"} compared with shared dates, cashflows, costs, and data policy`
+                        }
+                        hasStaleResults={hasStaleResults}
+                        activeTab={activeResultTab}
+                        savedExperiment={savedExperiment}
+                        costSummary={costSummary}
+                        appliedCostAssumptions={appliedCostAssumptions}
+                        costBySymbolRows={costBySymbolRows}
+                        missingDataSummary={missingDataSummary}
+                        walkForwardRequest={walkForwardRequest}
+                        walkForwardHref={walkForwardHref}
+                        withdrawalDurability={withdrawalDurability}
+                        inflationAdjustedSeries={inflationAdjustedSeries}
+                        cashflowEvents={cashflowEvents}
+                        benchmarkStats={benchmarkStats}
+                        comparisonChartSeries={comparisonChartSeries}
+                        visiblePortfolioChartSeries={
+                            visiblePortfolioChartSeries
+                        }
+                        valueHistory={result?.value_history ?? []}
+                        portfolioChartLogScale={portfolioChartLogScale}
+                        showPortfolioSeries={showPortfolioSeries}
+                        showBenchmarkSeries={showBenchmarkSeries}
+                        overviewExportBaseName={buildExportBaseName(
+                            lastRunRequest,
                         )}
-
-                        {activeResultTab === "cashflows" && (
-                            <CashflowsTab
-                                withdrawalDurability={withdrawalDurability}
-                                inflationAdjustedSeries={
-                                    inflationAdjustedSeries
-                                }
-                                cashflowEvents={cashflowEvents}
-                            />
-                        )}
-
-                        {activeResultTab === "overview" && (
-                            <OverviewTab
-                                benchmarkStats={benchmarkStats}
-                                comparisonChartSeries={comparisonChartSeries}
-                                visiblePortfolioChartSeries={
-                                    visiblePortfolioChartSeries
-                                }
-                                valueHistory={result?.value_history ?? []}
-                                portfolioChartLogScale={
-                                    portfolioChartLogScale
-                                }
-                                showPortfolioSeries={showPortfolioSeries}
-                                showBenchmarkSeries={showBenchmarkSeries}
-                                exportBaseName={buildExportBaseName(
-                                    lastRunRequest,
-                                )}
-                                onTogglePortfolioSeries={() =>
-                                    setShowPortfolioSeries((value) => !value)
-                                }
-                                onToggleBenchmarkSeries={() =>
-                                    setShowBenchmarkSeries((value) => !value)
-                                }
-                                onToggleLogScale={() =>
-                                    setPortfolioChartLogScale(
-                                        (value) => !value,
-                                    )
-                                }
-                            />
-                        )}
-
-                        {activeResultTab === "diagnostics" && (
-                            <DiagnosticsTab
-                                rollingMetrics={rollingMetrics}
-                                rollingChartData={rollingChartData}
-                                regimeSummary={regimeSummary}
-                                regimePeriods={regimePeriods}
-                                regimeReferenceTicker={regimeReferenceTicker}
-                                allocationChartData={allocationChartData}
-                                allocationSeriesKeys={allocationSeriesKeys}
-                                allocationDriftSummary={allocationDriftSummary}
-                                rebalanceEvents={rebalanceEvents}
-                            />
-                        )}
-
-                        {activeResultTab === "comparison" && (
-                            <ComparisonResultsTab
-                                comparisonRuns={comparisonRuns}
-                                comparisonRows={comparisonRows}
-                                comparisonResultSeries={comparisonResultSeries}
-                                comparisonDrawdownSeries={
-                                    comparisonDrawdownSeries
-                                }
-                                exportBaseName={comparisonExportBaseName}
-                                onExportCsv={handleExportComparisonCsv}
-                            />
-                        )}
-
-                        {activeResultTab === "returns" && (
-                            <ReturnsTab
-                                monthlyReturns={monthlyReturns}
-                                annualReturns={annualReturns}
-                                trades={result?.trades ?? []}
-                            />
-                        )}
-
-                    </>
+                        rollingMetrics={rollingMetrics}
+                        rollingChartData={rollingChartData}
+                        regimeSummary={regimeSummary}
+                        regimePeriods={regimePeriods}
+                        regimeReferenceTicker={regimeReferenceTicker}
+                        allocationChartData={allocationChartData}
+                        allocationSeriesKeys={allocationSeriesKeys}
+                        allocationDriftSummary={allocationDriftSummary}
+                        rebalanceEvents={rebalanceEvents}
+                        comparisonRuns={comparisonRuns}
+                        comparisonRows={comparisonRows}
+                        comparisonResultSeries={comparisonResultSeries}
+                        comparisonDrawdownSeries={comparisonDrawdownSeries}
+                        comparisonExportBaseName={comparisonExportBaseName}
+                        monthlyReturns={monthlyReturns}
+                        annualReturns={annualReturns}
+                        trades={result?.trades ?? []}
+                        onTabChange={setActiveResultTab}
+                        onTogglePortfolioSeries={() =>
+                            setShowPortfolioSeries((value) => !value)
+                        }
+                        onToggleBenchmarkSeries={() =>
+                            setShowBenchmarkSeries((value) => !value)
+                        }
+                        onToggleLogScale={() =>
+                            setPortfolioChartLogScale((value) => !value)
+                        }
+                        onExportComparisonCsv={handleExportComparisonCsv}
+                    />
                 )}
 
                 {mutation.isError && (
