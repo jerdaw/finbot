@@ -2,10 +2,7 @@
 
 import { useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import Link from "next/link";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { PageHeader } from "@/components/common/page-header";
 import { ToolLayout } from "@/components/common/tool-layout";
 import { EmptyState } from "@/components/common/empty-state";
 import { InlineError } from "@/components/common/inline-error";
@@ -15,8 +12,6 @@ import {
 } from "@/components/common/loading-skeleton";
 import {
     Activity,
-    Download,
-    Share2,
 } from "lucide-react";
 import { apiGet, apiPost } from "@/lib/api";
 import { formatCurrencyPrecise } from "@/lib/format";
@@ -45,6 +40,7 @@ import {
     getEndingValue,
 } from "@/lib/backtest-utils";
 import { BacktestingConfigurationPanel } from "@/app/backtesting/components/backtesting-configuration-panel";
+import { BacktestingPageHeader } from "@/app/backtesting/components/backtesting-page-header";
 import { ResultWorkspaceSection } from "@/app/backtesting/components/result-workspace-section";
 import { useBacktestExports } from "@/app/backtesting/use-backtest-exports";
 import { buildBacktestResultData } from "@/app/backtesting/backtesting-result-data";
@@ -518,76 +514,18 @@ export default function BacktestingPage() {
 
     return (
         <div className="space-y-8">
-            <PageHeader
-                title="Strategy Backtester"
-                description="Run allocation backtests or trading strategies on historical data"
-                actions={
-                    <>
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={handleShareConfig}
-                        >
-                            <Share2 className="h-3.5 w-3.5" />
-                            Share Setup
-                        </Button>
-                        {result ? (
-                        <>
-                            {walkForwardRequest && (
-                                <Button asChild type="button" variant="outline">
-                                    <Link href={walkForwardHref}>
-                                        Continue to Walk-Forward
-                                    </Link>
-                                </Button>
-                            )}
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={handleExportCsv}
-                            >
-                                <Download className="h-3.5 w-3.5" />
-                                Export CSV
-                            </Button>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={handleExportReturnsCsv}
-                            >
-                                <Download className="h-3.5 w-3.5" />
-                                Returns
-                            </Button>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={handleExportTradesCsv}
-                            >
-                                <Download className="h-3.5 w-3.5" />
-                                Trades
-                            </Button>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={handleExportJson}
-                            >
-                                <Download className="h-3.5 w-3.5" />
-                                Export JSON
-                            </Button>
-                            <Button
-                                onClick={handleSaveExperiment}
-                                disabled={
-                                    saveExperimentMutation.isPending ||
-                                    !lastRunRequest
-                                }
-                                className="bg-gradient-to-r from-emerald-600 to-emerald-500 font-medium text-white shadow-lg shadow-emerald-500/20"
-                            >
-                                {saveExperimentMutation.isPending
-                                    ? "Saving..."
-                                    : "Save Experiment"}
-                            </Button>
-                        </>
-                        ) : null}
-                    </>
-                }
+            <BacktestingPageHeader
+                result={result}
+                walkForwardRequest={walkForwardRequest}
+                walkForwardHref={walkForwardHref}
+                saveExperimentIsPending={saveExperimentMutation.isPending}
+                canSaveExperiment={Boolean(lastRunRequest)}
+                onShareConfig={handleShareConfig}
+                onExportCsv={handleExportCsv}
+                onExportReturnsCsv={handleExportReturnsCsv}
+                onExportTradesCsv={handleExportTradesCsv}
+                onExportJson={handleExportJson}
+                onSaveExperiment={handleSaveExperiment}
             />
 
             <ToolLayout
