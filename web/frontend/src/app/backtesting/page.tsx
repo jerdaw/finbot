@@ -106,6 +106,7 @@ import { DiagnosticsTab } from "@/app/backtesting/components/diagnostics-tab";
 import { CashflowsTab } from "@/app/backtesting/components/cashflows-tab";
 import { OverviewTab } from "@/app/backtesting/components/overview-tab";
 import { ResultWorkspaceSummary } from "@/app/backtesting/components/result-workspace-summary";
+import { RunSetupSection } from "@/app/backtesting/components/run-setup-section";
 
 export default function BacktestingPage() {
     // ---------------------------------------------------------------------------
@@ -1855,88 +1856,18 @@ export default function BacktestingPage() {
                             </ConfigSection>
                         )}
 
-                        <ConfigSection
-                            title="Run setup"
-                            description="Set the date window, capital base, benchmark, and risk-free rate."
-                            defaultOpen={false}
-                            summary={`${startDate} to ${endDate} / $${formatNumber(cash, 0)}`}
-                        >
-                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:col-span-2">
-                            <div className="space-y-1.5">
-                                <Label className="text-xs text-muted-foreground">
-                                    Start
-                                </Label>
-                                <Input
-                                    type="date"
-                                    value={startDate}
-                                    onChange={(e) =>
-                                        setStartDate(e.target.value)
-                                    }
-                                    className="border-border/50 bg-background/50"
-                                />
-                            </div>
-                            <div className="space-y-1.5">
-                                <Label className="text-xs text-muted-foreground">
-                                    End
-                                </Label>
-                                <Input
-                                    type="date"
-                                    value={endDate}
-                                    onChange={(e) => setEndDate(e.target.value)}
-                                    className="border-border/50 bg-background/50"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label className="text-xs text-muted-foreground">
-                                Initial Cash ($)
-                            </Label>
-                            <Input
-                                type="number"
-                                value={cash}
-                                onChange={(e) =>
-                                    setCash(Number(e.target.value))
-                                }
-                                className="border-border/50 bg-background/50"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label className="text-xs text-muted-foreground">
-                                Benchmark Ticker
-                            </Label>
-                            <Input
-                                value={benchmarkTicker}
-                                onChange={(e) =>
-                                    setBenchmarkTicker(e.target.value)
-                                }
-                                placeholder="Leave blank to skip benchmark analysis"
-                                className="border-border/50 bg-background/50"
-                            />
-                            <p className="text-[11px] leading-relaxed text-muted-foreground/70">
-                                Compare the backtest to a benchmark on the same
-                                date range. Leave blank to keep the existing
-                                no-benchmark workflow.
-                            </p>
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label className="text-xs text-muted-foreground">
-                                Risk-Free Rate
-                            </Label>
-                            <Input
-                                type="number"
-                                step={0.01}
-                                min={0}
-                                max={1}
-                                value={riskFreeRate}
-                                onChange={(e) =>
-                                    setRiskFreeRate(Number(e.target.value))
-                                }
-                                className="border-border/50 bg-background/50"
-                            />
-                        </div>
-                        </ConfigSection>
+                        <RunSetupSection
+                            startDate={startDate}
+                            endDate={endDate}
+                            cash={cash}
+                            benchmarkTicker={benchmarkTicker}
+                            riskFreeRate={riskFreeRate}
+                            onStartDateChange={setStartDate}
+                            onEndDateChange={setEndDate}
+                            onCashChange={setCash}
+                            onBenchmarkTickerChange={setBenchmarkTicker}
+                            onRiskFreeRateChange={setRiskFreeRate}
+                        />
 
                         <ConfigSection
                             title="Data and execution assumptions"
