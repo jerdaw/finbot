@@ -105,6 +105,7 @@ import { ResultWorkspaceSummary } from "@/app/backtesting/components/result-work
 import { RunSetupSection } from "@/app/backtesting/components/run-setup-section";
 import { AssumptionsSection } from "@/app/backtesting/components/assumptions-section";
 import { CashflowPlanningSection } from "@/app/backtesting/components/cashflow-planning-section";
+import { StrategyParametersSection } from "@/app/backtesting/components/strategy-parameters-section";
 
 export default function BacktestingPage() {
     // ---------------------------------------------------------------------------
@@ -1899,36 +1900,11 @@ export default function BacktestingPage() {
                             onRemoveOneTimeCashflow={removeOneTimeCashflow}
                         />
 
-                        {/* Dynamic strategy params */}
-                        {currentStrategy && currentStrategy.params.length > 0 ? (
-                            <ConfigSection
-                                title="Strategy parameters"
-                                description="Fine-tune the selected strategy's numeric inputs."
-                                defaultOpen={false}
-                            >
-                                {currentStrategy.params.map((p) => (
-                                    <div key={p.name} className="space-y-1.5">
-                                        <Label className="text-xs text-muted-foreground">
-                                            {p.description || p.name}
-                                        </Label>
-                                        <Input
-                                            type="number"
-                                            step={p.type === "float" ? 0.01 : 1}
-                                            value={params[p.name] ?? p.default}
-                                            onChange={(e) =>
-                                                setParams((prev) => ({
-                                                    ...prev,
-                                                    [p.name]: Number(
-                                                        e.target.value,
-                                                    ),
-                                                }))
-                                            }
-                                            className="border-border/50 bg-background/50"
-                                        />
-                                    </div>
-                                ))}
-                            </ConfigSection>
-                        ) : null}
+                        <StrategyParametersSection
+                            strategy={currentStrategy}
+                            params={params}
+                            onParamsChange={setParams}
+                        />
 
                         <div className="col-span-full flex justify-end border-t border-border/40 pt-4">
                             <div className="w-full sm:w-auto sm:min-w-48">
