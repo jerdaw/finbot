@@ -1,6 +1,5 @@
 "use client";
 
-import { toast } from "sonner";
 import { ToolLayout } from "@/components/common/tool-layout";
 import { EmptyState } from "@/components/common/empty-state";
 import { InlineError } from "@/components/common/inline-error";
@@ -13,12 +12,6 @@ import {
 } from "lucide-react";
 import { formatCurrencyPrecise } from "@/lib/format";
 import { useBacktestStore } from "@/stores/backtest-store";
-import type {
-    BacktestRequest,
-} from "@/types/api";
-import type {
-    ComparisonPortfolio,
-} from "@/stores/backtest-store";
 import { PORTFOLIO_PRESETS } from "@/app/backtesting/backtesting-options";
 import {
     getEndingValue,
@@ -28,15 +21,12 @@ import { BacktestingPageHeader } from "@/app/backtesting/components/backtesting-
 import { ResultWorkspaceSection } from "@/app/backtesting/components/result-workspace-section";
 import { useBacktestExports } from "@/app/backtesting/use-backtest-exports";
 import { buildBacktestResultData } from "@/app/backtesting/backtesting-result-data";
-import {
-    buildBacktestRequestPayload,
-    buildComparisonBacktestRequest,
-} from "@/app/backtesting/backtesting-request-builder";
 import { useBacktestingConfigurationData } from "@/app/backtesting/use-backtesting-configuration-data";
 import { useBacktestingFormActions } from "@/app/backtesting/use-backtesting-form-actions";
 import { useBacktestingMutations } from "@/app/backtesting/use-backtesting-mutations";
 import { useBacktestingPortfolioActions } from "@/app/backtesting/use-backtesting-portfolio-actions";
 import { useBacktestingRunActions } from "@/app/backtesting/use-backtesting-run-actions";
+import { useBacktestingRequestBuilders } from "@/app/backtesting/use-backtesting-request-builders";
 
 export default function BacktestingPage() {
     // ---------------------------------------------------------------------------
@@ -119,42 +109,31 @@ export default function BacktestingPage() {
         setParams,
     });
 
-    const buildBacktestRequest = (): BacktestRequest | null => {
-        const requestResult = buildBacktestRequestPayload({
-            params,
-            costAssumptions,
-            recurringContribution,
-            contributionFrequency,
-            recurringWithdrawal,
-            withdrawalFrequency,
-            startDate,
-            endDate,
-            oneTimeCashflows,
-            isAllocationStrategy,
-            portfolioAssets,
-            strategy,
-            ticker,
-            altTicker,
-            needsMultiAsset,
-            cash,
-            benchmarkTicker,
-            riskFreeRate,
-            inflationRate,
-            missingDataPolicy,
-        });
-        if (requestResult.error) {
-            toast.error(requestResult.error);
-            return null;
-        }
-
-        return requestResult.request;
-    };
-
-    const buildComparisonRequest = (
-        portfolio: ComparisonPortfolio,
-        baseRequest: BacktestRequest,
-    ): BacktestRequest =>
-        buildComparisonBacktestRequest({ portfolio, baseRequest, params });
+    const {
+        buildBacktestRequest,
+        buildComparisonRequest,
+    } = useBacktestingRequestBuilders({
+        params,
+        costAssumptions,
+        recurringContribution,
+        contributionFrequency,
+        recurringWithdrawal,
+        withdrawalFrequency,
+        startDate,
+        endDate,
+        oneTimeCashflows,
+        isAllocationStrategy,
+        portfolioAssets,
+        strategy,
+        ticker,
+        altTicker,
+        needsMultiAsset,
+        cash,
+        benchmarkTicker,
+        riskFreeRate,
+        inflationRate,
+        missingDataPolicy,
+    });
 
     const {
         mutation,
