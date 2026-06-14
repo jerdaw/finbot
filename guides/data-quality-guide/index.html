@@ -2796,6 +2796,23 @@
   
 </li>
         
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#missing-data-policy-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Missing Data Policy Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Missing Data Policy Reference">
+      <ul class="md-nav__list">
+        
           <li class="md-nav__item">
   <a href="#example-validating-price-history" class="md-nav__link">
     <span class="md-ellipsis">
@@ -3397,6 +3414,23 @@
   </a>
   
 </li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#missing-data-policy-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Missing Data Policy Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Missing Data Policy Reference">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#example-validating-price-history" class="md-nav__link">
@@ -4040,6 +4074,58 @@
 </span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="n">result</span><span class="o">.</span><span class="n">warnings</span>          <span class="c1"># list[str]: Non-blocking warnings</span>
 </span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="n">result</span><span class="o">.</span><span class="n">file_path</span>         <span class="c1"># Path: Source file path</span>
 </span></code></pre></div>
+<hr />
+<h2 id="missing-data-policy-reference">Missing Data Policy Reference<a class="headerlink" href="#missing-data-policy-reference" title="Permanent link">&para;</a></h2>
+<p>Backtests and data-quality checks should treat missing observations as an
+explicit assumption, not as a silent preprocessing detail. Finbot's backtesting
+contracts expose five missing-data policies:</p>
+<table>
+<thead>
+<tr>
+<th>Policy</th>
+<th>What it does</th>
+<th>Good fit</th>
+<th>Tradeoff</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FORWARD_FILL</code></td>
+<td>Carries the last known value forward.</td>
+<td>Sparse market-data gaps where preserving continuity matters.</td>
+<td>Can understate stale-price risk and hide upstream data issues.</td>
+</tr>
+<tr>
+<td><code>DROP</code></td>
+<td>Removes rows with missing observations after alignment.</td>
+<td>Research runs where complete shared dates matter more than sample length.</td>
+<td>Shortens the sample and can bias results if gaps cluster by asset or period.</td>
+</tr>
+<tr>
+<td><code>ERROR</code></td>
+<td>Fails fast when missing data is detected.</td>
+<td>Validation, regression tests, production checks, and high-trust reports.</td>
+<td>Requires clean inputs before the run can proceed.</td>
+</tr>
+<tr>
+<td><code>INTERPOLATE</code></td>
+<td>Uses linear interpolation between known values.</td>
+<td>Smooth economic series or exploratory diagnostics over small gaps.</td>
+<td>Can invent prices that were never tradable and should be avoided for execution realism.</td>
+</tr>
+<tr>
+<td><code>BACKFILL</code></td>
+<td>Uses the next known value to fill earlier gaps.</td>
+<td>Initial warm-up gaps in controlled offline analysis.</td>
+<td>Leaks future information if used in a chronological backtest.</td>
+</tr>
+</tbody>
+</table>
+<p>Practical default: use <code>FORWARD_FILL</code> for routine exploratory backtests, use
+<code>ERROR</code> for validation or published evidence, and document any <code>DROP</code>,
+<code>INTERPOLATE</code>, or <code>BACKFILL</code> run in the result assumptions. Before changing the
+policy, inspect the gap count and where gaps occur; a few isolated market-holiday
+alignment gaps are different from a symbol missing an entire regime.</p>
 <h3 id="example-validating-price-history">Example: Validating Price History<a class="headerlink" href="#example-validating-price-history" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 </span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">finbot.utils.pandas_utils.load_df</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_df</span>
@@ -4367,12 +4453,10 @@
 </span></code></pre></div>
 </li>
 <li>
-<p><strong>Set up automated monitoring (cron/systemd):</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="c1"># Daily update at 6 PM (after market close)</span>
-</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a><span class="m">0</span><span class="w"> </span><span class="m">18</span><span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span><span class="m">1</span>-5<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/path/to/finbot<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>finbot<span class="w"> </span>update
-</span><span id="__span-35-3"><a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>
-</span><span id="__span-35-4"><a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a><span class="c1"># Daily status check at 7 PM</span>
-</span><span id="__span-35-5"><a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a><span class="m">0</span><span class="w"> </span><span class="m">19</span><span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/path/to/finbot<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>finbot<span class="w"> </span>status<span class="w"> </span>--stale-only
+<p><strong>Schedule local checks with your preferred scheduler:</strong></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="c1"># Example commands for a local scheduler</span>
+</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a>finbot<span class="w"> </span>update
+</span><span id="__span-35-3"><a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>finbot<span class="w"> </span>status<span class="w"> </span>--stale-only
 </span></code></pre></div>
 </li>
 <li>
@@ -4390,7 +4474,7 @@
 </span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a>finbot<span class="w"> </span>update
 </span><span id="__span-37-3"><a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a>
 </span><span id="__span-37-4"><a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a><span class="c1"># Troubleshooting</span>
-</span><span id="__span-37-5"><a id="__codelineno-37-5" name="__codelineno-37-5" href="#__codelineno-37-5"></a><span class="w"> </span>finbot<span class="w"> </span>--verbose<span class="w"> </span>update
+</span><span id="__span-37-5"><a id="__codelineno-37-5" name="__codelineno-37-5" href="#__codelineno-37-5"></a>finbot<span class="w"> </span>--verbose<span class="w"> </span>update
 </span></code></pre></div>
 </li>
 </ol>
@@ -4439,7 +4523,7 @@
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Audit data quality metrics</li>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Review and update data source registry</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Test disaster recovery (restore from backup)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Review recovery assumptions with non-sensitive sample data</li>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Update data collection utilities for API changes</li>
 </ul>
 <hr />
@@ -4492,7 +4576,7 @@
 <ol>
 <li>Recent logs: <code>tail -n 100 logs/finbot.log</code></li>
 <li>Network connectivity: <code>ping finance.yahoo.com</code></li>
-<li>API keys: <code>env | grep API_KEY</code></li>
+<li>API keys: verify required environment variables are set without printing values</li>
 <li>Disk space: <code>df -h</code></li>
 </ol>
 <p><strong>Still stuck?</strong> File an issue with:</p>
