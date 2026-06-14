@@ -11,7 +11,9 @@ updates:
       day: "monday"
       time: "09:00"
       timezone: "America/New_York"
-    open-pull-requests-limit: 2
+    # Temporarily pause broad version-update PRs while GitHub Actions minutes
+    # recover. Re-enable through a narrow, human-reviewed maintenance pass.
+    open-pull-requests-limit: 0
     labels:
       - "dependencies"
       - "python"
@@ -36,7 +38,9 @@ updates:
       day: "monday"
       time: "09:00"
       timezone: "America/New_York"
-    open-pull-requests-limit: 2
+    # Temporarily pause broad version-update PRs while GitHub Actions minutes
+    # recover. Re-enable through a narrow, human-reviewed maintenance pass.
+    open-pull-requests-limit: 0
     labels:
       - "dependencies"
       - "github-actions"
@@ -60,7 +64,9 @@ updates:
       day: "monday"
       time: "09:00"
       timezone: "America/New_York"
-    open-pull-requests-limit: 1
+    # Temporarily pause broad version-update PRs while GitHub Actions minutes
+    # recover. Re-enable through a narrow, human-reviewed maintenance pass.
+    open-pull-requests-limit: 0
     labels:
       - "dependencies"
     commit-message:
@@ -89,7 +95,9 @@ updates:
       day: "monday"
       time: "09:00"
       timezone: "America/New_York"
-    open-pull-requests-limit: 1
+    # Temporarily pause broad version-update PRs while GitHub Actions minutes
+    # recover. Re-enable through a narrow, human-reviewed maintenance pass.
+    open-pull-requests-limit: 0
     labels:
       - "dependencies"
     commit-message:

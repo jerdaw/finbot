@@ -4,8 +4,6 @@ on:
   schedule:
     - cron: "0 9 * * 1"
   workflow_dispatch:
-  push:
-    branches: [main]
 
 concurrency:
   group: ci-heavy-${{ github.ref }}
@@ -27,7 +25,7 @@ jobs:
         run: uv python install 3.13
 
       - name: Install dependencies
-        run: uv sync --all-extras
+        run: uv sync --locked --all-extras
 
       - name: Check docstring coverage with interrogate
         run: uv run interrogate finbot/
@@ -47,7 +45,7 @@ jobs:
         run: uv python install 3.13
 
       - name: Install dependencies
-        run: uv sync --all-extras --no-dev
+        run: uv sync --locked --all-extras --no-dev
 
       - name: Security scan with bandit
         run: uv run --all-extras --no-dev --with bandit bandit -r finbot/ -ll
@@ -70,7 +68,7 @@ jobs:
         run: uv python install 3.13
 
       - name: Install dependencies
-        run: uv sync --all-extras
+        run: uv sync --locked --all-extras
 
       - name: Generate third-party licenses report
         run: |
@@ -133,7 +131,7 @@ jobs:
         run: uv python install ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: uv sync --all-extras
+        run: uv sync --locked --all-extras
 
       - name: Run tests with coverage
         env:
@@ -162,7 +160,7 @@ jobs:
         run: uv python install 3.13
 
       - name: Install dependencies
-        run: uv sync --all-extras
+        run: uv sync --locked --all-extras
 
       - name: Run full parity suite
         env:

@@ -2,13 +2,13 @@
 
 **Created:** 2026-02-10
 **Last Updated:** 2026-06-13
-**Status:** Priority 0-10 and P12 complete. P11 decision track remains open. Safe autonomous docs/test/verification follow-ups are complete; the remaining archived-reuse item is a Backtrader PDF licensing/storage decision.
+**Status:** Priority 0-10 and P12 complete. P11 decision track remains open. Safe autonomous docs/test/verification follow-ups and the backtesting page decomposition follow-up are complete; the remaining archived-reuse item is a Backtrader PDF licensing/storage decision.
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on repository professionalization, public documentation quality, and durable communication surfaces.
 
 See Completed Items table below and git history for details on implemented features.
 
-**Current Plan Record:** None active. Last archived plan: `docs/planning/archive/autonomous-maintenance-follow-up-2026-06-13.md`
+**Current Plan Record:** None active. Last archived plan: `docs/planning/archive/backtesting-page-decomposition-follow-up-2026-06-13.md`
 
 ---
 
@@ -68,18 +68,17 @@ Closed the remaining autonomous frontend operations work: responsive/mobile layo
 
 **Status:** COMPLETE (2026-04-24)
 
-Closed the product-quality backtesting workflow pass: canonical drawdown metrics, tabbed result workspace, stronger portfolio builder and presets, multi-portfolio comparison, share/reuse/export flows, chart controls, and mobile dense-output handling. The archived plan records validation and the maintainability follow-up.
+Closed the product-quality backtesting workflow pass: canonical drawdown metrics, tabbed result workspace, stronger portfolio builder and presets, multi-portfolio comparison, share/reuse/export flows, chart controls, and mobile dense-output handling. The later page-decomposition follow-up split the large page module into local hooks, result helpers, components, and a thin route entry point.
 
 ## Deferred / On Hold Backlog
 
-- [ ] Continue splitting `web/frontend/src/app/backtesting/page.tsx` into local backtesting helpers/components before the next large backtesting feature tranche; P12 behavior is complete and static options/helpers have been extracted, but the page remains too large for comfortable long-term maintenance.
 - [ ] Do not port archived `bb`/`backbetter` code wholesale; only pursue the narrow docs/test follow-ups recorded in `docs/planning/archive/archived-bb-backbetter-incorporation-audit-2026-04-27.md`.
 - [ ] Add tests for `approximate_overnight_libor` once stable FRED-backed validation inputs are practical.
 - [ ] Apply the data-driven config pattern to `sim_specific_bond_indexes.py` if that small surface ever grows beyond the current lightweight implementation.
 - [ ] Add options-overlay strategy/tooling once pricing-model depth and options-chain data are available.
 - [ ] Investigate epidemiological backtesting only if the project adds a purpose-built non-finance simulator rather than stretching Backtrader beyond fit.
-- [ ] Define a protected-branch-compatible human-authored replay workflow for low-risk Dependabot updates if manual handling becomes burdensome.
-- [ ] Keep broad dependency batches and major GitHub Action upgrades on human-authored replay branches rather than direct bot merges.
+- [ ] Recreate low-risk dependency updates on narrow human-authored branches after GitHub Actions quota allows proper validation; close broad stale bot PRs rather than merging failing batches.
+- [ ] Keep broad dependency batches and major runtime or GitHub Action upgrades on human-authored replay branches rather than direct bot merges.
 - [ ] Revisit broader browser coverage only when GitHub Actions minutes or budget allow Firefox/WebKit or heavier browser matrices; keep the current frontend suite mocked and Chromium-only.
 - [ ] Finalize a human-approved project logo or brand guide before reopening branding work.
 - [ ] Record the planned overview and tutorial videos plus the project poster once user-provided narration/design assets exist.
@@ -93,6 +92,7 @@ Closed the product-quality backtesting workflow pass: canonical drawdown metrics
 
 | Item                                                                      | Completed  | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | :------------------------------------------------------------------------ | :--------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Backtesting page decomposition follow-up                                  | 2026-06-13 | Completed the P12 maintainability follow-up by extracting the main backtesting page into local options, request/result helpers, action hooks, a page controller, and a workspace component; `page.tsx` is now a thin route entry point. PRs #109 and #110 passed CI before merge.                                                                                                                                                                                                                |
 | Autonomous maintenance follow-up                                           | 2026-06-13 | Closed safe archived-reuse and public-cleanup follow-ups: missing-data policy tradeoff docs, provider-wrapper examples, deterministic queue-logging coverage, implemented outlier/data-integrity utility tests, Gitleaks git-history and tracked-worktree scans, tracked parquet content checks, and a behavior-preserving backtesting frontend extraction/typecheck pass. Backtrader PDF handling remains an external license/storage decision.                                          |
 | Public GitHub cleanup                                                     | 2026-06-04 | Strengthened educational/research disclaimers, added the public documentation boundary, generalized private paths and token-like examples, added ignored local private-note patterns, replaced non-human team author labels with the actual human author, verified agent symlinks and human-only commit authorship, and recorded scanner/parquet tooling follow-ups.                                                                                                                                 |
 | Archived `bb`/`backbetter` incorporation audit                            | 2026-04-27 | Audited archived `jerdaw/bb` and `jerdaw/backbetter` against current Finbot. All 290 tracked `bb` files were reconciled by bucket; no direct production port is recommended. Follow-up is limited to missing-data docs, optional logging/utility test polish, optional provider examples, and Backtrader reference handling. Archive note records crosswalk, reject list, and modernization requirements.                                                                                           |

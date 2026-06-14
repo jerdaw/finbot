@@ -98,12 +98,12 @@ make run-update
 - `make clean` - Remove cache files and build artifacts
 - `make all` - Run full CI pipeline (check + test)
 
-## Current Implementation Status (2026-04-24)
+## Current Implementation Status (2026-06-13)
 
 Priority 0-10 is complete. Priority 11 remains a documentation-platform decision track.
 
 - **P0-P9 Complete**: Engine-agnostic contracts, Backtrader adapter path, parity gates, cost and corporate-action fidelity, walk-forward analysis, regime detection, experiment tracking, execution simulation, and runtime hardening are in place. Risk analytics, portfolio analytics, real-time quotes, factor analytics, and health economics surfaces are implemented across services and Streamlit.
-- **P10 Complete**: Next.js frontend completion, frontend hardening, public packaging alignment, the allocation backtesting research workspace, adjacent bond-ladder / multi-asset Monte Carlo / Pareto / efficient-frontier workspaces, responsive/mobile hardening, deeper mocked Chromium workflows, and provider-neutral Docker deployment readiness are landed.
+- **P10/P12 Complete**: Next.js frontend completion, frontend hardening, public packaging alignment, the allocation backtesting research workspace, adjacent bond-ladder / multi-asset Monte Carlo / Pareto / efficient-frontier workspaces, responsive/mobile hardening, deeper mocked Chromium workflows, provider-neutral Docker deployment readiness, and the post-P12 backtesting page decomposition are landed.
 - **CI Status**: Core Python quality and test gates run on push and PR to `main`. Frontend quality runs typecheck, production build, and mocked Chromium browser workflows when frontend-relevant files change.
 
 Tracking docs:
@@ -113,6 +113,7 @@ Tracking docs:
 - `docs/planning/archive/public-packaging-and-docs-alignment-2026-04-16.md`
 - `docs/planning/archive/backtesting-followthrough-and-adjacent-research-closeout-2026-04-18.md`
 - `docs/planning/archive/p10-autonomous-finish-pass-2026-04-24.md`
+- `docs/planning/archive/backtesting-page-decomposition-follow-up-2026-06-13.md`
 - `docs/adr/ADR-011-nautilus-decision.md`
 - `docs/adr/ADR-015-nextjs-frontend-completion.md`
 

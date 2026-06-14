@@ -47,7 +47,7 @@ uv run python scripts/update_daily.py
 - Repo contributors should use `uv sync --all-extras`.
 - The root `Dockerfile` builds the CLI image by default; dashboard and API images opt into extras explicitly.
 
-## Current Delivery Status (2026-04-24)
+## Current Delivery Status (2026-06-13)
 
 **P0-P10 and P12 complete. P11 decision track remains open.**
 
@@ -57,9 +57,9 @@ uv run python scripts/update_daily.py
 - **P8** (100%): Risk Analytics, Portfolio Analytics, Real-Time Data, Factor Analytics
 - **P9** (100%): Agent tooling and runtime hardening — P9.1-P9.4 complete
 - **P10** (100%): Next.js frontend — 12 task pages complete, the main backtesting page now supports allocation building, benchmark analysis, return tables, experiment lineage, rolling/regime diagnostics, export, cashflow planning, allocation drift/rebalance inspection, surfaced cost assumptions, missing-data policy reporting, and walk-forward handoff; the simulations, Monte Carlo, and optimizer workspaces now also cover bond ladder, multi-asset Monte Carlo, Pareto, and efficient frontier research; the operational finish pass added responsive/mobile hardening, deeper mocked Chromium workflows, frontend/backend Docker healthchecks, runtime frontend API-origin configuration, and provider-neutral web deployment documentation
-- **P12** (100%): Backtesting UX and product workflow hardening — canonical value-path drawdown metrics, tabbed result workspace, portfolio presets, saved portfolios, multi-portfolio comparison, share/export/chart controls, and mobile-safe dense outputs complete
+- **P12** (100%): Backtesting UX and product workflow hardening — canonical value-path drawdown metrics, tabbed result workspace, portfolio presets, saved portfolios, multi-portfolio comparison, share/export/chart controls, mobile-safe dense outputs, and post-P12 backtesting page decomposition complete
 
-**Tracking docs:** `docs/planning/roadmap.md`, `docs/planning/archive/audit-remediation-and-frontend-hardening-2026-04-15.md`, `docs/planning/archive/public-packaging-and-docs-alignment-2026-04-16.md`, `docs/planning/archive/docs-maintenance-and-roadmap-reconciliation-2026-04-16.md`, `docs/planning/archive/backtesting-workflow-expansion-and-research-workspace-pass-2026-04-17.md`, `docs/planning/archive/backtesting-followthrough-and-adjacent-research-closeout-2026-04-18.md`, `docs/planning/archive/p10-autonomous-finish-pass-2026-04-24.md`, `docs/planning/archive/backtesting-ux-product-workflow-hardening-2026-04-24.md`, `docs/planning/backtesting-live-readiness-backlog.md`, `docs/planning/priority-5-6-completion-status.md`, `docs/adr/ADR-011-nautilus-decision.md`
+**Tracking docs:** `docs/planning/roadmap.md`, `docs/planning/archive/audit-remediation-and-frontend-hardening-2026-04-15.md`, `docs/planning/archive/public-packaging-and-docs-alignment-2026-04-16.md`, `docs/planning/archive/docs-maintenance-and-roadmap-reconciliation-2026-04-16.md`, `docs/planning/archive/backtesting-workflow-expansion-and-research-workspace-pass-2026-04-17.md`, `docs/planning/archive/backtesting-followthrough-and-adjacent-research-closeout-2026-04-18.md`, `docs/planning/archive/p10-autonomous-finish-pass-2026-04-24.md`, `docs/planning/archive/backtesting-ux-product-workflow-hardening-2026-04-24.md`, `docs/planning/archive/backtesting-page-decomposition-follow-up-2026-06-13.md`, `docs/planning/backtesting-live-readiness-backlog.md`, `docs/planning/priority-5-6-completion-status.md`, `docs/adr/ADR-011-nautilus-decision.md`
 
 ## Authorship and Attribution
 
@@ -294,7 +294,7 @@ Entry point: `web/backend/main.py` (mounted at `/api/`). Requires `uv sync --ext
 Next.js 16 App Router with React 19, Tailwind CSS v4, shadcn/ui, Recharts, Framer Motion, Zustand.
 
 - **`src/app/`**: Dashboard home + 12 task pages — simulations, backtesting, optimizer, monte-carlo, walk-forward, experiments, risk-analytics, portfolio-analytics, factor-analytics, realtime-quotes, data-status, health-economics
-- **`src/app/backtesting/page.tsx`**: Flagship portfolio research workspace with allocation builder, benchmark controls, export, experiment save, cashflow/drift/regime views, explicit cost/missing-data controls, and walk-forward handoff
+- **`src/app/backtesting/page.tsx`**: Thin route entry point for the flagship portfolio research workspace; page orchestration lives in `use-backtesting-page-controller.ts` and rendering lives in `components/backtesting-workspace.tsx`
 - **`src/lib/`**: Foundation utilities — `utils.ts` (cn), `api.ts` (apiGet/apiPost), `format.ts` (number formatters), `constants.ts` (nav items, chart colors)
 - **`src/components/`**: Reusable components — `layout/` (sidebar, command-palette, header), `common/` (stat-card, chart-card, data-table, tool-layout, config-panel, empty-state, inline-error, heatmap, metric-badge), `charts/` (recharts-wrappers, line-chart-wrapper, drawdown-chart, lightweight-chart)
 - **`src/stores/`**: Zustand stores — `sidebar-store.ts`, `watchlist-store.ts` (localStorage-persisted)
@@ -361,7 +361,9 @@ Create `.env` file in `finbot/config/` (excluded by `.gitignore`).
 | `web/backend/main.py`                                               | FastAPI API server for the web research surfaces                                   |
 | `web/backend/routers/backtesting.py`                                | Primary backtesting API with benchmark/cashflow/regime research outputs            |
 | `web/backend/routers/experiments.py`                                | Save/list/compare experiment runs with snapshot lineage                            |
-| `web/frontend/src/app/backtesting/page.tsx`                         | Main backtesting workspace with allocation builder and research hub                |
+| `web/frontend/src/app/backtesting/page.tsx`                         | Thin App Router entry point for the backtesting workspace                          |
+| `web/frontend/src/app/backtesting/use-backtesting-page-controller.ts` | Backtesting page state orchestration and action wiring                             |
+| `web/frontend/src/app/backtesting/components/backtesting-workspace.tsx` | Main backtesting workspace layout and render shell                                 |
 | `web/frontend/src/app/`                                             | Next.js frontend (dashboard home + 12 task pages)                                  |
 | `web/frontend/src/lib/api.ts`                                       | HTTP client (apiGet/apiPost with timeout + error handling)                         |
 | `web/frontend/src/lib/constants.ts`                                 | Navigation items, chart colors, shared constants                                   |

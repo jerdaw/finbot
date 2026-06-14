@@ -18,11 +18,6 @@ on:
   # Allow manual triggering
   workflow_dispatch:
 
-  # Run on pushes to main branch (optional - can be removed to save CI minutes)
-  push:
-    branches:
-      - main
-
 # Declare job-level permissions to improve security
 permissions: read-all
 
