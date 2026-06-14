@@ -14,6 +14,9 @@ on:
       - 'docs_site/**'
       - '*.md'
 
+permissions:
+  contents: read
+
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -281,6 +284,9 @@ jobs:
   docker-security-scan:
     name: Docker Security Scan (${{ matrix.image.name }})
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
     strategy:
       fail-fast: false
       matrix:

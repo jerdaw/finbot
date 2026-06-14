@@ -21,6 +21,9 @@ clear restart path.
 - Split the largest remaining backtesting portfolio-builder component into
   focused child components.
 - Added a stable-baseline restart guide for future contributors.
+- Hardened workflow token permissions after the final GitHub Security tab
+  review by adding explicit read-only defaults and narrowing release/security
+  upload writes to the jobs that need them.
 - Moved remaining P5/P7 items that require external data, human design assets,
   manual media production, or risky published-history rewrites into explicit
   deferrals.
@@ -34,16 +37,20 @@ clear restart path.
 - Old Backtrader PDF external-reference handling until license/storage review.
 - Broad dependency updates until GitHub Actions budget allows narrow validated
   replay branches.
+- GitHub branch-protection/required-review policy and OpenSSF Scorecard Docker
+  digest/hash-pinning recommendations, which are governance and supply-chain
+  hardening choices rather than unfinished baseline features.
 - Production hosting/domain/TLS/secret-management decisions.
 
 ## Validation
 
 - `zensical build --clean --strict` passed in a clean temporary docs
   environment with Zensical 0.0.45 and `mkdocstrings-python` 2.0.2.
-- Frontend typecheck could not be run locally because the current Windows and
-  WSL environment did not have Node/Corepack/pnpm available. GitHub CI remains
-  the validation surface for frontend typecheck/build and mocked Chromium
-  workflows.
+- Targeted Python tests, frontend typecheck in a temporary local copy, YAML
+  parsing, pre-commit hooks, staged-diff review, and secret scanning passed.
+- GitHub CI passed on the final stable-baseline commit, including frontend
+  typecheck/build and mocked Chromium workflow tests. Local Playwright browser
+  execution remains intentionally left to GitHub CI.
 
 ## Restart Pointers
 

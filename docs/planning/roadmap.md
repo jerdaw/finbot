@@ -94,6 +94,13 @@ Closed the product-quality backtesting workflow pass: canonical drawdown metrics
 - [ ] Revisit old Backtrader PDF references only after license and storage review; do not commit archived PDFs directly.
 - [ ] Recreate low-risk dependency updates on narrow human-authored branches after GitHub Actions quota allows proper validation; close broad stale bot PRs rather than merging failing batches.
 - [ ] Keep broad dependency batches and major runtime or GitHub Action upgrades on human-authored replay branches rather than direct bot merges.
+- [ ] Decide whether to enable stricter GitHub repository governance, including
+      branch protection and required review rules for `main`; leave this as a
+      human policy decision because it changes solo-maintainer maintenance flow.
+- [ ] Revisit OpenSSF Scorecard supply-chain recommendations for Docker image
+      digest pinning and hash-pinned container pip patch commands; treat this
+      as a reproducibility/security hardening pass rather than a baseline
+      feature gap.
 - [ ] Revisit broader browser coverage only when GitHub Actions minutes or budget allow Firefox/WebKit or heavier browser matrices; keep the current frontend suite mocked and Chromium-only.
 - [ ] Finalize a human-approved project logo or brand guide before reopening branding work.
 - [ ] Record the planned overview and tutorial videos plus the project poster once user-provided narration/design assets exist.

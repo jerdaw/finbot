@@ -52,6 +52,10 @@ unless there is a specific browser workflow regression to debug.
   future work instead of force-rewriting old history.
 - Broad dependency updates while GitHub Actions minutes are constrained; replay
   narrow dependency updates on human-reviewed branches.
+- GitHub repository-governance hardening such as branch protection, required
+  pull-request review, and stricter OpenSSF Scorecard supply-chain findings.
+  The stable baseline keeps direct solo-maintainer maintenance possible; choose
+  stricter rules deliberately before enabling them.
 - Production hosting, public domain/TLS, and secret-management decisions.
 - Phase-2 real-time streaming, live execution, and intraday bar caching.
 
@@ -59,5 +63,7 @@ unless there is a specific browser workflow regression to debug.
 
 1. Re-enable narrow dependency maintenance once CI budget allows it.
 2. Refresh local and CI validation against the current Python/Node ecosystem.
-3. Pick one new product goal and create a fresh roadmap plan before coding.
-4. Keep P0-P12 historical scope closed unless a new goal explicitly reopens it.
+3. Review GitHub Security tab alerts and decide whether to enable branch
+   protection or perform Docker image digest/hash-pinning hardening.
+4. Pick one new product goal and create a fresh roadmap plan before coding.
+5. Keep P0-P12 historical scope closed unless a new goal explicitly reopens it.
