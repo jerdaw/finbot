@@ -24,6 +24,8 @@ clear restart path.
 - Hardened workflow token permissions after the final GitHub Security tab
   review by adding explicit read-only defaults and narrowing release/security
   upload writes to the jobs that need them.
+- Remediated frontend npm audit findings with a patched Next.js release and
+  narrow pnpm overrides for vulnerable transitive tooling packages.
 - Moved remaining P5/P7 items that require external data, human design assets,
   manual media production, or risky published-history rewrites into explicit
   deferrals.
@@ -48,6 +50,8 @@ clear restart path.
   environment with Zensical 0.0.45 and `mkdocstrings-python` 2.0.2.
 - Targeted Python tests, frontend typecheck in a temporary local copy, YAML
   parsing, pre-commit hooks, staged-diff review, and secret scanning passed.
+- Frontend `pnpm audit --audit-level moderate`, typecheck, and production build
+  passed in a temporary local copy after the dependency remediation.
 - GitHub CI passed on the final stable-baseline commit, including frontend
   typecheck/build and mocked Chromium workflow tests. Local Playwright browser
   execution remains intentionally left to GitHub CI.
