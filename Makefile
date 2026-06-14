@@ -121,11 +121,11 @@ docs: docs-build docs-serve
 docs-serve:
 	@echo "Serving documentation at http://127.0.0.1:8000..."
 	@echo "Press Ctrl+C to stop"
-	uv run mkdocs serve
+	uv run zensical serve
 
 docs-build:
 	@echo "Building documentation..."
-	uv run mkdocs build
+	uv run zensical build --clean --strict
 
 # Maintenance
 clean:

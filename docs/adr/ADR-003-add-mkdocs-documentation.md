@@ -1,7 +1,7 @@
 # ADR-003: Add MkDocs Documentation System
 
 **Date:** 2026-02-11
-**Status:** Accepted
+**Status:** Superseded by ADR-016
 **Deciders:** Jeremy Dawson
 **Context:** Priority 3.1 - Improve Documentation
 

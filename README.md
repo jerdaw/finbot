@@ -98,12 +98,13 @@ make run-update
 - `make clean` - Remove cache files and build artifacts
 - `make all` - Run full CI pipeline (check + test)
 
-## Current Implementation Status (2026-06-13)
+## Current Implementation Status (2026-06-14)
 
-Priority 0-10 is complete. Priority 11 remains a documentation-platform decision track.
+Priority 0-12 is complete for the stable baseline. P11 is complete: the generated documentation site now builds with Zensical and deploys through GitHub Pages artifact deployment.
 
 - **P0-P9 Complete**: Engine-agnostic contracts, Backtrader adapter path, parity gates, cost and corporate-action fidelity, walk-forward analysis, regime detection, experiment tracking, execution simulation, and runtime hardening are in place. Risk analytics, portfolio analytics, real-time quotes, factor analytics, and health economics surfaces are implemented across services and Streamlit.
 - **P10/P12 Complete**: Next.js frontend completion, frontend hardening, public packaging alignment, the allocation backtesting research workspace, adjacent bond-ladder / multi-asset Monte Carlo / Pareto / efficient-frontier workspaces, responsive/mobile hardening, deeper mocked Chromium workflows, provider-neutral Docker deployment readiness, and the post-P12 backtesting page decomposition are landed.
+- **Stable Baseline**: Remaining P5/P7 items that require external validation datasets, human-approved brand assets, or human-produced media are explicitly deferred in the roadmap. Dependency updates remain paused until CI minutes allow narrow human-reviewed replay branches.
 - **CI Status**: Core Python quality and test gates run on push and PR to `main`. Frontend quality runs typecheck, production build, and mocked Chromium browser workflows when frontend-relevant files change.
 
 Tracking docs:
@@ -114,8 +115,11 @@ Tracking docs:
 - `docs/planning/archive/backtesting-followthrough-and-adjacent-research-closeout-2026-04-18.md`
 - `docs/planning/archive/p10-autonomous-finish-pass-2026-04-24.md`
 - `docs/planning/archive/backtesting-page-decomposition-follow-up-2026-06-13.md`
+- `docs/planning/archive/stable-baseline-closeout-2026-06-14.md`
+- `docs/guides/stable-baseline-restart-guide.md`
 - `docs/adr/ADR-011-nautilus-decision.md`
 - `docs/adr/ADR-015-nextjs-frontend-completion.md`
+- `docs/adr/ADR-016-zensical-docs-platform.md`
 
 ## Prerequisites
 

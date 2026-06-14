@@ -1,10 +1,9 @@
 # GitHub Pages Docs Deploy Runbook
 
-This runbook verifies and maintains the Finbot MkDocs deployment path.
+This runbook verifies and maintains the Finbot Zensical deployment path.
 
-It documents the current legacy-supported path only. Keep this repo on MkDocs
-1.x until the shared migration track reaches the later `mkdocstrings` /
-`docs_site` parity stage described in `docs/planning/roadmap.md`.
+Finbot builds the public documentation site with Zensical while retaining the
+existing `mkdocs.yml` compatibility configuration.
 
 ## Scope
 
@@ -16,7 +15,7 @@ It documents the current legacy-supported path only. Keep this repo on MkDocs
 
 1. Run local build:
    ```bash
-   uv run mkdocs build
+   uv run zensical build --clean --strict
    ```
 2. Confirm workflow file exists and targets `main`:
    - `.github/workflows/docs.yml`
@@ -36,8 +35,7 @@ These steps require repository admin permissions.
 1. Open repository settings:
    - `https://github.com/jerdaw/finbot/settings/pages`
 2. In **Build and deployment**:
-   - Source: `Deploy from a branch` (or keep GitHub Actions-managed Pages setup if already active).
-   - Branch: `gh-pages` (if using `mkdocs gh-deploy` workflow path).
+   - Source: `GitHub Actions`.
 3. Save settings.
 4. Re-run the `Deploy Documentation` workflow.
 5. Re-check `https://jerdaw.github.io/finbot/`.
@@ -52,5 +50,5 @@ If a docs deploy introduces a bad version:
 
 ## Known Operational Notes
 
-1. Local `mkdocs build` currently succeeds but emits pre-existing navigation/link warnings.
-2. Warnings do not currently block deployment; they should be tracked as documentation quality debt.
+1. Local `uv run zensical build --clean --strict` is the expected verification command.
+2. The docs workflow uploads the generated `site/` directory through GitHub Pages artifact deployment.

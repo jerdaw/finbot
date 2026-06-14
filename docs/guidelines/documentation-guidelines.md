@@ -12,14 +12,14 @@ docs/
   planning/         # Roadmap and implementation plans
     archive/        # Completed plans
   research/         # Research findings and analysis
-docs_site/          # MkDocs source for generated site
+docs_site/          # Zensical source for generated site
 notebooks/          # Jupyter notebooks with demos
 ```
 
-The docs site remains on MkDocs 1.x in the current wave. Do not start the
-Zensical migration here until the earlier shared waves succeed and separate
-API-doc parity checks prove that the `mkdocstrings` path and `docs_dir:
-docs_site` layout are both safe to migrate.
+The docs site builds with Zensical. The repository intentionally keeps
+`mkdocs.yml` as the compatibility configuration file because Zensical supports
+that format and the current API-reference path still uses `mkdocstrings-python`.
+Use `uv run zensical build --clean --strict` before changing public docs.
 
 ## When to Write Documentation
 

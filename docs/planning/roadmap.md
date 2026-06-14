@@ -1,14 +1,14 @@
 # Finbot Roadmap
 
 **Created:** 2026-02-10
-**Last Updated:** 2026-06-13
-**Status:** Priority 0-10 and P12 complete. P11 decision track remains open. Safe autonomous docs/test/verification follow-ups and the backtesting page decomposition follow-up are complete; the remaining archived-reuse item is a Backtrader PDF licensing/storage decision.
+**Last Updated:** 2026-06-14
+**Status:** Priority 0-12 complete for the stable baseline. Remaining work is explicitly deferred future scope, not unfinished baseline scope.
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on repository professionalization, public documentation quality, and durable communication surfaces.
 
 See Completed Items table below and git history for details on implemented features.
 
-**Current Plan Record:** None active. Last archived plan: `docs/planning/archive/backtesting-page-decomposition-follow-up-2026-06-13.md`
+**Current Plan Record:** None active. Last archived plan: `docs/planning/archive/stable-baseline-closeout-2026-06-14.md`
 
 ---
 
@@ -17,22 +17,35 @@ See Completed Items table below and git history for details on implemented featu
 Completed detail sections are trimmed out of the main roadmap body once they are
 captured in archive notes and the completed-items table below.
 
+## Stable Baseline
+
+**Status:** COMPLETE (2026-06-14)
+
+Finbot is closed at a stable implementation baseline. The implemented product
+scope, documentation platform, CI surfaces, and restart instructions are
+captured in:
+
+- `docs/planning/archive/stable-baseline-closeout-2026-06-14.md`
+- `docs/guides/stable-baseline-restart-guide.md`
+- `docs/adr/ADR-016-zensical-docs-platform.md`
+
 ## Archived Repo Reuse Audit Follow-Up
 
-**Status:** AUDIT FOLLOW-UP MOSTLY COMPLETE (2026-06-13)
+**Status:** AUTONOMOUS FOLLOW-UP COMPLETE (2026-06-14)
 
 The archived `jerdaw/bb` and `jerdaw/backbetter` repos were reconciled against
 current Finbot. The audit found no production code that should be ported
 directly. `bb` is primarily a historical ancestor whose useful modules are
 already represented under `finbot/`; `backbetter` is only a minimal package
 scaffold. Follow-up is limited to documentation/test polish and
-external-reference decisions:
+external-reference decisions. The remaining Backtrader PDF handling is deferred
+because it requires license/storage review rather than code migration:
 
 - [x] Add a concise missing-data method/tradeoff reference to the current docs site.
 - [x] Add or improve a deterministic logging queue/nonblocking regression test during the next logging maintenance pass.
 - [x] Review current outlier/data-integrity utility coverage before exposing those utilities more prominently.
 - [x] Convert archived provider notebooks into small contributor examples only where current wrappers lack examples.
-- [ ] Decide whether old Backtrader PDFs should be referenced externally; do not commit the PDFs without license/storage review.
+- [~] Decide whether old Backtrader PDFs should be referenced externally; do not commit the PDFs without license/storage review.
 
 ## Priority 10: Next.js Frontend
 
@@ -56,13 +69,13 @@ Closed the remaining autonomous frontend operations work: responsive/mobile layo
 
 ### P11.1 Cross-Repo Docs Platform Decision Track
 
-**Status:** IN PROGRESS (decision track only; no migration started)
+**Status:** COMPLETE (2026-06-14)
 
-- [ ] Keep Finbot on MkDocs 1.x + Material in the short term and do not adopt MkDocs for net-new standalone docs work.
-- [ ] Continue pinning/locking MkDocs below v2 and keep the existing docs build healthy while the ecosystem decision remains open.
-- [ ] Keep Finbot out of the early migration waves; `qquotes`, `visitbrief`, and `waittimecanada` should prove the Zensical path first.
-- [ ] Treat Zensical as the intended MkDocs replacement only if strict/deploy behavior is solid and `mkdocstrings` support matures beyond its current preliminary state.
-- [ ] Re-evaluate Finbot only after the simpler sites have migrated successfully and separate API-doc parity checks pass. If Zensical stalls, use Sphinx + MyST as the mature fallback for any future standalone docs rebuild.
+- [x] Adopt Zensical as Finbot's generated-docs build surface.
+- [x] Keep `mkdocs.yml` as the compatibility configuration file while API-doc parity remains tied to `mkdocstrings-python`.
+- [x] Replace `mkdocs gh-deploy` with GitHub Pages artifact deployment.
+- [x] Validate the generated docs with a strict Zensical build.
+- [x] Record the platform decision in ADR-016.
 
 ## Priority 12: Backtesting UX and Product Workflow Hardening
 
@@ -74,14 +87,17 @@ Closed the product-quality backtesting workflow pass: canonical drawdown metrics
 
 - [ ] Do not port archived `bb`/`backbetter` code wholesale; only pursue the narrow docs/test follow-ups recorded in `docs/planning/archive/archived-bb-backbetter-incorporation-audit-2026-04-27.md`.
 - [ ] Add tests for `approximate_overnight_libor` once stable FRED-backed validation inputs are practical.
+- [ ] Add external simulation validation against trusted historical baselines only after durable source data and expected comparison outputs are available.
 - [ ] Apply the data-driven config pattern to `sim_specific_bond_indexes.py` if that small surface ever grows beyond the current lightweight implementation.
 - [ ] Add options-overlay strategy/tooling once pricing-model depth and options-chain data are available.
 - [ ] Investigate epidemiological backtesting only if the project adds a purpose-built non-finance simulator rather than stretching Backtrader beyond fit.
+- [ ] Revisit old Backtrader PDF references only after license and storage review; do not commit archived PDFs directly.
 - [ ] Recreate low-risk dependency updates on narrow human-authored branches after GitHub Actions quota allows proper validation; close broad stale bot PRs rather than merging failing batches.
 - [ ] Keep broad dependency batches and major runtime or GitHub Action upgrades on human-authored replay branches rather than direct bot merges.
 - [ ] Revisit broader browser coverage only when GitHub Actions minutes or budget allow Firefox/WebKit or heavier browser matrices; keep the current frontend suite mocked and Chromium-only.
 - [ ] Finalize a human-approved project logo or brand guide before reopening branding work.
 - [ ] Record the planned overview and tutorial videos plus the project poster once user-provided narration/design assets exist.
+- [ ] Do not rewrite published commit history for conventional-commit cleanup unless a future maintainer explicitly accepts force-push and coordination risk.
 - [ ] Choose a production hosting target, public domain/TLS setup, and secret-management path before adding provider-specific deployment manifests or infrastructure code.
 - [ ] Schedule long-tail institutional research additions such as Black-Litterman, fund screener, autocorrelation, cointegration, PCA, and similar add-ons as later product work.
 - [ ] Revisit phase-2 real-time work such as WebSocket streaming, live execution, and intraday bar caching only after production hosting decisions are settled.
@@ -92,6 +108,8 @@ Closed the product-quality backtesting workflow pass: canonical drawdown metrics
 
 | Item                                                                      | Completed  | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | :------------------------------------------------------------------------ | :--------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Stable baseline closeout                                                   | 2026-06-14 | Closed the repository at a durable stable baseline: P11 migrated to Zensical, remaining P5/P7 tail items were explicitly deferred where they require external data or human-produced assets, restart guidance was added, docs validation was tightened to strict Zensical builds, and the remaining safe backtesting component decomposition was completed.                                                                                                                                    |
+| P11 documentation platform migration                                        | 2026-06-14 | Migrated the generated documentation build/deploy surface to Zensical while retaining `mkdocs.yml` compatibility configuration, replaced `mkdocs gh-deploy` with GitHub Pages artifact deployment, added ADR-016, and fixed public docs-site link/symlink issues so strict Zensical builds pass.                                                                                                                                                                                                   |
 | Backtesting page decomposition follow-up                                  | 2026-06-13 | Completed the P12 maintainability follow-up by extracting the main backtesting page into local options, request/result helpers, action hooks, a page controller, and a workspace component; `page.tsx` is now a thin route entry point. PRs #109 and #110 passed CI before merge.                                                                                                                                                                                                                |
 | Autonomous maintenance follow-up                                           | 2026-06-13 | Closed safe archived-reuse and public-cleanup follow-ups: missing-data policy tradeoff docs, provider-wrapper examples, deterministic queue-logging coverage, implemented outlier/data-integrity utility tests, Gitleaks git-history and tracked-worktree scans, tracked parquet content checks, and a behavior-preserving backtesting frontend extraction/typecheck pass. Backtrader PDF handling remains an external license/storage decision.                                          |
 | Public GitHub cleanup                                                     | 2026-06-04 | Strengthened educational/research disclaimers, added the public documentation boundary, generalized private paths and token-like examples, added ignored local private-note patterns, replaced non-human team author labels with the actual human author, verified agent symlinks and human-only commit authorship, and recorded scanner/parquet tooling follow-ups.                                                                                                                                 |

@@ -116,45 +116,47 @@ core:
 
 ### Python API
 
-    import backtrader as bt
+```python
+import backtrader as bt
 
-    from finbot.services.backtesting.backtest_runner import BacktestRunner
-    from finbot.services.backtesting.brokers.fixed_commission_scheme import FixedCommissionScheme
-    from finbot.services.backtesting.strategies.rebalance import Rebalance
-    from finbot.services.optimization.dca_optimizer import dca_optimizer
-    from finbot.services.simulation.sim_specific_funds import simulate_fund
-    from finbot.utils.data_collection_utils.yfinance.get_history import get_history
+from finbot.services.backtesting.backtest_runner import BacktestRunner
+from finbot.services.backtesting.brokers.fixed_commission_scheme import FixedCommissionScheme
+from finbot.services.backtesting.strategies.rebalance import Rebalance
+from finbot.services.optimization.dca_optimizer import dca_optimizer
+from finbot.services.simulation.sim_specific_funds import simulate_fund
+from finbot.utils.data_collection_utils.yfinance.get_history import get_history
 
-    # Simulate UPRO fund
-    upro_sim = simulate_fund("UPRO", save_sim=False)
+# Simulate UPRO fund
+upro_sim = simulate_fund("UPRO", save_sim=False)
 
-    # Run a 60/40 rebalance backtest
-    spy_data = get_history("SPY", adjust_price=True)
-    tlt_data = get_history("TLT", adjust_price=True)
-    stats = BacktestRunner(
-        price_histories={"SPY": spy_data, "TLT": tlt_data},
-        start=None,
-        end=None,
-        duration=None,
-        start_step=None,
-        init_cash=100000,
-        strat=Rebalance,
-        strat_kwargs={"rebal_proportions": [0.6, 0.4], "rebal_interval": 63},
-        broker=bt.brokers.BackBroker,
-        broker_kwargs={},
-        broker_commission=FixedCommissionScheme,
-        sizer=bt.sizers.AllInSizer,
-        sizer_kwargs={},
-        plot=False,
-    ).run_backtest()
+# Run a 60/40 rebalance backtest
+spy_data = get_history("SPY", adjust_price=True)
+tlt_data = get_history("TLT", adjust_price=True)
+stats = BacktestRunner(
+    price_histories={"SPY": spy_data, "TLT": tlt_data},
+    start=None,
+    end=None,
+    duration=None,
+    start_step=None,
+    init_cash=100000,
+    strat=Rebalance,
+    strat_kwargs={"rebal_proportions": [0.6, 0.4], "rebal_interval": 63},
+    broker=bt.brokers.BackBroker,
+    broker_kwargs={},
+    broker_commission=FixedCommissionScheme,
+    sizer=bt.sizers.AllInSizer,
+    sizer_kwargs={},
+    plot=False,
+).run_backtest()
 
-    # Optimize a DCA schedule for one asset
-    spy_close = get_history("SPY", adjust_price=True)["Close"]
-    ratio_df, duration_df = dca_optimizer(
-        price_history=spy_close,
-        ticker="SPY",
-        starting_cash=1000,
-    )
+# Optimize a DCA schedule for one asset
+spy_close = get_history("SPY", adjust_price=True)["Close"]
+ratio_df, duration_df = dca_optimizer(
+    price_history=spy_close,
+    ticker="SPY",
+    starting_cash=1000,
+)
+```
 
 ## Documentation Structure
 

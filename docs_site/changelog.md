@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 For the full changelog, see [CHANGELOG.md](https://github.com/jerdaw/finbot/blob/main/CHANGELOG.md) in the repository.
 
-## [1.0.0] - 2026-02-10
+## 1.0.0 - 2026-02-10
 
 ### Added
 
@@ -36,7 +36,7 @@ For the full changelog, see [CHANGELOG.md](https://github.com/jerdaw/finbot/blob
 - Dangerous error handling (bare except, assert)
 - 103 lint violations → 0
 
-## [0.1.0] - 2026-02-09
+## 0.1.0 - 2026-02-09
 
 ### Added
 

@@ -1,19 +1,19 @@
 # Priority 5 & 6 Completion Status
 
-**Date:** 2026-02-17
-**Overall Status:** Priorities 5 & 6 substantially complete
+**Date:** 2026-06-14
+**Overall Status:** Priority 5 closed for the stable baseline; Priority 6 complete
 
 ## Summary
 
-Finbot reached a strong maturity point with 93.3% of Priority 5 items and 100%
-of Priority 6 items complete at the time of this snapshot. The repository had
-comprehensive testing, stronger documentation and governance, and a
-production-oriented backtesting stack with clear backtesting-to-live transition
-infrastructure.
+Finbot reached a stable-baseline maturity point with the autonomous Priority 5
+work complete or deliberately deferred. Priority 6 remains complete. The
+repository has comprehensive testing, stronger documentation and governance,
+and a production-oriented backtesting stack with clear backtesting-to-live
+transition infrastructure.
 
 ## Priority 5: Repository Professionalization and Communication
 
-**Status:** 42/45 items complete (93.3%)
+**Status:** Closed for stable baseline
 
 ### Completed Areas
 
@@ -35,13 +35,14 @@ infrastructure.
   automation, changelog automation, TestPyPI publication, docs deployment, docs
   badge, OpenSSF scorecard, data freshness docs, and stale-directory cleanup.
 
-### Remaining Items At This Snapshot
+### Deferred Items
 
-1. **Stricter mypy settings:** partially underway, but broader module-by-module
-   annotation work remained.
-2. **Simulation validation against known results:** blocked on historical source
-   data and comparison baselines.
-3. **Project logo/branding:** blocked on human design approval.
+1. **Simulation validation against known external results:** deferred until
+   durable source data and expected comparison baselines are available.
+2. **Project logo/branding:** deferred until human-approved design assets exist.
+
+The stricter mypy rollout called out in the original 2026-02-17 snapshot was
+later completed and is recorded in the roadmap completed-items table.
 
 ## Priority 6: Backtesting-to-Live Readiness (Adapter-First)
 
@@ -80,26 +81,26 @@ infrastructure.
 - The published docs site, tutorials, ADRs, and research materials gave the
   project a stronger public explanation layer.
 
-## Next Steps
+## Stable-Baseline Restart Notes
 
-1. Finish the remaining stricter-mypy rollout in the modules that still need
-   deeper annotation work.
-2. Add simulation validation against trusted external baselines where durable
-   source data is available.
-3. Complete branding only if a human-approved visual identity becomes useful.
+1. Treat Priority 5 as closed unless new project goals reopen it.
+2. Keep the deferred simulation-validation and branding items in the roadmap
+   backlog rather than active work.
+3. Use `docs/guides/stable-baseline-restart-guide.md` when restarting after a
+   long pause.
 
 ## Conclusion
 
-This snapshot shows a repository that had already moved well past prototype
-quality. Priority 5 established stronger governance, documentation, testing,
-and public communication. Priority 6 established a credible backtesting-to-live
-readiness story centered on typed contracts, parity validation, and realistic
-execution concerns.
+Priority 5 established stronger governance, documentation, testing, and public
+communication. Priority 6 established a credible backtesting-to-live readiness
+story centered on typed contracts, parity validation, and realistic execution
+concerns. As of the 2026-06-14 stable baseline, remaining Priority 5 tail work
+is intentionally deferred rather than blocking the project closeout.
 
 ---
 
 **Repository:** finbot
 **Branch:** main
-**Status:** Production-ready
-**Date:** 2026-02-17
+**Status:** Stable baseline
+**Date:** 2026-06-14
 **Maintainer:** @jerdaw

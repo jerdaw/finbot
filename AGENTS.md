@@ -47,19 +47,20 @@ uv run python scripts/update_daily.py
 - Repo contributors should use `uv sync --all-extras`.
 - The root `Dockerfile` builds the CLI image by default; dashboard and API images opt into extras explicitly.
 
-## Current Delivery Status (2026-06-13)
+## Current Delivery Status (2026-06-14)
 
-**P0-P10 and P12 complete. P11 decision track remains open.**
+**P0-P12 complete for the stable baseline.**
 
-- **P5** (97.8%): documentation, governance, and public-quality improvements — 44/45 items (item 42 blocked on external resources)
+- **P5**: documentation, governance, and public-quality improvements are closed for the stable baseline; external-baseline simulation validation and project branding remain deferred until durable validation inputs or human-approved design assets exist
 - **P6** (100%): Backtesting-to-live readiness — Epics E0-E6 complete; ADR-011 confirmed **Defer**
-- **P7** (93%): External impact & advanced capabilities — 25/27 active items
+- **P7**: external-impact and advanced-capability work is closed for the stable baseline; manual videos/poster work and published-history rewrite work are deferred rather than blocking the release
 - **P8** (100%): Risk Analytics, Portfolio Analytics, Real-Time Data, Factor Analytics
 - **P9** (100%): Agent tooling and runtime hardening — P9.1-P9.4 complete
 - **P10** (100%): Next.js frontend — 12 task pages complete, the main backtesting page now supports allocation building, benchmark analysis, return tables, experiment lineage, rolling/regime diagnostics, export, cashflow planning, allocation drift/rebalance inspection, surfaced cost assumptions, missing-data policy reporting, and walk-forward handoff; the simulations, Monte Carlo, and optimizer workspaces now also cover bond ladder, multi-asset Monte Carlo, Pareto, and efficient frontier research; the operational finish pass added responsive/mobile hardening, deeper mocked Chromium workflows, frontend/backend Docker healthchecks, runtime frontend API-origin configuration, and provider-neutral web deployment documentation
+- **P11** (100%): Documentation platform migration — generated docs now build with Zensical using the existing `mkdocs.yml` compatibility configuration and deploy through GitHub Pages artifact deployment
 - **P12** (100%): Backtesting UX and product workflow hardening — canonical value-path drawdown metrics, tabbed result workspace, portfolio presets, saved portfolios, multi-portfolio comparison, share/export/chart controls, mobile-safe dense outputs, and post-P12 backtesting page decomposition complete
 
-**Tracking docs:** `docs/planning/roadmap.md`, `docs/planning/archive/audit-remediation-and-frontend-hardening-2026-04-15.md`, `docs/planning/archive/public-packaging-and-docs-alignment-2026-04-16.md`, `docs/planning/archive/docs-maintenance-and-roadmap-reconciliation-2026-04-16.md`, `docs/planning/archive/backtesting-workflow-expansion-and-research-workspace-pass-2026-04-17.md`, `docs/planning/archive/backtesting-followthrough-and-adjacent-research-closeout-2026-04-18.md`, `docs/planning/archive/p10-autonomous-finish-pass-2026-04-24.md`, `docs/planning/archive/backtesting-ux-product-workflow-hardening-2026-04-24.md`, `docs/planning/archive/backtesting-page-decomposition-follow-up-2026-06-13.md`, `docs/planning/backtesting-live-readiness-backlog.md`, `docs/planning/priority-5-6-completion-status.md`, `docs/adr/ADR-011-nautilus-decision.md`
+**Tracking docs:** `docs/planning/roadmap.md`, `docs/planning/archive/audit-remediation-and-frontend-hardening-2026-04-15.md`, `docs/planning/archive/public-packaging-and-docs-alignment-2026-04-16.md`, `docs/planning/archive/docs-maintenance-and-roadmap-reconciliation-2026-04-16.md`, `docs/planning/archive/backtesting-workflow-expansion-and-research-workspace-pass-2026-04-17.md`, `docs/planning/archive/backtesting-followthrough-and-adjacent-research-closeout-2026-04-18.md`, `docs/planning/archive/p10-autonomous-finish-pass-2026-04-24.md`, `docs/planning/archive/backtesting-ux-product-workflow-hardening-2026-04-24.md`, `docs/planning/archive/backtesting-page-decomposition-follow-up-2026-06-13.md`, `docs/planning/archive/stable-baseline-closeout-2026-06-14.md`, `docs/guides/stable-baseline-restart-guide.md`, `docs/planning/backtesting-live-readiness-backlog.md`, `docs/planning/priority-5-6-completion-status.md`, `docs/adr/ADR-011-nautilus-decision.md`, `docs/adr/ADR-016-zensical-docs-platform.md`
 
 ## Authorship and Attribution
 
@@ -429,19 +430,19 @@ uv run pytest --cov=finbot tests/
 
 ## Documentation
 
-**MkDocs documentation site** (`docs_site/`):
+**Zensical documentation site** (`docs_site/`, compatibility config in `mkdocs.yml`):
 
 ```bash
-make docs-serve       # or: uv run mkdocs serve (http://127.0.0.1:8000)
-make docs-build       # build static site
-uv run mkdocs gh-deploy  # deploy to GitHub Pages
+make docs-serve       # or: uv run zensical serve (http://127.0.0.1:8000)
+make docs-build       # strict static-site build
+uv run zensical build --clean --strict
 ```
 
-This is the current legacy-supported docs path. Keep Finbot on MkDocs 1.x here
-until the later shared migration wave proves safe `mkdocstrings` and
-`docs_site` parity.
+Finbot's generated docs now build with Zensical. Keep `mkdocs.yml` as the
+compatibility configuration file unless a later migration introduces a native
+`zensical.toml` with equivalent API-doc behavior.
 
-Source in `docs_site/` (index, user-guide, api, research, contributing, changelog). Project docs in `docs/` (adr, guidelines, planning, research, guides). See [ADR-003](docs/adr/ADR-003-add-mkdocs-documentation.md).
+Source in `docs_site/` (index, user-guide, api, research, contributing, changelog). Project docs in `docs/` (adr, guidelines, planning, research, guides). See [ADR-016](docs/adr/ADR-016-zensical-docs-platform.md).
 
 ## CI/CD
 

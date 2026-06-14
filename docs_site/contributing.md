@@ -257,14 +257,14 @@ Detailed description with:
 
 ### API Documentation
 
-Update mkdocs documentation when adding public APIs:
+Update the generated documentation site when adding public APIs:
 
 ```bash
 # Build documentation
-uv run mkdocs build
+uv run zensical build --clean --strict
 
 # Serve locally
-uv run mkdocs serve
+uv run zensical serve
 ```
 
 ## Questions?

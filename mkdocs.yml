@@ -144,6 +144,7 @@ nav:
           - TestPyPI Quick Reference: guides/testpypi-quick-reference.md
           - Data Quality Guide: guides/data-quality-guide.md
           - Audit Trails: guides/audit-trails.md
+          - Stable Baseline Restart: guides/stable-baseline-restart-guide.md
     - Contributing: contributing.md
     - Changelog: changelog.md
 
