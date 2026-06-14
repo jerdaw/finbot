@@ -101,6 +101,9 @@ Closed the product-quality backtesting workflow pass: canonical drawdown metrics
       digest pinning and hash-pinned container pip patch commands; treat this
       as a reproducibility/security hardening pass rather than a baseline
       feature gap.
+- [ ] Revisit broader OpenSSF Scorecard posture items such as fuzzing and CII
+      best-practices adoption only if the project resumes active public
+      hardening work.
 - [ ] Revisit broader browser coverage only when GitHub Actions minutes or budget allow Firefox/WebKit or heavier browser matrices; keep the current frontend suite mocked and Chromium-only.
 - [ ] Finalize a human-approved project logo or brand guide before reopening branding work.
 - [ ] Record the planned overview and tutorial videos plus the project poster once user-provided narration/design assets exist.

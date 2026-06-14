@@ -39,9 +39,10 @@ clear restart path.
 - Old Backtrader PDF external-reference handling until license/storage review.
 - Broad dependency updates until GitHub Actions budget allows narrow validated
   replay branches.
-- GitHub branch-protection/required-review policy and OpenSSF Scorecard Docker
-  digest/hash-pinning recommendations, which are governance and supply-chain
-  hardening choices rather than unfinished baseline features.
+- GitHub branch-protection/required-review policy, OpenSSF Scorecard
+  fuzzing/CII posture, and Docker digest/hash-pinning recommendations, which
+  are governance and supply-chain hardening choices rather than unfinished
+  baseline features.
 - Production hosting/domain/TLS/secret-management decisions.
 
 ## Validation

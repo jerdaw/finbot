@@ -53,9 +53,10 @@ unless there is a specific browser workflow regression to debug.
 - Broad dependency updates while GitHub Actions minutes are constrained; replay
   narrow dependency updates on human-reviewed branches.
 - GitHub repository-governance hardening such as branch protection, required
-  pull-request review, and stricter OpenSSF Scorecard supply-chain findings.
-  The stable baseline keeps direct solo-maintainer maintenance possible; choose
-  stricter rules deliberately before enabling them.
+  pull-request review, OpenSSF Scorecard fuzzing/CII posture, and stricter
+  Scorecard supply-chain findings. The stable baseline keeps direct
+  solo-maintainer maintenance possible; choose stricter rules deliberately
+  before enabling them.
 - Production hosting, public domain/TLS, and secret-management decisions.
 - Phase-2 real-time streaming, live execution, and intraday bar caching.
 
