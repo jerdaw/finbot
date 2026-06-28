@@ -101,6 +101,10 @@ Closed the product-quality backtesting workflow pass: canonical drawdown metrics
       digest pinning and hash-pinned container pip patch commands; treat this
       as a reproducibility/security hardening pass rather than a baseline
       feature gap.
+- [ ] Investigate current CI Docker Security Scan image failures from run
+      `28322985009` for both CLI and API images; keep the Trivy gate intact and
+      resolve through dependency/base-image hardening rather than suppressing
+      findings.
 - [ ] Revisit broader OpenSSF Scorecard posture items such as fuzzing and CII
       best-practices adoption only if the project resumes active public
       hardening work.
