@@ -25,6 +25,8 @@ def _validate_returns(returns: np.ndarray, label: str = "returns") -> None:
     """Raise ValueError if the returns array is too short."""
     if len(returns) < _MIN_OBSERVATIONS:
         raise ValueError(f"{label} must have at least {_MIN_OBSERVATIONS} observations, got {len(returns)}")
+    if not np.all(np.isfinite(returns)):
+        raise ValueError(f"{label} must not contain NaN or infinite values")
 
 
 def compute_rolling_metrics(
@@ -67,6 +69,8 @@ def compute_rolling_metrics(
         raise ValueError(f"window must be >= 2, got {window}")
     if annualization_factor < 1:
         raise ValueError(f"annualization_factor must be >= 1, got {annualization_factor}")
+    if not math.isfinite(risk_free_rate):
+        raise ValueError(f"risk_free_rate must be finite, got {risk_free_rate}")
 
     n = len(returns)
 
@@ -74,6 +78,7 @@ def compute_rolling_metrics(
         benchmark_returns = np.asarray(benchmark_returns, dtype=float)
         if len(benchmark_returns) != n:
             raise ValueError(f"benchmark_returns length ({len(benchmark_returns)}) must equal returns length ({n})")
+        _validate_returns(benchmark_returns, "benchmark_returns")
     if dates is not None and len(dates) != n:
         raise ValueError(f"dates length ({len(dates)}) must equal returns length ({n})")
 

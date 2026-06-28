@@ -88,6 +88,17 @@ class TestComputeDiversificationMetrics:
         """Perfectly correlated assets have diversification_ratio ~= 1."""
         result = compute_diversification_metrics(PERFECT_CORR_DF)
         assert result.diversification_ratio == pytest.approx(1.0, abs=0.01)
+        assert result.avg_pairwise_correlation == pytest.approx(1.0, abs=1e-10)
+        assert result.correlation_matrix["X"]["Y"] == pytest.approx(1.0, abs=1e-10)
+        assert np.isfinite(result.portfolio_vol)
+        assert all(np.isfinite(vol) for vol in result.individual_vols.values())
+
+    def test_zero_variance_asset_raises(self) -> None:
+        """Zero-volatility assets are rejected instead of producing NaN correlations."""
+        zero_variance = pd.DataFrame({"A": np.full(60, 0.01), "B": np.linspace(-0.01, 0.01, 60)})
+
+        with pytest.raises(ValueError, match="non-zero variance"):
+            compute_diversification_metrics(zero_variance)
 
     def test_n_assets_less_than_two_raises(self) -> None:
         """DataFrame with fewer than 2 columns raises ValueError."""
@@ -106,3 +117,20 @@ class TestComputeDiversificationMetrics:
         bad_weights = {"A": 0.5, "B": 0.5, "C": 0.5}  # sum = 1.5
         with pytest.raises(ValueError, match="sum to 1"):
             compute_diversification_metrics(THREE_ASSET_DF, weights=bad_weights)
+
+    @pytest.mark.parametrize("bad_value", [np.nan, np.inf, -np.inf])
+    def test_non_finite_returns_raise(self, bad_value: float) -> None:
+        """NaN and infinite returns are rejected before correlation math."""
+        returns_df = THREE_ASSET_DF.copy()
+        returns_df.loc[5, "B"] = bad_value
+
+        with pytest.raises(ValueError, match="returns_df must not contain NaN or infinite"):
+            compute_diversification_metrics(returns_df)
+
+    @pytest.mark.parametrize("bad_weight", [np.nan, np.inf, -np.inf])
+    def test_non_finite_weights_raise(self, bad_weight: float) -> None:
+        """NaN and infinite weights are rejected before portfolio math."""
+        weights = {"A": 0.5, "B": 0.3, "C": bad_weight}
+
+        with pytest.raises(ValueError, match="weights must not contain NaN or infinite"):
+            compute_diversification_metrics(THREE_ASSET_DF, weights=weights)

@@ -45,10 +45,14 @@ def _validate_inputs(
         raise ValueError("factor_returns must have at least 1 column")
     if annualization_factor < 1:
         raise ValueError(f"annualization_factor must be >= 1, got {annualization_factor}")
-    if np.any(np.isnan(portfolio_returns)):
-        raise ValueError("portfolio_returns must not contain NaN values")
-    if factor_returns.isna().any().any():
-        raise ValueError("factor_returns must not contain NaN values")
+    if not np.all(np.isfinite(portfolio_returns)):
+        raise ValueError("portfolio_returns must not contain NaN or infinite values")
+    try:
+        factor_matrix = factor_returns.to_numpy(dtype=float)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("factor_returns must contain numeric values") from exc
+    if not np.all(np.isfinite(factor_matrix)):
+        raise ValueError("factor_returns must not contain NaN or infinite values")
 
 
 def _infer_model_type(factor_names: tuple[str, ...]) -> FactorModelType:
@@ -195,8 +199,14 @@ def compute_rolling_r_squared(
             f"portfolio_returns length ({len(portfolio_returns)}) must equal "
             f"factor_returns length ({len(factor_returns)})"
         )
+    if annualization_factor < 1:
+        raise ValueError(f"annualization_factor must be >= 1, got {annualization_factor}")
+    if not np.all(np.isfinite(portfolio_returns)):
+        raise ValueError("portfolio_returns must not contain NaN or infinite values")
 
     factor_matrix = factor_returns.to_numpy(dtype=float)
+    if not np.all(np.isfinite(factor_matrix)):
+        raise ValueError("factor_returns must not contain NaN or infinite values")
     n = len(portfolio_returns)
 
     values: list[float] = []

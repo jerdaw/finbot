@@ -27,6 +27,14 @@ def _validate_returns(returns: np.ndarray, label: str = "returns") -> None:
     """Raise ValueError if the returns array is too short."""
     if len(returns) < _MIN_OBSERVATIONS:
         raise ValueError(f"{label} must have at least {_MIN_OBSERVATIONS} observations, got {len(returns)}")
+    if not np.all(np.isfinite(returns)):
+        raise ValueError(f"{label} must not contain NaN or infinite values")
+
+
+def _validate_confidence(confidence: float) -> None:
+    """Raise ValueError if confidence is outside the open interval (0, 1)."""
+    if not 0.0 < confidence < 1.0:
+        raise ValueError(f"confidence must be in (0, 1), got {confidence}")
 
 
 def compute_var(
@@ -56,7 +64,15 @@ def compute_var(
     """
     returns = np.asarray(returns, dtype=float)
     _validate_returns(returns)
+    _validate_confidence(confidence)
     method = VaRMethod(method)
+
+    if horizon_days < 1:
+        raise ValueError(f"horizon_days must be >= 1, got {horizon_days}")
+    if method == VaRMethod.MONTECARLO and n_simulations < 1:
+        raise ValueError(f"n_simulations must be >= 1, got {n_simulations}")
+    if portfolio_value is not None and portfolio_value < 0:
+        raise ValueError(f"portfolio_value must be >= 0, got {portfolio_value}")
 
     mu = float(np.mean(returns))
     sigma = float(np.std(returns, ddof=1))
@@ -111,6 +127,7 @@ def compute_cvar(
     """
     returns = np.asarray(returns, dtype=float)
     _validate_returns(returns)
+    _validate_confidence(confidence)
     method = VaRMethod(method)
 
     var_result = compute_var(returns, confidence=confidence, method=method, horizon_days=1)
@@ -167,8 +184,11 @@ def var_backtest(
     """
     returns = np.asarray(returns, dtype=float)
     _validate_returns(returns)
+    _validate_confidence(confidence)
     method = VaRMethod(method)
 
+    if min_history < _MIN_OBSERVATIONS:
+        raise ValueError(f"min_history must be >= {_MIN_OBSERVATIONS}, got {min_history}")
     if len(returns) <= min_history:
         raise ValueError(f"Need more than {min_history} observations for backtest, got {len(returns)}")
 

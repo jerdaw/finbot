@@ -76,16 +76,23 @@ class TestValidateDataFrame:
         df = pd.DataFrame()
         result = validate_dataframe(df, "test.parquet")
         assert not result.is_valid
-        assert any("empty" in e.lower() for e in result.errors)
+        assert result.file_path == Path("test.parquet")
+        assert result.row_count == 0
+        assert result.col_count == 0
+        assert result.errors == ["DataFrame is empty"]
+        assert result.warnings == []
 
     def test_validate_valid_dataframe(self):
         from finbot.services.data_quality.validate_dataframe import validate_dataframe
 
         df = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6]})
-        result = validate_dataframe(df, "test.parquet")
+        result = validate_dataframe(df, Path("nested/test.parquet"))
         assert result.is_valid
+        assert result.file_path == Path("nested/test.parquet")
         assert result.row_count == 3
         assert result.col_count == 2
+        assert result.errors == []
+        assert result.warnings == []
 
     def test_validate_min_rows(self):
         from finbot.services.data_quality.validate_dataframe import validate_dataframe
@@ -118,6 +125,29 @@ class TestValidateDataFrame:
         result = validate_dataframe(df, "test.parquet", check_nulls=True)
         assert result.is_valid  # nulls are warnings, not errors
         assert any("Null" in w for w in result.warnings)
+
+    def test_validate_combines_errors_and_warnings(self):
+        from finbot.services.data_quality.validate_dataframe import validate_dataframe
+
+        df = pd.DataFrame({"A": [1, None]}, index=[0, 0])
+        result = validate_dataframe(
+            df,
+            "mixed.parquet",
+            min_rows=3,
+            expected_columns=["A", "B"],
+            check_duplicates=True,
+            check_nulls=True,
+        )
+
+        assert not result.is_valid
+        assert result.errors == [
+            "Expected at least 3 rows, got 2",
+            "Missing columns: ['B']",
+        ]
+        assert result.warnings == [
+            "1 duplicate index entries",
+            "Null values in 1 columns",
+        ]
 
 
 class TestStatusCLI:

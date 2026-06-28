@@ -6,6 +6,8 @@ import threading
 import time
 from datetime import UTC, datetime
 
+import pytest
+
 from finbot.core.contracts.realtime_data import Quote, QuoteProvider
 from finbot.services.realtime_data.quote_cache import QuoteCache
 
@@ -91,6 +93,25 @@ class TestQuoteCacheTTL:
         time.sleep(0.1)
         assert cache.get("SPY") is None
 
+    def test_size_includes_expired_until_lookup_prunes(self) -> None:
+        cache = QuoteCache(ttl_seconds=0.05)
+        cache.put("SPY", _make_quote())
+        time.sleep(0.1)
+
+        assert cache.size() == 1
+        assert cache.get("SPY") is None
+        assert cache.size() == 0
+
+    def test_expired_lookup_preserves_other_entries(self) -> None:
+        cache = QuoteCache(ttl_seconds=0.05)
+        cache.put("SPY", _make_quote("SPY"))
+        time.sleep(0.1)
+        cache.put("QQQ", _make_quote("QQQ"))
+
+        assert cache.get("SPY") is None
+        assert cache.get("QQQ") is not None
+        assert cache.size() == 1
+
     def test_entry_valid_within_ttl(self) -> None:
         cache = QuoteCache(ttl_seconds=10.0)
         cache.put("SPY", _make_quote())
@@ -99,6 +120,11 @@ class TestQuoteCacheTTL:
     def test_ttl_property(self) -> None:
         cache = QuoteCache(ttl_seconds=30.0)
         assert cache.ttl_seconds == 30.0
+
+    @pytest.mark.parametrize("ttl_seconds", [0.0, -1.0])
+    def test_ttl_must_be_positive(self, ttl_seconds: float) -> None:
+        with pytest.raises(ValueError, match="ttl_seconds must be positive"):
+            QuoteCache(ttl_seconds=ttl_seconds)
 
 
 class TestQuoteCacheThreadSafety:

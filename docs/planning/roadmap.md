@@ -1,14 +1,14 @@
 # Finbot Roadmap
 
 **Created:** 2026-02-10
-**Last Updated:** 2026-06-14
+**Last Updated:** 2026-06-28
 **Status:** Priority 0-12 complete for the stable baseline. Remaining work is explicitly deferred future scope, not unfinished baseline scope.
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on repository professionalization, public documentation quality, and durable communication surfaces.
 
 See Completed Items table below and git history for details on implemented features.
 
-**Current Plan Record:** None active. Last archived plan: `docs/planning/archive/stable-baseline-closeout-2026-06-14.md`
+**Current Plan Record:** None active. Last archived plan: `docs/planning/archive/autonomous-overnight-work-plan-2026-06-28.md`
 
 ---
 
@@ -111,6 +111,7 @@ Closed the product-quality backtesting workflow pass: canonical drawdown metrics
 - [ ] Choose a production hosting target, public domain/TLS setup, and secret-management path before adding provider-specific deployment manifests or infrastructure code.
 - [ ] Schedule long-tail institutional research additions such as Black-Litterman, fund screener, autocorrelation, cointegration, PCA, and similar add-ons as later product work.
 - [ ] Revisit phase-2 real-time work such as WebSocket streaming, live execution, and intraday bar caching only after production hosting decisions are settled.
+- [ ] Resolve the Nautilus adapter full-repo mypy failures surfaced during the 2026-06-28 uv validation pass (`finbot/adapters/nautilus/nautilus_adapter.py` lines 396, 594, and 967); keep this separate from the completed analytics guardrail/test work.
 
 ---
 
@@ -118,6 +119,7 @@ Closed the product-quality backtesting workflow pass: canonical drawdown metrics
 
 | Item                                                                      | Completed  | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | :------------------------------------------------------------------------ | :--------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Autonomous analytics guardrail and regression pass                         | 2026-06-28 | Completed the safe unattended work queue and archived the plan: added focused regression coverage and narrow invalid-input guardrails for data quality, realtime quote caching, JSON serializers, core contract/cost serialization, VaR/CVaR/backtest, portfolio analytics, and factor analytics. Installed uv locally for follow-up validation; touched-source mypy passed, while full-repo mypy surfaced unrelated Nautilus adapter follow-up.                                                |
 | Stable baseline closeout                                                   | 2026-06-14 | Closed the repository at a durable stable baseline: P11 migrated to Zensical, remaining P5/P7 tail items were explicitly deferred where they require external data or human-produced assets, restart guidance was added, docs validation was tightened to strict Zensical builds, and the remaining safe backtesting component decomposition was completed.                                                                                                                                    |
 | P11 documentation platform migration                                        | 2026-06-14 | Migrated the generated documentation build/deploy surface to Zensical while retaining `mkdocs.yml` compatibility configuration, replaced `mkdocs gh-deploy` with GitHub Pages artifact deployment, added ADR-016, and fixed public docs-site link/symlink issues so strict Zensical builds pass.                                                                                                                                                                                                   |
 | Backtesting page decomposition follow-up                                  | 2026-06-13 | Completed the P12 maintainability follow-up by extracting the main backtesting page into local options, request/result helpers, action hooks, a page controller, and a workspace component; `page.tsx` is now a thin route entry point. PRs #109 and #110 passed CI before merge.                                                                                                                                                                                                                |

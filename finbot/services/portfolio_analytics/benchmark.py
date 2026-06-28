@@ -41,6 +41,12 @@ def _validate_inputs(
         )
     if annualization_factor < 1:
         raise ValueError(f"annualization_factor must be >= 1, got {annualization_factor}")
+    if not np.all(np.isfinite(portfolio_returns)):
+        raise ValueError("portfolio_returns must not contain NaN or infinite values")
+    if not np.all(np.isfinite(benchmark_returns)):
+        raise ValueError("benchmark_returns must not contain NaN or infinite values")
+    if np.isclose(float(np.std(benchmark_returns, ddof=1)), 0.0):
+        raise ValueError("benchmark_returns must have non-zero variance")
 
 
 def compute_benchmark_comparison(
@@ -75,6 +81,8 @@ def compute_benchmark_comparison(
     portfolio_returns = np.asarray(portfolio_returns, dtype=float)
     benchmark_returns = np.asarray(benchmark_returns, dtype=float)
     _validate_inputs(portfolio_returns, benchmark_returns, annualization_factor)
+    if not math.isfinite(risk_free_rate):
+        raise ValueError(f"risk_free_rate must be finite, got {risk_free_rate}")
 
     rf_per_bar = risk_free_rate / annualization_factor
     excess_p = portfolio_returns - rf_per_bar

@@ -21,6 +21,7 @@ from finbot.services.factor_analytics.factor_regression import (
 def _validate_inputs(
     portfolio_returns: np.ndarray,
     factor_returns: pd.DataFrame,
+    annualization_factor: int,
 ) -> None:
     """Raise ValueError on invalid inputs."""
     if len(portfolio_returns) < _MIN_OBSERVATIONS:
@@ -32,6 +33,16 @@ def _validate_inputs(
             f"portfolio_returns length ({len(portfolio_returns)}) must equal "
             f"factor_returns length ({len(factor_returns)})"
         )
+    if annualization_factor < 1:
+        raise ValueError(f"annualization_factor must be >= 1, got {annualization_factor}")
+    if not np.all(np.isfinite(portfolio_returns)):
+        raise ValueError("portfolio_returns must not contain NaN or infinite values")
+    try:
+        factor_matrix = factor_returns.to_numpy(dtype=float)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("factor_returns must contain numeric values") from exc
+    if not np.all(np.isfinite(factor_matrix)):
+        raise ValueError("factor_returns must not contain NaN or infinite values")
 
 
 def compute_factor_risk(
@@ -62,7 +73,7 @@ def compute_factor_risk(
         ValueError: If fewer than 30 observations or length mismatch.
     """
     portfolio_returns = np.asarray(portfolio_returns, dtype=float)
-    _validate_inputs(portfolio_returns, factor_returns)
+    _validate_inputs(portfolio_returns, factor_returns, annualization_factor)
 
     if regression_result is None:
         regression_result = compute_factor_regression(

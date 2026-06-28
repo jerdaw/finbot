@@ -64,6 +64,13 @@ class TestCostContracts:
         by_type = summary.costs_by_type()
         assert by_type[CostType.COMMISSION] == 10.0
         assert by_type[CostType.SPREAD] == 5.0
+        assert by_type == {
+            CostType.COMMISSION: 10.0,
+            CostType.SPREAD: 5.0,
+            CostType.SLIPPAGE: 3.0,
+            CostType.BORROW: 2.0,
+            CostType.MARKET_IMPACT: 1.0,
+        }
 
     def test_cost_summary_by_symbol(self):
         """Test cost breakdown by symbol."""
@@ -85,6 +92,39 @@ class TestCostContracts:
         by_symbol = summary.costs_by_symbol()
         assert by_symbol["SPY"] == 7.0  # 5.0 + 2.0
         assert by_symbol["TLT"] == 3.0
+
+    def test_cost_summary_empty_events_have_no_symbol_costs(self):
+        """Empty cost event tuples produce an empty symbol breakdown."""
+        summary = CostSummary(
+            total_commission=0.0,
+            total_spread=0.0,
+            total_slippage=0.0,
+            total_borrow=0.0,
+            total_market_impact=0.0,
+        )
+
+        assert summary.total_costs == 0.0
+        assert summary.costs_by_symbol() == {}
+
+    def test_cost_summary_by_symbol_accumulates_repeated_symbols_across_types(self):
+        """Repeated symbols are summed regardless of cost type."""
+        events = (
+            CostEvent(pd.Timestamp("2024-01-01"), "SPY", CostType.COMMISSION, 1.0, "commission"),
+            CostEvent(pd.Timestamp("2024-01-02"), "QQQ", CostType.SPREAD, 2.0, "spread"),
+            CostEvent(pd.Timestamp("2024-01-03"), "SPY", CostType.SLIPPAGE, 3.0, "slippage"),
+            CostEvent(pd.Timestamp("2024-01-04"), "SPY", CostType.MARKET_IMPACT, 4.0, "impact"),
+        )
+        summary = CostSummary(
+            total_commission=1.0,
+            total_spread=2.0,
+            total_slippage=3.0,
+            total_borrow=0.0,
+            total_market_impact=4.0,
+            cost_events=events,
+        )
+
+        assert summary.costs_by_symbol() == {"SPY": 8.0, "QQQ": 2.0}
+        assert "TLT" not in summary.costs_by_symbol()
 
 
 class TestZeroCommission:

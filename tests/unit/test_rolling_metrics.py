@@ -117,6 +117,29 @@ class TestComputeRollingMetrics:
         with pytest.raises(ValueError, match="dates length"):
             compute_rolling_metrics(RETURNS, dates=["2024-01-01"] * 10)
 
+    @pytest.mark.parametrize("bad_value", [np.nan, np.inf, -np.inf])
+    def test_non_finite_returns_raise(self, bad_value: float) -> None:
+        """NaN and infinite portfolio returns are rejected."""
+        returns = RETURNS.copy()
+        returns[5] = bad_value
+
+        with pytest.raises(ValueError, match="returns must not contain NaN or infinite"):
+            compute_rolling_metrics(returns)
+
+    @pytest.mark.parametrize("bad_value", [np.nan, np.inf, -np.inf])
+    def test_non_finite_benchmark_returns_raise(self, bad_value: float) -> None:
+        """NaN and infinite benchmark returns are rejected."""
+        benchmark = BENCHMARK.copy()
+        benchmark[5] = bad_value
+
+        with pytest.raises(ValueError, match="benchmark_returns must not contain NaN or infinite"):
+            compute_rolling_metrics(RETURNS, benchmark_returns=benchmark)
+
+    def test_non_finite_risk_free_rate_raises(self) -> None:
+        """risk_free_rate must be finite."""
+        with pytest.raises(ValueError, match="risk_free_rate must be finite"):
+            compute_rolling_metrics(RETURNS, risk_free_rate=np.inf)
+
     def test_zero_return_series_sharpe_zero(self) -> None:
         """Constant-return series produces Sharpe of 0 (zero std)."""
         const = np.zeros(100)

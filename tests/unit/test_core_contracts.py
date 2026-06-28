@@ -18,6 +18,9 @@ from finbot.core.contracts import (
     BacktestRunRequest,
     BacktestRunResult,
     BarEvent,
+    CostEvent,
+    CostSummary,
+    CostType,
     ExecutionSimulator,
     FillEvent,
     MarketDataProvider,
@@ -209,6 +212,47 @@ def test_result_payload_roundtrip() -> None:
     assert restored.warnings == result.warnings
 
 
+def test_result_payload_roundtrip_with_costs() -> None:
+    metadata = BacktestRunMetadata(
+        run_id="run-costs",
+        engine_name="backtrader",
+        engine_version="1.9.78.123",
+        strategy_name="Rebalance",
+        created_at=datetime(2026, 6, 28, 12, 0, tzinfo=UTC),
+        config_hash="cfg-costs",
+        data_snapshot_id="snapshot-costs",
+    )
+    timestamp = pd.Timestamp("2026-06-28T09:30:00Z")
+    costs = CostSummary(
+        total_commission=1.25,
+        total_spread=2.5,
+        total_slippage=3.75,
+        total_borrow=4.0,
+        total_market_impact=5.5,
+        cost_events=(
+            CostEvent(
+                timestamp=timestamp,
+                symbol="SPY",
+                cost_type=CostType.SLIPPAGE,
+                amount=3.75,
+                basis="sqrt slippage",
+            ),
+        ),
+    )
+    result = BacktestRunResult(metadata=metadata, metrics={"roi": 0.2}, costs=costs)
+
+    payload = backtest_result_to_payload(result)
+    restored = backtest_result_from_payload(payload)
+
+    assert restored.costs is not None
+    assert restored.costs.total_commission == costs.total_commission
+    assert restored.costs.total_spread == costs.total_spread
+    assert restored.costs.total_slippage == costs.total_slippage
+    assert restored.costs.total_borrow == costs.total_borrow
+    assert restored.costs.total_market_impact == costs.total_market_impact
+    assert restored.costs.cost_events == costs.cost_events
+
+
 def test_migrate_legacy_payload_to_v1_shape() -> None:
     legacy_payload = {
         "schema_version": LEGACY_BACKTEST_RESULT_VERSION,
@@ -228,3 +272,34 @@ def test_migrate_legacy_payload_to_v1_shape() -> None:
     assert migrated["schema_version"] == BACKTEST_RESULT_SCHEMA_VERSION
     assert migrated["metadata"]["run_id"] == "legacy-1"
     assert migrated["metrics"]["ending_value"] == 130000.0
+
+
+def test_legacy_result_payload_uses_stable_optional_defaults() -> None:
+    legacy_payload = {
+        "schema_version": LEGACY_BACKTEST_RESULT_VERSION,
+        "run_id": "legacy-defaults",
+        "engine": "backtrader",
+        "strategy": "RiskParity",
+        "created_at": datetime(2026, 6, 28, 12, 0, tzinfo=UTC).isoformat(),
+        "Starting Value": 100000.0,
+        "Ending Value": 125000.0,
+        "ROI": 0.25,
+        "CAGR": 0.06,
+        "Sharpe": 0.9,
+        "Max Drawdown": -0.18,
+        "Mean Cash Utilization": 0.96,
+    }
+
+    migrated = migrate_backtest_result_payload(legacy_payload)
+    restored = backtest_result_from_payload(legacy_payload)
+
+    assert migrated["assumptions"] == {}
+    assert migrated["artifacts"] == {}
+    assert migrated["warnings"] == []
+    assert migrated["metadata"]["random_seed"] is None
+    assert "costs" not in migrated
+    assert restored.assumptions == {}
+    assert restored.artifacts == {}
+    assert restored.warnings == ()
+    assert restored.metadata.random_seed is None
+    assert restored.costs is None

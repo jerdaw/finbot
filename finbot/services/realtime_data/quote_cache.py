@@ -23,6 +23,8 @@ class QuoteCache:
     """
 
     def __init__(self, ttl_seconds: float = _DEFAULT_TTL_SECONDS) -> None:
+        if ttl_seconds <= 0:
+            raise ValueError(f"ttl_seconds must be positive, got {ttl_seconds}")
         self._ttl = ttl_seconds
         self._lock = threading.Lock()
         self._store: dict[str, tuple[Quote, float]] = {}

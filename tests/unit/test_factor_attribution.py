@@ -94,6 +94,40 @@ class TestComputeFactorAttribution:
         with pytest.raises(ValueError, match="length"):
             compute_factor_attribution(portfolio, factors)
 
+    @pytest.mark.parametrize("bad_value", [np.nan, np.inf, -np.inf])
+    def test_non_finite_portfolio_returns_raise(self, bad_value: float) -> None:
+        portfolio = np.array([0.01] * 50)
+        portfolio[5] = bad_value
+        factors = pd.DataFrame({"F1": [0.01] * 50})
+
+        with pytest.raises(ValueError, match="NaN or infinite"):
+            compute_factor_attribution(portfolio, factors)
+
+    @pytest.mark.parametrize("bad_value", [np.nan, np.inf, -np.inf])
+    def test_non_finite_factor_returns_raise(self, bad_value: float) -> None:
+        portfolio = np.array([0.01] * 50)
+        factors = pd.DataFrame({"F1": [0.01] * 50})
+        factors.loc[5, "F1"] = bad_value
+
+        with pytest.raises(ValueError, match="NaN or infinite"):
+            compute_factor_attribution(portfolio, factors)
+
+    def test_invalid_annualization_factor_raises(self, synthetic_data: tuple[np.ndarray, pd.DataFrame]) -> None:
+        portfolio, factors = synthetic_data
+
+        with pytest.raises(ValueError, match="annualization_factor must be >= 1"):
+            compute_factor_attribution(portfolio, factors, annualization_factor=0)
+
+    def test_invalid_annualization_factor_with_precomputed_regression_raises(
+        self,
+        synthetic_data: tuple[np.ndarray, pd.DataFrame],
+        reg_result: FactorRegressionResult,
+    ) -> None:
+        portfolio, factors = synthetic_data
+
+        with pytest.raises(ValueError, match="annualization_factor must be >= 1"):
+            compute_factor_attribution(portfolio, factors, regression_result=reg_result, annualization_factor=0)
+
     def test_single_factor(self, rng: np.random.Generator) -> None:
         n = 100
         f1 = rng.normal(0, 0.01, n)

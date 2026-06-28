@@ -151,12 +151,29 @@ class TestComputeFactorRegression:
         with pytest.raises(ValueError, match="NaN"):
             compute_factor_regression(portfolio, factors)
 
+    @pytest.mark.parametrize("bad_value", [np.inf, -np.inf])
+    def test_infinite_portfolio_returns_raise(self, bad_value: float) -> None:
+        portfolio = np.array([0.01] * 50)
+        portfolio[5] = bad_value
+        factors = pd.DataFrame({"F1": [0.01] * 50})
+        with pytest.raises(ValueError, match="NaN or infinite"):
+            compute_factor_regression(portfolio, factors)
+
     def test_nan_in_factors_raises(self) -> None:
         portfolio = np.array([0.01] * 50)
         f_vals = [0.01] * 50
         f_vals[5] = float("nan")
         factors = pd.DataFrame({"F1": f_vals})
         with pytest.raises(ValueError, match="NaN"):
+            compute_factor_regression(portfolio, factors)
+
+    @pytest.mark.parametrize("bad_value", [np.inf, -np.inf])
+    def test_infinite_factor_returns_raise(self, bad_value: float) -> None:
+        portfolio = np.array([0.01] * 50)
+        f_vals = [0.01] * 50
+        f_vals[5] = bad_value
+        factors = pd.DataFrame({"F1": f_vals})
+        with pytest.raises(ValueError, match="NaN or infinite"):
             compute_factor_regression(portfolio, factors)
 
     def test_no_factor_columns_raises(self) -> None:
@@ -231,3 +248,22 @@ class TestComputeRollingRSquared:
         factors = pd.DataFrame({"F1": [0.01] * 30})
         with pytest.raises(ValueError, match="at least 63"):
             compute_rolling_r_squared(portfolio, factors, window=63)
+
+    def test_non_finite_portfolio_returns_raise(self) -> None:
+        portfolio = np.array([0.01] * 100)
+        portfolio[10] = np.inf
+        factors = pd.DataFrame({"F1": np.linspace(-0.01, 0.01, 100)})
+        with pytest.raises(ValueError, match="NaN or infinite"):
+            compute_rolling_r_squared(portfolio, factors, window=30)
+
+    def test_non_finite_factor_returns_raise(self) -> None:
+        portfolio = np.array([0.01] * 100)
+        factors = pd.DataFrame({"F1": np.linspace(-0.01, 0.01, 100)})
+        factors.loc[10, "F1"] = -np.inf
+        with pytest.raises(ValueError, match="NaN or infinite"):
+            compute_rolling_r_squared(portfolio, factors, window=30)
+
+    def test_invalid_annualization_factor_raises(self, synthetic_data: tuple[np.ndarray, pd.DataFrame]) -> None:
+        portfolio, factors = synthetic_data
+        with pytest.raises(ValueError, match="annualization_factor must be >= 1"):
+            compute_rolling_r_squared(portfolio, factors, annualization_factor=0)

@@ -23,6 +23,24 @@ _MIN_OBSERVATIONS = 30
 _DEFAULT_ANNUALIZATION = 252
 
 
+def _validate_weights(weights: dict[str, float], expected_assets: set[str]) -> None:
+    """Raise ValueError when weights are not aligned, finite, or normalized."""
+    extra = set(weights.keys()) - expected_assets
+    missing = expected_assets - set(weights.keys())
+    if extra or missing:
+        raise ValueError(f"weights keys must match returns_df columns. Extra: {extra}, missing: {missing}")
+
+    weight_values = np.array(list(weights.values()), dtype=float)
+    if not np.all(np.isfinite(weight_values)):
+        raise ValueError("weights must not contain NaN or infinite values")
+    if any(v < 0 for v in weights.values()):
+        raise ValueError("all weights must be >= 0")
+
+    weight_sum = sum(weights.values())
+    if abs(weight_sum - 1.0) > 1e-9:
+        raise ValueError(f"weights must sum to 1.0, got {weight_sum}")
+
+
 def _validate_inputs(
     returns_df: pd.DataFrame,
     weights: dict[str, float] | None,
@@ -35,16 +53,21 @@ def _validate_inputs(
         raise ValueError(f"returns_df must have at least {_MIN_OBSERVATIONS} rows, got {len(returns_df)}")
     if annualization_factor < 1:
         raise ValueError(f"annualization_factor must be >= 1, got {annualization_factor}")
+    try:
+        returns_arr = returns_df.to_numpy(dtype=float)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("returns_df must contain numeric returns") from exc
+    if not np.all(np.isfinite(returns_arr)):
+        raise ValueError("returns_df must not contain NaN or infinite values")
+    zero_variance_assets = [
+        str(col)
+        for col, std in zip(returns_df.columns, np.std(returns_arr, axis=0, ddof=1), strict=True)
+        if np.isclose(std, 0.0)
+    ]
+    if zero_variance_assets:
+        raise ValueError(f"returns_df columns must have non-zero variance: {zero_variance_assets}")
     if weights is not None:
-        extra = set(weights.keys()) - set(returns_df.columns)
-        missing = set(returns_df.columns) - set(weights.keys())
-        if extra or missing:
-            raise ValueError(f"weights keys must match returns_df columns. Extra: {extra}, missing: {missing}")
-        if any(v < 0 for v in weights.values()):
-            raise ValueError("all weights must be >= 0")
-        weight_sum = sum(weights.values())
-        if abs(weight_sum - 1.0) > 1e-9:
-            raise ValueError(f"weights must sum to 1.0, got {weight_sum}")
+        _validate_weights(weights, set(returns_df.columns))
 
 
 def compute_diversification_metrics(

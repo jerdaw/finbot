@@ -95,3 +95,41 @@ class TestComputeBenchmarkComparison:
         """annualization_factor is stored in the result."""
         result = compute_benchmark_comparison(PORTFOLIO, BENCHMARK, annualization_factor=52)
         assert result.annualization_factor == 52
+
+    @pytest.mark.parametrize("bad_value", [np.nan, np.inf, -np.inf])
+    def test_non_finite_portfolio_returns_raise(self, bad_value: float) -> None:
+        """NaN and infinite portfolio returns are rejected before regression."""
+        portfolio = PORTFOLIO.copy()
+        portfolio[5] = bad_value
+
+        with pytest.raises(ValueError, match="portfolio_returns must not contain NaN or infinite"):
+            compute_benchmark_comparison(portfolio, BENCHMARK)
+
+    @pytest.mark.parametrize("bad_value", [np.nan, np.inf, -np.inf])
+    def test_non_finite_benchmark_returns_raise(self, bad_value: float) -> None:
+        """NaN and infinite benchmark returns are rejected before regression."""
+        benchmark = BENCHMARK.copy()
+        benchmark[5] = bad_value
+
+        with pytest.raises(ValueError, match="benchmark_returns must not contain NaN or infinite"):
+            compute_benchmark_comparison(PORTFOLIO, benchmark)
+
+    def test_constant_benchmark_returns_raise(self) -> None:
+        """Constant benchmark returns cannot support OLS beta."""
+        with pytest.raises(ValueError, match="benchmark_returns must have non-zero variance"):
+            compute_benchmark_comparison(PORTFOLIO, np.full_like(BENCHMARK, 0.001))
+
+    def test_low_volatility_nonconstant_benchmark_is_allowed(self) -> None:
+        """Very low but non-zero benchmark variance still supports OLS beta."""
+        low_vol_benchmark = np.linspace(0.0001, 0.00011, len(BENCHMARK))
+        low_vol_portfolio = low_vol_benchmark * 1.05
+
+        result = compute_benchmark_comparison(low_vol_portfolio, low_vol_benchmark)
+
+        assert result.beta == pytest.approx(1.05)
+        assert result.r_squared == pytest.approx(1.0)
+
+    def test_non_finite_risk_free_rate_raises(self) -> None:
+        """risk_free_rate must be finite."""
+        with pytest.raises(ValueError, match="risk_free_rate must be finite"):
+            compute_benchmark_comparison(PORTFOLIO, BENCHMARK, risk_free_rate=np.inf)
