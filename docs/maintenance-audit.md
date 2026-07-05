@@ -707,6 +707,17 @@ Additional completion checks after the primary audit:
 | `readlink CLAUDE.md` / `readlink GEMINI.md` | Passed; both remain relative symlinks to `AGENTS.md` |
 | `git status --short --ignored` | Passed; confirmed only `.venv/`, `web/frontend/node_modules/`, and ignored data caches remained after generated-artifact cleanup |
 
+Post-push GitHub status for commit `714f2c8`:
+
+- `main` was fast-forwarded to the maintenance commit and pushed.
+- The temporary `codex/maintenance-audit-2026-07-05` branch was deleted locally and remotely after merge.
+- Open PR query after cleanup returned `0` open PRs.
+- Remote branches after cleanup were `main` and `gh-pages`.
+- `Deploy Documentation` run `28754119907` completed successfully.
+- `CI` run `28754119917` completed with overall failure because `Docker Security Scan (cli)` and `Docker Security Scan (api)` failed at the Trivy image-scan step.
+- All other observed CI jobs in run `28754119917` passed: lint/format, type check, security scan, docstring coverage, backtest parity gate, performance regression, frontend quality, and Python 3.11/3.12/3.13 tests.
+- Public job-log download for the failed Docker jobs returned HTTP 403 without GitHub authentication, so the exact CVE list was not available from this shell; the workflow did upload Trivy results and security reports.
+
 ## Security And Privacy Notes
 
 - No hardcoded production secrets were identified by the static path scan; reviewed matches were placeholders, docs, workflow secret references, or env var names.
@@ -743,7 +754,7 @@ Pre-commit diff after final verification and generated-artifact cleanup:
 
 - Branch: `codex/maintenance-audit-2026-07-05`
 - Tracked diff before adding this untracked report: `36 files changed, 670 insertions(+), 51 deletions(-)`
-- New report: `docs/maintenance-audit.md` (`765` lines)
+- New report: `docs/maintenance-audit.md`
 - Status before staging: modified CI/docs/config/source/tests/lockfile files plus untracked report
 - Ignored files intentionally left in place: `.venv/`, `web/frontend/node_modules/`, and local ignored data caches
 
