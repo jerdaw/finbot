@@ -68,7 +68,7 @@ def main():
 
     # Create adapter
     print("Step 1: Creating NautilusAdapter...")
-    adapter = NautilusAdapter()
+    adapter = NautilusAdapter(price_histories=create_minimal_test_data())
     print(f"✅ Created adapter: {adapter.name} v{adapter.version}")
     print()
 

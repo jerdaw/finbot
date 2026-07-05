@@ -42,7 +42,7 @@ ALPHA_VANTAGE_RAPIDAPI_URL = "https://alpha-vantage.p.rapidapi.com/query"
 def _get_alpha_vantage_rapidapi_headers() -> dict[str, str]:
     """Get RapidAPI headers with API key (lazy loaded)."""
     return {
-        "X-RapidAPI-Key": settings_accessors.get_alpha_vantage_api_key(),
+        "X-RapidAPI-Key": settings_accessors.get_alpha_vantage_rapidapi_key(),
         "X-RapidAPI-Host": "alpha-vantage.p.rapidapi.com",
     }
 

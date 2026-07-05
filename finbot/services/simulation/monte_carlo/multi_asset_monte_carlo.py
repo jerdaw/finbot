@@ -55,7 +55,7 @@ def multi_asset_monte_carlo(
     returns_dict: dict[str, pd.Series] = {}
     for name, df in price_data.items():
         col = "Adj Close" if "Adj Close" in df.columns else "Close"
-        returns_dict[name] = df[col].pct_change().dropna()
+        returns_dict[name] = df[col].pct_change(fill_method=None).dropna()
 
     # Align on common dates
     returns_df = pd.DataFrame(returns_dict).dropna()

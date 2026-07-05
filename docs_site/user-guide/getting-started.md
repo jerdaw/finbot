@@ -79,7 +79,11 @@ DYNACONF_ENV=development
 
 # Optional: API keys for data collection
 ALPHA_VANTAGE_API_KEY=your_key_here
+ALPHA_VANTAGE_RAPIDAPI_KEY=your_rapidapi_key_here
+ALPACA_API_KEY=your_key_here
+ALPACA_SECRET_KEY=your_secret_here
 NASDAQ_DATA_LINK_API_KEY=your_key_here
+TWELVEDATA_API_KEY=your_key_here
 US_BUREAU_OF_LABOR_STATISTICS_API_KEY=your_key_here
 GOOGLE_FINANCE_SERVICE_ACCOUNT_CREDENTIALS_PATH=/path/to/credentials.json
 ```

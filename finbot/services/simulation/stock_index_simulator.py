@@ -20,7 +20,7 @@ def stock_index_simulator(
         return pd.read_parquet(fund_path)
     print(f"Building {fund_name} Stock Index Simulation...")
 
-    underlying_changes = underlying_closes.pct_change()
+    underlying_changes = underlying_closes.pct_change(fill_method=None)
     if additive_constant:
         underlying_changes += additive_constant
     sim_mults = underlying_changes + 1
@@ -29,13 +29,13 @@ def stock_index_simulator(
         sim_mults += underlying_yields
     sim_closes = sim_mults.cumprod()
     sim_closes.iloc[0] = 1
-    sim_df = pd.DataFrame({"Close": sim_closes, "Change": sim_closes.pct_change()})
+    sim_df = pd.DataFrame({"Close": sim_closes, "Change": sim_closes.pct_change(fill_method=None)})
     sim_df.index = underlying_changes.index
 
     if overwrite_sim_with_index and isinstance(index_closes, pd.Series):
         sim_df["Close"] = merge_price_histories(sim_df["Close"], index_closes, fix_point="end")
 
-    sim_df["Change"] = sim_df["Close"].pct_change()
+    sim_df["Change"] = sim_df["Close"].pct_change(fill_method=None)
 
     if save_index:
         print(f"Saving {fund_name} to simulations db")

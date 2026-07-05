@@ -79,7 +79,7 @@ class TestMakeAlphaVantageRequest:
     @patch("finbot.utils.data_collection_utils.alpha_vantage._alpha_vantage_utils.RequestHandler")
     @patch("finbot.utils.data_collection_utils.alpha_vantage._alpha_vantage_utils.settings_accessors")
     def test_rapid_provider_uses_headers(self, mock_settings, mock_handler_cls):
-        mock_settings.get_alpha_vantage_api_key.return_value = "rapid-key"
+        mock_settings.get_alpha_vantage_rapidapi_key.return_value = "rapid-key"
         mock_handler = MagicMock()
         mock_handler.make_json_request.return_value = {"data": []}
         mock_handler_cls.return_value = mock_handler
@@ -88,6 +88,8 @@ class TestMakeAlphaVantageRequest:
         assert result == {"data": []}
         call_kwargs = mock_handler.make_json_request.call_args
         assert "headers" in call_kwargs.kwargs
+        assert call_kwargs.kwargs["headers"]["X-RapidAPI-Key"] == "rapid-key"
+        mock_settings.get_alpha_vantage_api_key.assert_not_called()
 
     def test_missing_function_raises(self):
         with pytest.raises(ValueError, match="function"):

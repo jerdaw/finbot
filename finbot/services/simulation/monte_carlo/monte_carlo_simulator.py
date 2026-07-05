@@ -20,7 +20,7 @@ def monte_carlo_simulator(
     equity_data = equity_data.truncate(before=equity_start, after=equity_end)
 
     closes = equity_data["Adj Close" if "Adj Close" in equity_data.columns else "Close"]
-    changes = closes.pct_change()
+    changes = closes.pct_change(fill_method=None)
     start_price = (
         closes.iloc[-(sim_periods if len(closes) >= sim_periods else 1)] if start_price is None else start_price
     )

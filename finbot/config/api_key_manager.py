@@ -10,6 +10,7 @@ class APIKeyManager:
 
     _KEY_NAMES = (
         "ALPHA_VANTAGE_API_KEY",
+        "ALPHA_VANTAGE_RAPIDAPI_KEY",
         "ALPACA_API_KEY",
         "ALPACA_SECRET_KEY",
         "NASDAQ_DATA_LINK_API_KEY",

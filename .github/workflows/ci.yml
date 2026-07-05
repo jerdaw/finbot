@@ -63,7 +63,7 @@ jobs:
         run: uv sync --all-extras
 
       - name: Type check with mypy
-        run: uv run mypy finbot/
+        run: uv run mypy finbot/ scripts/
 
   frontend-quality:
     name: Frontend Quality

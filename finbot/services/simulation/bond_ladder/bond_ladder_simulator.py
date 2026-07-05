@@ -53,7 +53,7 @@ def bond_ladder_simulator(
     fund_indexes = list(sim_closes.keys())
     fund_closes = pd.Series(list(sim_closes.values()))
     fund_closes *= 1 / fund_closes.iloc[0]  # Scale fund to start at 1
-    fund_changes = fund_closes.pct_change()
+    fund_changes = fund_closes.pct_change(fill_method=None)
 
     fund = pd.DataFrame({"Close": fund_closes.values, "Change": fund_changes.values})
     assert len(fund) == len(fund_closes) == len(fund_indexes) == len(yield_history)

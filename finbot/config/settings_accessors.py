@@ -34,6 +34,11 @@ def get_alpha_vantage_api_key() -> str:
     return _api_key_manager.get_key("ALPHA_VANTAGE_API_KEY")
 
 
+def get_alpha_vantage_rapidapi_key() -> str:
+    """Get Alpha Vantage RapidAPI proxy key from environment."""
+    return _api_key_manager.get_key("ALPHA_VANTAGE_RAPIDAPI_KEY")
+
+
 def get_nasdaq_data_link_api_key() -> str:
     """Get NASDAQ Data Link API key from environment."""
     return _api_key_manager.get_key("NASDAQ_DATA_LINK_API_KEY")

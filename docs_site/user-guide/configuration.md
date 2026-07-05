@@ -53,12 +53,17 @@ Environment variables are the primary interface for secrets. For local developme
 
 ```bash
 ALPHA_VANTAGE_API_KEY=your_key_here
+ALPHA_VANTAGE_RAPIDAPI_KEY=your_rapidapi_key_here
+ALPACA_API_KEY=your_key_here
+ALPACA_SECRET_KEY=your_secret_here
 NASDAQ_DATA_LINK_API_KEY=your_key_here
+TWELVEDATA_API_KEY=your_key_here
 US_BUREAU_OF_LABOR_STATISTICS_API_KEY=your_key_here
 GOOGLE_FINANCE_SERVICE_ACCOUNT_CREDENTIALS_PATH=/path/to/creds.json
 ```
 
-Keys are loaded lazily (only when needed).
+Keys are loaded lazily (only when needed). Alpaca and Twelve Data are optional real-time quote
+providers; yfinance remains the fallback provider when those keys are absent.
 
 ## Python API
 

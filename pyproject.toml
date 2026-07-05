@@ -3,7 +3,7 @@ name = "finbot"
 version = "1.0.0"
 description = "Financial data collection, simulation, and backtesting platform"
 readme = "README.md"
-requires-python = ">=3.12,<3.15"
+requires-python = ">=3.11,<3.15"
 license = "MIT"
 authors = [
     {name = "Jeremy Dawson", email = "jeremyjdawson@gmail.com"}
@@ -14,6 +14,7 @@ classifiers = [
     "Intended Audience :: Developers",
     "Intended Audience :: Financial and Insurance Industry",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
@@ -73,7 +74,7 @@ web = [
     "uvicorn>=0.44.0,<1",
 ]
 nautilus = [
-    "nautilus-trader>=1.225.0,<2",
+    "nautilus-trader>=1.225.0,<2; python_version >= '3.12'",
 ]
 notebooks = [
     "jupyter>=1.0.0,<2",

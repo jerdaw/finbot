@@ -426,17 +426,17 @@ def sim_ntsx(
     if is_sufficiently_updated(fund_name) and not force_update:
         return pd.read_parquet(fund_path)
 
-    spy_change = sim_spy()["Close"].pct_change() * 0.9
-    tlt_change = sim_tlt()["Close"].pct_change() * 0.0
-    ief_change = sim_ief()["Close"].pct_change() * 0.4
-    shy_change = sim_shy()["Close"].pct_change() * 0.2
+    spy_change = sim_spy()["Close"].pct_change(fill_method=None) * 0.9
+    tlt_change = sim_tlt()["Close"].pct_change(fill_method=None) * 0.0
+    ief_change = sim_ief()["Close"].pct_change(fill_method=None) * 0.4
+    shy_change = sim_shy()["Close"].pct_change(fill_method=None) * 0.2
 
     merged = pd.DataFrame({"SPY": spy_change, "TLT": tlt_change, "IEF": ief_change, "SHY": shy_change}).interpolate()
     merged["Change"] = merged.sum(axis=1)
     merged["Change"] += -4.858471304152913e-05 if adj is None else adj
     merged["Change"] += 1
     merged["Close"] = merged["Change"].cumprod()
-    merged["Change"] = merged["Close"].pct_change()
+    merged["Change"] = merged["Close"].pct_change(fill_method=None)
     fund = merged[["Close", "Change"]]
 
     if overwrite_sim_with_fund:

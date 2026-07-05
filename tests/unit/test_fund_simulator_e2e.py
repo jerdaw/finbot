@@ -9,6 +9,8 @@ Tests fund_simulator() with synthetic data to verify:
 
 from __future__ import annotations
 
+import warnings
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -119,6 +121,27 @@ class TestFundSimulatorEndToEnd:
         result = fund_simulator(df, libor_yield_df=libor)
         assert isinstance(result, pd.DataFrame)
         assert result.shape == (100, 2)
+
+    def test_missing_prices_do_not_synthesize_flat_returns(self):
+        """Missing underlying prices should not be forward-filled into zero-return periods."""
+        dates = pd.date_range("2020-01-01", periods=3, freq="B")
+        price_df = pd.DataFrame({"Close": [100.0, np.nan, 102.0]}, index=dates)
+        libor = pd.DataFrame({"Yield": [0.0, 0.0, 0.0]}, index=dates)
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", FutureWarning)
+            result = fund_simulator(
+                price_df,
+                leverage_mult=1.0,
+                annual_er_pct=0.0,
+                percent_daily_spread_cost=0.0,
+                fund_swap_pct=0.0,
+                libor_yield_df=libor,
+            )
+
+        assert result["Change"].iloc[0] == pytest.approx(0.0)
+        assert pd.isna(result["Change"].iloc[1])
+        assert pd.isna(result["Change"].iloc[2])
 
 
 class TestFundSimulatorEdgeCases:

@@ -67,7 +67,7 @@ def fund_simulator(
     logger.info("Building fund simulation...")
     # Get the close column to use ("Adj Close" has priority)
     close_col = "Adj Close" if "Adj Close" in price_df.columns else "Close"
-    underlying_changes = price_df[close_col].pct_change().to_numpy()
+    underlying_changes = price_df[close_col].pct_change(fill_method=None).to_numpy()
     underlying_changes[0] = 0
     period_libor_yield_percents = libor_yield_df.loc[price_df.index, "Yield"].to_numpy() / 100
 

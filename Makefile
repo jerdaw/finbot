@@ -74,15 +74,15 @@ format:
 
 type:
 	@echo "Running mypy type checker..."
-	@uv run mypy finbot/ scripts/ || echo "⚠ Type checking found issues (non-fatal)"
+	uv run mypy finbot/ scripts/
 
 docstring:
 	@echo "Checking docstring coverage..."
-	@uv run interrogate finbot/ || echo "⚠ Docstring coverage below threshold (non-fatal)"
+	uv run interrogate finbot/
 
 security:
 	@echo "Running bandit security scanner..."
-	@uv run bandit -r finbot || echo "⚠ Security scan found issues (non-fatal)"
+	uv run bandit -r finbot -ll
 
 check: lint format type docstring security
 	@echo ""

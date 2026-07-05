@@ -76,7 +76,7 @@ def _run_case(
 
 
 def main() -> None:
-    cases = [
+    cases: list[tuple[str, type[bt.Strategy], dict[str, object], list[str]]] = [
         ("GS-01", NoRebalance, {"equity_proportions": [1.0]}, ["SPY"]),
         ("GS-02", DualMomentum, {"lookback": 252, "rebal_interval": 21}, ["SPY", "TLT"]),
         ("GS-03", RiskParity, {"vol_window": 63, "rebal_interval": 21}, ["SPY", "QQQ", "TLT"]),

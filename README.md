@@ -128,6 +128,9 @@ Tracking docs:
 | **Python**  | 3.11+           |
 | **uv**      | 0.9+            |
 
+The base CLI/runtime, dashboard, web API, and notebooks support Python `>=3.11,<3.15`. The optional
+`nautilus` extra is installed only on Python 3.12+ because NautilusTrader does not support Python 3.11.
+
 ## Public Documentation Boundary
 
 This repository contains public project documentation and reproducible development information. Deployment details, credentials, monitoring configuration, private operational notes, and environment-specific production paths are intentionally excluded from public documentation.
@@ -251,7 +254,11 @@ trials_df = monte_carlo_simulator(equity_data=spy_df, sim_periods=252, n_sims=10
 | ------------------------------------------------- | ------------------- | ----------------------------- |
 | `DYNACONF_ENV`                                    | Yes                 | `development` or `production` |
 | `ALPHA_VANTAGE_API_KEY`                           | For data collection | Alpha Vantage API access      |
+| `ALPHA_VANTAGE_RAPIDAPI_KEY`                      | For data collection | Alpha Vantage RapidAPI proxy  |
+| `ALPACA_API_KEY`                                  | For real-time data  | Alpaca IEX quote access       |
+| `ALPACA_SECRET_KEY`                               | For real-time data  | Alpaca secret key             |
 | `NASDAQ_DATA_LINK_API_KEY`                        | For data collection | Nasdaq Data Link access       |
+| `TWELVEDATA_API_KEY`                              | For real-time data  | Twelve Data quote access      |
 | `US_BUREAU_OF_LABOR_STATISTICS_API_KEY`           | For data collection | BLS API access                |
 | `GOOGLE_FINANCE_SERVICE_ACCOUNT_CREDENTIALS_PATH` | For data collection | Google Sheets service account |
 
@@ -263,20 +270,27 @@ trials_df = monte_carlo_simulator(equity_data=spy_df, sim_periods=252, n_sims=10
 make lint       # Run ruff linter with auto-fix
 make format     # Format code with ruff
 make type       # Run mypy type checker
-make security   # Run bandit security scanner
+make docstring  # Check docstring coverage
+make security   # Run Bandit scanner for medium/high findings
 make test       # Run all tests
 make test-cov   # Run tests with coverage report
-make check      # Run all checks (lint + format + type + security)
+make check      # Run all checks (lint + format + type + docstring + security)
 make all        # Run full CI pipeline (check + test)
 ```
 
 ### Direct uv Commands
 
 ```bash
-uv run ruff check . --fix   # Lint
-uv run ruff format .        # Format
-uv run mypy                 # Type check
-uv run pytest               # Test
+uv run ruff check . --exclude notebooks/         # Lint
+uv run ruff format --check . --exclude notebooks/ # Format check
+uv run mypy finbot/ scripts/                     # Type check
+DYNACONF_ENV=development uv run pytest tests/    # Test
+uv run zensical build --clean --strict           # Docs build
+
+# Frontend, when web/frontend dependencies are installed
+cd web/frontend
+corepack pnpm typecheck
+corepack pnpm build
 ```
 
 Run `make help` to see all available commands.

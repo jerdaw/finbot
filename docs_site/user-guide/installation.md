@@ -9,6 +9,9 @@ Detailed installation instructions for Finbot.
 - **Memory**: 4GB RAM minimum, 8GB recommended
 - **Disk Space**: 2GB for installation + data storage
 
+The base CLI/runtime, dashboard, web API, and notebooks support Python `>=3.11,<3.15`. The optional
+NautilusTrader extra is only installed on Python 3.12+.
+
 ## Installation Methods
 
 ### Method 1: uv (Recommended)
@@ -38,7 +41,7 @@ export DYNACONF_ENV=development
 
 # Verify installation from the source checkout
 DYNACONF_ENV=development uv run finbot --version
-python -c "import finbot; print('Success!')"
+uv run python -c "import finbot; print('Success!')"
 ```
 
 ### Method 2: pip with venv
@@ -60,6 +63,7 @@ source venv/bin/activate
 venv\Scripts\activate
 
 # Install the full contributor environment
+# On Python 3.11, the nautilus extra is skipped because NautilusTrader requires Python 3.12+.
 pip install -e '.[dashboard,web,nautilus,notebooks]'
 
 # Minimal CLI/runtime only
@@ -103,7 +107,7 @@ Install a specific optional surface only when you need it:
 ```bash
 uv sync --extra dashboard
 uv sync --extra web
-uv sync --extra nautilus
+uv sync --extra nautilus  # Python 3.12+ only
 uv sync --extra notebooks
 ```
 
@@ -112,7 +116,7 @@ uv sync --extra notebooks
 Run the test suite:
 
 ```bash
-DYNACONF_ENV=development uv run pytest -v
+DYNACONF_ENV=development uv run pytest tests/ -v
 ```
 
 Expected: the suite completes without failures.

@@ -55,7 +55,7 @@ def test_adapter():
     try:
         from finbot.adapters.nautilus import NautilusAdapter
 
-        adapter = NautilusAdapter()
+        adapter = NautilusAdapter(price_histories={})
         print("✅ NautilusAdapter created")
         print(f"   Name: {adapter.name}")
         print(f"   Version: {adapter.version}")

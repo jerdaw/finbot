@@ -1,5 +1,7 @@
 """Unit tests for simulation adjustment finders (correlation optimization)."""
 
+import warnings
+
 import numpy as np
 import pandas as pd
 
@@ -38,6 +40,17 @@ class TestGetBestCorrIterative:
         actual = sim * 1.01
         adj, _corr = get_best_corr_iterative(sim, actual, n_steps=50)
         assert isinstance(adj, float)
+
+    def test_missing_prices_do_not_emit_pandas_fill_warning(self):
+        sim = pd.Series([100.0, np.nan, 102.0, 103.0, 104.0])
+        actual = pd.Series([100.0, 101.0, 102.0, 103.0, 104.0])
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", FutureWarning)
+            adj, corr = get_best_corr_iterative(sim, actual, n_steps=10)
+
+        assert isinstance(adj, float)
+        assert isinstance(corr, float)
 
     def test_n_steps_affects_resolution(self):
         rng = np.random.default_rng(42)

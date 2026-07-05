@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from datetime import datetime
 
 import numpy as np
@@ -227,6 +228,24 @@ def test_sim_ntsx_builds_composite_and_handles_missing_actual(monkeypatch: pytes
     assert warnings
 
 
+def test_sim_ntsx_missing_component_prices_do_not_emit_pandas_fill_warning(monkeypatch: pytest.MonkeyPatch) -> None:
+    idx = pd.date_range("2024-01-01", periods=4, freq="D")
+    base = pd.DataFrame({"Close": [100.0, float("nan"), 102.0, 103.0]}, index=idx)
+
+    monkeypatch.setattr("finbot.services.simulation.sim_specific_funds.is_sufficiently_updated", lambda _name: False)
+    monkeypatch.setattr("finbot.services.simulation.sim_specific_funds.sim_spy", lambda: base)
+    monkeypatch.setattr("finbot.services.simulation.sim_specific_funds.sim_tlt", lambda: base)
+    monkeypatch.setattr("finbot.services.simulation.sim_specific_funds.sim_ief", lambda: base)
+    monkeypatch.setattr("finbot.services.simulation.sim_specific_funds.sim_shy", lambda: base)
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", FutureWarning)
+        out = sim_ntsx(save_sim=False, overwrite_sim_with_fund=False)
+
+    assert list(out.columns) == ["Close", "Change"]
+    assert not out.empty
+
+
 def test_monte_carlo_simulator_shapes_result(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         "finbot.services.simulation.monte_carlo.monte_carlo_simulator.tqdm", lambda iterable, **_k: iterable
@@ -249,3 +268,31 @@ def test_monte_carlo_simulator_shapes_result(monkeypatch: pytest.MonkeyPatch) ->
     assert out.shape == (3, 4)
     assert out.index.name == "Trials"
     assert out.columns.name == "Periods"
+
+
+def test_monte_carlo_simulator_missing_prices_do_not_emit_pandas_fill_warning(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        "finbot.services.simulation.monte_carlo.monte_carlo_simulator.tqdm", lambda iterable, **_k: iterable
+    )
+    monkeypatch.setattr(
+        "finbot.services.simulation.monte_carlo.monte_carlo_simulator.sim_type_nd",
+        lambda **kwargs: np.linspace(kwargs["start_price"], kwargs["start_price"] + 3, kwargs["sim_periods"]),
+    )
+    idx = pd.date_range("2024-01-01", periods=10, freq="D")
+    df = pd.DataFrame(
+        {"Adj Close": [100.0, 101.0, float("nan"), 103.0, 104.0, 105.0, 106.0, 107.0, 108.0, 109.0]}, index=idx
+    )
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", FutureWarning)
+        out = monte_carlo_simulator(
+            equity_data=df,
+            equity_start=pd.Timestamp(datetime(2024, 1, 1)),
+            equity_end=pd.Timestamp(datetime(2024, 1, 10)),
+            sim_periods=4,
+            n_sims=3,
+        )
+
+    assert out.shape == (3, 4)

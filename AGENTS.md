@@ -313,6 +313,7 @@ Required for data collection features (loaded lazily via `APIKeyManager`):
 ```bash
 export DYNACONF_ENV=development  # or production
 export ALPHA_VANTAGE_API_KEY=your_key
+export ALPHA_VANTAGE_RAPIDAPI_KEY=your_rapidapi_key
 export ALPACA_API_KEY=your_key            # Real-time US quotes (IEX feed)
 export ALPACA_SECRET_KEY=your_secret      # Alpaca secret key
 export TWELVEDATA_API_KEY=your_key        # Real-time US + Canada quotes
@@ -467,7 +468,7 @@ See `docs/adr/` for architectural decision records:
 
 | Pattern                   | Implementation                                              | Rationale                                                                                          |
 | ------------------------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| **Settings Accessors**    | `settings_accessors` module in `finbot/config/`             | Lazy accessors for MAX_THREADS and API keys (alpha_vantage, nasdaq_data_link, bls, google_finance) |
+| **Settings Accessors**    | `settings_accessors` module in `finbot/config/`             | Lazy accessors for MAX_THREADS and API keys (Alpha Vantage, RapidAPI, Alpaca, Twelve Data, Nasdaq Data Link, BLS, Google Finance) |
 | **Lazy Host Snapshot**    | `finbot.constants.host_constants.get_current_host_info()`   | Keeps settings import resilient when hostname, psutil, or subprocess probes fail                   |
 | **Lazy API keys**         | `APIKeyManager.get_key()` only loads on first access        | Prevents import failures when keys not needed                                                      |
 | **Queue-based logging**   | `finbot/libs/logger/setup_queue_logging.py`                 | Non-blocking async logging for performance                                                         |
@@ -490,7 +491,7 @@ See `docs/adr/` for architectural decision records:
 
 ## Common Gotchas
 
-1. **Missing API keys**: Functions using `settings_accessors.get_alpha_vantage_api_key()` will raise `OSError` on access if env var not set. Set up `.env` file or export env vars before running data collection.
+1. **Missing API keys**: Functions using `settings_accessors.get_*_key()` will raise `OSError` on access if the corresponding env var is not set. Set up `.env` file or export env vars before running data collection or provider-backed real-time quote features.
 
 2. **DYNACONF_ENV not set**: Defaults to "development" but logs a warning. Always set explicitly.
 
@@ -504,7 +505,7 @@ See `docs/adr/` for architectural decision records:
 
 1. Create feature branch
 2. Make changes
-3. Run tests: `uv run pytest`
+3. Run tests: `DYNACONF_ENV=development uv run pytest tests/`
 4. Run linter: `uv run ruff check . --fix`
 5. Run formatter: `uv run ruff format .`
 6. Commit with conventional commit message: `type(scope): subject` (e.g., `feat(api): add new endpoint`)

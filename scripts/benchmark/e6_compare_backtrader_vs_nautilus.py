@@ -7,16 +7,21 @@ import json
 import platform
 import time
 import tracemalloc
+from collections.abc import Callable
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 from statistics import median
+from typing import TypeVar
 
 import pandas as pd
 
 from finbot.adapters.nautilus import NautilusAdapter
 from finbot.core.contracts import BacktestRunRequest
+from finbot.core.contracts.interfaces import BacktestEngine
 from finbot.services.backtesting.adapters import BacktraderAdapter
+
+T = TypeVar("T")
 
 
 @dataclass
@@ -162,7 +167,7 @@ def _load_history(path: Path) -> pd.DataFrame:
     return df.sort_index()
 
 
-def _measure_run(fn) -> tuple[object, float, float]:
+def _measure_run(fn: Callable[[], T]) -> tuple[T, float, float]:
     tracemalloc.start()
     start = time.perf_counter()
     result = fn()
@@ -195,7 +200,7 @@ def _build_nautilus_request(config: ScenarioConfig) -> BacktestRunRequest:
 
 
 def _collect_samples(
-    samples: int, engine: str, adapter, request: BacktestRunRequest
+    samples: int, engine: str, adapter: BacktestEngine, request: BacktestRunRequest
 ) -> tuple[list[BenchmarkSample], dict[str, object]]:
     rows: list[BenchmarkSample] = []
     last_assumptions: dict[str, object] = {}

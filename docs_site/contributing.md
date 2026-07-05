@@ -17,7 +17,7 @@ uv run pre-commit install
 uv run pre-commit install --hook-type commit-msg
 
 # Run tests
-uv run pytest
+DYNACONF_ENV=development uv run pytest tests/
 ```
 
 Use plain `uv sync` only when you intentionally want the minimal CLI/runtime surface without the
@@ -70,6 +70,7 @@ uv run pytest tests/unit/test_finance_utils.py -v
 ## Coding Standards
 
 - **Python version**: 3.11+
+- **NautilusTrader extra**: Python 3.12+ only; base/web/dashboard development works on Python 3.11
 - **Line length**: 120 characters
 - **Docstrings**: Google style
 - **Type hints**: Required for all functions

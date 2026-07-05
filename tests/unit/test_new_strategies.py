@@ -1,5 +1,7 @@
 """Tests for new strategies (DualMomentum, RiskParity) and multi-asset Monte Carlo."""
 
+import warnings
+
 import backtrader as bt
 import numpy as np
 import pandas as pd
@@ -186,3 +188,16 @@ class TestMultiAssetMonteCarlo:
         assert "SPY" in result["asset_trials"]
         assert "TLT" in result["asset_trials"]
         assert result["asset_trials"]["SPY"].shape == (10, 30)
+
+    def test_missing_prices_do_not_emit_pandas_fill_warning(self):
+        data = {
+            "SPY": self._make_asset_data(42, length=40),
+            "TLT": self._make_asset_data(99, length=40),
+        }
+        data["SPY"].iloc[10, data["SPY"].columns.get_loc("Close")] = np.nan
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", FutureWarning)
+            result = multi_asset_monte_carlo(data, sim_periods=5, n_sims=2, show_progress=False)
+
+        assert result["portfolio_trials"].shape == (2, 5)

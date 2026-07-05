@@ -24,7 +24,7 @@ def bond_index_simulator(
     sim_df = bond_ladder_simulator(min_maturity_years, max_maturity_years)
 
     # Apply curve fitting
-    mults = sim_df["Close"].pct_change() + 1
+    mults = sim_df["Close"].pct_change(fill_method=None) + 1
     if additive_constant:
         mults += additive_constant
     new_closes = mults.cumprod()
@@ -35,7 +35,7 @@ def bond_index_simulator(
     if overwrite_sim_with_index and isinstance(index_closes, pd.Series):
         sim_df["Close"] = merge_price_histories(sim_df["Close"], index_closes, fix_point="end")
 
-    sim_df["Change"] = sim_df["Close"].pct_change()
+    sim_df["Change"] = sim_df["Close"].pct_change(fill_method=None)
 
     if save_index:
         print(f"Saving {fund_name} to simulations db")

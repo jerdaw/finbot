@@ -9,7 +9,7 @@ def get_best_corr_iterative(
     stop: float | None = None,
     n_steps: int = 10000,
 ) -> tuple[float, float]:
-    sim_changes = sim_closes.pct_change()
+    sim_changes = sim_closes.pct_change(fill_method=None)
     sim_changes.iloc[0] = 0
 
     if start is None:
@@ -41,9 +41,9 @@ def get_best_corr_search(
     n_parts: int = 4,
 ) -> tuple[float, float]:
     if start is None:
-        start = -abs(sim_closes.pct_change().mean())
+        start = -abs(sim_closes.pct_change(fill_method=None).mean())
     if stop is None:
-        stop = abs(sim_closes.pct_change().mean())
+        stop = abs(sim_closes.pct_change(fill_method=None).mean())
 
     orig_start = start
     orig_stop = stop

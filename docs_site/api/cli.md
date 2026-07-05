@@ -226,7 +226,11 @@ Set `DYNACONF_ENV` explicitly and export any required data-source credentials in
 ```bash
 export DYNACONF_ENV=development
 export ALPHA_VANTAGE_API_KEY=your_key
+export ALPHA_VANTAGE_RAPIDAPI_KEY=your_rapidapi_key
+export ALPACA_API_KEY=your_key
+export ALPACA_SECRET_KEY=your_secret
 export NASDAQ_DATA_LINK_API_KEY=your_key
+export TWELVEDATA_API_KEY=your_key
 export US_BUREAU_OF_LABOR_STATISTICS_API_KEY=your_key
 export GOOGLE_FINANCE_SERVICE_ACCOUNT_CREDENTIALS_PATH=/path/to/credentials.json
 ```
