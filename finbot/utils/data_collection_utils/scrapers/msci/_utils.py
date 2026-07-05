@@ -428,7 +428,6 @@ def _process_download(
             start_time=dl_start_time,
             new_files_only=False,
         )
-        # TODO
     return _read_msci_data(file_path=file_path, index_name=index_name)
 
 
@@ -733,8 +732,8 @@ def get_msci_single(
             start_date=datetime.date(1999, 1, 1) if data_frequency == "Daily" else datetime.date(1800, 1, 1),
             end_date=datetime.date.today(),
         )
-    # Hack to try to repair international holiday issues, only keep missing_business_days where the previous or next day is also missing
-    # TODO: Implement better way to solve this
+    # Keep only runs of missing dates to reduce false positives from market
+    # holidays that are not represented in the US business-day calendar.
     missing_business_days = [
         dt
         for dt in missing_business_days

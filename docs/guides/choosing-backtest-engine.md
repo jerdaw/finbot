@@ -29,7 +29,7 @@
 
 Finbot supports two backtesting engines through a unified adapter interface:
 
-1. **Backtrader** - Mature, battle-tested, bar-based backtesting (v1.9.78+)
+1. **Backtrader** - Mature, widely used, bar-based backtesting (v1.9.78+)
 2. **NautilusTrader** - Modern, event-driven, live-trading capable (v1.222.0+)
 
 Both engines implement the same `BacktestEngine` interface, so switching between them is seamless.
@@ -54,7 +54,7 @@ Both engines implement the same `BacktestEngine` interface, so switching between
 | **Type System** | Dynamic | Strongly typed (Money, Price, Quantity objects) |
 | **Fill Model** | Simplified (assumes fills) | Realistic (order matching, slippage) |
 | **Order Lifecycle** | Immediate execution | NEW → SUBMITTED → FILLED with latency |
-| **Live Trading** | Limited/experimental | Production-ready |
+| **Live Trading** | Limited/experimental | Built for production live trading |
 
 ### Performance
 
@@ -128,7 +128,7 @@ Both engines implement the same `BacktestEngine` interface, so switching between
 
 ✅ **You're planning for live trading**
 - Strategy will eventually trade live
-- Need production-ready infrastructure
+- Need live-trading-oriented infrastructure
 - Want seamless backtest → paper → live progression
 
 ✅ **You need realistic fill simulation**
@@ -148,15 +148,15 @@ Both engines implement the same `BacktestEngine` interface, so switching between
 - Trailing stops
 - Conditional orders
 
-✅ **You need professional-grade execution**
-- Multiple brokers/exchanges
+✅ **You need live-execution features**
+- Broker and exchange connectivity
 - FIX protocol support
-- Institutional-grade features
+- Execution features used by professional trading systems
 
 **Example Scenario:**
 > "I'm developing a mean-reversion strategy that I plan to deploy live on Interactive Brokers. I need realistic fill simulation and want a smooth path from backtest to production."
 >
-> **→ Use Nautilus** (built for live trading, realistic fills, production-ready)
+> **→ Use Nautilus** (built for live trading with realistic fills)
 
 ### Use Both (Hybrid) When...
 
@@ -422,9 +422,9 @@ result = adapter.run_backtest(request)
 
 **A:** Nautilus has more realistic fill simulation (order matching, latency, slippage). For most bar-based strategies, differences are small. For high-frequency or market-making strategies, Nautilus is more accurate.
 
-### Q: Is Nautilus production-ready for live trading?
+### Q: Is Nautilus designed for production live trading?
 
-**A:** Yes! Nautilus is designed for production live trading and is used by professional trading firms. Backtrader's live trading is experimental and not recommended for production.
+**A:** Nautilus is designed for live trading and has infrastructure for realistic order handling. Backtrader's live trading support is more limited and should be evaluated carefully before any production use.
 
 ### Q: Can I use Backtrader for some strategies and Nautilus for others?
 

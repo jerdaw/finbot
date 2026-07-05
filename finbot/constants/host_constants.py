@@ -88,7 +88,8 @@ def _safe_disk_usage_gb(field_name: str) -> float:
 
 def _generate_impersistent_host_id() -> str:
     """Generate a unique host ID based on system attributes."""
-    # TODO: Using impersistent host ID. ID may change and cause issues with data consistency.
+    # This ID is derived from mutable host attributes. Persist a stable identifier
+    # before relying on it for cross-host data consistency.
     system_info = [
         _safe_hostname(),
         platform.processor(),

@@ -25,7 +25,7 @@ class APIResourceGroup:
         identifier: str,
         rate_limit: RateLimiter,
         retry_strategy_kwargs: dict[str, Any],
-        concurrency_limit: int = 99999,  # TODO: Implement
+        concurrency_limit: int = 99999,  # Reserved for request concurrency enforcement.
         timeout: int | tuple[int, ...] = DEFAULT_TIMEOUT,
         **kwargs: Any,
     ) -> None:

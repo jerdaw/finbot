@@ -4,7 +4,7 @@ This guide will help you get started with Finbot for financial simulation, backt
 
 ## What is Finbot?
 
-Finbot is a comprehensive platform for:
+Finbot provides tools for:
 
 - **Data Collection**: Automated fetching from 6+ data sources
 - **Simulation**: Model leveraged ETFs, bond ladders, and Monte Carlo scenarios

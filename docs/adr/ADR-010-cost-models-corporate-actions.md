@@ -302,7 +302,7 @@ class MissingDataPolicy(StrEnum):
 ⚖️ **Cost model accuracy:**
 - Simple models (flat, percentage) are approximations
 - Real costs depend on market conditions, order size, volatility
-- Good enough for most strategy comparisons
+- Suitable for most strategy comparisons where exact venue-level execution costs are out of scope
 
 ## Implementation Details
 

@@ -101,10 +101,10 @@ Closed the product-quality backtesting workflow pass: canonical drawdown metrics
       digest pinning and hash-pinned container pip patch commands; treat this
       as a reproducibility/security hardening pass rather than a baseline
       feature gap.
-- [ ] Investigate current CI Docker Security Scan image failures from run
-      `28322985009` for both CLI and API images; keep the Trivy gate intact and
-      resolve through dependency/base-image hardening rather than suppressing
-      findings.
+- [ ] Investigate current CI Docker Security Scan image failures from recent
+      `main` runs, including `28322985009` and `28754119917`; keep the Trivy
+      gate intact and resolve through dependency/base-image hardening rather
+      than suppressing findings.
 - [ ] Revisit broader OpenSSF Scorecard posture items such as fuzzing and CII
       best-practices adoption only if the project resumes active public
       hardening work.
@@ -117,6 +117,7 @@ Closed the product-quality backtesting workflow pass: canonical drawdown metrics
 - [ ] Revisit phase-2 real-time work such as WebSocket streaming, live execution, and intraday bar caching only after production hosting decisions are settled.
 - [ ] Resolve the Nautilus adapter full-repo mypy failures surfaced during the 2026-06-28 uv validation pass (`finbot/adapters/nautilus/nautilus_adapter.py` lines 396, 594, and 967); keep this separate from the completed analytics guardrail/test work.
 - [ ] Investigate recurring Scheduled Data Update workflow failures observed on `main` in early July 2026; keep provider credential, quota, and data-refresh reliability work separate from repository maintenance cleanup.
+- [ ] Consider a focused archive-curation pass for old planning docs with agent-session or production-readiness wording only if maintainers decide historical wording should be normalized; keep this separate from current source and public-docs professionalization.
 - [ ] Revisit scheduled CI Heavy failures only when the project resumes heavy validation work; do not expand routine maintenance branches into Docker, Trivy, or long-running release validation unless a release candidate requires it.
 
 ---
@@ -125,6 +126,7 @@ Closed the product-quality backtesting workflow pass: canonical drawdown metrics
 
 | Item                                                                      | Completed  | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | :------------------------------------------------------------------------ | :--------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Documentation and code professionalization pass                            | 2026-07-05 | Completed a scoped code-adjacent writing pass using the v6 professionalization prompt pack: softened overstated public maturity claims, rewrote personal/chattery comments and vague TODOs into durable notes, neutralized helper script output, documented evidence in the maintenance audit, cleaned generated local artifacts, and left archive history, author/contact metadata, deliberate agent policy, and warning/disclaimer surfaces intact.                                      |
 | Repository maintenance audit and verification pass                         | 2026-07-05 | Completed a scoped repository-health pass: refreshed setup and configuration documentation, separated standard Alpha Vantage and RapidAPI credentials, removed implicit pandas forward-fill in simulation return paths, updated Nautilus helper scripts, tightened Makefile/CI verification commands, added regression coverage, cleaned generated local artifacts, and recorded remaining CI/data-update follow-ups without expanding this branch into release or infrastructure work.                 |
 | Autonomous analytics guardrail and regression pass                         | 2026-06-28 | Completed the safe unattended work queue and archived the plan: added focused regression coverage and narrow invalid-input guardrails for data quality, realtime quote caching, JSON serializers, core contract/cost serialization, VaR/CVaR/backtest, portfolio analytics, and factor analytics. Installed uv locally for follow-up validation; touched-source mypy passed, while full-repo mypy surfaced unrelated Nautilus adapter follow-up.                                                |
 | Stable baseline closeout                                                   | 2026-06-14 | Closed the repository at a durable stable baseline: P11 migrated to Zensical, remaining P5/P7 tail items were explicitly deferred where they require external data or human-produced assets, restart guidance was added, docs validation was tightened to strict Zensical builds, and the remaining safe backtesting component decomposition was completed.                                                                                                                                    |

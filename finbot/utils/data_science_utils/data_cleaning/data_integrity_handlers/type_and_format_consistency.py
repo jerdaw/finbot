@@ -106,8 +106,8 @@ Limitations:
     - Type conversion failures result in NaN (may need imputation)
     - No support for complex type validations (use custom_validations)
 
-**TODO**: Review if validate_data_ranges overlaps with outlier capping
-functionality (see inline TODO comment).
+Range validation can overlap with outlier capping. Choose the ordering
+explicitly when both steps are used in one cleaning pipeline.
 
 Related modules: custom_validations (custom transformations),
 identify_corrupted_data (detect type issues), duplicates_handlers
@@ -167,7 +167,9 @@ def standardize_string_formats(data: pd.DataFrame, columns: Sequence[str], case:
 def validate_data_ranges(data: pd.DataFrame, column_ranges: dict[str, tuple | list]) -> pd.DataFrame:
     """
     Validate that data in specified columns falls within defined ranges.
-    TODO: Check if this is needed given the outlier imputation functino that squished outliers into a certain range.
+
+    Range filtering may overlap with outlier capping. Verify the intended
+    cleaning order before combining both in one pipeline.
     """
     for column, valid_range in column_ranges.items():
         if isinstance(valid_range, tuple):

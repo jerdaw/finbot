@@ -276,19 +276,19 @@ if __name__ == "__main__":
     @log_with_header_footer(header="CUSTOM WRAPPER HEADER", footer="CUSTOM WRAPPER FOOTER")
     def test_func1() -> int:
         """Example function to demonstrate the decorator with logging."""
-        print("This is my test func" * 3)
+        print("Sample function output" * 3)
         return 1
 
     @log_with_header_footer()
     def test_func2() -> tuple[str, int, list[int], dict[str, int]]:
         """Example function to demonstrate the decorator with logging."""
-        print("This is my test func" * 3)
+        print("Sample function output" * 3)
         return "Test Function Result", 7, [1, 2, 3], {"a": 1, "b": 2}
 
     @log_with_header_footer()
     def test_func3(myint: int) -> bool:
         """Example function to demonstrate the decorator with logging."""
-        print("This is my test func" * 3)
+        print("Sample function output" * 3)
         return bool(myint)
 
     test_func1()

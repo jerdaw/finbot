@@ -173,7 +173,7 @@ class LogarithmicScaler(BaseScaler):
         "median": np.median,
         "mode": lambda x: (lambda m: (m.mode[0] if isinstance(m.mode, np.ndarray) else m.mode) if m.count else np.nan)(
             stats.mode(x, nan_policy="omit"),
-        ),  # TODO: Make this more readable
+        ),  # Normalizes scipy.stats.mode output to a scalar.
     }
     DEFAULT_BASE = np.e
     DEFAULT_EPSILON = 1e-9

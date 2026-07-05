@@ -1,7 +1,7 @@
-"""Test running a minimal backtest through NautilusAdapter.
+"""Run a minimal backtest through NautilusAdapter.
 
-This script attempts to run a simple backtest to identify what needs to be implemented.
-Each NotImplementedError will tell us the next TODO to tackle.
+This script runs a simple backtest and reports any remaining adapter functionality
+that must be implemented before the smoke test can complete.
 
 Usage:
     uv run python scripts/test_nautilus_backtest.py
@@ -57,25 +57,24 @@ def create_test_request() -> BacktestRunRequest:
 
 
 def main():
-    """Run the test."""
+    """Run the smoke test."""
     print("=" * 60)
-    print("NautilusTrader Backtest Test")
+    print("NautilusTrader backtest smoke test")
     print("=" * 60)
     print()
-    print("This test will show us what needs to be implemented next.")
-    print("Each NotImplementedError tells us the next TODO.")
+    print("This check reports the next missing adapter capability if the run cannot complete.")
     print()
 
     # Create adapter
     print("Step 1: Creating NautilusAdapter...")
     adapter = NautilusAdapter(price_histories=create_minimal_test_data())
-    print(f"✅ Created adapter: {adapter.name} v{adapter.version}")
+    print(f"Created adapter: {adapter.name} v{adapter.version}")
     print()
 
     # Create request
     print("Step 2: Creating backtest request...")
     request = create_test_request()
-    print("✅ Created request:")
+    print("Created request:")
     print(f"   Strategy: {request.strategy_name}")
     print(f"   Symbols: {request.symbols}")
     print(f"   Period: {request.start} to {request.end}")
@@ -88,10 +87,10 @@ def main():
     try:
         result = adapter.run_backtest(request)
 
-        # If we get here, the backtest completed!
+        # If we get here, the backtest completed.
         print("=" * 60)
         print()
-        print("🎉 BACKTEST COMPLETED!")
+        print("BACKTEST COMPLETED")
         print()
         print("Results:")
         print(f"  Final value: ${result.metrics['final_value']:,}")
@@ -105,24 +104,24 @@ def main():
     except NotImplementedError as e:
         print("=" * 60)
         print()
-        print("❌ Hit a NotImplementedError (expected!)")
+        print("NotImplementedError encountered")
         print()
         print(f"Error message: {e}")
         print()
-        print("This tells us what to implement next.")
+        print("This identifies the next adapter capability to implement.")
         print()
         print("Next steps:")
-        print("1. Find this TODO in finbot/adapters/nautilus/nautilus_adapter.py")
+        print("1. Find the related missing implementation in finbot/adapters/nautilus/nautilus_adapter.py")
         print("2. Implement the missing functionality")
         print("3. Run this test again")
-        print("4. Repeat until all TODOs are implemented")
+        print("4. Repeat until the smoke test completes")
         print()
         return 1
 
     except Exception as e:
         print("=" * 60)
         print()
-        print("❌ Hit an unexpected error!")
+        print("Unexpected error encountered")
         print()
         print(f"Error type: {type(e).__name__}")
         print(f"Error message: {e}")

@@ -63,7 +63,7 @@ After three years of iteration and a major consolidation effort, Finbot covers a
 
 **Data Collection** — Automated pipelines for Yahoo Finance, FRED, Alpha Vantage, Google Finance, Shiller datasets, and BLS. Data is cached locally as parquet files, with freshness monitoring to detect staleness.
 
-**Simulation** — The crown jewel: a vectorized fund simulator that can model leveraged ETFs back to 1950, accounting for management fees, bid-ask spreads, and LIBOR borrowing costs. I can simulate UPRO's behavior during the 2008 financial crisis with a few lines of Python.
+**Simulation** — A core component: a vectorized fund simulator that can model leveraged ETFs back to 1950, accounting for management fees, bid-ask spreads, and LIBOR borrowing costs. I can simulate UPRO's behavior during the 2008 financial crisis with a few lines of Python.
 
 **Backtesting** — An engine-agnostic system using Backtrader (and optionally NautilusTrader) with 12 built-in strategies, typed contracts for portability, cost models, corporate action handling, walk-forward analysis, and market regime detection.
 

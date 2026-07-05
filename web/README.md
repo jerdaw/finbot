@@ -1,7 +1,7 @@
 # Finbot Web Frontend
 
-Professional web application for Finbot's financial simulation, backtesting,
-analytics, and health-economics research workflows.
+Web application for Finbot's financial simulation, backtesting, analytics, and
+health-economics research workflows.
 
 ## Architecture
 

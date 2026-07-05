@@ -31,7 +31,7 @@ def calculate_theta_decay(unlevered_series: pd.Series) -> pd.Series:
     pd.Series: Series representing the theta decay for each time point. The first
                value is set to None as it's undefined due to lack of prior data.
     """
-    raise NotImplementedError("This function is not yet been verified.")  # TODO
+    raise NotImplementedError("This function has not been verified.")
 
     if not isinstance(unlevered_series, pd.Series):  # type: ignore[unreachable]
         raise TypeError("Input must be a pandas Series.")

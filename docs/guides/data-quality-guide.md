@@ -549,8 +549,8 @@ def get_new_source_data(
     if not isinstance(symbols, list):
         symbols = [symbols]
 
-    # TODO: Implement data fetching logic
-    # This is a template - adapt to your data source
+    # Add provider-specific data fetching logic here.
+    # This template should be adapted to the new data source.
 
     results = []
     for symbol in symbols:
@@ -583,8 +583,7 @@ def _fetch_from_api(
     end_date: datetime.date | None,
 ) -> pd.DataFrame:
     """Fetch data from API."""
-    # TODO: Implement actual API call
-    raise NotImplementedError("Implement API fetching logic")
+    raise NotImplementedError("Implement provider-specific API fetching logic")
 ```
 
 **4. Add to daily update pipeline:**

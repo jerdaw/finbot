@@ -9,7 +9,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-# TODO: Re-implement type hints. Makes sure they don't cause circular imports.
+# Keep APIResourceGroup as a forward reference to avoid a runtime import cycle.
 
 if TYPE_CHECKING:
     from finbot.libs.api_manager._utils.api_resource_group import APIResourceGroup
@@ -27,8 +27,8 @@ class API:
         self,
         identifier: str,
         resource_group: APIResourceGroup | None,
-        response_save_dir: Path | None = None,  # TODO: Implement
-        data_save_dir: Path | None = None,  # TODO: Implement
+        response_save_dir: Path | None = None,  # Reserved for response-cache integration.
+        data_save_dir: Path | None = None,  # Reserved for normalized-data cache integration.
         base_url: str | None = None,
         headers: dict[str, str] | None = None,
         endpoints: list[str] | None = None,
@@ -49,7 +49,7 @@ class API:
         self._resource_group = resource_group
         self._response_save_dir = response_save_dir
         self._data_save_dir = data_save_dir
-        self._headers = headers  # TODO: change to `headers if headers is not None else {}``
+        self._headers = headers
         self._endpoints = endpoints if endpoints else []
 
         self._add_api_resource_group()

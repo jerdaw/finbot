@@ -6,9 +6,9 @@ The strategies module implements 13 systematic trading strategies spanning portf
 
 Finbot includes:
 
-- **13 battle-tested strategies**: Rebalance, SMA crossover, MACD, dip buying, dual momentum, risk parity, and regime-adaptive allocation
+- **13 implemented strategies**: Rebalance, SMA crossover, MACD, dip buying, dual momentum, risk parity, and regime-adaptive allocation
 - **Backtrader integration**: All strategies compatible with Backtrader framework
-- **Comprehensive backtesting**: Validated across 15 years of S&P 500 data (2009-2024)
+- **Backtesting coverage**: Validated across 15 years of S&P 500 data (2009-2024)
 - **Performance metrics**: CAGR, Sharpe, Sortino, Calmar, max drawdown, win rate
 
 ## Strategy Categories

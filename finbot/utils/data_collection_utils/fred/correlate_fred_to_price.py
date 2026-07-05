@@ -13,10 +13,9 @@ Typical usage:
     - Identify leading/lagging economic indicators
     - Develop recession-aware trading strategies
 
-Note: This module is work-in-progress and needs refactoring.
+Note: This exploratory utility is not part of the stable data pipeline and
+should be refactored before extending.
 """
-
-# TODO: This module is still very much a WIP. It needs to be refactored and cleaned up.
 
 from typing import Any, Literal, cast
 

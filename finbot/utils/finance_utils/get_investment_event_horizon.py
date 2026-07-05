@@ -4,7 +4,7 @@ Determines when portfolio growth dominates new contributions. The "event horizon
 is the point where adding yearly contributions becomes insignificant compared to
 compound growth on existing portfolio value.
 
-This helps answer the question: "When does my money start working harder than I do?"
+This helps estimate when expected annual returns outweigh new contributions.
 
 Typical usage:
     - Retirement planning and savings goal setting
@@ -24,9 +24,9 @@ import pandas as pd
 
 
 def calculate_event_horizon(
-    cagr: float = 0.069,  # Average inflation adjusted us stock market return
-    yearly_contribution: float = 5000,  # Average us investment per year
-    initial_value: float = 15000,  # Some small-ish starting amount
+    cagr: float = 0.069,  # Average inflation-adjusted US stock market return
+    yearly_contribution: float = 5000,  # Representative annual contribution
+    initial_value: float = 15000,  # Representative starting balance
     event_horizon_threshold: float = 0.035,  # Rough historical average inflation
     max_years: float | int = float("inf"),
 ) -> int | float:

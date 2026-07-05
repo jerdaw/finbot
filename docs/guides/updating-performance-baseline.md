@@ -35,13 +35,13 @@ Update the performance baseline in these situations:
 ### ❌ Invalid Reasons to Update
 
 1. **Covering Up Regressions**
-   - "CI is failing so I'll just update the baseline"
-   - "Performance got worse but I don't want to fix it"
+   - "CI is failing, so update the baseline without investigating"
+   - "Performance worsened and no root cause has been identified"
 
 2. **System Variance**
-   - "It's slower on my laptop"
-   - "It's faster on the CI runner"
-   - Use consistent hardware or expect variance
+   - Single-machine runs differ from CI
+   - CI runner performance changes between jobs
+   - Use consistent hardware where possible, and expect some variance
 
 3. **One-time Anomalies**
    - Single slow run due to system load

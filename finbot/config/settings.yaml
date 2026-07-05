@@ -1,8 +1,6 @@
-# Thus far I haven't been very impressed with static config files and dynaconf.
-# The need to adjust config settings in a logger_config.py anyway arises almost immediately from
-# the need to set dynamic values or types that can't be set in a static file.
-# So, currently things are split between this static file and a logger_config.py that is loaded.
-# WARNING: This means that logger_config.py may set settings that are NOT in this file.
+# Static settings live here; runtime-derived settings are applied in logger_config.py.
+# This split is needed for values that depend on the local host or runtime environment.
+# WARNING: logger_config.py may set settings that are not declared in this file.
 
 default:
   app_name: "finbot"

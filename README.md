@@ -24,14 +24,14 @@ See [DISCLAIMER.md](DISCLAIMER.md) for complete legal terms, limitations, and ri
 
 ## Overview
 
-Finbot is a comprehensive platform for quantitative financial analysis, combining:
+Finbot is a platform for quantitative financial analysis, combining:
 
 - **Data Collection**: Automated pipelines for Yahoo Finance, FRED, Alpha Vantage, Google Sheets, Shiller datasets, and BLS
 - **Simulation**: Realistic modeling of leveraged ETFs, bond ladders, indexes, and single-asset or multi-asset Monte Carlo scenarios
 - **Backtesting**: Engine-agnostic backtesting with 13 strategies, typed contracts, and comprehensive performance metrics
-- **Execution**: Paper trading simulator with realistic latency, risk controls, and state recovery for disaster resilience
+- **Execution**: Paper trading simulator with realistic latency, risk controls, and checkpoint-based crash recovery
 - **Optimization**: DCA grid search, Pareto analysis, efficient-frontier research, and example portfolio rebalancing tools
-- **Analysis**: Walk-forward analysis, market regime detection, and research-grade documentation with statistical significance testing
+- **Analysis**: Walk-forward analysis, market regime detection, and documented analysis workflows with statistical significance testing
 
 ### Why Finbot?
 
@@ -45,7 +45,7 @@ Finbot is a comprehensive platform for quantitative financial analysis, combinin
 - Run paper trading with realistic latency, slippage, and execution delays
 - Explore example portfolio configurations across multiple dimensions (allocations, durations, intervals, and frontier trade-offs)
 - Validate strategies with walk-forward analysis and regime detection
-- Generate publication-ready research with example notebooks
+- Generate reproducible research outputs with example notebooks
 
 **Use Cases**:
 
@@ -437,7 +437,7 @@ Write strategies once, run on any engine (Backtrader, NautilusTrader, or custom 
 
 ### Live-Ready Execution Simulator
 
-Paper trading with production-grade features:
+Paper trading with execution-simulation features:
 
 - **Realistic Latency**: Four latency profiles (INSTANT, FAST, NORMAL, SLOW) with configurable delays for order submission, fills, and cancellations
 - **Risk Controls**: Position limits, exposure limits (gross/net), drawdown protection (daily/total), trading kill-switch
@@ -446,7 +446,7 @@ Paper trading with production-grade features:
 
 ### Advanced Analysis Tools
 
-Research-grade features for strategy development:
+Research workflow features for strategy development:
 
 - **Cost Models**: Track slippage, commissions, spreads, and borrowing costs with detailed event logging
 - **Corporate Actions**: Handle dividends, splits, and other corporate events in backtests
@@ -454,9 +454,9 @@ Research-grade features for strategy development:
 - **Regime Detection**: Identify market regimes (bull, bear, sideways) and analyze strategy performance by regime
 - **Experiment Tracking**: Reproducible experiments with data snapshots, version control, and comparison tools
 
-### Production-Ready Infrastructure
+### Operational Infrastructure
 
-Built for reliability and scale:
+Built to support local research workflows and CI validation:
 
 - **Queue-Based Logging**: Non-blocking async logging with dual output (console + JSON files)
 - **Audit Trails**: Structured logging for all operations with queryable audit logs

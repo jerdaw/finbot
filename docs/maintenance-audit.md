@@ -1,5 +1,149 @@
 # Maintenance Audit
 
+## Documentation And Code Professionalization Pass - 2026-07-05
+
+### Metadata
+
+- Audit date: 2026-07-05
+- Target repository root: `/home/jer/repos/finbot`
+- Branch/status at inventory time: `main...origin/main` with local professionalization edits
+- Prompt-pack root used for this pass: `/mnt/c/Users/jer/Downloads/codex-repo-health-goal-prompts-entrypoint-v6-professionalization/codex-repo-health-goals-entrypoint-v6-professionalization`
+- Prompt-pack files read: `RUN_THIS_FIRST.md`, `codex-goals/00-shared-repo-native-autonomous-safety-contract.md`, `codex-goals/00A-deep-evidence-and-coverage-gates.md`, `codex-goals/07A-documentation-code-professionalization.md`
+- Earlier path note: `PROMPT_PACK_ROOT` was not set in the shell. The v5 prompt-pack path recorded by the older audit section was no longer present, so the matching v6 professionalization prompt pack under `Downloads/` was resolved and used read-only.
+- Report location: this existing `docs/maintenance-audit.md` file, following the shared contract's least-intrusive reporting rule.
+
+### Audience And Maturity Assessment
+
+Finbot presents as a public, reviewable quantitative research platform with finance, simulation, backtesting, analytics, health-economics, Streamlit, FastAPI, and Next.js surfaces. The README, docs site, package metadata, disclaimers, and planning docs describe an educational/research project with a stable baseline, not a guaranteed production trading or clinical decision system. Professional wording for this repo should therefore be factual, durable, modest about maturity, and explicit about limitations.
+
+### Inventory And Coverage Tier
+
+Inventory commands run for this pass:
+
+- `pwd`
+- `git rev-parse --show-toplevel`
+- `git status --short --branch`
+- `git ls-files | wc -l`
+- `git ls-files | awk ...`
+- `git ls-files | rg '\.(py|ts|tsx|js|mjs|md|rst|yml|yaml|toml|json|css|sh)$' | xargs wc -l | tail -n 1`
+- `git diff --name-only`
+
+Inventory results:
+
+- Tracked files: `1013`
+- Reviewable text lines across common source/docs/config extensions: about `163883`
+- Category counts from tracked files: `finbot/` 430, `web/backend/` 32, `web/frontend/` 124, `tests/` 126, `docs/` plus `docs_site/` 232, `scripts/` 11, `.github/` 14
+- Coverage tier: large repository. This pass used risk-based coverage with broad static searches plus manual review of public, central, and representative code-adjacent surfaces.
+- Exclusions: dependency/build/cache trees such as `.git/`, `.venv/`, `node_modules/`, `.next/`, `.ruff_cache/`, `.mypy_cache/`, `.pytest_cache/`, and generated build output. Lockfiles were treated as generated/dependency artifacts and not edited.
+
+### Surfaces Inspected
+
+Manual review covered these representative surfaces:
+
+- Repo instructions and metadata: `AGENTS.md`, `README.md`, `pyproject.toml`, `mkdocs.yml`
+- Existing audit/report location: `docs/maintenance-audit.md`
+- Contributor/security/governance surfaces already present: `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, `.github/ISSUE_TEMPLATE/bug_report.md`, `.github/ISSUE_TEMPLATE/feature_request.md`, `.github/PULL_REQUEST_TEMPLATE.md`
+- Public docs and docs-site pages: `docs_site/index.md`, `docs_site/user-guide/getting-started.md`, `docs_site/user-guide/data-quality-guide.md`, `docs_site/api/services/backtesting/strategies.md`, `docs/guides/data-quality-guide.md`, `docs/guides/choosing-backtest-engine.md`, `docs/guides/updating-performance-baseline.md`, `docs/adr/ADR-010-cost-models-corporate-actions.md`, `docs/blog/why-i-built-finbot.md`
+- Web docs and metadata: `web/README.md`, `web/frontend/README.md`, `web/frontend/package.json`
+- CLI/help and script text: `finbot/cli/main.py`, `finbot/cli/commands/backtest.py`, `scripts/test_nautilus_backtest.py`
+- Comments/docstrings in code-adjacent utility/config modules: `finbot/config/settings.yaml`, `finbot/constants/host_constants.py`, `finbot/libs/api_manager/_utils/api.py`, `finbot/libs/api_manager/_utils/api_resource_group.py`, `finbot/utils/data_collection_utils/bls/_bls_utils.py`, `finbot/utils/data_collection_utils/fred/correlate_fred_to_price.py`, `finbot/utils/data_collection_utils/scrapers/msci/_utils.py`, `finbot/utils/data_science_utils/data_cleaning/data_integrity_handlers/type_and_format_consistency.py`, `finbot/utils/data_science_utils/data_transformation/scalers_normalizers/logarithmic_scaler.py`, `finbot/utils/datetime_utils/get_missing_us_business_dates.py`, `finbot/utils/finance_utils/get_investment_event_horizon.py`, `finbot/utils/finance_utils/get_theta_decay.py`, `finbot/utils/function_utils/log_with_header_footer.py`
+- Tests were covered by tracked-file wording probes; no test names/comments required safe edits in this pass.
+
+### Searches And Probes Run
+
+Professionalization probes were run against tracked files to avoid local caches:
+
+- `git grep -n -I -i -E "vibe|quick.?and.?dirty|kludge|lol|wtf|stupid|dumb|ugly|gross|yolo|whatever|good enough|don't judge|sorry|short on time|fix later|ask the user|the user|medical school|med school|sleep|weekend" -- . ':!uv.lock' ':!THIRD_PARTY_LICENSES.md'`
+- `git grep -n -I -i -E "ChatGPT|Codex|Claude|AI generated|generated by AI|assistant|prompt|LLM|agent" -- . ':!uv.lock' ':!THIRD_PARTY_LICENSES.md'`
+- `git grep -n -I -E "\b(TODO|FIXME|HACK|XXX|BUG)\b" -- . ':!uv.lock' ':!THIRD_PARTY_LICENSES.md'`
+- `git grep -n -I -i -E "Jeremy|author|personal|private|my | I " -- README.md docs docs_site tests finbot scripts web .github ':!uv.lock' ':!THIRD_PARTY_LICENSES.md'`
+- `git grep -n -I -i -E "magic|probably fine|not great|bad|messy|painful|frustrating|crown jewel|boring|killer|harder than I do|impressed|WIP|work in progress|not yet been verified|better way|make this more readable" -- README.md docs docs_site finbot scripts tests web .github ':!uv.lock' ':!THIRD_PARTY_LICENSES.md'`
+- `git grep -n -I -i -E "publication-ready|research-grade|comprehensive platform|battle-tested|production-ready|enterprise|robust|disaster resilience|crown jewel|state-of-the-art|best-in-class" -- README.md docs docs_site finbot scripts web .github ':!uv.lock' ':!THIRD_PARTY_LICENSES.md'`
+- `rg -nP "[\x{1F300}-\x{1FAFF}]" README.md docs_site/index.md docs/guides/choosing-backtest-engine.md web/README.md scripts/test_nautilus_backtest.py finbot/config/settings.yaml finbot/cli/main.py`
+- `git diff --check`
+- `git diff --stat`
+
+Prompt-pack resolution probes:
+
+- `printf '%s\n' "${PROMPT_PACK_ROOT:-}"`
+- targeted `find` searches under `/mnt/c/Users/jer/.codex`, `/home/jer`, `/home/jer/repos/finbot`, and `/mnt/c/Users/jer/Downloads` for `00-shared-repo-native-autonomous-safety-contract.md` and `00A-deep-evidence-and-coverage-gates.md`
+
+### Candidate Wording Ledger
+
+| Candidate | Status | Decision |
+| --- | --- | --- |
+| Personal/static-config complaint in `finbot/config/settings.yaml` | Fixed | Rewritten as a neutral explanation of static settings vs runtime-derived logger settings. |
+| README and docs-site claims such as production-ready, production-grade, publication-ready, and research-grade | Fixed where in current public Finbot surfaces | Replaced with operational, research-workflow, reproducible-output, or methodology wording. |
+| `docs/guides/choosing-backtest-engine.md` overstating Backtrader/Nautilus maturity in Finbot guidance | Fixed | Reworded to widely used/live-trading-oriented/live-execution features while preserving the engine recommendation. |
+| Casual invalid examples in `docs/guides/updating-performance-baseline.md` | Fixed | Replaced personal phrasing with neutral invalid-rationale examples. |
+| `docs/adr/ADR-010-cost-models-corporate-actions.md` "good enough" wording | Fixed | Rewritten to state the scope where simple cost models are suitable. |
+| Template TODOs in `docs/guides/data-quality-guide.md` and `docs_site/user-guide/data-quality-guide.md` | Fixed | Converted generic TODO comments and error text into provider-specific implementation notes. |
+| Vague or stale TODO/HACK comments in selected source utility modules | Fixed | Converted to durable notes or removed when the comment no longer added information. |
+| `scripts/test_nautilus_backtest.py` chatty output and decorative status glyphs | Fixed | Rewritten as neutral smoke-test output and missing-capability guidance. |
+| Public blog phrase "crown jewel" | Fixed | Softened to "core component" while preserving the intentionally first-person blog voice. |
+| `web/README.md` "Professional web application" | Fixed | Rewritten as a neutral web-application description. |
+| First-person blog posts under `docs/blog/` | Intentionally unchanged except one phrase | The blog format is personal narrative by design and is legitimate provenance, not code/session residue. |
+| Human author names, maintainer email, citation metadata, and CODEOWNERS handles | Intentionally unchanged | These are deliberate project metadata and support/security contact surfaces. |
+| AI/agent terms in `AGENTS.md`, docs guidelines, authorship policy, and prior audit report | Intentionally unchanged | These are deliberate repo policy or audit-history references, not stray assistant attribution. |
+| `WIP` and bad-message examples in commit guidance | Intentionally unchanged | They are examples of invalid commit messages. |
+| Archived planning docs with agent/session history or older production-ready wording | Deferred | They are historical archive artifacts; broad rewriting would risk erasing useful project history and create high churn. |
+| CLI disclaimer warning glyphs | Intentionally unchanged | They are part of a warning notice, not casual decoration, and changing them would affect visible CLI output beyond this wording pass's main targets. |
+| Lockfile matches and dependency-package names | Not an issue | Generated/dependency metadata; no source wording change appropriate. |
+
+### Changes Made
+
+This pass made small wording-only edits in current source, docs, script, and README surfaces:
+
+- Softened public maturity and marketing-adjacent claims in `README.md`, `docs_site/index.md`, `docs_site/user-guide/getting-started.md`, `docs_site/api/services/backtesting/strategies.md`, `docs/guides/choosing-backtest-engine.md`, `docs/blog/why-i-built-finbot.md`, and `web/README.md`.
+- Rewrote code-adjacent comments/docstrings in `finbot/config/settings.yaml`, `finbot/constants/host_constants.py`, `finbot/libs/api_manager/_utils/api.py`, `finbot/libs/api_manager/_utils/api_resource_group.py`, `finbot/utils/data_collection_utils/bls/_bls_utils.py`, `finbot/utils/data_collection_utils/fred/correlate_fred_to_price.py`, `finbot/utils/data_collection_utils/scrapers/msci/_utils.py`, `finbot/utils/data_science_utils/data_cleaning/data_integrity_handlers/type_and_format_consistency.py`, `finbot/utils/data_science_utils/data_transformation/scalers_normalizers/logarithmic_scaler.py`, `finbot/utils/datetime_utils/get_missing_us_business_dates.py`, `finbot/utils/finance_utils/get_investment_event_horizon.py`, `finbot/utils/finance_utils/get_theta_decay.py`, and `finbot/utils/function_utils/log_with_header_footer.py`.
+- Rewrote `scripts/test_nautilus_backtest.py` status text to describe the script as a smoke test and report missing adapter capabilities without assistant/session-like wording.
+- Clarified data-provider template wording in both repository and docs-site data-quality guides.
+- Removed generated local verification artifacts after the maintenance pass, including tool caches, docs build output, Python bytecode caches, and the local Interrogate badge. Existing ignore rules already covered these artifacts, so `.gitignore` did not need changes.
+
+Example rewrite patterns applied:
+
+- Personal rationale became neutral project rationale: settings comments now describe runtime-derived settings rather than preserving personal commentary.
+- Promotional maturity claims became evidence-bounded claims: production-ready/publication-ready wording became operational, research-workflow, or reproducible-output wording.
+- Generic TODOs became specific notes: placeholder provider comments now name provider-specific fetching logic, and implementation-reserved fields now say what future integration they are reserved for.
+- Chatty script output became neutral status output: the Nautilus helper now reports smoke-test status and missing capabilities.
+
+### Change-Gate Decisions
+
+Implemented edits passed the repo-native change gate because they are local, reviewable, behaviour-preserving wording changes; they follow existing Markdown, Python, YAML, and script style; they do not add tools, processes, governance, licenses, APIs, dependencies, or architecture; and they keep real limitations and disclaimers visible.
+
+Deferred items were not changed when the concern was historical, generated/vendor, a deliberate policy disclosure, a legitimate contact/attribution surface, a commit-message example, or too subjective for an unattended rewrite.
+
+### Verification Results
+
+Verification performed before this report insertion:
+
+| Command | Result |
+| --- | --- |
+| `git diff --check` | Passed |
+| Professionalization keyword reruns | Passed for current public/source targets; remaining matches were archive history, deliberate examples, generated/dependency metadata, or prior audit text |
+| Prompt-pack reads | Passed for v6 `00`, `00A`, and `07A`; earlier v5 path was stale and unavailable |
+
+Final repo-native verification after this report update:
+
+| Command | Result |
+| --- | --- |
+| `git diff --check` | Passed |
+| `uv run ...` initial attempts | Failed before execution because `uv` was not on the default shell `PATH`; `/home/jer/.local/bin/uv` and `/tmp/codex-uv/uv` were then located |
+| `PATH=/home/jer/.local/bin:$PATH uv run ruff check ...changed Python files...` | Passed; `All checks passed!` |
+| `PATH=/home/jer/.local/bin:$PATH uv run ruff format --check ...changed Python files...` | Passed; `13 files already formatted` |
+| `PATH=/home/jer/.local/bin:$PATH uv run zensical build --clean --strict` | Passed; `No issues found` |
+| `PATH=/home/jer/.local/bin:$PATH DYNACONF_ENV=development uv run pytest tests/unit/test_imports.py -q -s` | Passed; `43 passed, 2 warnings in 8.93s` with existing Streamlit bare-mode warnings during import coverage |
+| `PATH=/home/jer/.local/bin:$PATH make check` | Passed; Ruff check/format, mypy on 422 source files, Interrogate at `79.6%` versus `73.0%` threshold, and Bandit with no medium/high issues |
+| `git status --short --ignored` | Passed for tracked review; generated cache/build artifacts were cleaned after verification; `.venv/`, `web/frontend/node_modules/`, and ignored local data caches remain untracked by design |
+
+### Risks, Assumptions, And Follow-Ups
+
+- This was a large-repo, risk-based pass, not an exhaustive line-by-line review of all 1013 tracked files.
+- Archived planning docs still contain older agent/session and production-ready wording. They were left as historical records; a separate archive-curation decision would be needed before rewriting them.
+- The CLI disclaimer still uses warning glyphs and box drawing. It was left unchanged because it is a deliberate user-facing warning surface.
+- No public API, command name, test semantics, data format, dependency, CI policy, release process, licensing, or governance artifact was changed.
+- Recommended follow-up: if maintainers want a stricter public-docs tone, run a focused docs-site editorial pass over `docs_site/` and current non-archive `docs/` pages only.
+
 ## Audit Metadata
 
 - Audit date: 2026-07-05

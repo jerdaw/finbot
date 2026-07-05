@@ -95,7 +95,8 @@ def _request_bls_data(series_ids: list[str]) -> dict[str, pd.DataFrame]:
     current_year = datetime.datetime.now().year
     start_year = current_year
 
-    # TODO: Right now this pulls all the data even if only the last month is needed.
+    # BLS API windows are requested in 20-year chunks; narrower incremental
+    # refreshes would reduce unnecessary history fetches.
     while True:
         end_year = start_year - 19
         params = {
