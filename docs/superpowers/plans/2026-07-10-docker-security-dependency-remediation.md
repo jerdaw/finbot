@@ -164,7 +164,7 @@ Expected: hooks and diff check exit 0; only the plan and `uv.lock` are changed.
 - Consumes: repository Dockerfiles, locked dependencies, and existing Docker Security Scan matrix
 - Produces: passing CLI and API Trivy image scans with the fixed packages
 
-- [ ] **Step 1: Commit, push, and open the security PR**
+- [x] **Step 1: Commit, push, and open the security PR**
 
 Commit the plan and lock refresh with:
 
@@ -176,13 +176,13 @@ git push -u origin fix/finbot-docker-security-dependencies
 
 Open a PR against `main` with the exact vulnerable/fixed versions and local verification results.
 
-- [ ] **Step 2: Verify the existing Docker image gates**
+- [x] **Step 2: Verify the existing Docker image gates**
 
 Wait for the PR's GitHub Actions run.
 
 Expected: both `Docker Security Scan (cli)` and `Docker Security Scan (api)` pass without ignore-file changes; all other required checks pass.
 
-- [ ] **Step 3: Close the roadmap item after proof**
+- [x] **Step 3: Close the roadmap item after proof**
 
 In `docs/planning/roadmap.md`:
 
