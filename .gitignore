@@ -26,6 +26,7 @@ private/**/*.local.*
 scrap/*
 temp/*
 .claude/
+.worktrees/
 
 # Docker security scan reports (large files, regenerated frequently)
 docs/security/*.txt
