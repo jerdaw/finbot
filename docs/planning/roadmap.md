@@ -1,7 +1,7 @@
 # Finbot Roadmap
 
 **Created:** 2026-02-10
-**Last Updated:** 2026-07-05
+**Last Updated:** 2026-07-10
 **Status:** Priority 0-12 complete for the stable baseline. Remaining work is explicitly deferred future scope, not unfinished baseline scope.
 
 Improvements, fixes, and enhancements identified from comprehensive project evaluations. Organized by priority tier. Previous items (Priority 0-4) have been implemented. New Priority 5 items focus on repository professionalization, public documentation quality, and durable communication surfaces.
@@ -101,10 +101,6 @@ Closed the product-quality backtesting workflow pass: canonical drawdown metrics
       digest pinning and hash-pinned container pip patch commands; treat this
       as a reproducibility/security hardening pass rather than a baseline
       feature gap.
-- [ ] Investigate current CI Docker Security Scan image failures from recent
-      `main` runs, including `28322985009` and `28754119917`; keep the Trivy
-      gate intact and resolve through dependency/base-image hardening rather
-      than suppressing findings.
 - [ ] Revisit broader OpenSSF Scorecard posture items such as fuzzing and CII
       best-practices adoption only if the project resumes active public
       hardening work.
@@ -126,6 +122,7 @@ Closed the product-quality backtesting workflow pass: canonical drawdown metrics
 
 | Item                                                                      | Completed  | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | :------------------------------------------------------------------------ | :--------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Docker dependency security remediation                                    | 2026-07-10 | Updated locked transitive dependencies `cryptography` 46.0.7 to 48.0.1 and `soupsieve` 2.8.3 to 2.8.4 without changing direct dependency policy or Trivy ignores. PR #112 CI run `29070565215` passed the CLI and API Docker image scans, security audit, Python 3.11-3.13 tests, typing, lint, parity, performance, docstring, and frontend gates.                                                                                |
 | Documentation and code professionalization pass                            | 2026-07-05 | Completed a scoped code-adjacent writing pass using the v6 professionalization prompt pack: softened overstated public maturity claims, rewrote personal/chattery comments and vague TODOs into durable notes, neutralized helper script output, documented evidence in the maintenance audit, cleaned generated local artifacts, and left archive history, author/contact metadata, deliberate agent policy, and warning/disclaimer surfaces intact.                                      |
 | Repository maintenance audit and verification pass                         | 2026-07-05 | Completed a scoped repository-health pass: refreshed setup and configuration documentation, separated standard Alpha Vantage and RapidAPI credentials, removed implicit pandas forward-fill in simulation return paths, updated Nautilus helper scripts, tightened Makefile/CI verification commands, added regression coverage, cleaned generated local artifacts, and recorded remaining CI/data-update follow-ups without expanding this branch into release or infrastructure work.                 |
 | Autonomous analytics guardrail and regression pass                         | 2026-06-28 | Completed the safe unattended work queue and archived the plan: added focused regression coverage and narrow invalid-input guardrails for data quality, realtime quote caching, JSON serializers, core contract/cost serialization, VaR/CVaR/backtest, portfolio analytics, and factor analytics. Installed uv locally for follow-up validation; touched-source mypy passed, while full-repo mypy surfaced unrelated Nautilus adapter follow-up.                                                |
